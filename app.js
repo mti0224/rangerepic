@@ -303,23 +303,29 @@
   async function loadBodyPart(id) {
     if (partCache.has(id)) return partCache.get(id);
     var promise = (async function () {
+      var folder=REPO_BASE + id + "/";
+      var bodyBase=folder + id + "-body";
+      var samResponse=await fetch(bodyBase+".sam");
+      if(!samResponse.ok) throw new Error("SAM unavailable for "+id);
+      var samBuffer=await samResponse.arrayBuffer();
       var lastError;
+
       for (var i=0; i<PART_CANDIDATE_SUFFIXES.length; i++) {
         var suffix=PART_CANDIDATE_SUFFIXES[i];
-        var stem=id + "-body" + suffix;
-        var base=REPO_BASE + id + "/" + stem;
+        var textureBase=bodyBase + suffix;
         try {
-          var responses=await Promise.all([fetch(base+".sam"),fetch(base+".plist")]);
-          if (!responses[0].ok || !responses[1].ok) continue;
-          var samBuffer=await responses[0].arrayBuffer();
-          var plistText=await responses[1].text();
-          var part=parseSam(samBuffer);
+          var plistResponse=await fetch(textureBase+".plist");
+          if(!plistResponse.ok) continue;
+          var plistText=await plistResponse.text();
+          var imageResponse=await fetch(textureBase+".png",{method:"HEAD"});
+          if(!imageResponse.ok) continue;
+          var part=parseSam(samBuffer.slice(0));
           part.sprites=parsePlist(plistText);
-          part.png=base+".png";
+          part.png=textureBase+".png";
           return part;
         } catch (err) { lastError=err; }
       }
-      throw lastError || new Error("Body resources unavailable for "+id);
+      throw lastError || new Error("Body atlas unavailable for "+id);
     })();
     partCache.set(id,promise);
     return promise;
