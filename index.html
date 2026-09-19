@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#6dc7f5">
+  <title>Ranger Epic</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <section id="start-screen" class="screen active">
+      <div class="sky-cloud cloud-a"></div>
+      <div class="sky-cloud cloud-b"></div>
+      <div class="start-island"></div>
+      <div class="start-panel">
+        <p class="eyebrow">LINE RANGERS FAN WEB RPG PROTOTYPE</p>
+        <h1><span>RANGER</span> EPIC</h1>
+        <p class="lead">集結 Rangers，穿越六個戰場，擊退來襲的敵軍。</p>
+        <div class="hero-strip" id="hero-strip"></div>
+        <button id="start-button" class="primary-button giant">開始遊戲</button>
+        <p class="tiny">Prototype v0.1 · 使用 rangerbook_res 動畫資源</p>
+      </div>
+    </section>
+
+    <section id="map-screen" class="screen">
+      <header class="topbar">
+        <button class="icon-button" data-go="start-screen" aria-label="回到首頁">←</button>
+        <div>
+          <p class="eyebrow">ADVENTURE MAP</p>
+          <h2>選擇關卡</h2>
+        </div>
+        <div class="topbar-chip">隊伍 <strong id="party-count">3 / 3</strong></div>
+      </header>
+
+      <div class="map-layout">
+        <section class="party-panel parchment">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR RANGERS</p>
+              <h3>出戰隊伍</h3>
+            </div>
+            <span>選擇 3 名</span>
+          </div>
+          <div id="party-slots" class="party-slots"></div>
+          <div id="roster" class="roster"></div>
+        </section>
+
+        <section class="world-map parchment">
+          <div class="map-copy">
+            <p class="eyebrow">CHAPTER 1</p>
+            <h3>風之原野</h3>
+            <p>從青翠草原一路推進到雷神要塞。</p>
+          </div>
+          <div id="stage-path" class="stage-path"></div>
+          <div class="map-hills hill-back"></div>
+          <div class="map-hills hill-front"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="battle-screen" class="screen">
+      <header class="battle-topbar">
+        <button id="leave-battle" class="icon-button" aria-label="離開戰鬥">←</button>
+        <div class="battle-title">
+          <span id="battle-stage-label">STAGE 1</span>
+          <strong id="battle-stage-name">草原入口</strong>
+        </div>
+        <div id="turn-label" class="turn-pill">我方回合</div>
+      </header>
+
+      <section class="battlefield">
+        <div class="battle-sky">
+          <div class="battle-cloud cloud-1"></div>
+          <div class="battle-cloud cloud-2"></div>
+        </div>
+        <div class="battle-mountains"></div>
+        <div class="battle-ground"></div>
+
+        <div id="enemy-team" class="combat-team enemies"></div>
+        <div id="ally-team" class="combat-team allies"></div>
+
+        <div id="message-banner" class="message-banner"></div>
+      </section>
+
+      <section class="command-deck">
+        <div class="active-unit-panel">
+          <div id="active-unit-portrait" class="active-unit-portrait"></div>
+          <div>
+            <p class="eyebrow">ACTIVE RANGER</p>
+            <h3 id="active-unit-name">James</h3>
+            <p id="active-unit-role">守護者</p>
+          </div>
+        </div>
+        <div class="commands">
+          <button id="attack-button" class="command-button">
+            <span class="command-icon">⚔</span>
+            <span><strong>普通攻擊</strong><small>穩定造成傷害</small></span>
+          </button>
+          <button id="skill-button" class="command-button skill">
+            <span class="command-icon">✦</span>
+            <span><strong id="skill-name">堅毅衝鋒</strong><small id="skill-desc">攻擊並保護隊友</small></span>
+          </button>
+        </div>
+        <div class="battle-help">
+          <strong id="battle-help-title">選擇敵人</strong>
+          <span id="battle-help-text">點擊敵方角色指定攻擊目標</span>
+        </div>
+      </section>
+
+      <div id="result-modal" class="result-modal hidden">
+        <div class="result-card parchment">
+          <p id="result-kicker" class="eyebrow">VICTORY</p>
+          <h2 id="result-title">戰鬥勝利！</h2>
+          <p id="result-text">Rangers 成功突破這個區域。</p>
+          <button id="result-button" class="primary-button">返回關卡地圖</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
