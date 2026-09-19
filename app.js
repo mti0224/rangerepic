@@ -300,37 +300,40 @@
 
   var partCache = new Map();
 
-  async function loadBodyPart(id) {
-    if (partCache.has(id)) return partCache.get(id);
+  async function loadPart(id, partName) {
+    var cacheKey=id+":"+partName;
+    if (partCache.has(cacheKey)) return partCache.get(cacheKey);
     var promise = (async function () {
       var folder=REPO_BASE + id + "/";
-      var bodyBase=folder + id + "-body";
-      var samResponse=await fetch(bodyBase+".sam");
-      if(!samResponse.ok) throw new Error("SAM unavailable for "+id);
+      var partBase=folder + id + "-" + partName;
+      var samResponse=await fetch(partBase+".sam");
+      if(!samResponse.ok) throw new Error(partName+" SAM unavailable for "+id);
       var samBuffer=await samResponse.arrayBuffer();
       var lastError;
 
       for (var i=0; i<PART_CANDIDATE_SUFFIXES.length; i++) {
         var suffix=PART_CANDIDATE_SUFFIXES[i];
-        var textureBase=bodyBase + suffix;
+        var textureBase=partBase + suffix;
         try {
           var plistResponse=await fetch(textureBase+".plist");
           if(!plistResponse.ok) continue;
           var plistText=await plistResponse.text();
-          var imageResponse=await fetch(textureBase+".png",{method:"HEAD"});
-          if(!imageResponse.ok) continue;
           var part=parseSam(samBuffer.slice(0));
           part.sprites=parsePlist(plistText);
           part.png=textureBase+".png";
+          part.partName=partName;
           return part;
         } catch (err) { lastError=err; }
       }
-      throw lastError || new Error("Body atlas unavailable for "+id);
+      throw lastError || new Error(partName+" atlas unavailable for "+id);
     })();
-    partCache.set(id,promise);
+    partCache.set(cacheKey,promise);
     return promise;
   }
 
+  async function loadBodyPart(id) {
+    return loadPart(id,"body");
+  }
   var imageCache = new Map();
   function loadImage(url) {
     if (imageCache.has(url)) return imageCache.get(url);
@@ -494,6 +497,175 @@
     animators.clear();
   }
 
+  function combatantElement(unit) {
+    if(!battle || !unit) return null;
+    var list=unit.side==="ally"?battle.allies:battle.enemies;
+    var container=el(unit.side==="ally"?"ally-team":"enemy-team");
+    var index=list.indexOf(unit);
+    return index<0 ? null : container.querySelector('[data-index="'+index+'"]');
+  }
+
+  function projectileAnimationName(part, preferred) {
+    var names=preferred || ["normal","move","idle","finish"];
+    for(var i=0;i<names.length;i++){
+      if(part.animations && part.animations[names[i]]) return names[i];
+    }
+    var available=Object.keys(part.animations || {});
+    return available[0] || null;
+  }
+
+  function projectileBounds(part, animationName) {
+    part._boundsCache=part._boundsCache || {};
+    if(part._boundsCache[animationName]) return part._boundsCache[animationName];
+    var anim=part.animations && part.animations[animationName];
+    var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    if(anim){
+      anim.frames.forEach(function(frame){
+        frame.forEach(function(item){
+          var objectMatrix=item[2], imageDef=part.images[item[1]];
+          if(!imageDef || !objectMatrix || !imageDef.m) return;
+          var sprite=part.sprites && part.sprites[imageDef.name];
+          var rect=sprite && sprite.rect;
+          if(!rect || !rect[2] || !rect[3]) return;
+          var w=rect[2],h=rect[3];
+          var m00=objectMatrix[0],m01=objectMatrix[1],m10=objectMatrix[2],m11=objectMatrix[3],m02=objectMatrix[4],m12=objectMatrix[5];
+          var im=imageDef.m;
+          var cx=w*.5,cy=h*.5;
+          var imageCenterX=im[0]*cx+im[1]*cy+im[4];
+          var imageCenterY=im[2]*cx+im[3]*cy+im[5];
+          var worldX=m00*imageCenterX+m01*imageCenterY+m02;
+          var worldY=m10*imageCenterX+m11*imageCenterY+m12;
+          var f00=m00*im[0]+m01*im[2];
+          var f01=m00*im[1]+m01*im[3];
+          var f10=m10*im[0]+m11*im[2];
+          var f11=m10*im[1]+m11*im[3];
+          var ex=Math.abs(f00)*w*.5+Math.abs(f01)*h*.5;
+          var ey=Math.abs(f10)*w*.5+Math.abs(f11)*h*.5;
+          minX=Math.min(minX,worldX-ex); maxX=Math.max(maxX,worldX+ex);
+          minY=Math.min(minY,worldY-ey); maxY=Math.max(maxY,worldY+ey);
+        });
+      });
+    }
+    if(!Number.isFinite(minX)) { minX=-40;maxX=40;minY=-40;maxY=40; }
+    var result={minX:minX,maxX:maxX,minY:minY,maxY:maxY,cx:(minX+maxX)/2,cy:(minY+maxY)/2,w:maxX-minX,h:maxY-minY};
+    part._boundsCache[animationName]=result;
+    return result;
+  }
+
+  function drawProjectilePart(ctx,part,atlas,spriteCache,animationName,elapsed,x,y,scale,facing,loop){
+    var anim=part.animations && part.animations[animationName];
+    if(!anim || !anim.frame_count) return;
+    var fps=Math.max(1,part.anim_rate || 24);
+    var raw=Math.floor(elapsed*fps);
+    var frameIndex=loop ? ((raw%anim.frame_count)+anim.frame_count)%anim.frame_count : Math.min(raw,anim.frame_count-1);
+    var frame=anim.frames[frameIndex] || [];
+    var bounds=projectileBounds(part,animationName);
+    var scaleX=scale*facing;
+    var originX=x-bounds.cx*scaleX;
+    var originY=y-bounds.cy*scale;
+
+    for(var i=0;i<frame.length;i++){
+      var item=frame[i];
+      var imageDef=part.images[item[1]];
+      if(!imageDef) continue;
+      var sprite=spriteCanvas(part,atlas,imageDef.name,spriteCache);
+      if(!sprite) continue;
+      drawSprite(ctx,sprite,item[2],imageDef.m,item[3],originX,originY,scaleX,scale);
+    }
+  }
+
+  async function findProjectilePart(id,kind){
+    var order=kind==="skill" ? ["bul2","bul3","bul"] : ["bul"];
+    for(var i=0;i<order.length;i++){
+      try { return await loadPart(id,order[i]); }
+      catch(err) {}
+    }
+    return null;
+  }
+
+  function preloadProjectileFor(id) {
+    ["bul","bul2","bul3"].forEach(function(partName){
+      loadPart(id,partName).catch(function(){});
+    });
+  }
+
+  async function playProjectile(actor,target,kind) {
+    var part=await findProjectilePart(actor.id,kind);
+    if(!part) return false;
+
+    var actorCard=combatantElement(actor);
+    var targetCard=combatantElement(target);
+    var field=document.querySelector(".battlefield");
+    if(!actorCard || !targetCard || !field) return false;
+
+    var atlas;
+    try { atlas=await loadImage(part.png); }
+    catch(err) { return false; }
+
+    var fieldRect=field.getBoundingClientRect();
+    var actorRect=actorCard.getBoundingClientRect();
+    var targetRect=targetCard.getBoundingClientRect();
+    var start={
+      x:actorRect.left-fieldRect.left+actorRect.width*(actor.side==="ally"?.68:.32),
+      y:actorRect.top-fieldRect.top+actorRect.height*.48
+    };
+    var end={
+      x:targetRect.left-fieldRect.left+targetRect.width*.5,
+      y:targetRect.top-fieldRect.top+targetRect.height*.48
+    };
+
+    var canvas=document.createElement("canvas");
+    canvas.className="projectile-fx-canvas";
+    var dpr=Math.min(window.devicePixelRatio || 1,2);
+    canvas.width=Math.max(1,Math.round(fieldRect.width*dpr));
+    canvas.height=Math.max(1,Math.round(fieldRect.height*dpr));
+    field.appendChild(canvas);
+    var ctx=canvas.getContext("2d");
+    var spriteCache=new Map();
+    var normalName=projectileAnimationName(part,["normal","move","idle"]);
+    var finishName=part.animations && part.animations.finish ? "finish" : null;
+    if(!normalName){canvas.remove();return false;}
+
+    var bounds=projectileBounds(part,normalName);
+    var nativeSize=Math.max(1,bounds.w,bounds.h);
+    var desiredCss=kind==="skill"?115:82;
+    var scale=clamp((desiredCss*dpr)/nativeSize,.18,2.6);
+    var facing=actor.side==="ally"?1:-1;
+    var flightMs=kind==="skill"?560:470;
+    var started=performance.now();
+
+    await new Promise(function(resolve){
+      function frame(now){
+        var progress=clamp((now-started)/flightMs,0,1);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        var px=(start.x+(end.x-start.x)*progress)*dpr;
+        var arc=kind==="skill"?Math.sin(Math.PI*progress)*55:Math.sin(Math.PI*progress)*18;
+        var py=(start.y+(end.y-start.y)*progress-arc)*dpr;
+        drawProjectilePart(ctx,part,atlas,spriteCache,normalName,(now-started)/1000,px,py,scale,facing,true);
+        if(progress<1) requestAnimationFrame(frame); else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+
+    if(finishName){
+      var finishStarted=performance.now();
+      var finishAnim=part.animations[finishName];
+      var finishDuration=Math.min(.45,Math.max(.12,finishAnim.frame_count/Math.max(1,part.anim_rate||24)));
+      await new Promise(function(resolve){
+        function finishFrame(now){
+          var elapsed=(now-finishStarted)/1000;
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          drawProjectilePart(ctx,part,atlas,spriteCache,finishName,elapsed,end.x*dpr,end.y*dpr,scale,facing,false);
+          if(elapsed<finishDuration) requestAnimationFrame(finishFrame); else resolve();
+        }
+        requestAnimationFrame(finishFrame);
+      });
+    }
+
+    canvas.remove();
+    return true;
+  }
+
   function cloneCombatant(id,side,index){
     var base=units[id];
     return {
@@ -529,6 +701,7 @@
   function renderBattle(){
     renderCombatTeam("ally-team",battle.allies,1);
     renderCombatTeam("enemy-team",battle.enemies,-1);
+    battle.allies.concat(battle.enemies).forEach(function(unit){preloadProjectileFor(unit.id);});
     updateTurnUI();
     updateCommandUI();
   }
@@ -707,10 +880,12 @@
     } else {
       animateUnit(actor,"attack");
       announce(actor.name+" 發動普通攻擊！");
-      await sleep(260);
+      await sleep(110);
+      var usedProjectile=await playProjectile(actor,target,"attack");
+      if(!usedProjectile) await sleep(150);
       applyDamage(target,actor.atk*actor.attackBuff*(.92+Math.random()*.17));
       actor.attackBuff=1;
-      await sleep(430);
+      await sleep(300);
     }
 
     actor.acted=true;
@@ -726,31 +901,41 @@
   async function performSkill(actor,target){
     animateUnit(actor,"skill");
     announce(actor.name+" · "+actor.skill+"！");
-    await sleep(300);
+    await sleep(120);
 
     if(actor.id==="u1138e-james"){
+      await playProjectile(actor,target,"skill");
       applyDamage(target,actor.atk*1.5*actor.attackBuff);
       actor.attackBuff=1;
       battle.allies.forEach(function(u){if(!u.dead)u.shield+=120;});
     } else if(actor.id==="u1137e-cony"){
+      await playProjectile(actor,target,"skill");
       applyDamage(target,actor.atk*1.9*actor.attackBuff);
       actor.attackBuff=1;
     } else if(actor.id==="u1136e-moon"){
-      battle.enemies.forEach(function(u){if(!u.dead)applyDamage(u,actor.atk*.95*actor.attackBuff);});
+      var livingEnemies=battle.enemies.filter(function(u){return !u.dead;});
+      var shots=await Promise.all(livingEnemies.map(function(enemy){return playProjectile(actor,enemy,"skill");}));
+      if(!shots.some(Boolean)) await sleep(180);
+      livingEnemies.forEach(function(u){applyDamage(u,actor.atk*.95*actor.attackBuff);});
       actor.attackBuff=1;
     } else if(actor.id==="u1134e-brown"){
+      await sleep(170);
       applyDamage(target,actor.atk*1.4*actor.attackBuff);
       actor.attackBuff=1;
       if(!target.dead && Math.random()<.5){target.stunned=true;announce(target.name+" 暈眩了！");}
     } else if(actor.id==="u2032e-jessica"){
+      await sleep(220);
       battle.allies.forEach(function(u){healUnit(u,u.maxHp*.28);});
     } else if(actor.id==="u2034e-sally"){
+      await sleep(220);
       battle.allies.forEach(function(u){if(!u.dead)u.attackBuff=Math.max(u.attackBuff,1.35);});
       announce("全隊攻擊力提升！");
     } else {
+      var skillProjectile=await playProjectile(actor,target,"skill");
+      if(!skillProjectile) await sleep(160);
       applyDamage(target,actor.atk*1.5);
     }
-    await sleep(520);
+    await sleep(340);
   }
 
   el("attack-button").addEventListener("click",function(){playerAction("attack");});
@@ -774,9 +959,11 @@
       var target=battle.allies[alive[Math.floor(Math.random()*alive.length)]];
       animateUnit(enemy,"attack");
       announce(enemy.name+" 攻擊 "+target.name+"！");
-      await sleep(280);
+      await sleep(110);
+      var usedEnemyProjectile=await playProjectile(enemy,target,"attack");
+      if(!usedEnemyProjectile) await sleep(170);
       applyDamage(target,enemy.atk*(.86+Math.random()*.24));
-      await sleep(520);
+      await sleep(330);
       if(checkBattleEnd()) return;
     }
 
