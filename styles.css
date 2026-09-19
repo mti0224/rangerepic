@@ -192,7 +192,15 @@ h1 span { color: #ffde56; text-shadow: 0 8px 0 #e49535, 0 14px 22px rgba(38,90,1
 .combatant.targetable { cursor: crosshair; }
 .combatant.targetable:hover { transform: translateY(-8px) scale(1.04); }
 .combatant.targeted:after {
-  content: "▼"; position: absolute; left: 50%; top: -17px; transform: translateX(-50%); font-size: 26px; color: #f14f57;
+  content: "▼";
+  position: absolute;
+  left: 50%;
+  top: var(--target-top, 6px);
+  transform: translateX(-50%);
+  font-size: 26px;
+  color: #f14f57;
+  z-index: 8;
+  pointer-events: none;
   animation: bob .7s infinite alternate ease-in-out;
 }
 @keyframes bob { to { transform: translate(-50%,7px); } }
