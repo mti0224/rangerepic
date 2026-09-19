@@ -405,6 +405,72 @@
     return available[0] || null;
   }
 
+  function animationVisibleBounds(part, animationName) {
+    part._bodyBoundsCache=part._bodyBoundsCache || {};
+    if(part._bodyBoundsCache[animationName]) return part._bodyBoundsCache[animationName];
+
+    var anim=part.animations && part.animations[animationName];
+    var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+
+    if(anim){
+      anim.frames.forEach(function(frame){
+        frame.forEach(function(item){
+          var objectMatrix=item[2];
+          var color=item[3];
+          var imageDef=part.images[item[1]];
+          if(!imageDef || !objectMatrix || !imageDef.m) return;
+          if(Array.isArray(color) && Number(color[3] == null ? 255 : color[3])<=0) return;
+
+          var sprite=part.sprites && part.sprites[imageDef.name];
+          var rect=sprite && sprite.rect;
+          if(!rect || !rect[2] || !rect[3]) return;
+
+          var w=Number(rect[2]),h=Number(rect[3]);
+          var m00=objectMatrix[0],m01=objectMatrix[1],m10=objectMatrix[2],m11=objectMatrix[3],m02=objectMatrix[4],m12=objectMatrix[5];
+          var im=imageDef.m;
+          var cx=w*.5,cy=h*.5;
+
+          var imageCenterX=im[0]*cx+im[1]*cy+im[4];
+          var imageCenterY=im[2]*cx+im[3]*cy+im[5];
+          var worldX=m00*imageCenterX+m01*imageCenterY+m02;
+          var worldY=m10*imageCenterX+m11*imageCenterY+m12;
+
+          var f00=m00*im[0]+m01*im[2];
+          var f01=m00*im[1]+m01*im[3];
+          var f10=m10*im[0]+m11*im[2];
+          var f11=m10*im[1]+m11*im[3];
+
+          var extentX=Math.abs(f00)*w*.5+Math.abs(f01)*h*.5;
+          var extentY=Math.abs(f10)*w*.5+Math.abs(f11)*h*.5;
+
+          minX=Math.min(minX,worldX-extentX);
+          maxX=Math.max(maxX,worldX+extentX);
+          minY=Math.min(minY,worldY-extentY);
+          maxY=Math.max(maxY,worldY+extentY);
+        });
+      });
+    }
+
+    if(!Number.isFinite(minX)){
+      var box=part.canvas || {x:0,y:0,w:200,h:200};
+      minX=box.x || 0;
+      minY=box.y || 0;
+      maxX=minX+(Math.abs(box.w)||200);
+      maxY=minY+(Math.abs(box.h)||200);
+    }
+
+    var width=Math.max(1,maxX-minX);
+    var height=Math.max(1,maxY-minY);
+    var result={
+      minX:minX,minY:minY,maxX:maxX,maxY:maxY,
+      w:width,h:height,
+      cx:(minX+maxX)*.5,
+      cy:(minY+maxY)*.5
+    };
+    part._bodyBoundsCache[animationName]=result;
+    return result;
+  }
+
   function UnitAnimator(canvas,id,facing) {
     this.canvas=canvas;
     this.id=id;
@@ -462,14 +528,23 @@
       var raw=Math.floor(elapsed*Math.max(1,this.part.anim_rate || 24));
       var frameIndex=this.oneShot?Math.min(raw,anim.frame_count-1):(raw%anim.frame_count);
       var frame=anim.frames[frameIndex] || [];
-      var box=this.part.canvas;
-      var bw=Math.max(60,Math.abs(box.w) || 200), bh=Math.max(60,Math.abs(box.h) || 200);
-      var scale=Math.min(w/(bw*1.25),h/(bh*1.12));
+
+      // Do not trust the SAM nominal canvas as a clipping/fit boundary.
+      // Some Rangers draw well outside it. Fit using the actual visible
+      // sprite bounds across the selected animation instead.
+      var bounds=animationVisibleBounds(this.part,animationName);
+      var horizontalPadding=Math.max(14,w*.08);
+      var topPadding=Math.max(14,h*.07);
+      var bottomPadding=Math.max(10,h*.04);
+      var usableW=Math.max(1,w-horizontalPadding*2);
+      var usableH=Math.max(1,h-topPadding-bottomPadding);
+      var scale=Math.min(usableW/Math.max(1,bounds.w),usableH/Math.max(1,bounds.h));
       var scaleX=scale*this.facing;
-      var centerX=box.x+box.w/2;
-      var centerY=box.y+box.h/2;
-      var originX=w/2-centerX*scaleX;
-      var originY=h/2-centerY*scale;
+
+      var visualCenterX=w*.5;
+      var visualCenterY=topPadding+usableH*.5;
+      var originX=visualCenterX-bounds.cx*scaleX;
+      var originY=visualCenterY-bounds.cy*scale;
 
       for(var i=0;i<frame.length;i++){
         var item=frame[i];
