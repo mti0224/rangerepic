@@ -405,6 +405,54 @@
     return available[0] || null;
   }
 
+  function frameVisibleBounds(part, frame) {
+    var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+
+    (frame || []).forEach(function(item){
+      var objectMatrix=item[2];
+      var color=item[3];
+      var imageDef=part.images[item[1]];
+      if(!imageDef || !objectMatrix || !imageDef.m) return;
+      if(Array.isArray(color) && Number(color[3] == null ? 255 : color[3])<=0) return;
+
+      var sprite=part.sprites && part.sprites[imageDef.name];
+      var rect=sprite && sprite.rect;
+      if(!rect || !rect[2] || !rect[3]) return;
+
+      var w=Number(rect[2]),h=Number(rect[3]);
+      var m00=objectMatrix[0],m01=objectMatrix[1],m10=objectMatrix[2],m11=objectMatrix[3],m02=objectMatrix[4],m12=objectMatrix[5];
+      var im=imageDef.m;
+      var cx=w*.5,cy=h*.5;
+
+      var imageCenterX=im[0]*cx+im[1]*cy+im[4];
+      var imageCenterY=im[2]*cx+im[3]*cy+im[5];
+      var worldX=m00*imageCenterX+m01*imageCenterY+m02;
+      var worldY=m10*imageCenterX+m11*imageCenterY+m12;
+
+      var f00=m00*im[0]+m01*im[2];
+      var f01=m00*im[1]+m01*im[3];
+      var f10=m10*im[0]+m11*im[2];
+      var f11=m10*im[1]+m11*im[3];
+
+      var extentX=Math.abs(f00)*w*.5+Math.abs(f01)*h*.5;
+      var extentY=Math.abs(f10)*w*.5+Math.abs(f11)*h*.5;
+
+      minX=Math.min(minX,worldX-extentX);
+      maxX=Math.max(maxX,worldX+extentX);
+      minY=Math.min(minY,worldY-extentY);
+      maxY=Math.max(maxY,worldY+extentY);
+    });
+
+    if(!Number.isFinite(minX)) return null;
+    return {
+      minX:minX,minY:minY,maxX:maxX,maxY:maxY,
+      w:Math.max(1,maxX-minX),
+      h:Math.max(1,maxY-minY),
+      cx:(minX+maxX)*.5,
+      cy:(minY+maxY)*.5
+    };
+  }
+
   function animationVisibleBounds(part, animationName) {
     part._bodyBoundsCache=part._bodyBoundsCache || {};
     if(part._bodyBoundsCache[animationName]) return part._bodyBoundsCache[animationName];
@@ -562,7 +610,23 @@
       var visualCenterX=w*.5;
       var groundY=h-bottomPadding;
       var originX=visualCenterX-bounds.cx*scaleX;
-      var originY=groundY-bounds.maxY*scale;
+
+      // Idle animations are grounded frame-by-frame. This removes the
+      // floating / bobbing caused by individual idle frames having slightly
+      // different visible bottom bounds. Attack and skill clips intentionally
+      // keep the animation-wide anchor so jumps and knockback motion remain.
+      var currentFrameBounds=frameVisibleBounds(this.part,frame);
+      var lockFeet=this.clip==="idle";
+      var anchorMaxY=(lockFeet && currentFrameBounds) ? currentFrameBounds.maxY : bounds.maxY;
+      var originY=groundY-anchorMaxY*scale;
+
+      // Keep the target marker just above the actually rendered character,
+      // not at the top of the oversized combatant card.
+      if(currentFrameBounds && this.canvas.parentElement){
+        var renderedTop=originY+currentFrameBounds.minY*scale;
+        var cssTop=this.canvas.offsetTop+(renderedTop/dpr);
+        this.canvas.parentElement.style.setProperty("--target-top",Math.max(2,cssTop-30)+"px");
+      }
 
       for(var i=0;i<frame.length;i++){
         var item=frame[i];
