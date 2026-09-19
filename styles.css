@@ -163,12 +163,31 @@ h1 span { color: #ffde56; text-shadow: 0 8px 0 #e49535, 0 14px 22px rgba(38,90,1
   background: linear-gradient(#7ac65e 0 20%,#67b654 21% 28%,#8b6b4b 29%); box-shadow: inset 0 9px 0 rgba(255,255,255,.12);
 }
 .combat-team {
-  position: absolute; z-index: 4; bottom: 10%; display: flex; align-items: flex-end; gap: clamp(2px,1vw,18px);
+  position: absolute;
+  z-index: 4;
+  bottom: 20%;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(10px,1.35vw,24px);
 }
-.combat-team.allies { left: 3%; width: 48%; justify-content: flex-start; }
-.combat-team.enemies { right: 3%; width: 48%; justify-content: flex-end; flex-direction: row-reverse; }
+.combat-team.allies {
+  left: 3.5%;
+  width: 44%;
+  justify-content: flex-start;
+}
+.combat-team.enemies {
+  right: 3.5%;
+  width: 44%;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
 
-.combatant { position: relative; width: clamp(138px,14vw,220px); height: clamp(210px,29vh,310px); transition: filter .2s, transform .2s; }
+.combatant {
+  position: relative;
+  width: clamp(150px,13vw,210px);
+  height: clamp(235px,31vh,330px);
+  transition: filter .2s, transform .2s;
+}
 .combatant.dead { filter: grayscale(1); opacity: .34; transform: translateY(25px) rotate(7deg); pointer-events: none; }
 .combatant.targetable { cursor: crosshair; }
 .combatant.targetable:hover { transform: translateY(-8px) scale(1.04); }
@@ -178,7 +197,7 @@ h1 span { color: #ffde56; text-shadow: 0 8px 0 #e49535, 0 14px 22px rgba(38,90,1
 }
 @keyframes bob { to { transform: translate(-50%,7px); } }
 
-.unit-canvas { position: absolute; left: 0; right: 0; bottom: 35px; width: 100%; height: calc(100% - 35px); }
+.unit-canvas { position: absolute; left: 0; right: 0; bottom: 40px; width: 100%; height: calc(100% - 28px); overflow: visible; }
 .combatant.acting .unit-canvas { animation: lunge .46s ease-in-out; }
 .enemies .combatant.acting .unit-canvas { animation-name: lunge-enemy; }
 @keyframes lunge { 45% { transform: translateX(38px) scale(1.06); } }
@@ -271,7 +290,9 @@ h1 span { color: #ffde56; text-shadow: 0 8px 0 #e49535, 0 14px 22px rgba(38,90,1
   .commands { grid-template-columns: 1fr 1fr; }
   .command-button { min-height: 82px; padding: 8px; }
   .command-button small { display:none; }
-  .combat-team { gap: 0; }
-  .combatant { width: 30vw; height: 225px; }
+  .combat-team { bottom: 18%; gap: 0; }
+  .combat-team.allies { left: 1%; width: 49%; }
+  .combat-team.enemies { right: 1%; width: 49%; }
+  .combatant { width: 31vw; height: 235px; }
   .battle-topbar { padding-inline: 12px; }
 }
