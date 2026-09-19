@@ -12,23 +12,23 @@
     "u2032e-jessica": { id:"u2032e-jessica", name:"Jessica", role:"治療師", hp:980, atk:135, skill:"甜蜜鼓舞", skillDesc:"恢復全隊 28% 最大生命", type:"ally", visualScale:.95 },
     "u2034e-sally": { id:"u2034e-sally", name:"Sally", role:"支援者", hp:930, atk:165, skill:"黃金羽翼", skillDesc:"全隊下次攻擊提升 35%", type:"ally", visualScale:.92 },
 
-    "u90005-nut": { id:"u90005-nut", name:"Nut", role:"斥候", hp:680, atk:125, type:"enemy", visualScale:.90 },
-    "u90007-abby": { id:"u90007-abby", name:"Abby", role:"弓手", hp:780, atk:150, type:"enemy", visualScale:.94 },
-    "u90025-jerome": { id:"u90025-jerome", name:"Jerome", role:"衛兵", hp:1100, atk:145, type:"enemy", visualScale:1.00 },
-    "u90003-bomby": { id:"u90003-bomby", name:"Bomby", role:"爆破手", hp:940, atk:205, type:"enemy", visualScale:1.02 },
-    "u90018-aron": { id:"u90018-aron", name:"Aron", role:"術士", hp:1120, atk:185, type:"enemy", visualScale:1.00 },
-    "u90022-thor": { id:"u90022-thor", name:"Thor", role:"雷神首領", hp:2200, atk:230, type:"enemy", visualScale:1.12 }
+    "u91005-nut": { id:"u91005-nut", name:"Nut", role:"斥候", hp:680, atk:125, type:"enemy", visualScale:.90 },
+    "u91007-abby": { id:"u91007-abby", name:"Abby", role:"弓手", hp:780, atk:150, type:"enemy", visualScale:.94 },
+    "u91025-jerome": { id:"u91025-jerome", name:"Jerome", role:"衛兵", hp:1100, atk:145, type:"enemy", visualScale:1.00 },
+    "u91003-bomby": { id:"u91003-bomby", name:"Bomby", role:"爆破手", hp:940, atk:205, type:"enemy", visualScale:1.02 },
+    "u91018-aron": { id:"u91018-aron", name:"Aron", role:"術士", hp:1120, atk:185, type:"enemy", visualScale:1.00 },
+    "u91022-thor": { id:"u91022-thor", name:"Thor", role:"雷神首領", hp:2200, atk:230, type:"enemy", visualScale:1.12 }
   };
 
   var allyIds = ["u1138e-james","u1137e-cony","u1136e-moon","u1134e-brown","u2032e-jessica","u2034e-sally"];
 
   var stages = [
-    { n:1, name:"草原入口", enemies:["u90005-nut","u90007-abby"], x:7, y:62 },
-    { n:2, name:"斷橋伏擊", enemies:["u90025-jerome","u90005-nut","u90007-abby"], x:24, y:40 },
-    { n:3, name:"爆彈工坊", enemies:["u90003-bomby","u90025-jerome"], x:43, y:58 },
-    { n:4, name:"幽影坡道", enemies:["u90018-aron","u90007-abby","u90003-bomby"], x:60, y:33 },
-    { n:5, name:"雷鳴前線", enemies:["u90018-aron","u90025-jerome","u90003-bomby"], x:76, y:53 },
-    { n:6, name:"雷神要塞", enemies:["u90022-thor","u90018-aron"], x:88, y:27, boss:true }
+    { n:1, name:"草原入口", enemies:["u91005-nut","u91007-abby"], x:7, y:62 },
+    { n:2, name:"斷橋伏擊", enemies:["u91025-jerome","u91005-nut","u91007-abby"], x:24, y:40 },
+    { n:3, name:"爆彈工坊", enemies:["u91003-bomby","u91025-jerome"], x:43, y:58 },
+    { n:4, name:"幽影坡道", enemies:["u91018-aron","u91007-abby","u91003-bomby"], x:60, y:33 },
+    { n:5, name:"雷鳴前線", enemies:["u91018-aron","u91025-jerome","u91003-bomby"], x:76, y:53 },
+    { n:6, name:"雷神要塞", enemies:["u91022-thor","u91018-aron"], x:88, y:27, boss:true }
   ];
 
   var selectedParty = ["u1138e-james","u1137e-cony","u1136e-moon"];
