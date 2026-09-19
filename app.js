@@ -5,19 +5,19 @@
   var PART_CANDIDATE_SUFFIXES = ["", ".16"];
 
   var units = {
-    "u1138e-james": { id:"u1138e-james", name:"James", role:"守護者", hp:1500, atk:150, skill:"堅毅衝鋒", skillDesc:"造成 150% 傷害並獲得護盾", type:"ally" },
-    "u1137e-cony": { id:"u1137e-cony", name:"Cony", role:"決鬥者", hp:1050, atk:235, skill:"心動連擊", skillDesc:"造成 190% 單體傷害", type:"ally" },
-    "u1136e-moon": { id:"u1136e-moon", name:"Moon", role:"魔導士", hp:900, atk:270, skill:"月影爆破", skillDesc:"對所有敵人造成 95% 傷害", type:"ally" },
-    "u1134e-brown": { id:"u1134e-brown", name:"Brown", role:"鬥士", hp:1320, atk:195, skill:"熊熊重擊", skillDesc:"造成 140% 傷害，有機會使敵人暈眩", type:"ally" },
-    "u2032e-jessica": { id:"u2032e-jessica", name:"Jessica", role:"治療師", hp:980, atk:135, skill:"甜蜜鼓舞", skillDesc:"恢復全隊 28% 最大生命", type:"ally" },
-    "u2034e-sally": { id:"u2034e-sally", name:"Sally", role:"支援者", hp:930, atk:165, skill:"黃金羽翼", skillDesc:"全隊下次攻擊提升 35%", type:"ally" },
+    "u1138e-james": { id:"u1138e-james", name:"James", role:"守護者", hp:1500, atk:150, skill:"堅毅衝鋒", skillDesc:"造成 150% 傷害並獲得護盾", type:"ally", visualScale:.96 },
+    "u1137e-cony": { id:"u1137e-cony", name:"Cony", role:"決鬥者", hp:1050, atk:235, skill:"心動連擊", skillDesc:"造成 190% 單體傷害", type:"ally", visualScale:.94 },
+    "u1136e-moon": { id:"u1136e-moon", name:"Moon", role:"魔導士", hp:900, atk:270, skill:"月影爆破", skillDesc:"對所有敵人造成 95% 傷害", type:"ally", visualScale:.98 },
+    "u1134e-brown": { id:"u1134e-brown", name:"Brown", role:"鬥士", hp:1320, atk:195, skill:"熊熊重擊", skillDesc:"造成 140% 傷害，有機會使敵人暈眩", type:"ally", visualScale:1.02 },
+    "u2032e-jessica": { id:"u2032e-jessica", name:"Jessica", role:"治療師", hp:980, atk:135, skill:"甜蜜鼓舞", skillDesc:"恢復全隊 28% 最大生命", type:"ally", visualScale:.95 },
+    "u2034e-sally": { id:"u2034e-sally", name:"Sally", role:"支援者", hp:930, atk:165, skill:"黃金羽翼", skillDesc:"全隊下次攻擊提升 35%", type:"ally", visualScale:.92 },
 
-    "u90005-nut": { id:"u90005-nut", name:"Nut", role:"斥候", hp:680, atk:125, type:"enemy" },
-    "u90007-abby": { id:"u90007-abby", name:"Abby", role:"弓手", hp:780, atk:150, type:"enemy" },
-    "u90025-jerome": { id:"u90025-jerome", name:"Jerome", role:"衛兵", hp:1100, atk:145, type:"enemy" },
-    "u90003-bomby": { id:"u90003-bomby", name:"Bomby", role:"爆破手", hp:940, atk:205, type:"enemy" },
-    "u90018-aron": { id:"u90018-aron", name:"Aron", role:"術士", hp:1120, atk:185, type:"enemy" },
-    "u90022-thor": { id:"u90022-thor", name:"Thor", role:"雷神首領", hp:2200, atk:230, type:"enemy" }
+    "u90005-nut": { id:"u90005-nut", name:"Nut", role:"斥候", hp:680, atk:125, type:"enemy", visualScale:.90 },
+    "u90007-abby": { id:"u90007-abby", name:"Abby", role:"弓手", hp:780, atk:150, type:"enemy", visualScale:.94 },
+    "u90025-jerome": { id:"u90025-jerome", name:"Jerome", role:"衛兵", hp:1100, atk:145, type:"enemy", visualScale:1.00 },
+    "u90003-bomby": { id:"u90003-bomby", name:"Bomby", role:"爆破手", hp:940, atk:205, type:"enemy", visualScale:1.02 },
+    "u90018-aron": { id:"u90018-aron", name:"Aron", role:"術士", hp:1120, atk:185, type:"enemy", visualScale:1.00 },
+    "u90022-thor": { id:"u90022-thor", name:"Thor", role:"雷神首領", hp:2200, atk:230, type:"enemy", visualScale:1.12 }
   };
 
   var allyIds = ["u1138e-james","u1137e-cony","u1136e-moon","u1134e-brown","u2032e-jessica","u2034e-sally"];
@@ -533,18 +533,36 @@
       // Some Rangers draw well outside it. Fit using the actual visible
       // sprite bounds across the selected animation instead.
       var bounds=animationVisibleBounds(this.part,animationName);
-      var horizontalPadding=Math.max(14,w*.08);
-      var topPadding=Math.max(14,h*.07);
-      var bottomPadding=Math.max(10,h*.04);
+      var horizontalPadding=Math.max(10,w*.055);
+      var topPadding=Math.max(8,h*.035);
+      var bottomPadding=Math.max(4,h*.015);
       var usableW=Math.max(1,w-horizontalPadding*2);
       var usableH=Math.max(1,h-topPadding-bottomPadding);
-      var scale=Math.min(usableW/Math.max(1,bounds.w),usableH/Math.max(1,bounds.h));
+
+      // All Rangers now share the same battlefield world scale instead of
+      // individually expanding to fill their card. This preserves their
+      // native relative body sizes. A small per-unit art-direction multiplier
+      // is only used to keep bosses / very small characters readable.
+      var dpr=Math.min(window.devicePixelRatio || 1,2);
+      var cssW=w/dpr;
+      var cssH=h/dpr;
+      var worldScaleCss=Math.min(cssW/245,cssH/270);
+      var designScale=(units[this.id] && units[this.id].visualScale) || 1;
+      var worldScale=worldScaleCss*dpr*designScale;
+      var fitScale=Math.min(
+        usableW/Math.max(1,bounds.w),
+        usableH/Math.max(1,bounds.h)
+      );
+      var scale=Math.min(worldScale,fitScale);
       var scaleX=scale*this.facing;
 
+      // Horizontal center is fixed, but vertically every animation is anchored
+      // by its actual visible bottom edge. Feet therefore stay on one ground
+      // line even when idle/attack animations have different canvas bounds.
       var visualCenterX=w*.5;
-      var visualCenterY=topPadding+usableH*.5;
+      var groundY=h-bottomPadding;
       var originX=visualCenterX-bounds.cx*scaleX;
-      var originY=visualCenterY-bounds.cy*scale;
+      var originY=groundY-bounds.maxY*scale;
 
       for(var i=0;i<frame.length;i++){
         var item=frame[i];
