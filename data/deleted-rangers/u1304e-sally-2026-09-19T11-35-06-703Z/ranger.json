@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 10,
+  "id": "u1304e-sally",
+  "name": "Sally พิชเชอร์มือหนึ่ง",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 39.5,
+      "y": 39.9
+    },
+    "hitPoint": {
+      "x": 1.1,
+      "y": -32.6
+    },
+    "overhead": {
+      "x": 0.4,
+      "y": -85.2
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 15,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 33.2,
+        "y": -42.3
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": -32.4
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": -32.4
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 49,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -597.2,
+          "y": 2.7
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 43,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 3550,
+    "atk": 540,
+    "def": 215,
+    "spd": 116,
+    "crit": 22,
+    "critDmg": 170,
+    "evade": 12,
+    "hit": 24,
+    "skillEvade": 10,
+    "skillHit": 6,
+    "skillRes": 13
+  },
+  "category": "agi",
+  "role": "shooter",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 320
+        },
+        {
+          "type": "healBlock",
+          "turns": 2
+        },
+        {
+          "type": "breakInvincible"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "critUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "skillResUp",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 38,
+    "y": 40
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 56,
+      "focus": {
+        "x": 63,
+        "y": -162
+      },
+      "size": 107,
+      "title": null
+    }
+  },
+  "approved": true
+}

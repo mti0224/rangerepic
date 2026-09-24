@@ -1,0 +1,217 @@
+{
+  "id": "u1018h-dragon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T05:31:14.743Z"
+  },
+  "name": {
+    "en": "Libra Shiryu",
+    "th": "ไลบร้า ชิริว"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 16300,
+      "perLevel": 2100,
+      "perLevelAfterMax": 2800
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1560,
+      "perLevel": 200,
+      "perLevelAfterMax": 300
+    },
+    "mdef": {
+      "initial": 1920,
+      "perLevel": 220,
+      "perLevelAfterMax": 300
+    },
+    "hp": {
+      "initial": 172000,
+      "perLevel": 21500,
+      "perLevelAfterMax": 28000
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 80,
+    "attackRange": 130,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 100,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.4,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1018_dragon",
+      "name": {
+        "en": "Rozan Rising Dragon",
+        "th": "หมัดมังกรผงาดโรซัน"
+      },
+      "desc": {
+        "en": "Hits enemies with the full force of his focused cosmos.\\n\\n*Knocks enemies back \\n*ATK x 2000% Area Damage \\n*Cancels enemy buffs  ",
+        "th": "ปลดปล่อยคอสโม่ที่รวบรวมไว้ออกไป โจมตีใส่ศัตรู\\n\\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง \\n*สร้างความเสียหาย 2000% ของพลังโจมตีลงในพื้นที่ \\n*ยกเลิกผลลัพธ์บัฟของศัตรู "
+      },
+      "icon": "icons/skill_icon_sk1018_dragon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1018_dragon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 500,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1018_dragon",
+      "name": {
+        "en": "Rozan Soaring Dragon",
+        "th": "หมัดมังกรเหินโรซัน"
+      },
+      "desc": {
+        "en": "Focuses his cosmos in a soaring motion, helping allies.\\n\\n*HP +380% (7 sec)\\n*Skill Evade Rate +65% (7 sec)\\n*Evade Rate +65% (7 sec)",
+        "th": "เปล่งพลังคอสโม่ออกมาราวกับเหินทะยานขึ้นฟ้า เพื่อสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มพลังชีวิต 380% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 65% (7 วินาที)\\n*เพิ่มอัตราการหลบหลีก 65% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1018_dragon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1018_dragon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab101_caffein",
+      "name": {
+        "en": "Caffeine",
+        "th": "คาเฟอีน"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't fall asleep in advent stages \\nwith the Deep Sleep obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่หลับถึงแม้ผลลัพธ์ของ \\n\"หลับสนิทนิทรา\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab101_caffein_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab503_anti_met",
+      "name": {
+        "en": "Resistance: Hellfire",
+        "th": "ต่อต้าน: ไฟนรก"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Meteor and Hellfire items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มดาวตกและไฟนรกได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1018h-dragon",
+    "unitNameCode": "u1018h-dragon_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "unitCategoryType": "STR",
+    "attackRange": 130,
+    "attackDelay": 80,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1018h-dragon_desc",
+    "initialAttack": 16300,
+    "specialAttack": 0,
+    "defence": 1560,
+    "specialDefence": 1920,
+    "initialHp": 172000,
+    "movingSpeed": 100,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 2100,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 200,
+    "specialDefenceDelta": 220,
+    "hpIncreaseAmount": 21500,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1018_dragon",
+    "skillCode": "sk1018_dragon",
+    "iconSkillCode2": "usk1018_dragon",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1018_dragon",
+    "skillCode3": "hsk1018_dragon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.4,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab101_caffein",
+    "abilityCode": "ab101_caffein",
+    "abilityCategoryCode": "ab101_caffein",
+    "iconAbilityCode2": "ab503_anti_met",
+    "abilityCode2": "ab503_anti_met",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 28000,
+    "attackIncreaseAmountMax": 2800,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 300,
+    "specialDefenceDeltaMax": 300,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

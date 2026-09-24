@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 10,
+  "id": "u1281e-lv",
+  "name": "ปีกแห่งเสรีภาพ FS.รีไว",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 45.3,
+      "y": 79
+    },
+    "hitPoint": {
+      "x": 1.7,
+      "y": -63.6
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -173.7
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 20,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 59,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 54,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 2520,
+    "atk": 430,
+    "def": 170,
+    "spd": 117,
+    "crit": 28,
+    "critDmg": 185,
+    "evade": 15,
+    "hit": 13,
+    "skillEvade": 13,
+    "skillHit": 12,
+    "skillRes": 7
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "healBlock",
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "regen",
+          "pct": 8,
+          "turns": 2
+        },
+        {
+          "type": "actionAdvance",
+          "pct": 20
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 45,
+    "y": 52
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 48,
+      "focus": {
+        "x": 251,
+        "y": -345
+      },
+      "size": 104,
+      "title": null
+    }
+  },
+  "approved": true
+}

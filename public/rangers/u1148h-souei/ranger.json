@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 10,
+  "id": "u1148h-souei",
+  "name": "สายลับ โซเอย์",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 57,
+      "y": 77
+    },
+    "hitPoint": {
+      "x": 1.7,
+      "y": -65.3
+    },
+    "overhead": {
+      "x": 1.6,
+      "y": -159.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -614,
+          "y": 0
+        },
+        "speed": 1800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 18,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 2530,
+    "atk": 450,
+    "def": 170,
+    "spd": 116,
+    "crit": 33,
+    "critDmg": 195,
+    "evade": 16,
+    "hit": 17,
+    "skillEvade": 11,
+    "skillHit": 10,
+    "skillRes": 4
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "skillEvadeUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "critUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 260
+        },
+        {
+          "type": "speedDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 54
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 10,
+      "focus": {
+        "x": 83,
+        "y": 9
+      },
+      "size": 110,
+      "title": null
+    }
+  },
+  "approved": true
+}

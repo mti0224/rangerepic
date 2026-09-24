@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 10,
+  "id": "u1199h-erza",
+  "name": "ไททาเนีย เอลซ่า",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 60,
+      "y": 90
+    },
+    "hitPoint": {
+      "x": 1.4,
+      "y": -57
+    },
+    "overhead": {
+      "x": 0.5,
+      "y": -162.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 26,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 47,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": -31.9,
+        "y": 62
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 3280,
+    "atk": 535,
+    "def": 150,
+    "spd": 120,
+    "crit": 29,
+    "critDmg": 190,
+    "evade": 13,
+    "hit": 19,
+    "skillEvade": 9,
+    "skillHit": 14,
+    "skillRes": 9
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "skillHitUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "evadeDown",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 50,
+    "y": 57
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 31,
+      "focus": {
+        "x": 71,
+        "y": -152
+      },
+      "size": 131,
+      "title": null
+    }
+  },
+  "approved": true
+}

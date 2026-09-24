@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 10,
+  "id": "u1294e-rt",
+  "name": "ออคตาแกรม จอมมารริมุรุ",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 48.1,
+      "y": 78
+    },
+    "hitPoint": {
+      "x": -0.5,
+      "y": -63.7
+    },
+    "overhead": {
+      "x": 0.6,
+      "y": -170.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -800,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 48,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -576,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 49,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 3020,
+    "atk": 480,
+    "def": 175,
+    "spd": 103,
+    "crit": 10,
+    "critDmg": 160,
+    "evade": 8,
+    "hit": 10,
+    "skillEvade": 9,
+    "skillHit": 29,
+    "skillRes": 20
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 130
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillEvadeDown",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "skillHitUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "energyGain",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": false,
+      "frame": 45,
+      "focus": {
+        "x": 50,
+        "y": -34
+      },
+      "size": 200,
+      "title": null
+    },
+    "skill1": {
+      "enabled": true,
+      "frame": 45,
+      "focus": {
+        "x": 75,
+        "y": -181
+      },
+      "size": 119,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 49,
+    "y": 58
+  },
+  "approved": true
+}

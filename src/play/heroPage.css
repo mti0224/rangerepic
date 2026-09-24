@@ -1,0 +1,276 @@
+/* ====================================================
+   heroPage.css — หน้าฮีโร่ (เปิดจากปุ่ม "ฮีโร่" ในหน้าหลัก)
+
+   ผังจอ (แนวนอน):
+     แถบบน  ปุ่มกลับ | ชื่อหน้า | เงิน/เพชร/พลังงาน
+     กลาง   แท็บ | แผงเนื้อหา | ตัวละคร | ค่าพลัง + ช่องอุปกรณ์
+     ล่าง   ตัวกรอง/เรียง + แถวการ์ดฮีโร่ (เลื่อนแนวนอน)
+
+   ใช้ตัวแปรสี/มุม/เงาชุดเดียวกับหน้าหลัก (lobby.css) → เปลี่ยนธีมพร้อมกันทั้งเกม
+   ระยะทั้งหมดคิดจากความสูงจอ (dvh) + clamp เหมือนหน้าหลัก
+   ==================================================== */
+
+.hp :where(button, input, select) {
+  background: none; border: 1px solid transparent; border-radius: 0;
+  color: inherit; font: inherit; padding: 0; box-shadow: none;
+}
+.hp :where(button):active:not(:disabled) { transform: none; }
+.hp :where(img, canvas) { -webkit-user-drag: none; user-select: none; }
+
+.hp {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(8px, 1.6dvh, 22px);
+  padding:
+    calc(env(safe-area-inset-top, 0px) + clamp(8px, 1.6dvh, 24px))
+    calc(env(safe-area-inset-right, 0px) + clamp(12px, 2.2dvh, 34px))
+    calc(env(safe-area-inset-bottom, 0px) + clamp(8px, 1.6dvh, 24px))
+    calc(env(safe-area-inset-left, 0px) + clamp(12px, 2.2dvh, 34px));
+  background: radial-gradient(120% 90% at 50% 0%, var(--lb-bg-2), var(--lb-bg-1) 62%);
+  color: var(--lb-text); font-family: var(--lb-font);
+  font-size: clamp(12px, 2.2dvh, 22px);
+  overflow: hidden; isolation: isolate;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior: none;
+}
+.hp > * { max-width: var(--lb-max); width: 100%; margin-inline: auto; position: relative; z-index: 1; }
+
+.hp .hp-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.hp .hp-glow {
+  position: absolute; left: 50%; top: 8%; transform: translateX(-50%);
+  width: 62dvh; height: 62dvh; border-radius: 50%; filter: blur(80px);
+  background: var(--lb-accent-2); opacity: calc(0.38 * var(--lb-fx));
+}
+.hp .hp-grid {
+  position: absolute; inset: 0; opacity: 0.14;
+  background-image: linear-gradient(var(--lb-line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--lb-line-soft) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 72%, transparent);
+}
+
+/* ── แถบบน ── */
+.hp .hp-top { display: flex; align-items: center; gap: clamp(10px, 1.8dvh, 22px); }
+.hp .hp-back {
+  display: flex; align-items: center; gap: 7px;
+  padding: clamp(6px, 1.1dvh, 13px) clamp(12px, 1.8dvh, 22px);
+  background: var(--lb-panel); border: 1px solid var(--lb-line); border-radius: var(--lb-r-md);
+  color: inherit; cursor: pointer; font-size: 0.86em; box-shadow: var(--lb-shadow-in);
+}
+.hp .hp-back:hover { border-color: var(--lb-accent); }
+.hp .hp-top h1 {
+  display: flex; align-items: center; gap: 9px; margin: 0;
+  font-size: 1.05em; letter-spacing: 0.14em; color: var(--lb-gold-2); text-transform: uppercase;
+}
+.hp .hp-top h1 small { color: var(--lb-dim); font-size: 0.7em; letter-spacing: 0; }
+.hp .hp-wallet { display: flex; gap: clamp(6px, 1.1dvh, 13px); margin-left: auto; }
+.hp .hp-cur {
+  display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: clamp(4px, 0.8dvh, 10px) clamp(9px, 1.4dvh, 18px);
+  background: var(--lb-panel); border: 1px solid var(--lb-line-soft); border-radius: 999px; font-size: 0.85em;
+}
+:root[data-theme="pixel"] .hp .hp-cur { border-radius: 0; }
+.hp .hp-cur.gold { color: var(--lb-gold); }
+.hp .hp-cur.gem { color: #67e8f9; }
+.hp .hp-cur.energy { color: var(--lb-green); }
+
+/* ── กลางจอ: แท็บ | แผง | ตัวละคร | ค่าพลัง ── */
+.hp .hp-main {
+  display: grid;
+  grid-template-columns: auto minmax(160px, 22%) minmax(0, 1fr) minmax(200px, 27%);
+  gap: clamp(8px, 1.6dvh, 20px); min-height: 0;
+}
+
+.hp .hp-tabs { display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 14px); }
+.hp .hp-tab {
+  padding: clamp(8px, 1.5dvh, 18px) clamp(8px, 1.4dvh, 16px);
+  width: clamp(72px, 12dvh, 132px);
+  background: var(--lb-panel); border: 1px solid var(--lb-line); border-radius: var(--lb-r-md);
+  color: var(--lb-dim); cursor: pointer; font-size: 0.82em; text-align: center;
+  box-shadow: var(--lb-shadow-in);
+}
+.hp .hp-tab:hover { color: var(--lb-text); border-color: var(--lb-accent); }
+.hp .hp-tab.on { color: #06101f; background: linear-gradient(135deg, var(--lb-gold-2), var(--lb-gold)); border-color: #fff3c4; font-weight: 700; }
+
+.hp .hp-panel, .hp .hp-right {
+  display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 14px); min-height: 0; overflow: auto;
+  padding: clamp(9px, 1.6dvh, 20px);
+  background: var(--lb-panel); border: 1px solid var(--lb-line); border-radius: var(--lb-r-lg);
+  box-shadow: var(--lb-shadow), var(--lb-shadow-in); backdrop-filter: var(--lb-glass);
+}
+.hp .hp-dim { color: var(--lb-dim); font-size: 0.82em; margin: 0; }
+
+/* แท็บข้อมูล */
+.hp .hp-info { display: grid; gap: clamp(7px, 1.3dvh, 15px); }
+.hp .hp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.hp .hp-tag {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 4px;
+  border-radius: 999px; background: rgba(0, 0, 0, 0.4); font-size: 0.74em;
+}
+.hp .hp-tag img { width: 1.25em; height: 1.25em; }
+.hp .hp-tag.role { padding-left: 10px; color: var(--lb-gold-2); }
+:root[data-theme="pixel"] .hp .hp-tag { border-radius: 0; }
+.hp .hp-rows { display: grid; gap: clamp(4px, 0.8dvh, 9px); }
+.hp .hp-rows > div {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  padding: clamp(5px, 1dvh, 11px) clamp(7px, 1.2dvh, 14px);
+  background: rgba(3, 8, 22, 0.5); border: 1px solid var(--lb-line-soft); border-radius: var(--lb-r-sm);
+  font-size: 0.8em;
+}
+.hp .hp-rows span { color: var(--lb-dim); }
+.hp .hp-rows small { color: var(--lb-dim); font-size: 0.8em; margin-left: 6px; }
+.hp .hp-box {
+  padding: clamp(7px, 1.2dvh, 14px); background: rgba(3, 8, 22, 0.5);
+  border: 1px solid var(--lb-line-soft); border-radius: var(--lb-r-sm);
+}
+.hp .hp-box h4 { margin: 0 0 4px; font-size: 0.8em; color: var(--lb-gold-2); }
+.hp .hp-box p { margin: 0; font-size: 0.76em; color: var(--lb-dim); line-height: 1.45; }
+
+/* แท็บสกิล */
+.hp .hp-skills { display: grid; gap: clamp(7px, 1.3dvh, 16px); align-content: start; }
+.hp .hp-skill {
+  display: flex; gap: clamp(8px, 1.3dvh, 14px); align-items: flex-start;
+  padding: clamp(7px, 1.2dvh, 14px);
+  background: rgba(3, 8, 22, 0.5); border: 1px solid var(--lb-line-soft); border-radius: var(--lb-r-sm);
+}
+/* รูปสกิล 1:1 — flex: none + align-self กันไม่ให้โดนยืดเต็มความสูงการ์ด (ค่าเริ่มต้นของ flex คือ stretch) */
+.hp .hp-skill-ico {
+  display: grid; place-items: center; overflow: hidden; flex: none; align-self: flex-start;
+  width: clamp(42px, 6.6dvh, 78px); height: clamp(42px, 6.6dvh, 78px); aspect-ratio: 1;
+  background: rgba(0, 0, 0, 0.5); border: 1px solid var(--lb-line); border-radius: var(--lb-r-sm);
+  color: var(--lb-gold); font-size: 0.74em;
+}
+.hp .hp-skill-ico img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ตีธรรมดาในแท็บข้อมูล (รูป 1:1 เล็ก) */
+.hp .hp-atk {
+  display: flex; gap: clamp(7px, 1.2dvh, 13px); align-items: flex-start;
+  padding: clamp(7px, 1.2dvh, 14px);
+  background: rgba(3, 8, 22, 0.5); border: 1px solid var(--lb-line-soft); border-radius: var(--lb-r-sm);
+}
+.hp .hp-atk-ico {
+  width: clamp(40px, 6.2dvh, 72px); height: clamp(40px, 6.2dvh, 72px); aspect-ratio: 1;
+  flex: none; align-self: flex-start; object-fit: cover;
+  background: rgba(0, 0, 0, 0.5); border: 1px solid var(--lb-line); border-radius: var(--lb-r-sm);
+}
+.hp .hp-atk-txt { min-width: 0; display: grid; gap: 4px; }
+.hp .hp-atk-head { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.hp .hp-atk-head .hp-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.45); border-radius: 999px; font-size: 0.72em; color: var(--lb-gold);
+}
+:root[data-theme="pixel"] .hp .hp-atk-head .hp-pill { border-radius: 0; }
+.hp .hp-atk-txt b { font-size: 0.82em; color: var(--lb-gold-2); }
+.hp .hp-atk-txt small { font-size: 0.72em; color: var(--lb-dim); line-height: 1.45; }
+.hp .hp-skill-txt { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.hp .hp-skill-txt b { font-size: 0.86em; color: var(--lb-gold-2); }
+.hp .hp-skill-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 0.72em; color: var(--lb-dim); }
+.hp .hp-skill-meta .hp-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.45); border-radius: 999px;
+}
+.hp .hp-skill-meta .hp-pill.cost { color: var(--lb-gold); }
+:root[data-theme="pixel"] .hp .hp-skill-meta .hp-pill { border-radius: 0; }
+.hp .hp-cost { width: 1.1em; height: 1.1em; }
+.hp .hp-skill-txt ul { margin: 2px 0 0; padding-left: 1.05em; display: grid; gap: 3px; }
+.hp .hp-skill-txt li { font-size: 0.74em; color: var(--lb-text); line-height: 1.45; }
+.hp .hp-skill-txt li::marker { color: var(--lb-accent); }
+
+/* แท็บที่ยังไม่มีระบบ */
+.hp .hp-wip { display: grid; gap: 9px; justify-items: center; text-align: center; padding: clamp(12px, 3dvh, 40px) 6px; }
+.hp .hp-wip p { margin: 0; font-size: 0.78em; color: var(--lb-dim); }
+.hp .hp-wip-badge {
+  padding: 5px 14px; border: 1px dashed var(--lb-line); border-radius: 999px;
+  color: var(--lb-gold); font-size: 0.74em; letter-spacing: 0.12em; text-transform: uppercase;
+}
+:root[data-theme="pixel"] .hp .hp-wip-badge { border-radius: 0; border-style: solid; }
+
+/* ── ตัวละครกลางหน้า ── */
+.hp .hp-art { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 6px; min-height: 0; }
+.hp .hp-art-canvas { width: 100%; height: 100%; display: block; }
+.hp .hp-art-name { display: grid; gap: 4px; justify-items: center; }
+.hp .hp-art-name img.stars { width: clamp(64px, 11dvh, 120px); }
+.hp .hp-art-name b { font-size: 1.05em; color: var(--lb-gold-2); text-align: center; }
+
+/* ── ค่าพลัง + อุปกรณ์ ── */
+/* ค่าพลัง: ชื่อ + ตัวเลข (ไม่มีหลอด) · ยาวเกินกรอบก็เลื่อนดูได้ */
+.hp .hp-stats { display: grid; gap: 2px; overflow: auto; min-height: 0; flex: 1; align-content: start; }
+.hp .hp-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  padding: clamp(4px, 0.8dvh, 9px) clamp(6px, 1dvh, 12px);
+  border-bottom: 1px solid var(--lb-line-soft);
+}
+.hp .hp-stat:last-child { border-bottom: 0; }
+.hp .hp-stat span { font-size: 0.76em; color: var(--lb-dim); white-space: nowrap; }
+.hp .hp-stat em { font-style: normal; font-size: 0.8em; color: var(--lb-text); }
+
+
+.hp .hp-gear { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(5px, 1dvh, 11px); margin-top: auto; }
+.hp .hp-slot {
+  position: relative; display: grid; gap: 3px; justify-items: center; align-content: center;
+  aspect-ratio: 1; padding: 4px;
+  background: rgba(3, 8, 22, 0.55); border: 1px dashed var(--lb-line); border-radius: var(--lb-r-sm);
+  color: var(--lb-dim); cursor: pointer;
+}
+.hp .hp-slot:hover { border-color: var(--lb-gold); color: var(--lb-text); }
+.hp .hp-slot small { font-size: 0.62em; text-align: center; line-height: 1.15; }
+.hp .hp-slot-lock { position: absolute; top: 3px; right: 3px; color: var(--lb-dim); opacity: 0.8; }
+
+/* ── ล่าง: ตัวกรอง + คลังฮีโร่ ── */
+.hp .hp-list {
+  display: grid; gap: clamp(6px, 1.2dvh, 14px);
+  padding: clamp(8px, 1.4dvh, 18px);
+  background: var(--lb-panel); border: 1px solid var(--lb-line); border-radius: var(--lb-r-lg);
+  box-shadow: var(--lb-shadow), var(--lb-shadow-in); backdrop-filter: var(--lb-glass);
+}
+.hp .hp-filters { display: flex; align-items: center; gap: clamp(6px, 1.2dvh, 14px); flex-wrap: wrap; }
+.hp .hp-filter-tag { display: flex; align-items: center; gap: 5px; font-size: 0.74em; color: var(--lb-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+.hp .hp-chips { display: flex; gap: 4px; padding: 3px; background: rgba(0, 0, 0, 0.4); border-radius: var(--lb-r-sm); }
+.hp .hp-chips.wrap { flex-wrap: wrap; }
+.hp .hp-chips.right { margin-left: auto; }
+.hp .hp-chips button {
+  display: grid; place-items: center; min-width: 2em; padding: 4px 10px;
+  border-radius: calc(var(--lb-r-sm) - 2px); color: var(--lb-dim); font-size: 0.76em; cursor: pointer;
+}
+.hp .hp-chips button img { width: 1.35em; height: 1.35em; }
+.hp .hp-chips button.on { background: var(--lb-accent); color: #06101f; }
+
+/* กล่องเลื่อน: พลิกแนวตั้ง → แถบเลื่อนแนวนอนไปโผล่ "ด้านบน" · การ์ดข้างในพลิกกลับให้ตั้งตรง
+   overflow-x: scroll ค้างไว้เสมอ = จองพื้นที่แถบเลื่อนตลอด ฟิลเตอร์แล้วการ์ดไม่ขยับขึ้นลง */
+.hp .hp-scroll {
+  overflow-x: scroll; overflow-y: hidden; transform: scaleY(-1);
+  scrollbar-width: thin; scrollbar-color: var(--lb-line) transparent;
+  touch-action: pan-x; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.hp .hp-scroll::-webkit-scrollbar { height: 10px; }
+.hp .hp-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.35); border-radius: 999px; }
+.hp .hp-scroll::-webkit-scrollbar-thumb { background: var(--lb-line); border-radius: 999px; }
+.hp .hp-scroll::-webkit-scrollbar-thumb:hover { background: var(--lb-accent); }
+.hp .hp-cards {
+  display: flex; gap: clamp(6px, 1.2dvh, 14px); transform: scaleY(-1);
+  padding-top: clamp(4px, 0.8dvh, 10px); width: max-content; min-width: 100%;
+}
+.hp .hp-card {
+  position: relative; flex: none; width: clamp(74px, 13dvh, 140px);
+  display: grid; gap: 3px; justify-items: center; padding: 5px 5px 7px;
+  background: rgba(3, 8, 22, 0.5); border: 1px solid var(--lb-line-soft); border-radius: var(--lb-r-sm);
+  color: inherit; cursor: pointer;
+}
+.hp .hp-card:hover { border-color: var(--lb-accent); }
+.hp .hp-card.on { border-color: var(--lb-gold); box-shadow: 0 0 calc(14px * var(--lb-fx)) rgba(245, 197, 66, 0.35); }
+.hp .hp-card .tb-card-art { width: 100%; height: auto; aspect-ratio: 1; border-radius: calc(var(--lb-r-sm) - 2px); }
+.hp .hp-card b { font-size: 0.66em; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp .hp-card-el, .hp .hp-card-cat {
+  position: absolute; top: 8px; z-index: 2;
+  width: clamp(16px, 2.6dvh, 26px); height: clamp(16px, 2.6dvh, 26px);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+.hp .hp-card-el { left: 8px; }
+.hp .hp-card-cat { right: 8px; }
+.hp .hp-card-stars img.stars { width: clamp(42px, 7dvh, 78px); display: block; }
+
+/* จอเตี้ยมาก (มือถือแนวนอนเครื่องเล็ก) */
+@media (max-height: 430px) {
+  .hp .hp-skill-txt ul { display: none; }
+  .hp .hp-slot small { display: none; }
+  .hp .hp-tab { width: clamp(58px, 11dvh, 96px); }
+}

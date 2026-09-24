@@ -1,0 +1,217 @@
+{
+  "id": "u1261e-sally",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T14:56:33.775Z"
+  },
+  "name": {
+    "en": "Mechanical White Rabbit Sally",
+    "th": "Sally กระต่ายนาฬิกาจักรกล"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 42480,
+      "perLevel": 5310,
+      "perLevelAfterMax": 21240
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 456400,
+      "perLevel": 57050,
+      "perLevelAfterMax": 228200
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 72,
+    "attackRange": 88,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "VERYFAST",
+    "movingSpeed": 125,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1500,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1232_sally",
+      "name": {
+        "en": "I'm late!",
+        "th": "จะสายแล้ว!"
+      },
+      "desc": {
+        "en": "White Rabbit Sally's always behind time. She uses her pocket watch, causing harmful effects on enemies.\\n\\n*Negates enemies' regen (6 sec)\\n*Stuns enemies (6 sec)\\n*ATK x 3400% Area Damage ",
+        "th": "Sally กระต่ายนาฬิกาที่สายเสมอ ใช้นาฬิกาพกพาสร้างผลลัพธ์ด้านลบให้ศัตรู\\n*ขัดขวางการฟื้นฟูพลังชีวิตต่อเนื่องของศัตรู (6 วินาที)\\n*ทำให้ศัตรูชะงัก (6 วินาที)\\n*สร้างความเสียหาย 3400% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1232_sally.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1232_sally.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 330,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1232_sally",
+      "name": {
+        "en": "Mary Ann",
+        "th": "แมรี่ แอน"
+      },
+      "desc": {
+        "en": "Fetch me gloves and a fan! She swings up her umbrella, giving beneficial effects to allies.\\n\\n*Creates a shield over an area (5 sec)\\n*HP +500% (7 sec)\\n*Move Speed +180% (7 sec)",
+        "th": "รีบไปเอาถุงมือหนังกับพัดมาเร็ว! เหวี่ยงร่มสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (5 วินาที)\\n*เพิ่มพลังชีวิต 500% (7 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 180% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1232_sally.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1232_sally.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 400,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab222_aPolymorph",
+      "name": {
+        "en": "Change Resistance",
+        "th": "ต่อต้านการเปลี่ยนสภาพ"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be affected by change effects.\nSize change effects cannot be prevented.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลการเปลี่ยนสภาพ\nไม่สามารถป้องกันผลลัพธ์การเปลี่ยนขนาดได้"
+      },
+      "icon": "icons/ab222_apolymorph_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab207_unitdisturb",
+      "name": {
+        "en": "Training Troubler",
+        "th": "ขัดขวางการสร้างกองทัพศัตรู"
+      },
+      "desc": {
+        "en": "Slow opposing team's unit production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ลดความเร็วในการสร้างเรนเจอร์ของทีมตรงข้ามลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab207_unitdisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1261e-sally",
+    "unitNameCode": "u1261e-sally_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 8,
+    "summonEnergy": 1500,
+    "unitCategoryType": "STR",
+    "attackRange": 88,
+    "attackDelay": 72,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1261e-sally_desc",
+    "initialAttack": 42480,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 456400,
+    "movingSpeed": 125,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 5310,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 57050,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1232_sally",
+    "skillCode": "sk1232_sally",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1232_sally",
+    "skillCode3": "hsk1232_sally",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "VERYFAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab222_aPolymorph",
+    "abilityCode": "ab222_aPolymorph",
+    "abilityCategoryCode": "ab222_aPolymorph",
+    "iconAbilityCode2": "ab207_unitdisturb",
+    "abilityCode2": "ab207_unitdisturb",
+    "abilityCategoryCode2": "ab207_unitdisturb",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 228200,
+    "attackIncreaseAmountMax": 21240,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

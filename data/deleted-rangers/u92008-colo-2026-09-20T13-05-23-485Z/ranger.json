@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 10,
+  "id": "u92008-colo",
+  "name": "u92008-colo",
+  "form": "body",
+  "fps": 30,
+  "element": "dark",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 45,
+      "y": 73
+    },
+    "hitPoint": {
+      "x": -0.7,
+      "y": -63.8
+    },
+    "overhead": {
+      "x": 0.3,
+      "y": -140.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -274,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -274,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 11,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 1,
+    "atk": 1,
+    "def": 155,
+    "spd": 120,
+    "crit": 36,
+    "critDmg": 9999,
+    "evade": 10,
+    "hit": 15,
+    "skillEvade": 14,
+    "skillHit": 15,
+    "skillRes": 7
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 4,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 1000
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "trueDamage",
+          "pct": 100
+        },
+        {
+          "type": "bleed",
+          "pct": 200,
+          "turns": 5
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "barrier",
+          "turns": 3
+        },
+        {
+          "type": "speedUp",
+          "pct": 80,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 200,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 41,
+    "y": 44
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 27,
+      "focus": {
+        "x": 314,
+        "y": -47
+      },
+      "size": 79,
+      "title": "DIEEEE !!!!"
+    }
+  }
+}

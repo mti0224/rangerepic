@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 10,
+  "id": "u1016h-pegasus",
+  "name": "ซาจิททาเรียส เซย์ย่า",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 60,
+      "y": 82
+    },
+    "hitPoint": {
+      "x": -2.5,
+      "y": -52
+    },
+    "overhead": {
+      "x": 0,
+      "y": -166.9
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 10,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 1500,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 20,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 35,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4190,
+    "atk": 480,
+    "def": 175,
+    "spd": 111,
+    "crit": 16,
+    "critDmg": 195,
+    "evade": 14,
+    "hit": 24,
+    "skillEvade": 7,
+    "skillHit": 14,
+    "skillRes": 13
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 300
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillResDown",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "speedUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 58,
+    "y": 69
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 9,
+      "focus": {
+        "x": 141,
+        "y": 1
+      },
+      "size": 103,
+      "title": null
+    }
+  },
+  "approved": true
+}

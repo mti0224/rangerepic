@@ -1,0 +1,25 @@
+# Netlify: เว็บสาธารณะ = หน้าทดลองเล่นอย่างเดียว (build:play → dist-play · ไม่มีโค้ด editor ติดไป)
+[build]
+  command = "npm run build:play"
+  publish = "dist-play"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ลิงก์เก่า /play.html → หน้าแรก (หน้าเล่นคือ index.html ของเว็บ)
+[[redirects]]
+  from = "/play.html"
+  to = "/"
+  status = 301
+
+# เส้นทางในเกม (/lobby · /team) เป็นหน้าเดียวกันทั้งหมด → ส่งกลับ index.html (กด F5 แล้วไม่ 404)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ไฟล์ bundle มีแฮชในชื่อ → เก็บแคชได้นาน
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

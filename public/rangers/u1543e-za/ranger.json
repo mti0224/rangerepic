@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 10,
+  "id": "u1543e-za",
+  "name": "จิงกิคือไม้คทาคู่ใจ ซังกะ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 62.1,
+      "y": 81.8
+    },
+    "hitPoint": {
+      "x": 0,
+      "y": -65.1
+    },
+    "overhead": {
+      "x": 0.8,
+      "y": -173
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 25,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -280.4,
+          "y": 0.9
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -320.5,
+          "y": 1.4
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 2520,
+    "atk": 460,
+    "def": 170,
+    "spd": 114,
+    "crit": 29,
+    "critDmg": 190,
+    "evade": 12,
+    "hit": 13,
+    "skillEvade": 13,
+    "skillHit": 8,
+    "skillRes": 6
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "atkUp",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "hitUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 320
+        },
+        {
+          "type": "skillEvadeDown",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "speedDown",
+          "pct": 15,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 45,
+    "y": 56
+  },
+  "approved": true
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1069h-zelga",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T05:06:25.543Z"
+  },
+  "name": {
+    "en": "Magical Swordsman Zelgadis",
+    "th": "เซลกาดิส นักดาบเวทย์ผู้เก่งกาจ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 23700,
+      "perLevel": 3000,
+      "perLevelAfterMax": 3900
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 960,
+      "perLevel": 120,
+      "perLevelAfterMax": 160
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 135000,
+      "perLevel": 16900,
+      "perLevelAfterMax": 22000
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 52,
+    "attackRange": 140,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 115,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1190,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1069_zelga",
+      "name": {
+        "en": "Vlave Howl",
+        "th": "วเลฟ ฮาวล์"
+      },
+      "desc": {
+        "en": "Casts a spell that creates a lava drift, inflicting a harmful effect on enemies.\\n\\n*ATK x 3000% Area Damage \\n*Enemy Critical Damage -30% (10 sec)\\n*Enemy Critical Rate -30% (10 sec)",
+        "th": "โจมตีด้วยคาถาเรียกแม็กม่าขึ้นมาจากพื้น และสร้างผลลัพธ์ด้านลบให้แก่ศัตรู\\n\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n* ลดความเสียหายการโจมตีคริติคอลของศัตรู 30% (10 วินาที)\\n*ลดโอกาสเกิดคริติคอลฮิตของศัตรู 30% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1069_zelga.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1069_zelga.png",
+      "probability": 0.4000000059604645,
+      "cooldownSec": 12,
+      "range": 280,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1069_zelga",
+      "name": {
+        "en": "Ray Wing",
+        "th": "เรย์ วิงก์"
+      },
+      "desc": {
+        "en": "Casts a spell that gives the ability to fly at high speed, granting positive effects to allies.\\n\\n*Move Speed +160% (7 sec)\\n*Evade Rate +60% (7 sec)\\n*Skill Evade Rate +60% (7 sec)",
+        "th": "สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวกด้วยคาถาที่ทำให้บินได้อย่างรวดเร็ว\\n\\n*เพิ่มความเร็วการเคลื่อนที่ 160% (7 วินาที)\\n*เพิ่มอัตราการหลบหลีก 60% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_usk1069_zelga.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_usk1069_zelga.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 220,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab105_frozenheart",
+      "name": {
+        "en": "Stone Cold",
+        "th": "หัวใจยะเยือก"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be turned against their allies \\nin stages with the Siren Song obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"ลำนำเย้ายวน\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab105_frozenheart_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab502_anti_ice",
+      "name": {
+        "en": "Resistance: Blizzard",
+        "th": "ต่อต้าน: พายุหิมะ"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Ice Shot and Blizzard items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มยิงน้ำแข็งและพายุหิมะได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1069h-zelga",
+    "unitNameCode": "u1069h-zelga_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1190,
+    "unitCategoryType": "AGI",
+    "attackRange": 140,
+    "attackDelay": 52,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1069h-zelga_desc",
+    "initialAttack": 23700,
+    "specialAttack": 0,
+    "defence": 960,
+    "specialDefence": 0,
+    "initialHp": 135000,
+    "movingSpeed": 115,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 3000,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 120,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 16900,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1069_zelga",
+    "skillCode": "sk1069_zelga",
+    "iconSkillCode2": "usk1069_zelga",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1069_zelga",
+    "skillCode3": "hsk1069_zelga",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab105_frozenheart",
+    "abilityCode": "ab105_frozenheart",
+    "abilityCategoryCode": "ab105_frozenheart",
+    "iconAbilityCode2": "ab502_anti_ice",
+    "abilityCode2": "ab502_anti_ice",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 22000,
+    "attackIncreaseAmountMax": 3900,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 160,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

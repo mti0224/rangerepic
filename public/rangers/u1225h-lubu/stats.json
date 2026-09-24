@@ -1,0 +1,217 @@
+{
+  "id": "u1225h-lubu",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T04:41:38.263Z"
+  },
+  "name": {
+    "en": "China's Strongest Lu Bu",
+    "th": "วีรบุรุษผู้แกร่งสุดในจีน ลิโป้"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 36210,
+      "perLevel": 4530,
+      "perLevelAfterMax": 5890
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2200,
+      "perLevel": 280,
+      "perLevelAfterMax": 370
+    },
+    "mdef": {
+      "initial": 2600,
+      "perLevel": 290,
+      "perLevelAfterMax": 380
+    },
+    "hp": {
+      "initial": 367700,
+      "perLevel": 45970,
+      "perLevelAfterMax": 59770
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 79,
+    "attackRange": 50,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 98,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1890,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1225_lubu",
+      "name": {
+        "en": "Sky Eater",
+        "th": "เขมือบฟ้า"
+      },
+      "desc": {
+        "en": "Rides Red Hare forward and bisects the sky. Bad effects on enemies.\\n\\n*ATK x 2400% Area Damage \\n*Enemy Skill Resistance -30% (10 sec)\\n*Enemy Skill Use Rate -30% (10 sec)",
+        "th": "ขี่\"ม้าเซ็กเธาว์\"และพุ่งออกไปพร้อมโจมตีอย่างรุนแรงจนตัดท้องฟ้าขาด\\n*สร้างความเสียหาย 2400% ของพลังโจมตีลงในพื้นที่ \\n*ลดการต้านทักษะของศัตรูในพื้นที่ 30% (10 วินาที)\\n*ลดอัตราการใช้ทักษะของศัตรู 30% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1225_lubu.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1225_lubu.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 280,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1225_lubu",
+      "name": {
+        "en": "Valkyrie Ward",
+        "th": "พรพิทักษ์แห่งวัลคีรี่"
+      },
+      "desc": {
+        "en": "Summons \"breaker of shields,\" Randgriz. Good effects on allies.\\n\\n*Evade Rate +50% (7 sec)\\n*Area Physical/Magical DEF +45000 (7 sec)",
+        "th": "อัญเชิญ \"แรนด์กรีส\" วัลคีรี่ ซึ่งมีนามว่า \"ผู้ทำลายโล่\" สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการหลบหลีก 50% (7 วินาที)\\n*เพิ่มพลังป้องกันทางกายภาพและพลังเวทย์ในพื้นที่ 45000 หน่วย (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1225_lubu.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1225_lubu.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_rr",
+      "name": {
+        "en": "Group:RecordOfRagnarok",
+        "th": "[กลุ่ม] มหาศึกคนชนเทพ"
+      },
+      "desc": {
+        "en": "Record of Ragnarok Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ มหาศึกคนชนเทพ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย2ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_rr_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab210_passdef_agi",
+      "name": {
+        "en": "Nullify DEF: Agility",
+        "th": "ต้านพลังป้องกัน: ความว่องไว"
+      },
+      "desc": {
+        "en": "Fixed chance of ignoring an Agility type enemy's DEF when attacking.",
+        "th": "มีโอกาสทำให้การป้องกันของศัตรูชนิดความว่องไวไม่มีผลเมื่อโจมตี"
+      },
+      "icon": "icons/ab210_passdef_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1225h-lubu",
+    "unitNameCode": "u1225h-lubu_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1890,
+    "unitCategoryType": "STR",
+    "attackRange": 50,
+    "attackDelay": 79,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1225h-lubu_desc",
+    "initialAttack": 36210,
+    "specialAttack": 0,
+    "defence": 2200,
+    "specialDefence": 2600,
+    "initialHp": 367700,
+    "movingSpeed": 98,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 4530,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 280,
+    "specialDefenceDelta": 290,
+    "hpIncreaseAmount": 45970,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1225_lubu",
+    "skillCode": "sk1225_lubu",
+    "iconSkillCode2": "usk1225_lubu",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1225_lubu",
+    "skillCode3": "hsk1225_lubu",
+    "passiveSkillCode": "",
+    "created": "2015-01-05T09:21:01.000Z",
+    "modified": "2016-09-28T05:24:33.000Z",
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_rr",
+    "abilityCode": "ab701_team_rr",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab210_passdef_agi",
+    "abilityCode2": "ab210_passdef_agi",
+    "abilityCategoryCode2": "ab210_passdef",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 59770,
+    "attackIncreaseAmountMax": 5890,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 370,
+    "specialDefenceDeltaMax": 380,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

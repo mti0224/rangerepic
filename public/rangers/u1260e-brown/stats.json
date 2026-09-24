@@ -1,0 +1,218 @@
+{
+  "id": "u1260e-brown",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.728Z"
+  },
+  "name": {
+    "en": "Rock Legend Brown",
+    "th": "Brown ตำนานร็อค"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "light",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "light",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 13620,
+      "perLevel": 1950,
+      "perLevelAfterMax": 7800
+    },
+    "matk": {
+      "initial": 122600,
+      "perLevel": 12260,
+      "perLevelAfterMax": 49040
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 303100,
+      "perLevel": 37890,
+      "perLevelAfterMax": 151560
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 68,
+    "attackRange": 380,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 95,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1800,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1224_brown",
+      "name": {
+        "en": "Death Metal",
+        "th": "เดธเมทัล"
+      },
+      "desc": {
+        "en": "Attacks enemies with a radical performance.\\n\\n*Cancels enemy invincibility skills \\n*Continuously cancels enemy buffs (6 sec)\\n*Nullifies debuff-canceling skills (6 sec)\\n*ATK x 3000% Area Damage ",
+        "th": "โจมตีศัตรูด้วยการแสดงอันดุดัน\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ยกเลิกผลลัพธ์บัฟของศัตรู อย่างต่อเนื่อง (6 วินาที)\\n*หยุดยั้งการยกเลิกผลลัพธ์ด้านลบ (6 วินาที)\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1224_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1224_brown.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 8,
+      "range": 360,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.15
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1224_brown",
+      "name": {
+        "en": "Headbanging",
+        "th": "โยกหัว"
+      },
+      "desc": {
+        "en": "Gives beneficial effects to allies with a wild performance.\\n\\n*Skill Evade Rate +60% (7 sec)\\n*Skill Use Rate +60%  (7 sec)",
+        "th": "แสดงโชว์ปิดท้ายที่สุดยอดเพื่อสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)\\n*เพิ่มอัตราการใช้ทักษะ 60%  (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1224_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1224_brown.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 300,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab221_aTempt",
+      "name": {
+        "en": "Charm Resistance",
+        "th": "ต่อต้านการหลงเสน่ห์"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be affected by charm effects.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ติดสถานะหลงเสน่ห์"
+      },
+      "icon": "icons/ab221_atempt_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1260e-brown",
+    "unitNameCode": "u1260e-brown_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 8,
+    "summonEnergy": 1800,
+    "unitCategoryType": "INT",
+    "attackRange": 380,
+    "attackDelay": 68,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1260e-brown_desc",
+    "initialAttack": 13620,
+    "specialAttack": 122600,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 303100,
+    "movingSpeed": 95,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 1950,
+    "specialAttackDelta": 12260,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 37890,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1224_brown",
+    "skillCode": "sk1224_brown",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1224_brown",
+    "skillCode3": "hsk1224_brown",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab221_aTempt",
+    "abilityCode": "ab221_aTempt",
+    "abilityCategoryCode": "ab221_aTempt",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "light",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 151560,
+    "attackIncreaseAmountMax": 7800,
+    "specialAttackDeltaMax": 49040,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

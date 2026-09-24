@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 10,
+  "id": "u1111h-seijuro",
+  "name": "หัวหน้าหน่วยกลุ่มบุปผา เซย์จูโร่",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 54.9,
+      "y": 79.9
+    },
+    "hitPoint": {
+      "x": 0.6,
+      "y": -57.2
+    },
+    "overhead": {
+      "x": 0.6,
+      "y": -171.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 18,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 38,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 62,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5910,
+    "atk": 440,
+    "def": 295,
+    "spd": 105,
+    "crit": 9,
+    "critDmg": 160,
+    "evade": 8,
+    "hit": 10,
+    "skillEvade": 9,
+    "skillHit": 11,
+    "skillRes": 20
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 25
+        },
+        {
+          "type": "cleanse"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 210
+        },
+        {
+          "type": "speedDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 55
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 74,
+      "focus": {
+        "x": 264,
+        "y": -9
+      },
+      "size": 133,
+      "title": null
+    }
+  },
+  "approved": true
+}

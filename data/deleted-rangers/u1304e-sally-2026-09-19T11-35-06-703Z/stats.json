@@ -1,0 +1,218 @@
+{
+  "id": "u1304e-sally",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.782Z"
+  },
+  "name": {
+    "en": "Ace Pitcher Sally",
+    "th": "Sally พิชเชอร์มือหนึ่ง"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 70100,
+      "perLevel": 8770,
+      "perLevelAfterMax": 35080
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 270600,
+      "perLevel": 33830,
+      "perLevelAfterMax": 135320
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 59,
+    "attackRange": 250,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 115,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1510,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1303_sally",
+      "name": {
+        "en": "Straight",
+        "th": "สเตรท"
+      },
+      "desc": {
+        "en": "Throws a powerful straight ball and attacks enemies.\\n\\n*Cancels enemy buffs  \\n*ATK x 3000% Area Damage \\n*Stuns enemies (5 sec)\\n*Enemy knockback ",
+        "th": "ขว้างลูกตรงอันทรงพลังเพื่อโจมตีศัตรู\\n\\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ทำให้ศัตรูชะงัก (5 วินาที)\\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง "
+      },
+      "icon": "icons/skill_icon_sk1303_sally.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1303_sally.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 7,
+      "range": 350,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.3
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1303_sally",
+      "name": {
+        "en": "Pitching Prep",
+        "th": "เตรียมพร้อมขว้างบอล"
+      },
+      "desc": {
+        "en": "Calms down, giving beneficial effects to allies.\\n\\n*Skill Evade Rate +60% (7 sec)\\n*Resets the Skill cooldown of some allies. ",
+        "th": "สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\nด้วยการเคลื่อนไหวที่ผ่อนคลาย\\n\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)\\n*รีเซ็ตเวลารอทักษะของเรนเจอร์พรรคพวกส่วนหนึ่ง "
+      },
+      "icon": "icons/skill_icon_hsk1303_sally.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1303_sally.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab207_unitdisturb",
+      "name": {
+        "en": "Training Troubler",
+        "th": "ขัดขวางการสร้างกองทัพศัตรู"
+      },
+      "desc": {
+        "en": "Slow opposing team's unit production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ลดความเร็วในการสร้างเรนเจอร์ของทีมตรงข้ามลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab207_unitdisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1304e-sally",
+    "unitNameCode": "u1304e-sally_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 8,
+    "summonEnergy": 1510,
+    "unitCategoryType": "AGI",
+    "attackRange": 250,
+    "attackDelay": 59,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1304e-sally_desc",
+    "initialAttack": 70100,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 270600,
+    "movingSpeed": 115,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 8770,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 33830,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1303_sally",
+    "skillCode": "sk1303_sally",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1303_sally",
+    "skillCode3": "hsk1303_sally",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab213_lastatk",
+    "abilityCode": "ab213_lastatk",
+    "abilityCategoryCode": "ab213_lastatk",
+    "iconAbilityCode2": "ab207_unitdisturb",
+    "abilityCode2": "ab207_unitdisturb",
+    "abilityCategoryCode2": "ab207_unitdisturb",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 135320,
+    "attackIncreaseAmountMax": 35080,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

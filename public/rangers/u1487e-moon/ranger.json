@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 10,
+  "id": "u1487e-moon",
+  "name": "Moon โชกุน",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "anchors": {
+    "ground": {
+      "x": 65.4,
+      "y": 78
+    },
+    "hitPoint": {
+      "x": 2,
+      "y": -56.3
+    },
+    "overhead": {
+      "x": 0.5,
+      "y": -152.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 11,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -396.8,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 55,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 62,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -320.1,
+          "y": -1.2
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 2580,
+    "atk": 440,
+    "def": 155,
+    "spd": 118,
+    "crit": 27,
+    "critDmg": 180,
+    "evade": 15,
+    "hit": 18,
+    "skillEvade": 12,
+    "skillHit": 12,
+    "skillRes": 4
+  },
+  "category": "agi",
+  "role": "assassin",
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "critUp",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "hitUp",
+          "pct": 15,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 220
+        },
+        {
+          "type": "bleed",
+          "pct": 40,
+          "turns": 2
+        },
+        {
+          "type": "hitDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 29,
+      "focus": {
+        "x": 79,
+        "y": 27
+      },
+      "size": 88,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 71
+  },
+  "approved": true
+}

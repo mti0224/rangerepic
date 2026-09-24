@@ -1,0 +1,218 @@
+{
+  "id": "u1306e-az",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.787Z"
+  },
+  "name": {
+    "en": "Sorcerer KingAinz",
+    "th": "ราชันย์มนตราไอนซ์"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 14530,
+      "perLevel": 2080,
+      "perLevelAfterMax": 8320
+    },
+    "matk": {
+      "initial": 130800,
+      "perLevel": 13080,
+      "perLevelAfterMax": 52320
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 307500,
+      "perLevel": 38440,
+      "perLevelAfterMax": 153760
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 77,
+    "attackRange": 315,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 82,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1800,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1305_az",
+      "name": {
+        "en": "Demiurge Summon",
+        "th": "อัญเชิญเดมิเอิร์จ"
+      },
+      "desc": {
+        "en": "Summons Demiurge who then\ntransforms. Bad effects on\nenemies with nail attack.\\n\\n*Continuously cancels enemy invincibility (4 sec)\\n*Cancels enemy buffs  \\n*ATK x 2800% Area Damage ",
+        "th": "อัญเชิญเดมิเอิร์จซึ่งจะเปลี่ยนร่าง\nและโจมตีด้วยกรงเล็บทรงพลัง\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (4 วินาที)\\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*สร้างความเสียหาย 2800% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1305_az.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1305_az.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 8,
+      "range": 330,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.3
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1305_az",
+      "name": {
+        "en": "World Conquest",
+        "th": "ยึดครองโลก"
+      },
+      "desc": {
+        "en": "Lifts up SoAOG and casts\nmagic. Gives good\neffects to allies.\\n\\n*Creates a shield over an area (4 sec)\\n*Removes allies' debuffs (4 sec)\\n*Skill Hit Rate +40% (6 sec)",
+        "th": "ยกไม้เท้าแห่งไอนซ์ อูล โกว์นขึ้น\nแล้วใช้เวทมนตร์\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (4 วินาที)\\n*ยกเลิกผลลัพธ์ด้านลบแบบต่อเนื่องของพรรคพวก (4 วินาที)\\n*เพิ่มอัตราความแม่นยำของทักษะ 40% (6 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1305_az.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1305_az.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 8,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2304",
+      "name": {
+        "en": "Group: Overlord",
+        "th": "[กลุ่ม] โอเวอร์ลอร์ด"
+      },
+      "desc": {
+        "en": "Overlord Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ โอเวอร์ลอร์ด' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2304_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab227_st_stun_str",
+      "name": {
+        "en": "Deploy Stun: Strength",
+        "th": "ชะงักเมื่อออกปฏิบัติการ: พลัง"
+      },
+      "desc": {
+        "en": "Has a high chance of stunning all Strength type enemies and canceling their invincibility skill effects when Rangers deploy.\n- Activates 5 seconds after battles start.\n- You must wait 6 seconds before you can use an Ability again after using one with the same effect on the same type of Ranger.\n- Bosses, Guardians, and special type enemies are not affected by this Ability.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะทำให้ศัตรูชนิด \"พลัง\" ทั้งหมดชะงักและยกเลิกทักษะอมตะ\n*จะแสดงผลหลังเริ่มการต่อสู้ไปแล้ว 5 วินาที\n*หากความสามารถที่มีผลลัพธ์เหมือนกันมีเป้าหมายเป็นเรนเจอร์ชนิดเดียวกัน จะไม่แสดงผลต่อเนื่องโดยห่างกันเป็นเวลา 6 วินาที\n*ใช้ความสามารถนี้กับผู้พิทักษ์, บอส และศัตรูชนิดพิเศษไม่ได้"
+      },
+      "icon": "icons/ab227_st_stun_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1306e-az",
+    "unitNameCode": "u1306e-az_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1800,
+    "unitCategoryType": "INT",
+    "attackRange": 315,
+    "attackDelay": 77,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1306e-az_desc",
+    "initialAttack": 14530,
+    "specialAttack": 130800,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 307500,
+    "movingSpeed": 82,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2080,
+    "specialAttackDelta": 13080,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 38440,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1305_az",
+    "skillCode": "sk1305_az",
+    "iconSkillCode2": "usk1305_az",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1305_az",
+    "skillCode3": "hsk1305_az",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2304",
+    "abilityCode": "ab701_team_2304",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab227_st_stun_str",
+    "abilityCode2": "ab227_st_stun_str",
+    "abilityCategoryCode2": "ab227_strike",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 153760,
+    "attackIncreaseAmountMax": 8320,
+    "specialAttackDeltaMax": 52320,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

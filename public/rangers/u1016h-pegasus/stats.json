@@ -1,0 +1,217 @@
+{
+  "id": "u1016h-pegasus",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T05:37:53.942Z"
+  },
+  "name": {
+    "en": "Sagittarius Seiya",
+    "th": "ซาจิททาเรียส เซย์ย่า"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 19400,
+      "perLevel": 2500,
+      "perLevelAfterMax": 3300
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 720,
+      "perLevel": 90,
+      "perLevelAfterMax": 200
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 100000,
+      "perLevel": 12500,
+      "perLevelAfterMax": 16300
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 57,
+    "attackRange": 58,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "movingSpeed": 120,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.35,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1300,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1016_pegasus",
+      "name": {
+        "en": "Pegasus Meteor Fist",
+        "th": "เพกาซัส หมัดดาวตก"
+      },
+      "desc": {
+        "en": "Hits enemies at the speed of sound with over 100 hits per second.\\n\\n*ATK x 2400% Area Damage \\n*Cancels enemy invincibility skills ",
+        "th": "ปล่อยหมัดความเร็วเสียงมากกว่า 100 ครั้งใน 1 วินาทีเพื่อโจมตีศัตรู\\n\\n*สร้างความเสียหาย 2400% ของพลังโจมตีลงในพื้นที่ \\n*ยกเลิกทักษะอมตะของศัตรู "
+      },
+      "icon": "icons/skill_icon_sk1016_pegasus.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1016_pegasus.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 400,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1016_pegasus",
+      "name": {
+        "en": "Pegasus Comet Fist",
+        "th": "เพกาซัส หมัดดาวหาง"
+      },
+      "desc": {
+        "en": "Focuses the power of Pegasus's Meteor Fist on one point to help allies.\\n\\n*Resist enemies' summoning Skills. (7 sec)\\n*Move Speed +180% (7 sec)\\n*Creates a shield over an area (2 sec)",
+        "th": "รวมพลังของหมัดดาวตกเอาไว้ที่จุดเดียว เพื่อสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ต่อต้านทักษะอัญเชิญจากศัตรู (7 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 180% (7 วินาที)\\n*สร้างบาเรียในพื้นที่ (2 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1016_pegasus.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1016_pegasus.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab104_souleye",
+      "name": {
+        "en": "Eagle Eyes",
+        "th": "นัยน์ตาแห่งวิญญาณ"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be blinded in advent stages \\nwith the Ink obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"หมึกทมิฬ\" จะแสดงผลในเสตจจุติก็ตาม"
+      },
+      "icon": "icons/ab104_souleye_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab502_anti_ice",
+      "name": {
+        "en": "Resistance: Blizzard",
+        "th": "ต่อต้าน: พายุหิมะ"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Ice Shot and Blizzard items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มยิงน้ำแข็งและพายุหิมะได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1016h-pegasus",
+    "unitNameCode": "u1016h-pegasus_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1300,
+    "unitCategoryType": "AGI",
+    "attackRange": 58,
+    "attackDelay": 57,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1016h-pegasus_desc",
+    "initialAttack": 19400,
+    "specialAttack": 0,
+    "defence": 720,
+    "specialDefence": 0,
+    "initialHp": 100000,
+    "movingSpeed": 120,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 2500,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 90,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 12500,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1016_pegasus",
+    "skillCode": "sk1016_pegasus",
+    "iconSkillCode2": "usk1016_pegasus",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1016_pegasus",
+    "skillCode3": "hsk1016_pegasus",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.35,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab104_souleye",
+    "abilityCode": "ab104_souleye",
+    "abilityCategoryCode": "ab104_souleye",
+    "iconAbilityCode2": "ab502_anti_ice",
+    "abilityCode2": "ab502_anti_ice",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 16300,
+    "attackIncreaseAmountMax": 3300,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 200,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1115h-anastasia",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.648Z"
+  },
+  "name": {
+    "en": "Top Star Anastasia",
+    "th": "ยอดดารา อนาสตาเซีย"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "INT",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 4200,
+      "perLevel": 600,
+      "perLevelAfterMax": 800
+    },
+    "matk": {
+      "initial": 37400,
+      "perLevel": 3800,
+      "perLevelAfterMax": 5000
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1200,
+      "perLevel": 140,
+      "perLevelAfterMax": 190
+    },
+    "hp": {
+      "initial": 125000,
+      "perLevel": 15700,
+      "perLevelAfterMax": 20500
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 80,
+    "attackRange": 320,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 77,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1180,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1115_anastasia",
+      "name": {
+        "en": "Concentration",
+        "th": "รวมสมาธิ"
+      },
+      "desc": {
+        "en": "Draws her gun and calms her mind, casting positive effect on allies.\\n\\n*Skill Use Rate +40%  (10 sec)\\n*ATK +250% (10 sec)\\n*Reflects 70% of incoming skill damage as magic damage (10 sec)",
+        "th": "เล็งปืนทำใจให้สงบ\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n*เพิ่มอัตราการใช้ทักษะ 40%  (10 วินาที)\\n*เพิ่มพลังโจมตี 250% (10 วินาที)\\n*สะท้อนความเสียหายทักษะที่ได้รับ 70% ด้วยความเสียหายทางเวทย์ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1115_anastasia.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1115_anastasia.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1115_anastasia",
+      "name": {
+        "en": "Apólyto Midén",
+        "th": "อะโพลิโต มิเดน"
+      },
+      "desc": {
+        "en": "Mows down a straight line of enemies with heavy gunfire, inflicting harmful effects on them.\\n\\n*ATK per sec x 400% Area Damage (7 sec)\\n*Enemy Skill Use Rate -50% (7 sec)\\n*Enemy Skill Hit Rate -40% (7 sec)",
+        "th": "เล็งเป้ากวาดล้างศัตรูด้วยกระสุนเส้นตรง\nสร้างผลลัพธ์ด้านลบแก่ศัตรู\\n*สร้างความเสียหาย400%ของพลังโจมตีลงในพื้นที่ทุกวินาที (7 วินาที)\\n*ลดอัตราการใช้ทักษะของศัตรู 50% (7 วินาที)\\n*ลดอัตราความแม่นยำทักษะของศัตรู 40% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1115_anastasia.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1115_anastasia.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_saku",
+      "name": {
+        "en": "Group: Sakura Wars",
+        "th": "[กลุ่ม] New Sakura Wars"
+      },
+      "desc": {
+        "en": "Sakura Wars Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ \"พลังโจมตี\" ในการต่อสู้เมื่อติดตั้งเรนเจอร์ \"โคลาโบ New Sakura Wars\" ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_saku_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab601_clone",
+      "name": {
+        "en": "Spawn Clone",
+        "th": "สร้างร่างโคลน"
+      },
+      "desc": {
+        "en": "Sometimes 1 additional Ranger is produced at no extra cost.",
+        "th": "มีโอกาสผลิตเรนเจอร์พร้อมกัน 2 ตัวด้วยการใช้แร่ธาตุเพียง 1 ตัว"
+      },
+      "icon": "icons/ab213_2generate_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1115h-anastasia",
+    "unitNameCode": "u1115h-anastasia_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1180,
+    "unitCategoryType": "INT",
+    "attackRange": 320,
+    "attackDelay": 80,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1115h-anastasia_desc",
+    "initialAttack": 4200,
+    "specialAttack": 37400,
+    "defence": 0,
+    "specialDefence": 1200,
+    "initialHp": 125000,
+    "movingSpeed": 77,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 600,
+    "specialAttackDelta": 3800,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 140,
+    "hpIncreaseAmount": 15700,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1115_anastasia",
+    "skillCode": "sk1115_anastasia",
+    "iconSkillCode2": "usk1115_anastasia",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1115_anastasia",
+    "skillCode3": "hsk1115_anastasia",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_saku",
+    "abilityCode": "ab701_team_saku",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab601_clone",
+    "abilityCode2": "ab601_clone",
+    "abilityCategoryCode2": "ab601_clone",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 20500,
+    "attackIncreaseAmountMax": 800,
+    "specialAttackDeltaMax": 5000,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 190,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

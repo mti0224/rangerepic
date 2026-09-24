@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 10,
+  "id": "u1149h-milim",
+  "name": "ทรราชผู้ทำลายล้าง มิลิม",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 84,
+      "y": 90
+    },
+    "hitPoint": {
+      "x": -2.2,
+      "y": -50.4
+    },
+    "overhead": {
+      "x": 0,
+      "y": -156.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 26,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -627,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 31,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 48,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -672,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 3780,
+    "atk": 510,
+    "def": 185,
+    "spd": 108,
+    "crit": 25,
+    "critDmg": 185,
+    "evade": 8,
+    "hit": 18,
+    "skillEvade": 10,
+    "skillHit": 12,
+    "skillRes": 8
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 15
+        },
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "atkDown",
+          "pct": 10,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 70,
+    "y": 70
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 14,
+      "focus": {
+        "x": 99,
+        "y": 19
+      },
+      "size": 94,
+      "title": null
+    }
+  },
+  "approved": true
+}

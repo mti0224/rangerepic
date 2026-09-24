@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 10,
+  "id": "u1434e-boss",
+  "name": "Boss คนนอกกฎหมายร่างทอง",
+  "form": "body",
+  "fps": 30,
+  "element": "dark",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 75,
+      "y": 72.5
+    },
+    "hitPoint": {
+      "x": 0.7,
+      "y": -50.3
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -147.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 125.8,
+        "y": -43.2
+      },
+      "impactOffset": {
+        "x": -1,
+        "y": -45.1
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "aimTilt": true
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 64,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 44,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -613,
+          "y": 36.7
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": -62.3
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 3470,
+    "atk": 530,
+    "def": 180,
+    "spd": 109,
+    "crit": 9,
+    "critDmg": 170,
+    "evade": 6,
+    "hit": 10,
+    "skillEvade": 5,
+    "skillHit": 31,
+    "skillRes": 23
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "energyGain",
+          "amount": 1
+        },
+        {
+          "type": "heal",
+          "pct": 20
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 210
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillEvadeDown",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "dispelBuffs"
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 60,
+    "y": 52
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 46,
+      "focus": {
+        "x": 263,
+        "y": -60
+      },
+      "size": 109,
+      "title": null
+    }
+  },
+  "approved": true
+}

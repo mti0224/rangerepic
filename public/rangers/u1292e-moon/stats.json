@@ -1,0 +1,218 @@
+{
+  "id": "u1292e-moon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.756Z"
+  },
+  "name": {
+    "en": "Alien Suit Moon",
+    "th": "Moon ชุดเอเลี่ยน"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 80720,
+      "perLevel": 10120,
+      "perLevelAfterMax": 36190
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 304000,
+      "perLevel": 38000,
+      "perLevelAfterMax": 135850
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 60,
+    "attackRange": 290,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 112,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1920,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1206_moon",
+      "name": {
+        "en": "Chilling",
+        "th": "นอนกลิ้ง"
+      },
+      "desc": {
+        "en": "Gives beneficial effects to nearby allies by entertaining them with its cute behavior.\\n\\n*Skill Evade Rate +30% (10 sec)\\n*Skill Use Rate +30%  (10 sec)",
+        "th": "ทำท่าทางแสนน่ารักให้พรรคพวกโดยรอบ\nได้สนุกสนานเพื่อสร้างผลลัพธ์ด้านบวก\\n\\n*เพิ่มอัตราการหลบทักษะ 30% (10 วินาที)\\n*เพิ่มอัตราการใช้ทักษะ 30%  (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1206_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1206_moon.png",
+      "probability": 0.25,
+      "cooldownSec": 12,
+      "range": 260,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1292_moon",
+      "name": {
+        "en": "Up and Up",
+        "th": "สูงอีก สูงอีก"
+      },
+      "desc": {
+        "en": "Moon is thrown up high toward the enemies and attacks them.\\n*Cancels enemy invincibility skills \\n*Stuns enemies (5 sec)\\n*Changes Light elemental enemies to None (5 sec)\\n*Applies charm effect to 1 enemies within range. (12 sec)",
+        "th": "Moon ที่ถูกโยนสูงขึ้นไปบนฟ้า\nและตกลงสู่กองทัพศัตรูเพื่อโจมตี\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ทำให้ศัตรูชะงัก (5 วินาที)\\n*เปลี่ยนศัตรูธาตุแสงเป็นธาตุไร้ธาตุ (5 วินาที)\\n*ทำให้ศัตรูในพื้นที่1ตัวได้รับผลลัพธ์ลำนำเย้ายวน (12 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1206_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1206_moon.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 7,
+      "range": 320,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.3
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab220_waterghost",
+      "name": {
+        "en": "Same Fate",
+        "th": "พลีชีพ"
+      },
+      "desc": {
+        "en": "When the Ranger is defeated, it will randomly take 1 of the enemies with it. It has a certain chance of activating in PVP and Guild War, and a lower chance in other battles. (Bosses and Guardians will not be affected by this Ability)",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้ จะพลีชีพสุ่มปราบฝั่งศัตรู 1 ตัว โดยแสดงผลตามอัตราที่กำหนดในโหมด PVP และกิลด์วอร์อีกทั้งแสดงผลอัตราต่ำในการต่อสู้อื่นๆ  (แต่จะใช้ความสามารถนี้กับบอสและผู้พิทักษ์ไม่ได้)"
+      },
+      "icon": "icons/ab220_waterghost_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1292e-moon",
+    "unitNameCode": "u1292e-moon_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 8,
+    "summonEnergy": 1920,
+    "unitCategoryType": "AGI",
+    "attackRange": 290,
+    "attackDelay": 60,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1292e-moon_desc",
+    "initialAttack": 80720,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 304000,
+    "movingSpeed": 112,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 10120,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 38000,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1206_moon",
+    "skillCode": "sk1206_moon",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1292_moon",
+    "skillCode3": "hsk1292_moon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab220_waterghost",
+    "abilityCode": "ab220_waterghost",
+    "abilityCategoryCode": "ab220_waterghost",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 135850,
+    "attackIncreaseAmountMax": 36190,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

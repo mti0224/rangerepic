@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 10,
+  "id": "u1584e-moon",
+  "name": "u1584e-moon",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 54,
+      "y": 65
+    },
+    "hitPoint": {
+      "x": -2.2,
+      "y": -50.3
+    },
+    "overhead": {
+      "x": -2.2,
+      "y": -100.7
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 17,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -380.2,
+          "y": -2.1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 37,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -311.4,
+          "y": -3.1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 49,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 4000,
+    "atk": 400,
+    "def": 250,
+    "spd": 100,
+    "crit": 5,
+    "critDmg": 150,
+    "evade": 5,
+    "hit": 5,
+    "skillEvade": 5,
+    "skillHit": 5,
+    "skillRes": 0
+  },
+  "category": "str",
+  "role": "fighter",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 300
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "approved": false
+}

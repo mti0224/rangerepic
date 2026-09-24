@@ -1,0 +1,89 @@
+{
+  "id": "u1116h-claris",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.55,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.52,
+      "y": 0.66
+    }
+  },
+  "attackRangePt": 410,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 170,
+        "y": 60
+      },
+      "moveSpeed": 44,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 60,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 0
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 370,
+        "y": 85
+      },
+      "moveSpeed": 45,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.2
+      },
+      "area": 240
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 380
+    }
+  }
+}

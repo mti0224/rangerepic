@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 8,
+  "id": "u1257e-boss",
+  "name": "u1257e-boss",
+  "form": "body",
+  "fps": 30,
+  "row": "back",
+  "element": "red",
+  "attackRange": "ranged",
+  "anchors": {
+    "ground": {
+      "x": 127.8,
+      "y": 100.3
+    },
+    "hitPoint": {
+      "x": 0,
+      "y": -47.6
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -96.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 10,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 53.1,
+        "y": -108.8
+      },
+      "impactOffset": {
+        "x": -6.5,
+        "y": -72
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 34,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 54,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415.2,
+          "y": 0.4
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": -83.2
+      },
+      "impactOffset": {
+        "x": -54.1,
+        "y": -83.2
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 4000,
+    "atk": 400,
+    "def": 250,
+    "spd": 100,
+    "crit": 5,
+    "critDmg": 150,
+    "eff": 0,
+    "res": 0
+  }
+}

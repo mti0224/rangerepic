@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 10,
+  "id": "u1347h-hc",
+  "name": "วีรบุรุษผู้รักมวลมนุษย์ เฮราเคลส",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "str",
+  "role": "tank",
+  "anchors": {
+    "ground": {
+      "x": 65,
+      "y": 95
+    },
+    "hitPoint": {
+      "x": -0.6,
+      "y": -68.9
+    },
+    "overhead": {
+      "x": -0.1,
+      "y": -180.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 27,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 55,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -300,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 38,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 6130,
+    "atk": 235,
+    "def": 440,
+    "spd": 89,
+    "crit": 2,
+    "critDmg": 135,
+    "evade": 9,
+    "hit": 5,
+    "skillEvade": 11,
+    "skillHit": 5,
+    "skillRes": 36
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 140
+        },
+        {
+          "type": "skillEvadeDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 22
+        },
+        {
+          "type": "regen",
+          "pct": 6,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 27,
+      "focus": {
+        "x": 79,
+        "y": 22
+      },
+      "size": 123,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 56,
+    "y": 68
+  },
+  "approved": true
+}

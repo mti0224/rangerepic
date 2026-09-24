@@ -1,0 +1,217 @@
+{
+  "id": "u1487e-moon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.872Z"
+  },
+  "name": {
+    "en": "Shogun Moon",
+    "th": "Moon โชกุน"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 49700,
+      "perLevel": 6220,
+      "perLevelAfterMax": 24880
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 168700,
+      "perLevel": 21090,
+      "perLevelAfterMax": 84360
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 80,
+    "attackRange": 200,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 110,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 910,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1486_moon",
+      "name": {
+        "en": "Bamboo Slasher",
+        "th": "ตัดไม้ไผ่"
+      },
+      "desc": {
+        "en": "Slashes at bamboo. Good effects on allies.\\n\\n*Move Speed +130% (7 sec)\\n*ATK Speed +200% (7 sec)\\n*Critical Rate +30% (7 sec)",
+        "th": "โชว์การตัดไม้ไผ่\nสร้างผลลัพธ์ด้านบวกให้พรรคพวก\\n\\n*เพิ่มความเร็วการเคลื่อนที่ 130% (7 วินาที)\\n*เพิ่มความเร็วในการโจมตี 200% (7 วินาที)\\n*เพิ่มอัตราการติดคริติคอล 30% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1486_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1486_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 10,
+      "range": 340,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1486_moon",
+      "name": {
+        "en": "Unsheathed Blade Technique",
+        "th": "วิชาชักดาบ"
+      },
+      "desc": {
+        "en": "Attacks enemies with a speedy sword technique. Bad effects on enemies. \\n\\n*Enemy Hit Rate -40% (7 sec)\\n*Enemy Skill Hit Rate -40% (7 sec)\\n*ATK per sec x 700% Area Damage (7 sec)",
+        "th": "โจมตีศัตรูด้วยวิชาดาบอันรวดเร็ว\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ลดอัตราความแม่นยำของศัตรู 40% (7 วินาที)\\n*ลดอัตราความแม่นยำทักษะของศัตรู 40% (7 วินาที)\\n*สร้างความเสียหาย 700% ของพลังโจมตีลงในพื้นที่ทุกวินาที (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1486_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1486_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 310,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab104_souleye",
+      "name": {
+        "en": "Eagle Eyes",
+        "th": "นัยน์ตาแห่งวิญญาณ"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be blinded in advent stages \\nwith the Ink obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"หมึกทมิฬ\" จะแสดงผลในเสตจจุติก็ตาม"
+      },
+      "icon": "icons/ab104_souleye_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab214_skilldelay",
+      "name": {
+        "en": "Skill Jammer",
+        "th": "ขัดขวางทักษะฝั่งศัตรู"
+      },
+      "desc": {
+        "en": "Extends skill reactivation times for the opposing team.\n(Effect increases as more Rangers with this ability join the battle.)",
+        "th": "เพิ่มเวลารอใช้ทักษะอีกครั้งของเรนเจอร์ฝั่งศัตรู\n(ผลลัพธ์จะเพิ่มทุกครั้งเมื่อเรนเจอร์ที่มีความสามารถนี้เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab214_skilldelay_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1487e-moon",
+    "unitNameCode": "u1487e-moon_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 7,
+    "summonEnergy": 910,
+    "unitCategoryType": "AGI",
+    "attackRange": 200,
+    "attackDelay": 80,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1487e-moon_desc",
+    "initialAttack": 49700,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 168700,
+    "movingSpeed": 110,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 6220,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 21090,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1486_moon",
+    "skillCode": "sk1486_moon",
+    "iconSkillCode2": "usk1486_moon",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1486_moon",
+    "skillCode3": "hsk1486_moon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab104_souleye",
+    "abilityCode": "ab104_souleye",
+    "abilityCategoryCode": "ab104_souleye",
+    "iconAbilityCode2": "ab214_skilldelay",
+    "abilityCode2": "ab214_skilldelay",
+    "abilityCategoryCode2": "ab214_skilldelay",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 84360,
+    "attackIncreaseAmountMax": 24880,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

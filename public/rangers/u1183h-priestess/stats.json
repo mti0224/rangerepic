@@ -1,0 +1,217 @@
+{
+  "id": "u1183h-priestess",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T04:51:10.313Z"
+  },
+  "name": {
+    "en": "Oracle Prophecy Priestess",
+    "th": "นักบวชผู้ได้รับ \"นิมิต\" นักบวชหญิง"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 7350,
+      "perLevel": 1050,
+      "perLevelAfterMax": 1370
+    },
+    "matk": {
+      "initial": 66100,
+      "perLevel": 6610,
+      "perLevelAfterMax": 8600
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1400,
+      "perLevel": 160,
+      "perLevelAfterMax": 210
+    },
+    "hp": {
+      "initial": 177400,
+      "perLevel": 22180,
+      "perLevelAfterMax": 28840
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 93,
+    "attackRange": 320,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 61,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1630,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1183_priestess",
+      "name": {
+        "en": "Minor Heal",
+        "th": "ฮีล"
+      },
+      "desc": {
+        "en": "Prays to Earth Mother to heal wounds. Good effects on allies.\\n\\n*Removes allies' debuffs \\n*HP x 40% Area Recovery (per sec) (10 sec)\\n*Skill Evade Rate +40% (10 sec)",
+        "th": "อธิษฐานกับพระแม่ธรณีเพื่อรักษาแผล สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก \\n\\n*ยกเลิกผลลัพธ์ด้านลบของพรรคพวก \\n*ฟื้นฟูพลังชีวิตในพื้นที่ 40% ของพลังชีวิต (ต่อ 1 วินาที) (10 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 40% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1183_priestess.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1183_priestess.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1183_priestess",
+      "name": {
+        "en": "Protection",
+        "th": "โพรเทคชั่น"
+      },
+      "desc": {
+        "en": "Prays to Earth Mother for power from the Earth. Bad effects on enemies.\\n\\n*Continuously cancels enemy invincibility (4 sec)\\n*Stuns enemies (4 sec)\\n*Enemy Skill Evade Rate -60% (4 sec)",
+        "th": "อธิษฐานกับพระแม่ธรณี เพื่อยืมพลังจากแผ่นดิน สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (4 วินาที)\\n*ทำให้ศัตรูชะงัก (4 วินาที)\\n*ลดอัตราการหลบทักษะของศัตรู 60% (4 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1183_priestess.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1183_priestess.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 350,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_gs",
+      "name": {
+        "en": "Group: Goblin Slayer",
+        "th": "[กลุ่ม] ก็อบลินสเลเยอร์"
+      },
+      "desc": {
+        "en": "Goblin Slayer Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ ก็อบลินสเลเยอร์' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_gs_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1183h-priestess",
+    "unitNameCode": "u1183h-priestess_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1630,
+    "unitCategoryType": "INT",
+    "attackRange": 320,
+    "attackDelay": 93,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1183h-priestess_desc",
+    "initialAttack": 7350,
+    "specialAttack": 66100,
+    "defence": 0,
+    "specialDefence": 1400,
+    "initialHp": 177400,
+    "movingSpeed": 61,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 1050,
+    "specialAttackDelta": 6610,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 160,
+    "hpIncreaseAmount": 22180,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1183_priestess",
+    "skillCode": "sk1183_priestess",
+    "iconSkillCode2": "usk1183_priestess",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1183_priestess",
+    "skillCode3": "hsk1183_priestess",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_gs",
+    "abilityCode": "ab701_team_gs",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab213_lastatk",
+    "abilityCode2": "ab213_lastatk",
+    "abilityCategoryCode2": "ab213_lastatk",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 28840,
+    "attackIncreaseAmountMax": 1370,
+    "specialAttackDeltaMax": 8600,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 210,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

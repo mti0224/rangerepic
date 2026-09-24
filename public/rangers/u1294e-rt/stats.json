@@ -1,0 +1,218 @@
+{
+  "id": "u1294e-rt",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.762Z"
+  },
+  "name": {
+    "en": "Octagram\\nDemon Lord Rimuru",
+    "th": "ออคตาแกรม จอมมารริมุรุ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 11620,
+      "perLevel": 1660,
+      "perLevelAfterMax": 6640
+    },
+    "matk": {
+      "initial": 104600,
+      "perLevel": 10460,
+      "perLevelAfterMax": 41840
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 294600,
+      "perLevel": 36830,
+      "perLevelAfterMax": 147320
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 66,
+    "attackRange": 350,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 80,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1580,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1293_rt",
+      "name": {
+        "en": "Megiddo",
+        "th": "เทพพิโรธ"
+      },
+      "desc": {
+        "en": "Attacks with countless\nlight beams. Bad effects on allies.\\n\\n*Continuously cancels enemy invincibility (5 sec)\\n*ATK x 3000% Area Damage \\n*Enemy Skill Evade Rate -40% (5 sec)",
+        "th": "ใช้ลำแสงนับไม่ถ้วนโจมตีทะลุร่างศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (5 วินาที)\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ลดอัตราการหลบทักษะของศัตรู 40% (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1293_rt.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1293_rt.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 8,
+      "range": 330,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.2
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1293_rt",
+      "name": {
+        "en": "Raphael",
+        "th": "ราฟาเอล"
+      },
+      "desc": {
+        "en": "Transforms into Raphael.\nGood effects on allies.\\n\\n*Skill Use Rate +50%  (7 sec)\\n*Skill Hit Rate +40% (7 sec)\\n*ATK +300% (7 sec)",
+        "th": "แปลงเป็นราฟาเอลราชันแห่งภูมิปัญญา\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการใช้ทักษะ 50%  (7 วินาที)\\n*เพิ่มอัตราความแม่นยำของทักษะ 40% (7 วินาที)\\n*เพิ่มพลังโจมตี 300% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1293_rt.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1293_rt.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 350,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_sl2",
+      "name": {
+        "en": "Group: TenSura2",
+        "th": "[กลุ่ม] เกิดใหม่เป็นสไลม์2"
+      },
+      "desc": {
+        "en": "TenSura2 Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เกิดใหม่เป็นสไลม์2' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_sl2_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab219_mineraladd2",
+      "name": {
+        "en": "Enemy Cost Increase2",
+        "th": "ศัตรูใช้แร่ธาตุเพิ่มขึ้น2"
+      },
+      "desc": {
+        "en": "Gives a set chance of greatly increasing the Mineral Cost for one of the opposing team's Rangers when Rangers with this Ability are deployed. \\nThis Ability can activate from 10 seconds after the battle starts.",
+        "th": "มีโอกาสในระดับหนึ่งที่จะเพิ่มค่าแร่ธาตุเรนเจอร์ซึ่งจะออกปฏิบัติการของทีมศัตรู 1 ตัวอย่างมากเมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการ \\nความสามารถนี้จะแสดงผลเมื่อผ่านไป 10 วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab219_mineraladd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1294e-rt",
+    "unitNameCode": "u1294e-rt_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1580,
+    "unitCategoryType": "INT",
+    "attackRange": 350,
+    "attackDelay": 66,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1294e-rt_desc",
+    "initialAttack": 11620,
+    "specialAttack": 104600,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 294600,
+    "movingSpeed": 80,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 1660,
+    "specialAttackDelta": 10460,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 36830,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1293_rt",
+    "skillCode": "sk1293_rt",
+    "iconSkillCode2": "usk1293_rt",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1293_rt",
+    "skillCode3": "hsk1293_rt",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_sl2",
+    "abilityCode": "ab701_team_sl2",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab219_mineraladd2",
+    "abilityCode2": "ab219_mineraladd2",
+    "abilityCategoryCode2": "ab219_mineraladd",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 147320,
+    "attackIncreaseAmountMax": 6640,
+    "specialAttackDeltaMax": 41840,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

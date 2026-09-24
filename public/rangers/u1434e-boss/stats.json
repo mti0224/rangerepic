@@ -1,0 +1,218 @@
+{
+  "id": "u1434e-boss",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T12:30:12.951Z"
+  },
+  "name": {
+    "en": "Golden Outlaw Boss",
+    "th": "Boss คนนอกกฎหมายร่างทอง"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "ATTACK",
+  "category": "INT",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 16130,
+      "perLevel": 2310,
+      "perLevelAfterMax": 9240
+    },
+    "matk": {
+      "initial": 145200,
+      "perLevel": 14520,
+      "perLevelAfterMax": 58080
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 295400,
+      "perLevel": 36930,
+      "perLevelAfterMax": 147720
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 56,
+    "attackRange": 480,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 88,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1770,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1433_boss",
+      "name": {
+        "en": "Golden Age",
+        "th": "ยุคทอง"
+      },
+      "desc": {
+        "en": "Boss is so happy surrounded by bags of loot. Good effects on surrounding allies.\\n\\n*Allies' Skill Range +20% (10 sec)\\n*HP x 30% Area Recovery (per sec) (10 sec)",
+        "th": "Boss มีความสุขกับถุงเงินรายล้อม\nสร้างผลลัพธ์ด้านบวกให้พรรคพวกรอบๆ\\n\\n*เพิ่มพื้นที่การใช้ทักษะของพรรคพวก 20% (10 วินาที)\\n*ฟื้นฟูพลังชีวิตในพื้นที่ 30% ของพลังชีวิต (ต่อ 1 วินาที) (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1433_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1433_boss.png",
+      "probability": 0.25,
+      "cooldownSec": 12,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1433_boss",
+      "name": {
+        "en": "Machine Gun",
+        "th": "ปืนกล"
+      },
+      "desc": {
+        "en": "Boss attacks enemies with his powerful fast-firing gun. Bad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*Continuously cancels enemy buffs (7 sec)\\n*Enemy Skill Evade Rate -50% (7 sec)\\n*ATK x 3300% Area Damage ",
+        "th": "Boss โจมตีศัตรูด้วยปืนที่เร็วและแรง\nสร้างผลลัพธ์ด้านลบ\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ยกเลิกผลลัพธ์บัฟของศัตรู อย่างต่อเนื่อง (7 วินาที)\\n*ลดอัตราการหลบทักษะของศัตรู 50% (7 วินาที)\\n*สร้างความเสียหาย 3300% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_hsk1433_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1433_boss.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 9,
+      "range": 360,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.2
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab233_antifreeze",
+      "name": {
+        "en": "Resistance: Deployment Freeze",
+        "th": "ต่อต้าน:หยุดศัตรูออกปฏิบัติการชั่วคราว"
+      },
+      "desc": {
+        "en": "Rangers with this Ability block enemies' Deployment Freeze Ability.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะป้องกันความสามารถ \"หยุดศัตรูออกปฏิบัติการชั่วคราว\" ของศัตรูได้"
+      },
+      "icon": "icons/ab233_antifreeze_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1434e-boss",
+    "unitNameCode": "u1434e-boss_nm",
+    "grade": 9,
+    "unitType": "ATTACK",
+    "productionSpeed": 8,
+    "summonEnergy": 1770,
+    "unitCategoryType": "INT",
+    "attackRange": 480,
+    "attackDelay": 56,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1434e-boss_desc",
+    "initialAttack": 16130,
+    "specialAttack": 145200,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 295400,
+    "movingSpeed": 88,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2310,
+    "specialAttackDelta": 14520,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 36930,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1433_boss",
+    "skillCode": "sk1433_boss",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1433_boss",
+    "skillCode3": "hsk1433_boss",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab233_antifreeze",
+    "abilityCode": "ab233_antifreeze",
+    "abilityCategoryCode": "ab233_antifreeze",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 147720,
+    "attackIncreaseAmountMax": 9240,
+    "specialAttackDeltaMax": 58080,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

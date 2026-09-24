@@ -1,0 +1,218 @@
+{
+  "id": "u1355e-aq",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.825Z"
+  },
+  "name": {
+    "en": "Water Goddess Aqua",
+    "th": "เทพธิดาแห่งสายน้ำ อควอ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 44840,
+      "perLevel": 5610,
+      "perLevelAfterMax": 22440
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 5200,
+      "perLevel": 650,
+      "perLevelAfterMax": 2600
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 689300,
+      "perLevel": 86170,
+      "perLevelAfterMax": 344680
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 71,
+    "attackRange": 150,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 93,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 2340,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1354_aq",
+      "name": {
+        "en": "Create Water",
+        "th": "ครีเอทวอเตอร์"
+      },
+      "desc": {
+        "en": "Unleashes strong water\nmagic. Bad effects\non enemies.\\n\\n*Continuously cancels enemy invincibility (4 sec)\\n*Negates enemies' regen (4 sec)\\n*Makes enemy skills unusable (4 sec)",
+        "th": "ปล่อยเวทมนตร์น้ำที่มีพลังเวทย์มหาศาล\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (4 วินาที)\\n*ขัดขวางการฟื้นฟูพลังชีวิตต่อเนื่องของศัตรู (4 วินาที)\\n*ห้ามศัตรูใช้ทักษะ (4 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1354_aq.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1354_aq.png",
+      "probability": 0.4000000059604645,
+      "cooldownSec": 5,
+      "range": 330,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.4
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1354_aq",
+      "name": {
+        "en": "Nature's Beauty",
+        "th": "วิจิตรธรรมชาติ"
+      },
+      "desc": {
+        "en": "Heals others as\nan Arch Priest.\nGood effects on allies.\\n\\n*Creates a shield over an area (5 sec)\\n*HP +440% (7 sec)\\n*Skill Resistance +60% (7 sec)",
+        "th": "ทำหน้าที่ของอาร์คพรีสท์\nเยียวยาทุกคนให้ลุล่วง\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (5 วินาที)\\n*เพิ่มพลังชีวิต 440% (7 วินาที)\\n*เพิ่มการต้านทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1354_aq.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1354_aq.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 8,
+      "range": 360,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2312",
+      "name": {
+        "en": "Group: KONOSUBA",
+        "th": "[กลุ่ม] ขอให้โชคดีมีชัยฯ"
+      },
+      "desc": {
+        "en": "KONOSUBA Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ ขอให้โชคดีมีชัยฯ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2312_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab224_cooltimeadd",
+      "name": {
+        "en": "Deployment Freeze",
+        "th": "หยุดศัตรูออกปฏิบัติการชั่วคราว"
+      },
+      "desc": {
+        "en": "Gives a high chance that 1 Ranger on the opposite team will have the time until it can be redeployed frozen for a fixed amount of time when a Ranger with this Ability is deployed. Activates 10 seconds after the battle starts.",
+        "th": "เมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการจะมีโอกาสสูงที่จะหยุดเกจเวลารอสร้างของเรนเจอร์ทีมตรงข้าม1ตัวในช่วงระยะเวลาหนึ่งความสามารถนี้จะแสดงผลเมื่อผ่านไป10วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab224_cooltimeadd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1355e-aq",
+    "unitNameCode": "u1355e-aq_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 2340,
+    "unitCategoryType": "STR",
+    "attackRange": 150,
+    "attackDelay": 71,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1355e-aq_desc",
+    "initialAttack": 44840,
+    "specialAttack": 0,
+    "defence": 5200,
+    "specialDefence": 5200,
+    "initialHp": 689300,
+    "movingSpeed": 93,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 5610,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 650,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 86170,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1354_aq",
+    "skillCode": "sk1354_aq",
+    "iconSkillCode2": "usk1354_aq",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1354_aq",
+    "skillCode3": "hsk1354_aq",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2312",
+    "abilityCode": "ab701_team_2312",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab224_cooltimeadd",
+    "abilityCode2": "ab224_cooltimeadd",
+    "abilityCategoryCode2": "ab224_cooltimeadd",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 344680,
+    "attackIncreaseAmountMax": 22440,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2600,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

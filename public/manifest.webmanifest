@@ -1,0 +1,10 @@
+{
+  "name": "Ranger Arena — 5v5 Turn-Based",
+  "short_name": "Ranger Arena",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020"
+}

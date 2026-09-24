@@ -1,0 +1,217 @@
+{
+  "id": "u1257e-boss",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T14:56:33.765Z"
+  },
+  "name": {
+    "en": "Famous Director Boss",
+    "th": "Boss ผู้กำกับชื่อดัง"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "INT",
+  "element": "light",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "light",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 13130,
+      "perLevel": 1880,
+      "perLevelAfterMax": 7520
+    },
+    "matk": {
+      "initial": 118100,
+      "perLevel": 11810,
+      "perLevelAfterMax": 47240
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 270500,
+      "perLevel": 33820,
+      "perLevelAfterMax": 135280
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 77,
+    "attackRange": 335,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 50,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 1680,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1256_boss",
+      "name": {
+        "en": "Red Carpet",
+        "th": "พรมแดง"
+      },
+      "desc": {
+        "en": "Holds up his trophy prize, casting positive effects on allies.\\n\\n*Removes allies' debuffs \\n*Recovers 40% of HP (7 sec)\\n*ATK +250% (7 sec)",
+        "th": "ชูถ้วยรางวัลที่ได้รับ\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ยกเลิกผลลัพธ์ด้านลบของพรรคพวก \\n*ฟื้นฟูพลังชีวิต 40% ของพลังชีวิต (7 วินาที)\\n*เพิ่มพลังโจมตี 250% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1256_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1256_boss.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 260,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1256_boss",
+      "name": {
+        "en": "Camera Laser",
+        "th": "คาเมร่าเลเซอร์"
+      },
+      "desc": {
+        "en": "Uses a special camera to attack enemies, inflicting damage and harmful effects.\\n\\n*Continuously cancels enemy invincibility (5 sec)\\n*ATK x 3400% Area Damage \\n*Nullifies debuff-canceling skills (5 sec)",
+        "th": "ใช้กล้องพิเศษโจมตีศัตรู\nและสร้างผลลัพธ์ด้านลบ\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (5 วินาที)\\n*สร้างความเสียหาย 3400% ของพลังโจมตีลงในพื้นที่ \\n*หยุดยั้งการยกเลิกผลลัพธ์ด้านลบ (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1256_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1256_boss.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 380,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab212_minplus",
+      "name": {
+        "en": "Mineral Restore",
+        "th": "ฟื้นฟูแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Some of the Mineral used to produce that Ranger is restored when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะได้รับแร่ธาตุที่ใช้เมื่อสร้างเรนเจอร์กลับคืนมาบางส่วน"
+      },
+      "icon": "icons/ab212_minplus_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1257e-boss",
+    "unitNameCode": "u1257e-boss_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 8,
+    "summonEnergy": 1680,
+    "unitCategoryType": "INT",
+    "attackRange": 335,
+    "attackDelay": 77,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1257e-boss_desc",
+    "initialAttack": 13130,
+    "specialAttack": 118100,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 270500,
+    "movingSpeed": 50,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 1880,
+    "specialAttackDelta": 11810,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 33820,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1256_boss",
+    "skillCode": "sk1256_boss",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1256_boss",
+    "skillCode3": "hsk1256_boss",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab212_minplus",
+    "abilityCode": "ab212_minplus",
+    "abilityCategoryCode": "ab212_minplus",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "light",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 135280,
+    "attackIncreaseAmountMax": 7520,
+    "specialAttackDeltaMax": 47240,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

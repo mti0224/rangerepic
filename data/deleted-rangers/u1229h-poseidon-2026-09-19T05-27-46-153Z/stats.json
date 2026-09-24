@@ -1,0 +1,218 @@
+{
+  "id": "u1229h-poseidon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T14:56:33.761Z"
+  },
+  "name": {
+    "en": "Fearsome God Poseidon",
+    "th": "เทพผู้น่าสะพรึง โพไซดอน"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 6920,
+      "perLevel": 990,
+      "perLevelAfterMax": 1290
+    },
+    "matk": {
+      "initial": 62300,
+      "perLevel": 6230,
+      "perLevelAfterMax": 8100
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1400,
+      "perLevel": 160,
+      "perLevelAfterMax": 210
+    },
+    "hp": {
+      "initial": 173600,
+      "perLevel": 21700,
+      "perLevelAfterMax": 28210
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 68,
+    "attackRange": 410,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 72,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1450,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1229_poseidon",
+      "name": {
+        "en": "Divine Water Ward",
+        "th": "พรพิทักษ์แห่งเทพสมุทร"
+      },
+      "desc": {
+        "en": "Imbues your trident with Poseidon's protection. Good effects on allies. \\n\\n*Skill Use Rate +30%  (10 sec)\\n*HP x 30% Area Recovery (per sec) (10 sec)",
+        "th": "ใส่พลังไปยังตรีศูลที่ชูขึ้น เพื่อมอบพรแห่งเทพสมุทรโพไซดอน สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก \\n\\n*เพิ่มอัตราการใช้ทักษะ 30%  (10 วินาที)\\n*ฟื้นฟูพลังชีวิตในพื้นที่ 30% ของพลังชีวิต (ต่อ 1 วินาที) (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1229_poseidon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1229_poseidon.png",
+      "probability": 0.25,
+      "cooldownSec": 12,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1229_poseidon",
+      "name": {
+        "en": "Chione Tyro Demeter",
+        "th": "อัสนีเทวาผ่าทะเลคลั่ง"
+      },
+      "desc": {
+        "en": "Rains down a storm of trident jabs from above. Bad effects on enemies.\\n\\n*Cancels HP regen \\n*Cancels enemy buffs  \\n*Enemy Skill Evade Rate -50% (5 sec)\\n*ATK x 3600% Area Damage",
+        "th": "กระโดดขึ้นและแทงโจมตีจากด้านบนศัตรูเฉกเช่นพายุฝนฟ้าคะนองที่ถล่มลงมา\\n*ยกเลิกการฟื้นฟูพลังชีวิตต่อเนื่อง \\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*ลดอัตราการหลบทักษะของศัตรู 50% (5 วินาที)\\n*สร้างความเสียหาย 3600% ของพลังโจมตีลงในพื้นที่"
+      },
+      "icon": "icons/skill_icon_hsk1229_poseidon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1229_poseidon.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 6,
+      "range": 350,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.8
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_rr",
+      "name": {
+        "en": "Group:RecordOfRagnarok",
+        "th": "[กลุ่ม] มหาศึกคนชนเทพ"
+      },
+      "desc": {
+        "en": "Record of Ragnarok Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ มหาศึกคนชนเทพ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย2ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_rr_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab211_passres_int",
+      "name": {
+        "en": "Nullify Skill Resistance\\n: Intelligence",
+        "th": "ต้านการต้านทักษะ: ไหวพริบ"
+      },
+      "desc": {
+        "en": "Fixed chance of ignoring an Intelligence type enemy's Skill Resistance when attacking.",
+        "th": "มีโอกาสทำให้การต้านทักษะของศัตรูชนิดไหวพริบไม่มีผลเมื่อโจมตี"
+      },
+      "icon": "icons/ab211_passres_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1229h-poseidon",
+    "unitNameCode": "u1229h-poseidon_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1450,
+    "unitCategoryType": "INT",
+    "attackRange": 410,
+    "attackDelay": 68,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1229h-poseidon_desc",
+    "initialAttack": 6920,
+    "specialAttack": 62300,
+    "defence": 0,
+    "specialDefence": 1400,
+    "initialHp": 173600,
+    "movingSpeed": 72,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 990,
+    "specialAttackDelta": 6230,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 160,
+    "hpIncreaseAmount": 21700,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1229_poseidon",
+    "skillCode": "sk1229_poseidon",
+    "iconSkillCode2": "usk1229_poseidon",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1229_poseidon",
+    "skillCode3": "hsk1229_poseidon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_rr",
+    "abilityCode": "ab701_team_rr",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab211_passres_int",
+    "abilityCode2": "ab211_passres_int",
+    "abilityCategoryCode2": "ab211_passres",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 28210,
+    "attackIncreaseAmountMax": 1290,
+    "specialAttackDeltaMax": 8100,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 210,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1526e-ko",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T14:56:33.888Z"
+  },
+  "name": {
+    "en": "Secret Pact Kobeni",
+    "th": "ไม่ทราบปีศาจที่ทำสัญญา โคเบนิ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 85520,
+      "perLevel": 10690,
+      "perLevelAfterMax": 42760
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 296900,
+      "perLevel": 37120,
+      "perLevelAfterMax": 148480
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 58,
+    "attackRange": 230,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 71,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1620,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1525_ko",
+      "name": {
+        "en": "DIIIIIIIIE!",
+        "th": "ตายซะ!"
+      },
+      "desc": {
+        "en": "Runs at enemies very fast\nand slashes with a knife.\\n\\n*Enemy Skill Evade Rate -35% (10 sec)\\n*ATK per sec x 350% Area Damage (10 sec)\\n*ATK x 3600% Area Damage ",
+        "th": "วิ่งเข้าไปหาศัตรูอย่างรวดเร็วแล้วฟันด้วยมีด\\n\\n*ลดอัตราการหลบทักษะของศัตรู 35% (10 วินาที)\\n*สร้างความเสียหาย 350% ของพลังโจมตีลงในพื้นที่ทุกวินาที (10 วินาที)\\n*สร้างความเสียหาย 3600% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1525_ko.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1525_ko.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 330,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1525_ko",
+      "name": {
+        "en": "Uh? Huh? Huuuh?!",
+        "th": "เอ๊ะ เอะ เอ๊ะ เอ๋!?"
+      },
+      "desc": {
+        "en": "Shakes, cries, and does\na double peace sign.\nGood effects on allies.\\n\\n*Move Speed +180% (7 sec)\\n*ATK Speed +200% (7 sec)\\n*Skill Resistance +40% (7 sec)",
+        "th": "ชูสองนิ้วทั้งที่ตัวสั่นแล้วร้องไห้\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มความเร็วการเคลื่อนที่ 180% (7 วินาที)\\n*เพิ่มความเร็วในการโจมตี 200% (7 วินาที)\\n*เพิ่มการต้านทักษะ 40% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1525_ko.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1525_ko.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 350,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2508",
+      "name": {
+        "en": "Group: CHAINSAW MAN",
+        "th": "[กลุ่ม] เชนซอว์แมน"
+      },
+      "desc": {
+        "en": "CHAINSAW MAN Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เชนซอว์แมน' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2508_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab219_mineraladd",
+      "name": {
+        "en": "Enemy Cost Increase",
+        "th": "ศัตรูใช้แร่ธาตุเพิ่มขึ้น"
+      },
+      "desc": {
+        "en": "Gives a high chance of increasing the Mineral Cost for one of the opposing team's Rangers when Rangers with this Ability are deployed. This Ability can activate from 10 seconds after the battle starts.",
+        "th": "มีโอกาสสูงที่จะเพิ่มค่าแร่ธาตุเรนเจอร์ซึ่งจะออกปฏิบัติการของทีมศัตรู1ตัวเมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการ ความสามารถนี้จะแสดงผลเมื่อผ่านไป 10 วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab219_mineraladd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1526e-ko",
+    "unitNameCode": "u1526e-ko_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1620,
+    "unitCategoryType": "AGI",
+    "attackRange": 230,
+    "attackDelay": 58,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1526e-ko_desc",
+    "initialAttack": 85520,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 296900,
+    "movingSpeed": 71,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 10690,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 37120,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1525_ko",
+    "skillCode": "sk1525_ko",
+    "iconSkillCode2": "usk1525_ko",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1525_ko",
+    "skillCode3": "hsk1525_ko",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2508",
+    "abilityCode": "ab701_team_2508",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab219_mineraladd",
+    "abilityCode2": "ab219_mineraladd",
+    "abilityCategoryCode2": "ab219_mineraladd",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 148480,
+    "attackIncreaseAmountMax": 42760,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

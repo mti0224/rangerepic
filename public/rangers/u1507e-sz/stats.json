@@ -1,0 +1,217 @@
+{
+  "id": "u1507e-sz",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.881Z"
+  },
+  "name": {
+    "en": "Second Son Shinzo",
+    "th": "ลูกคนที่ 3 บ้านโยซากุระ ชินโซ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 52130,
+      "perLevel": 6520,
+      "perLevelAfterMax": 26080
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 517900,
+      "perLevel": 64740,
+      "perLevelAfterMax": 258960
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 91,
+    "attackRange": 75,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 99,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1550,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1506_sz",
+      "name": {
+        "en": "Seven-Petal Punishment",
+        "th": "ชิจิเบ็งเคย์"
+      },
+      "desc": {
+        "en": "Spreads weapons\naround self.\nGood effects on allies.\\n\\n*HP +300% (7 sec)\\n*Skill Resistance +30% (7 sec)\\n*Recovers 100% of HP ",
+        "th": "กางอาวุธรอบตัว\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มพลังชีวิต 300% (7 วินาที)\\n*เพิ่มการต้านทักษะ 30% (7 วินาที)\\n*ฟื้นฟูพลังชีวิต 100% ของพลังชีวิต "
+      },
+      "icon": "icons/skill_icon_sk1506_sz.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1506_sz.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 300,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1506_sz",
+      "name": {
+        "en": "Nanao Cooperation",
+        "th": "ความร่วมมือของนานาโอะ"
+      },
+      "desc": {
+        "en": "Summoning the Nanao, attacks with\na powerful strike to the ground.\nBad effects on enemies.\\n\\n*Cancels enemy buffs  \\n*Enemy Skill Use Rate -50% (7 sec)\\n*ATK per sec x 800% Area Damage (7 sec)",
+        "th": "เรียกนานาโอะออกมา\nใช้แขนทรงพลังฟาดพื้นดินเพื่อโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*ลดอัตราการใช้ทักษะของศัตรู 50% (7 วินาที)\\n*สร้างความเสียหาย 800% ของพลังโจมตีลงในพื้นที่ทุกวินาที (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1506_sz.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1506_sz.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2506",
+      "name": {
+        "en": "Group: Yozakura",
+        "th": "[กลุ่ม] โยซากุระ"
+      },
+      "desc": {
+        "en": "Yozakura Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ โยซากุระ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2506_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab604_copyally",
+      "name": {
+        "en": "Ally Clone",
+        "th": "โคลนนิ่งพรรคพวก"
+      },
+      "desc": {
+        "en": "Has a set chance of summoning 1 allied team Ranger when Rangers deploy.　 \n- Flyer and Air Ambush Rangers are not eligible to be summoned in this way. \n- The Abilities of allied Rangers summoned by this Ability won't activate.\n- Summoned Rangers won't consume any Mineral and will have no effects on redeploy times.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสเรียกเรนเจอร์ในทีมเดียวกันออกมา 1 ตัว\n\n*เรนเจอร์บินและเรนเจอร์สกัดกั้นยูนิตบินจะไม่เข้าข่าย\n*ความสามารถของเรนเจอร์พรรคพวกที่เรียกด้วยความสามารถนี้จะไม่แสดงผล\n*เรนเจอร์พรรคพวกที่ถูกเรียกจะไม่ใช้แร่ธาตุ และไม่มีผลกระทบต่อเวลารอสร้าง"
+      },
+      "icon": "icons/ab604_copyally_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1507e-sz",
+    "unitNameCode": "u1507e-sz_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1550,
+    "unitCategoryType": "STR",
+    "attackRange": 75,
+    "attackDelay": 91,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1507e-sz_desc",
+    "initialAttack": 52130,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 517900,
+    "movingSpeed": 99,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 6520,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 64740,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1506_sz",
+    "skillCode": "sk1506_sz",
+    "iconSkillCode2": "usk1506_sz",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1506_sz",
+    "skillCode3": "hsk1506_sz",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2506",
+    "abilityCode": "ab701_team_2506",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab604_copyally",
+    "abilityCode2": "ab604_copyally",
+    "abilityCategoryCode2": "ab604_copyally",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 258960,
+    "attackIncreaseAmountMax": 26080,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

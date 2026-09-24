@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 10,
+  "id": "u1023h-brown",
+  "name": "Brown 13",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 50,
+      "y": 65
+    },
+    "hitPoint": {
+      "x": 1,
+      "y": -46.7
+    },
+    "overhead": {
+      "x": 0.6,
+      "y": -143.1
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 11,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -219.5,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 27,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 5540,
+    "atk": 430,
+    "def": 305,
+    "spd": 105,
+    "crit": 12,
+    "critDmg": 155,
+    "evade": 8,
+    "hit": 8,
+    "skillEvade": 10,
+    "skillHit": 10,
+    "skillRes": 19
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "skillEvadeUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "regen",
+          "pct": 8,
+          "turns": 3
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 330
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 46,
+    "y": 67
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 19,
+      "focus": {
+        "x": 70,
+        "y": -69
+      },
+      "size": 119,
+      "title": null
+    }
+  }
+}

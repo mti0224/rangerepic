@@ -1,0 +1,217 @@
+{
+  "id": "u1541e-ri",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.895Z"
+  },
+  "name": {
+    "en": "The Ripper Riyo",
+    "th": "จิงกิคือเดอะริปเปอร์ ริโย"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 58980,
+      "perLevel": 7380,
+      "perLevelAfterMax": 29520
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 608200,
+      "perLevel": 76030,
+      "perLevelAfterMax": 304120
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 77,
+    "attackRange": 50,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 105,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1710,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1540_ri",
+      "name": {
+        "en": "Thorough Cleaning!",
+        "th": "ทำความสะอาดครั้งใหญ่!"
+      },
+      "desc": {
+        "en": "Drops straight down at enemies and attacks them with the Ripper.\\n\\n*Cancels HP regen \\n*Cancels enemy buffs  \\n*ATK x 3000% Area Damage ",
+        "th": "ทิ้งตัวลงมาหาศัตรู\nแล้วโจมตีด้วยเดอะริปเปอร์\\n\\n*ยกเลิกการฟื้นฟูพลังชีวิตต่อเนื่อง \\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1540_ri.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1540_ri.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1540_ri",
+      "name": {
+        "en": "Pizza Party",
+        "th": "ปาร์ตี้พิซซ่า"
+      },
+      "desc": {
+        "en": "Eats pizza, giving good effects on allies.\\n\\n*Skill Use Rate +60%  (7 sec)\\n*HP +400% (7 sec)\\n*HP x 60% Area Recovery (per sec) (7 sec)",
+        "th": "กินพิซซ่า\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการใช้ทักษะ 60%  (7 วินาที)\\n*เพิ่มพลังชีวิต 400% (7 วินาที)\\n*ฟื้นฟูพลังชีวิตในพื้นที่ 60% ของพลังชีวิต (ต่อ 1 วินาที) (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1540_ri.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1540_ri.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2510",
+      "name": {
+        "en": "Group: GACHIAKUTA",
+        "th": "[กลุ่ม] GACHIAKUTA"
+      },
+      "desc": {
+        "en": "GACHIAKUTA Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ GACHIAKUTA' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2510_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab227_st_kback_agi",
+      "name": {
+        "en": "Deploy Knockback: Agility",
+        "th": "กระเด็นถอยหลังเมื่อออกปฏิบัติการ: ความว่องไว"
+      },
+      "desc": {
+        "en": "Has a high chance of knocking back all Agility type enemies and canceling their invincibility skill effects when Rangers deploy.\n- Activates 5 seconds after battles start.\n- You must wait 6 seconds before you can use an Ability again after using one with the same effect on the same type of Ranger.\n- Bosses, Guardians, and special type enemies are not affected by this Ability.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะทำให้ศัตรูชนิด \"ความว่องไว\" ทั้งหมดกระเด็นไปด้านหลังและยกเลิกทักษะอมตะ\n*จะแสดงผลหลังเริ่มการต่อสู้ไปแล้ว 5 วินาที\n*หากความสามารถที่มีผลลัพธ์เหมือนกันมีเป้าหมายเป็นเรนเจอร์ชนิดเดียวกัน จะไม่แสดงผลต่อเนื่องโดยห่างกันเป็นเวลา 6 วินาที\n*ใช้ความสามารถนี้กับผู้พิทักษ์, บอส และศัตรูชนิดพิเศษไม่ได้"
+      },
+      "icon": "icons/ab227_st_kback_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1541e-ri",
+    "unitNameCode": "u1541e-ri_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1710,
+    "unitCategoryType": "STR",
+    "attackRange": 50,
+    "attackDelay": 77,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1541e-ri_desc",
+    "initialAttack": 58980,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 608200,
+    "movingSpeed": 105,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 7380,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 76030,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1540_ri",
+    "skillCode": "sk1540_ri",
+    "iconSkillCode2": "usk1540_ri",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1540_ri",
+    "skillCode3": "hsk1540_ri",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2510",
+    "abilityCode": "ab701_team_2510",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab227_st_kback_agi",
+    "abilityCode2": "ab227_st_kback_agi",
+    "abilityCategoryCode2": "ab227_strike",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 304120,
+    "attackIncreaseAmountMax": 29520,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

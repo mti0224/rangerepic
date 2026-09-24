@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 10,
+  "id": "u1436e-uz",
+  "name": "ซากุระโปรยปราย เคียวกะ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 64.8,
+      "y": 83
+    },
+    "hitPoint": {
+      "x": 0,
+      "y": -61.7
+    },
+    "overhead": {
+      "x": 0.3,
+      "y": -172.1
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 23,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -352.5,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 50,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 52,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 2540,
+    "atk": 440,
+    "def": 170,
+    "spd": 117,
+    "crit": 33,
+    "critDmg": 190,
+    "evade": 15,
+    "hit": 17,
+    "skillEvade": 12,
+    "skillHit": 10,
+    "skillRes": 6
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "shield",
+          "pct": 12,
+          "turns": 2
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 330
+        },
+        {
+          "type": "dispelBuffs"
+        },
+        {
+          "type": "skillResDown",
+          "pct": 30,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 49,
+    "y": 51
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 40,
+      "focus": {
+        "x": -12,
+        "y": -95
+      },
+      "size": 152,
+      "title": null,
+      "bullet": {
+        "file": "bul3",
+        "frame": 8,
+        "offset": {
+          "x": 82,
+          "y": 23
+        }
+      },
+      "body": false
+    }
+  }
+}

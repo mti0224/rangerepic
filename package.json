@@ -1,0 +1,32 @@
+{
+  "name": "lineranger-turnbased",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "fetch-ranger": "node scripts/fetch-ranger.mjs",
+    "test": "node scripts/test-player.mjs && node scripts/test-shotrules.mjs && node scripts/test-scene.mjs && node scripts/test-anchors.mjs && node scripts/test-labels.mjs && node scripts/test-battle.mjs && node scripts/test-class.mjs && node scripts/test-skills.mjs && node scripts/test-formation.mjs && node scripts/test-ai.mjs && node scripts/test-rules.mjs && node scripts/test-reserve.mjs && node scripts/test-rules-v3.mjs && node scripts/test-rules-v4.mjs",
+    "scan-clips": "node scripts/scan-clips.mjs",
+    "fetch-gamedata": "node scripts/fetch-gamedata.mjs",
+    "probe-battles": "node scripts/probe-real-battles.mjs",
+    "fetch-lerico": "node scripts/fetch-lerico.mjs",
+    "sim-balance": "node scripts/sim-balance.mjs",
+    "sim-ai": "node scripts/sim-ai.mjs",
+    "build:play": "tsc -b && vite build --mode play"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}

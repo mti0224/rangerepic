@@ -1,0 +1,218 @@
+{
+  "id": "u1524e-ak",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.890Z"
+  },
+  "name": {
+    "en": "Pact Devil Fox Aki",
+    "th": "ทำสัญญากับปีศาจจิ้งจอก อาคิ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 19140,
+      "perLevel": 2740,
+      "perLevelAfterMax": 10960
+    },
+    "matk": {
+      "initial": 172300,
+      "perLevel": 17230,
+      "perLevelAfterMax": 68920
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 273600,
+      "perLevel": 34200,
+      "perLevelAfterMax": 136800
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 105,
+    "attackRange": 330,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 80,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1720,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1523_ak",
+      "name": {
+        "en": "Get Well Apple",
+        "th": "แอปเปิ้ลเยี่ยมไข้"
+      },
+      "desc": {
+        "en": "Peels an apple and raises\nthe plate high above.\nGood effects on allies.\\n\\n*Removes allies' debuffs \\n*Reflects 150% of incoming skill damage as physical damage (10 sec)\\n*Reflects 150% of incoming skill damage as magic damage (10 sec)",
+        "th": "ปอกแอปเปิ้ลแล้วยกจานขึ้นสูง\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ยกเลิกผลลัพธ์ด้านลบของพรรคพวก \\n*สะท้อนความเสียหายทักษะที่ได้รับ 150% ด้วยความเสียหายทางกายภาพ (10 วินาที)\\n*สะท้อนความเสียหายทักษะที่ได้รับ 150% ด้วยความเสียหายทางเวทย์ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1523_ak.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1523_ak.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 340,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1523_ak",
+      "name": {
+        "en": "Kon",
+        "th": "คอง"
+      },
+      "desc": {
+        "en": "Summons the Fox Devil to attack enemies.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*Stuns enemies (4 sec)\\n*ATK x 4000% Area Damage ",
+        "th": "อัญเชิญปีศาจจิ้งจอกเพื่อโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ทำให้ศัตรูชะงัก (4 วินาที)\\n*สร้างความเสียหาย 4000% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_hsk1523_ak.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1523_ak.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 7,
+      "range": 330,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.3
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2508",
+      "name": {
+        "en": "Group: CHAINSAW MAN",
+        "th": "[กลุ่ม] เชนซอว์แมน"
+      },
+      "desc": {
+        "en": "CHAINSAW MAN Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เชนซอว์แมน' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2508_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab219_mineraladd",
+      "name": {
+        "en": "Enemy Cost Increase",
+        "th": "ศัตรูใช้แร่ธาตุเพิ่มขึ้น"
+      },
+      "desc": {
+        "en": "Gives a high chance of increasing the Mineral Cost for one of the opposing team's Rangers when Rangers with this Ability are deployed. This Ability can activate from 10 seconds after the battle starts.",
+        "th": "มีโอกาสสูงที่จะเพิ่มค่าแร่ธาตุเรนเจอร์ซึ่งจะออกปฏิบัติการของทีมศัตรู1ตัวเมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการ ความสามารถนี้จะแสดงผลเมื่อผ่านไป 10 วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab219_mineraladd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1524e-ak",
+    "unitNameCode": "u1524e-ak_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1720,
+    "unitCategoryType": "INT",
+    "attackRange": 330,
+    "attackDelay": 105,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1524e-ak_desc",
+    "initialAttack": 19140,
+    "specialAttack": 172300,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 273600,
+    "movingSpeed": 80,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2740,
+    "specialAttackDelta": 17230,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 34200,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1523_ak",
+    "skillCode": "sk1523_ak",
+    "iconSkillCode2": "usk1523_ak",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1523_ak",
+    "skillCode3": "hsk1523_ak",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2508",
+    "abilityCode": "ab701_team_2508",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab219_mineraladd",
+    "abilityCode2": "ab219_mineraladd",
+    "abilityCategoryCode2": "ab219_mineraladd",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 136800,
+    "attackIncreaseAmountMax": 10960,
+    "specialAttackDeltaMax": 68920,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

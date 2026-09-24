@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 10,
+  "id": "u1233h-yoh",
+  "name": "สปิริตออฟซอร์ด อาซาคุระ โย",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 60.5,
+      "y": 79.6
+    },
+    "hitPoint": {
+      "x": -0.5,
+      "y": -66.2
+    },
+    "overhead": {
+      "x": 0.1,
+      "y": -162.6
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 25,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -152,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 46,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 6030,
+    "atk": 450,
+    "def": 315,
+    "spd": 102,
+    "crit": 11,
+    "critDmg": 165,
+    "evade": 8,
+    "hit": 11,
+    "skillEvade": 10,
+    "skillHit": 12,
+    "skillRes": 20
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "shield",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 360
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "healBlock",
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 59,
+    "y": 54
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 17,
+      "focus": {
+        "x": 64,
+        "y": -8
+      },
+      "size": 174,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 32,
+      "focus": {
+        "x": 102,
+        "y": -19
+      },
+      "size": 136,
+      "title": null
+    }
+  },
+  "approved": true
+}

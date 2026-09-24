@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 10,
+  "id": "u1378e-se",
+  "name": "นักผจญภัย ซายน์",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "int",
+  "role": "support",
+  "anchors": {
+    "ground": {
+      "x": 49,
+      "y": 79
+    },
+    "hitPoint": {
+      "x": 1.9,
+      "y": -68
+    },
+    "overhead": {
+      "x": 0.8,
+      "y": -167.6
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -593.5,
+          "y": -1.5
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 63,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 39,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4480,
+    "atk": 460,
+    "def": 240,
+    "spd": 119,
+    "crit": 7,
+    "critDmg": 150,
+    "evade": 12,
+    "hit": 12,
+    "skillEvade": 17,
+    "skillHit": 27,
+    "skillRes": 25
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 180
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 10
+        },
+        {
+          "type": "regen",
+          "pct": 8,
+          "turns": 3
+        },
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "portrait": {
+    "x": 51,
+    "y": -20
+  },
+  "approved": true,
+  "face": {
+    "x": 45,
+    "y": 54
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 52,
+      "focus": {
+        "x": 84,
+        "y": 5
+      },
+      "size": 112,
+      "title": null
+    }
+  }
+}

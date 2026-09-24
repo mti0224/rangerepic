@@ -1,0 +1,217 @@
+{
+  "id": "u1191h-eris",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T04:49:23.169Z"
+  },
+  "name": {
+    "en": "Sword Master Eris",
+    "th": "ยอดฝีมือวิชาดาบ เอริส"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 38720,
+      "perLevel": 4840,
+      "perLevelAfterMax": 6300
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1400,
+      "perLevel": 180,
+      "perLevelAfterMax": 240
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 158000,
+      "perLevel": 19750,
+      "perLevelAfterMax": 25680
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 67,
+    "attackRange": 140,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 114,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1191_eris",
+      "name": {
+        "en": "Critical Slash",
+        "th": "โจมตีสุดกำลัง"
+      },
+      "desc": {
+        "en": "Delivers a fierce slash. Bad effects on enemies. \\n\\n*Cancels enemy invincibility skills \\n*ATK x 3000% Area Damage \\n*Stuns enemies (5 sec)\\n*Moves enemies to the back ",
+        "th": "ฟันโจมตีอย่างรุนแรง สร้างผลลัพธ์ด้านลบให้ศัตรู \\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ทำให้ศัตรูชะงัก (5 วินาที)\\n*เคลื่อนย้ายเรนเจอร์ศัตรูลงไปแนวหลัง "
+      },
+      "icon": "icons/skill_icon_sk1191_eris.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1191_eris.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 7,
+      "range": 360,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1191_eris",
+      "name": {
+        "en": "I'm So Happy!",
+        "th": "ดีใจสุดๆ เลย!"
+      },
+      "desc": {
+        "en": "Jumps with joy. Good effects on allies. \\n\\n*Changes regular attacks to area attacks (7 sec)\\n*ATK Speed +300% (7 sec)",
+        "th": "กระโดดโลดเต้นเพราะรู้สึกมีความสุข สร้างผลลัพธ์ด้านบวกให้แก่ พรรคพวก \\n\\n*เปลี่ยนจากการโจมตีปกติเป็นการโจมตีพื้นที่ (7 วินาที)\\n*เพิ่มความเร็วในการโจมตี 300% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1191_eris.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1191_eris.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 300,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_mt",
+      "name": {
+        "en": "Group: Mushoku Tensei",
+        "th": "[กลุ่ม] เกิดชาตินี้พี่ต้องเทพ"
+      },
+      "desc": {
+        "en": "Mushoku Tensei Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ'พลังชีวิต'ในการต่อสู้เมื่อติดตั้งเรนเจอร์'โคลาโบเกิดชาตินี้พี่ต้องเทพ'ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย2ตัวและสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_mt_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab224_cooltimeadd",
+      "name": {
+        "en": "Deployment Freeze",
+        "th": "หยุดศัตรูออกปฏิบัติการชั่วคราว"
+      },
+      "desc": {
+        "en": "Gives a high chance that 1 Ranger on the opposite team will have the time until it can be redeployed frozen for a fixed amount of time when a Ranger with this Ability is deployed. Activates 10 seconds after the battle starts.",
+        "th": "เมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการจะมีโอกาสสูงที่จะหยุดเกจเวลารอสร้างของเรนเจอร์ทีมตรงข้าม1ตัวในช่วงระยะเวลาหนึ่งความสามารถนี้จะแสดงผลเมื่อผ่านไป10วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab224_cooltimeadd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1191h-eris",
+    "unitNameCode": "u1191h-eris_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "unitCategoryType": "AGI",
+    "attackRange": 140,
+    "attackDelay": 67,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1191h-eris_desc",
+    "initialAttack": 38720,
+    "specialAttack": 0,
+    "defence": 1400,
+    "specialDefence": 0,
+    "initialHp": 158000,
+    "movingSpeed": 114,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 4840,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 180,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 19750,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1191_eris",
+    "skillCode": "sk1191_eris",
+    "iconSkillCode2": "usk1191_eris",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1191_eris",
+    "skillCode3": "hsk1191_eris",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_mt",
+    "abilityCode": "ab701_team_mt",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab224_cooltimeadd",
+    "abilityCode2": "ab224_cooltimeadd",
+    "abilityCategoryCode2": "ab224_cooltimeadd",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 25680,
+    "attackIncreaseAmountMax": 6300,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 240,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

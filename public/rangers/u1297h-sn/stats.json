@@ -1,0 +1,217 @@
+{
+  "id": "u1297h-sn",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.772Z"
+  },
+  "name": {
+    "en": "Holy Magician Shuna",
+    "th": "ผู้ใช้เวทมนตร์ศักดิ์สิทธิ์ ชูนะ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 7380,
+      "perLevel": 1060,
+      "perLevelAfterMax": 1380
+    },
+    "matk": {
+      "initial": 66400,
+      "perLevel": 6640,
+      "perLevelAfterMax": 8640
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1400,
+      "perLevel": 160,
+      "perLevelAfterMax": 210
+    },
+    "hp": {
+      "initial": 168700,
+      "perLevel": 21090,
+      "perLevelAfterMax": 27420
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 81,
+    "attackRange": 190,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 89,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1500,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1297_sn",
+      "name": {
+        "en": "Holy Gospel",
+        "th": "บทเพลงศักดิ์สิทธิ์"
+      },
+      "desc": {
+        "en": "Rings the holy bell and\ncancels enemy attacks.\nGood effects on allies.\\n\\n*Skill Resistance +30% (10 sec)\\n*ATK +250% (10 sec)\\n*Resists enemies' summoning skills (10 sec)",
+        "th": "สั่นกระดิ่งศักดิ์สิทธิ์เพื่อลบล้าง\nการโจมตีของศัตรู\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มการต้านทักษะ 30% (10 วินาที)\\n*เพิ่มพลังโจมตี 250% (10 วินาที)\\n*ต่อต้านทักษะอัญเชิญจากศัตรู (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1297_sn.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1297_sn.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 340,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1297_sn",
+      "name": {
+        "en": "Anti Evil Barrier",
+        "th": "เขตอาคมต้านอสูร"
+      },
+      "desc": {
+        "en": "Destroys enemies inside\nthe barrier. Bad effects\non enemies.\\n\\n*Cancels HP regen \\n*Enemy Evade Rate -50% (7 sec)\\n*Enemy Skill Evade Rate -50% (7 sec)",
+        "th": "ทำลายล้างศัตรูในเขตอาคม\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกการฟื้นฟูพลังชีวิตต่อเนื่อง \\n*ลดอัตราการหลบหลีกของศัตรู 50% (7 วินาที)\\n*ลดอัตราการหลบทักษะของศัตรู 50% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1297_sn.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1297_sn.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_sl2",
+      "name": {
+        "en": "Group: TenSura2",
+        "th": "[กลุ่ม] เกิดใหม่เป็นสไลม์2"
+      },
+      "desc": {
+        "en": "TenSura2 Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เกิดใหม่เป็นสไลม์2' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_sl2_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1297h-sn",
+    "unitNameCode": "u1297h-sn_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1500,
+    "unitCategoryType": "INT",
+    "attackRange": 190,
+    "attackDelay": 81,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1297h-sn_desc",
+    "initialAttack": 7380,
+    "specialAttack": 66400,
+    "defence": 0,
+    "specialDefence": 1400,
+    "initialHp": 168700,
+    "movingSpeed": 89,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 1060,
+    "specialAttackDelta": 6640,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 160,
+    "hpIncreaseAmount": 21090,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1297_sn",
+    "skillCode": "sk1297_sn",
+    "iconSkillCode2": "usk1297_sn",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1297_sn",
+    "skillCode3": "hsk1297_sn",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_sl2",
+    "abilityCode": "ab701_team_sl2",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab213_lastatk",
+    "abilityCode2": "ab213_lastatk",
+    "abilityCategoryCode2": "ab213_lastatk",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 27420,
+    "attackIncreaseAmountMax": 1380,
+    "specialAttackDeltaMax": 8640,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 210,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

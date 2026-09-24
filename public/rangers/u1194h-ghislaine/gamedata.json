@@ -1,0 +1,88 @@
+{
+  "id": "u1194h-ghislaine",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.6,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.62,
+      "y": 0.62
+    }
+  },
+  "attackRangePt": 50,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 90,
+        "y": 150
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": -45,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 180
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 200
+    }
+  }
+}

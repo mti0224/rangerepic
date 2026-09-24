@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 10,
+  "id": "u1524e-ak",
+  "name": "ทำสัญญากับปีศาจจิ้งจอก อาคิ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 60.4,
+      "y": 88.8
+    },
+    "hitPoint": {
+      "x": 2.6,
+      "y": -61.8
+    },
+    "overhead": {
+      "x": 0.4,
+      "y": -174.3
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 16,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": -30.9,
+        "y": 1.1
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": -30.9,
+        "y": 1.1
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 52,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 33,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    }
+  },
+  "stats": {
+    "hp": 4090,
+    "atk": 660,
+    "def": 160,
+    "spd": 100,
+    "crit": 13,
+    "critDmg": 160,
+    "evade": 7,
+    "hit": 8,
+    "skillEvade": 9,
+    "skillHit": 29,
+    "skillRes": 19
+  },
+  "category": "int",
+  "role": "mage",
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "skillResUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 10,
+          "turns": 2
+        },
+        {
+          "type": "heal",
+          "pct": 10
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 210
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 54,
+    "y": 69
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 52,
+      "focus": {
+        "x": 58,
+        "y": 9
+      },
+      "size": 156,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 40,
+      "focus": {
+        "x": 87,
+        "y": -1
+      },
+      "size": 112,
+      "title": null
+    }
+  }
+}

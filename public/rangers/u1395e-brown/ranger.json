@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 10,
+  "id": "u1395e-brown",
+  "name": "Brown ทหารเสือขุนนาง",
+  "form": "body",
+  "fps": 30,
+  "element": "dark",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 58.5,
+      "y": 69
+    },
+    "hitPoint": {
+      "x": 1.5,
+      "y": -42.7
+    },
+    "overhead": {
+      "x": 0,
+      "y": -138.8
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 15,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 2.4,
+        "y": 48
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 52,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -652,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 3740,
+    "atk": 520,
+    "def": 185,
+    "spd": 118,
+    "crit": 16,
+    "critDmg": 195,
+    "evade": 10,
+    "hit": 23,
+    "skillEvade": 5,
+    "skillHit": 12,
+    "skillRes": 12
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "skillHitUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "hitUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "energyGain",
+          "amount": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 210
+        },
+        {
+          "type": "evadeDown",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillResDown",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "dispelBuffs"
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 72,
+    "y": 56
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": false,
+      "frame": 52,
+      "focus": {
+        "x": 711,
+        "y": -34
+      },
+      "size": 115,
+      "title": null
+    },
+    "skill1": {
+      "enabled": true,
+      "frame": 19,
+      "focus": {
+        "x": 64,
+        "y": -2
+      },
+      "size": 119,
+      "title": null
+    }
+  }
+}

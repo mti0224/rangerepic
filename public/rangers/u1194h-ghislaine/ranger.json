@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 10,
+  "id": "u1194h-ghislaine",
+  "name": "ราชาดาบ กีแลน",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 69.6,
+      "y": 94.8
+    },
+    "hitPoint": {
+      "x": -4.3,
+      "y": -65.1
+    },
+    "overhead": {
+      "x": -0.1,
+      "y": -178.2
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 44,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -191,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 40,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5180,
+    "atk": 400,
+    "def": 305,
+    "spd": 101,
+    "crit": 10,
+    "critDmg": 160,
+    "evade": 7,
+    "hit": 10,
+    "skillEvade": 7,
+    "skillHit": 12,
+    "skillRes": 21
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 250
+        },
+        {
+          "type": "bleed",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "skillResDown",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 160
+        },
+        {
+          "type": "evadeDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 85,
+    "y": 74
+  },
+  "approved": true
+}

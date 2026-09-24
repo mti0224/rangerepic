@@ -1,0 +1,88 @@
+{
+  "id": "u1147h-benimaru",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.58,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.53,
+      "y": 0.65
+    }
+  },
+  "attackRangePt": 280,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 0
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 185,
+        "y": 175
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": -50,
+        "end": 0
+      },
+      "motion": {
+        "type": "CURVE",
+        "enabled": true,
+        "rotation": "ANGLE_LERP",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 164,
+        "y": 0
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 0
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 300
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 350
+    }
+  }
+}

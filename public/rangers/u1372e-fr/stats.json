@@ -1,0 +1,218 @@
+{
+  "id": "u1372e-fr",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.835Z"
+  },
+  "name": {
+    "en": "Beyond the End Frieren",
+    "th": "การลาจาก ฟรีเรน"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 14540,
+      "perLevel": 2080,
+      "perLevelAfterMax": 8320
+    },
+    "matk": {
+      "initial": 130900,
+      "perLevel": 13090,
+      "perLevelAfterMax": 52360
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 299000,
+      "perLevel": 37380,
+      "perLevelAfterMax": 149520
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 77,
+    "attackRange": 390,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 77,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1730,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1371_fr",
+      "name": {
+        "en": "Zoltraak",
+        "th": "โซลทราค"
+      },
+      "desc": {
+        "en": "Demon Killing Magic.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*ATK x 3000% Area Damage \\n*Enemy Skill Use Rate -40% (6 sec)",
+        "th": "\"เวทมนตร์ฆ่าเผ่าปีศาจ\"\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ลดอัตราการใช้ทักษะของศัตรู 40% (6 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1371_fr.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1371_fr.png",
+      "probability": 0.4000000059604645,
+      "cooldownSec": 7,
+      "range": 330,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.4
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1371_fr",
+      "name": {
+        "en": "I Bought This",
+        "th": "ซื้อจนได้"
+      },
+      "desc": {
+        "en": "Buys unnecessary things\nat magic shops. Good\neffects on allies.\\n\\n*Removes allies' debuffs (4 sec)\\n*Resets the Skill cooldown of some allies. \\n*Skill Evade Rate +60% (7 sec)",
+        "th": "ซื้อของไม่จำเป็นจากร้านเวทมนตร์\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ยกเลิกผลลัพธ์ด้านลบแบบต่อเนื่องของพรรคพวก (4 วินาที)\\n*รีเซ็ตเวลารอทักษะของเรนเจอร์พรรคพวกส่วนหนึ่ง \\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1371_fr.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1371_fr.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 8,
+      "range": 360,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2402",
+      "name": {
+        "en": "Group: Frieren",
+        "th": "[กลุ่ม] Frieren"
+      },
+      "desc": {
+        "en": "Frieren Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ Frieren' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2402_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab230_barrier",
+      "name": {
+        "en": "Skill Barrier",
+        "th": "บาเรียทักษะ"
+      },
+      "desc": {
+        "en": "Continuously provides a barrier that protects against Skill Damage.\n- The Skill Barrier disappears after blocking Skill Damage 1 time and is reapplied 3 seconds later.\n- The Skill Barrier remains intact when Skill Damage is reduced to 0 through invincibility.\n- Boss, Guardian, and Special Type enemies' Skill Damage cannot be blocked.",
+        "th": "สร้างบาเรียป้องกันความเสียหายทักษะให้แก่ตนเองแบบต่อเนื่อง\n*บาเรียทักษะจะหายไปเมื่อป้องกันความเสียหายทักษะ 1 ครั้ง และจะสร้างใหม่ในอีก 3 วินาทีต่อมา\n*หากความเสียหายทักษะเป็น 0 เนื่องจากภาวะอมตะ บาเรียทักษะจะไม่หายไป\n*ไม่สามารถป้องกันความเสียหายทักษะจากบอส ผู้พิทักษ์ และศัตรูชนิดพิเศษได้"
+      },
+      "icon": "icons/ab230_barrier_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1372e-fr",
+    "unitNameCode": "u1372e-fr_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1730,
+    "unitCategoryType": "INT",
+    "attackRange": 390,
+    "attackDelay": 77,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1372e-fr_desc",
+    "initialAttack": 14540,
+    "specialAttack": 130900,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 299000,
+    "movingSpeed": 77,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2080,
+    "specialAttackDelta": 13090,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 37380,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1371_fr",
+    "skillCode": "sk1371_fr",
+    "iconSkillCode2": "usk1371_fr",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1371_fr",
+    "skillCode3": "hsk1371_fr",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2402",
+    "abilityCode": "ab701_team_2402",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab230_barrier",
+    "abilityCode2": "ab230_barrier",
+    "abilityCategoryCode2": "ab230_barrier",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 149520,
+    "attackIncreaseAmountMax": 8320,
+    "specialAttackDeltaMax": 52360,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 10,
+  "id": "u1207h-shinra",
+  "name": "ฮีโร่ ชินระ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 50,
+      "y": 81
+    },
+    "hitPoint": {
+      "x": 0.9,
+      "y": -64.5
+    },
+    "overhead": {
+      "x": 0,
+      "y": -133
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -229,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 40,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 51,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 5170,
+    "atk": 395,
+    "def": 335,
+    "spd": 105,
+    "crit": 10,
+    "critDmg": 155,
+    "evade": 8,
+    "hit": 7,
+    "skillEvade": 7,
+    "skillHit": 8,
+    "skillRes": 20
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "evadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "speedUp",
+          "pct": 60,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 10,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 58
+  }
+}

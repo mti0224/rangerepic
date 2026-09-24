@@ -1,0 +1,217 @@
+{
+  "id": "u1421e-tk",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.850Z"
+  },
+  "name": {
+    "en": "Battle Beacon Takemichi",
+    "th": "สัญญาณเปิดศึก ทาเคมิจิ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 84050,
+      "perLevel": 10510,
+      "perLevelAfterMax": 42040
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 367500,
+      "perLevel": 45940,
+      "perLevelAfterMax": 183760
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 70,
+    "attackRange": 170,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 110,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1710,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1420_tk",
+      "name": {
+        "en": "I... Didn't Lose... ",
+        "th": "ฉัน... ไม่แพ้แล้ว... "
+      },
+      "desc": {
+        "en": "Facing forward, raises fist to the sky.\nGives good effects to allies.\\n\\n*Removes allies' debuffs (4 sec)\\n*Skill Resistance +40% (8 sec)",
+        "th": "หันไปด้านหน้าและชูกำปั้นขึ้นฟ้า\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ยกเลิกผลลัพธ์ด้านลบแบบต่อเนื่องของพรรคพวก (4 วินาที)\\n*เพิ่มการต้านทักษะ 40% (8 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1420_tk.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1420_tk.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 290,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1420_tk",
+      "name": {
+        "en": "Brave Fist",
+        "th": "หมัดแห่งความกล้า"
+      },
+      "desc": {
+        "en": "Hops forward while attacking\nwith a wide sweeping punch.\nBad effects on enemies.\\n\\n*ATK x 3200% Area Damage \\n*Enemy Attack Range -40% (7 sec)\\n*Enemy Skill Hit Rate -40% (7 sec)",
+        "th": "กระโดดไปข้างหน้าเล็กน้อย\nพร้อมเหวี่ยงหมัดเป็นวงกว้างหนึ่งครั้งเพื่อโจมตี\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*สร้างความเสียหาย 3200% ของพลังโจมตีลงในพื้นที่ \\n*ลดระยะโจมตีของศัตรู 40% (7 วินาที)\\n*ลดอัตราความแม่นยำทักษะของศัตรู 40% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1420_tk.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1420_tk.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2408",
+      "name": {
+        "en": "Group: Tokyo Revengers 2",
+        "th": "[กลุ่ม] โตเกียวรีเวนเจอร์ส 2"
+      },
+      "desc": {
+        "en": "Tokyo Revengers 2 Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ โตเกียวรีเวนเจอร์ส 2' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2408_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab223_guts",
+      "name": {
+        "en": "Persistence",
+        "th": "เฮือกสุดท้าย"
+      },
+      "desc": {
+        "en": "Rangers with this Ability have a high chance of activating Persistence when defeated. Persistence allows these Rangers to hold on for 7 more seconds with a big ATK increase.",
+        "th": "มีโอกาสที่ \"เฮือกสุดท้าย\" จะทำงานเมื่อเรนเจอร์ที่มีความสามารถนี้จะถูกกำจัด หาก \"เฮือกสุดท้าย\" ทำงานเรนเจอร์จะไม่ถูกกำจัดเป็นเวลา 7 วินาทีและพลังโจมตีจะเพิ่มขึ้นอย่างมาก"
+      },
+      "icon": "icons/ab223_guts_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1421e-tk",
+    "unitNameCode": "u1421e-tk_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1710,
+    "unitCategoryType": "AGI",
+    "attackRange": 170,
+    "attackDelay": 70,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1421e-tk_desc",
+    "initialAttack": 84050,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 367500,
+    "movingSpeed": 110,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 10510,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 45940,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1420_tk",
+    "skillCode": "sk1420_tk",
+    "iconSkillCode2": "usk1420_tk",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1420_tk",
+    "skillCode3": "hsk1420_tk",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2408",
+    "abilityCode": "ab701_team_2408",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab223_guts",
+    "abilityCode2": "ab223_guts",
+    "abilityCategoryCode2": "ab223_guts",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 183760,
+    "attackIncreaseAmountMax": 42040,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "id": "u1017h-cygnus",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.45,
+      "y": 0.05
+    },
+    "faceCenter": {
+      "x": 0.5,
+      "y": 0.65
+    }
+  },
+  "attackRangePt": 420,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 115,
+        "y": 55
+      },
+      "moveSpeed": 20,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 225,
+        "y": 50
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 0
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "NONE",
+        "enabled": false,
+        "rotation": "NONE",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 500
+    },
+    "skill2": {
+      "basis": {
+        "type": "self"
+      },
+      "area": 250
+    }
+  }
+}

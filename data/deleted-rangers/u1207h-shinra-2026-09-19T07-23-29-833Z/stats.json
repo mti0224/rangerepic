@@ -1,0 +1,218 @@
+{
+  "id": "u1207h-shinra",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T07:19:42.479Z"
+  },
+  "name": {
+    "en": "Hero Shinra",
+    "th": "ฮีโร่ ชินระ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "ATTACK",
+  "category": "STR",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "str",
+    "role": "fighter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 29580,
+      "perLevel": 3700,
+      "perLevelAfterMax": 4810
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2200,
+      "perLevel": 280,
+      "perLevelAfterMax": 370
+    },
+    "mdef": {
+      "initial": 2600,
+      "perLevel": 290,
+      "perLevelAfterMax": 380
+    },
+    "hp": {
+      "initial": 313700,
+      "perLevel": 39220,
+      "perLevelAfterMax": 50990
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 74,
+    "attackRange": 80,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "VERYFAST",
+    "movingSpeed": 121,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1650,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1207_shinra",
+      "name": {
+        "en": "Pressure of Death",
+        "th": "แรงกดดันความตาย"
+      },
+      "desc": {
+        "en": "Exudes a pure blue aura. Good effects on allies. \\n\\n*Move Speed +120% (10 sec)\\n*Evade Rate +40% (10 sec)\\n*Skill Evade Rate +40% (10 sec)",
+        "th": "คลุมทั่วร่างด้วยแสงสีฟ้าบริสุทธิ์ สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก \\n\\n*เพิ่มความเร็วการเคลื่อนที่ 120% (10 วินาที)\\n*เพิ่มอัตราการหลบหลีก 40% (10 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 40% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1207_shinra.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1207_shinra.png",
+      "probability": 0.25,
+      "cooldownSec": 12,
+      "range": 310,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1207_shinra",
+      "name": {
+        "en": "Light Speed Attack",
+        "th": "โจมตีความเร็วแสง"
+      },
+      "desc": {
+        "en": "Attacks at light speed. Bad effects on enemies. \\n\\n*Continuously cancels enemy invincibility (4 sec)\\n*Stuns enemies (4 sec)\\n*Switches places with enemies ",
+        "th": "โจมตีศัตรูด้วยความเร็วเหนือแสง สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (4 วินาที)\\n*ทำให้ศัตรูชะงัก (4 วินาที)\\n*สลับตำแหน่งกับศัตรู"
+      },
+      "icon": "icons/skill_icon_hsk1207_shinra.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1207_shinra.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 5,
+      "range": 120,
+      "basis": {
+        "type": "rear",
+        "multiplier": 3.2
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_ff",
+      "name": {
+        "en": "Group: Fire Force",
+        "th": "[กลุ่ม] หน่วยผจญคนไฟลุก"
+      },
+      "desc": {
+        "en": "Fire Force Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ หน่วยผจญคนไฟลุก' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_ff_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab223_guts",
+      "name": {
+        "en": "Persistence",
+        "th": "เฮือกสุดท้าย"
+      },
+      "desc": {
+        "en": "Rangers with this Ability have a high chance of activating Persistence when defeated. Persistence allows these Rangers to hold on for 7 more seconds with a big ATK increase.",
+        "th": "มีโอกาสที่ \"เฮือกสุดท้าย\" จะทำงานเมื่อเรนเจอร์ที่มีความสามารถนี้จะถูกกำจัด หาก \"เฮือกสุดท้าย\" ทำงานเรนเจอร์จะไม่ถูกกำจัดเป็นเวลา 7 วินาทีและพลังโจมตีจะเพิ่มขึ้นอย่างมาก"
+      },
+      "icon": "icons/ab223_guts_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1207h-shinra",
+    "unitNameCode": "u1207h-shinra_nm",
+    "grade": 8,
+    "unitType": "ATTACK",
+    "productionSpeed": 13,
+    "summonEnergy": 1650,
+    "unitCategoryType": "STR",
+    "attackRange": 80,
+    "attackDelay": 74,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1207h-shinra_desc",
+    "initialAttack": 29580,
+    "specialAttack": 0,
+    "defence": 2200,
+    "specialDefence": 2600,
+    "initialHp": 313700,
+    "movingSpeed": 121,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 3700,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 280,
+    "specialDefenceDelta": 290,
+    "hpIncreaseAmount": 39220,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1207_shinra",
+    "skillCode": "sk1207_shinra",
+    "iconSkillCode2": "usk1207_shinra",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1207_shinra",
+    "skillCode3": "hsk1207_shinra",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "VERYFAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_ff",
+    "abilityCode": "ab701_team_ff",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab223_guts",
+    "abilityCode2": "ab223_guts",
+    "abilityCategoryCode2": "ab223_guts",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 50990,
+    "attackIncreaseAmountMax": 4810,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 370,
+    "specialDefenceDeltaMax": 380,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

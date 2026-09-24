@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 10,
+  "id": "u1113h-hatsuho",
+  "name": "ผู้นำกลุ่มบุปผา ฮัตสึโฮะ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 63.4,
+      "y": 77.5
+    },
+    "hitPoint": {
+      "x": 1.6,
+      "y": -74
+    },
+    "overhead": {
+      "x": 0,
+      "y": -164
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 17,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -191,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 56,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -216,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5630,
+    "atk": 430,
+    "def": 310,
+    "spd": 102,
+    "crit": 11,
+    "critDmg": 160,
+    "evade": 7,
+    "hit": 8,
+    "skillEvade": 7,
+    "skillHit": 9,
+    "skillRes": 21
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "shield",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "regen",
+          "pct": 6,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 180
+        },
+        {
+          "type": "burn",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "hitDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 84,
+    "y": 59
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 25,
+      "focus": {
+        "x": 44,
+        "y": -19
+      },
+      "size": 138,
+      "title": null
+    }
+  },
+  "approved": true
+}

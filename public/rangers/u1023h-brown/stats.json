@@ -1,0 +1,217 @@
+{
+  "id": "u1023h-brown",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.589Z"
+  },
+  "name": {
+    "en": "Unit-13 Brown",
+    "th": "Brown 13"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 17700,
+      "perLevel": 2300,
+      "perLevelAfterMax": 3000
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1560,
+      "perLevel": 200,
+      "perLevelAfterMax": 300
+    },
+    "mdef": {
+      "initial": 1920,
+      "perLevel": 220,
+      "perLevelAfterMax": 300
+    },
+    "hp": {
+      "initial": 187000,
+      "perLevel": 23400,
+      "perLevelAfterMax": 30500
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 80,
+    "attackRange": 90,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 100,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.4,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1460,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1023_brown",
+      "name": {
+        "en": "Umbilical Cable",
+        "th": "สายเคเบิ้ลอัมบิลิคัล"
+      },
+      "desc": {
+        "en": "An Umbilical Cable comes out of the ground and grants buff effects.\\n\\n*Skill Evade Rate +30% (10 sec)\\n*Changes regular attacks to area attacks (10 sec)",
+        "th": "สายเคเบิ้ลอัมบิลิคัลจะเด้งขึ้นมาจากพื้นเพื่อสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการหลบทักษะ 30% (10 วินาที)\\n*เปลี่ยนจากการโจมตีปกติเป็นการโจมตีพื้นที่ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1023_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1023_brown.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1023_brown",
+      "name": {
+        "en": "Lance of Longinus",
+        "th": "หอกลองกินุส"
+      },
+      "desc": {
+        "en": "Attacks enemies using 2 Lances of Longinus.\\n\\n*Cancels enemy invincibility skills \\n*ATK x 3600% Area Damage \\n*Skills made unusable (4 sec)",
+        "th": "โจมตีศัตรูด้วยหอกลองกินุส 2 เล่ม\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3600% ของพลังโจมตีลงในพื้นที่ \\n*ห้ามใช้ทักษะ (4 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1023_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1023_brown.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 999,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab105_frozenheart",
+      "name": {
+        "en": "Stone Cold",
+        "th": "หัวใจยะเยือก"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be turned against their allies \\nin stages with the Siren Song obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"ลำนำเย้ายวน\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab105_frozenheart_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab502_anti_ice",
+      "name": {
+        "en": "Resistance: Blizzard",
+        "th": "ต่อต้าน: พายุหิมะ"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Ice Shot and Blizzard items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มยิงน้ำแข็งและพายุหิมะได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1023h-brown",
+    "unitNameCode": "u1023h-brown_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1460,
+    "unitCategoryType": "STR",
+    "attackRange": 90,
+    "attackDelay": 80,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1023h-brown_desc",
+    "initialAttack": 17700,
+    "specialAttack": 0,
+    "defence": 1560,
+    "specialDefence": 1920,
+    "initialHp": 187000,
+    "movingSpeed": 100,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 2300,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 200,
+    "specialDefenceDelta": 220,
+    "hpIncreaseAmount": 23400,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1023_brown",
+    "skillCode": "sk1023_brown",
+    "iconSkillCode2": "usk1023_brown",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1023_brown",
+    "skillCode3": "hsk1023_brown",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.4,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab105_frozenheart",
+    "abilityCode": "ab105_frozenheart",
+    "abilityCategoryCode": "ab105_frozenheart",
+    "iconAbilityCode2": "ab502_anti_ice",
+    "abilityCode2": "ab502_anti_ice",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 30500,
+    "attackIncreaseAmountMax": 3000,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 300,
+    "specialDefenceDeltaMax": 300,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

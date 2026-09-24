@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 10,
+  "id": "u1507e-sz",
+  "name": "ลูกคนที่ 3 บ้านโยซากุระ ชินโซ",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "str",
+  "role": "tank",
+  "anchors": {
+    "ground": {
+      "x": 62,
+      "y": 91.9
+    },
+    "hitPoint": {
+      "x": -1,
+      "y": -70.3
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -190
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -224.9,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 39,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 67,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -182.9,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 6970,
+    "atk": 245,
+    "def": 435,
+    "spd": 96,
+    "crit": 3,
+    "critDmg": 145,
+    "evade": 8,
+    "hit": 4,
+    "skillEvade": 12,
+    "skillHit": 3,
+    "skillRes": 34
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 4,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 15
+        },
+        {
+          "type": "skillResUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "dispelBuffs"
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 55,
+    "y": 66
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 16,
+      "focus": {
+        "x": 101,
+        "y": -10
+      },
+      "size": 162,
+      "title": null
+    }
+  }
+}

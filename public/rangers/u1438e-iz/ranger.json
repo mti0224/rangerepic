@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 10,
+  "id": "u1438e-iz",
+  "name": "ผู้ควบคุมมิติ 666 ครั้ง เทนกะ",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "anchors": {
+    "ground": {
+      "x": 47.3,
+      "y": 83.9
+    },
+    "hitPoint": {
+      "x": 3.4000000000000057,
+      "y": -65.4
+    },
+    "overhead": {
+      "x": 0.2,
+      "y": -174.1
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 26,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": -47.3,
+        "y": -83.9
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "positioning": "auto"
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 43,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": -47.3,
+        "y": -83.9
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "positioning": "auto"
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 19,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": -47.3,
+        "y": -83.9
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "positioning": "auto"
+    }
+  },
+  "stats": {
+    "hp": 3210,
+    "atk": 515,
+    "def": 185,
+    "spd": 99,
+    "crit": 12,
+    "critDmg": 160,
+    "evade": 8,
+    "hit": 11,
+    "skillEvade": 8,
+    "skillHit": 26,
+    "skillRes": 14
+  },
+  "category": "int",
+  "role": "mage",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 120
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "poison",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "speedUp",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "energyGain",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  "portrait": {
+    "x": 43,
+    "y": -20.5
+  },
+  "face": {
+    "x": 47,
+    "y": 55
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": false,
+      "frame": 19,
+      "focus": {
+        "x": 35,
+        "y": 12
+      },
+      "size": 155,
+      "title": null
+    },
+    "skill1": {
+      "enabled": true,
+      "frame": 23,
+      "focus": {
+        "x": 80,
+        "y": -5
+      },
+      "size": 125,
+      "title": null
+    }
+  }
+}

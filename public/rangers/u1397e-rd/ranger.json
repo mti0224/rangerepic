@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 10,
+  "id": "u1397e-rd",
+  "name": "จอมเวทผู้เหนือล้ำ รูเดียส",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "anchors": {
+    "ground": {
+      "x": 52.1,
+      "y": 82
+    },
+    "hitPoint": {
+      "x": -0.2,
+      "y": -61.3
+    },
+    "overhead": {
+      "x": 1,
+      "y": -166.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 58.3,
+        "y": 2.6
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "manual",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 58.3,
+        "y": 2.6
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 40,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "auto",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 50,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 1.8,
+        "y": -270.7
+      },
+      "impactOffset": {
+        "x": 14.8,
+        "y": -62.8
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "manual",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 13.6,
+        "y": -81.1
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "aimTilt": true,
+      "aimTiltOffset": -20
+    }
+  },
+  "stats": {
+    "hp": 4120,
+    "atk": 670,
+    "def": 160,
+    "spd": 106,
+    "crit": 12,
+    "critDmg": 160,
+    "evade": 7,
+    "hit": 9,
+    "skillEvade": 7,
+    "skillHit": 24,
+    "skillRes": 17
+  },
+  "category": "int",
+  "role": "mage",
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "evadeUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 300
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 52,
+    "y": 58
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 35,
+      "focus": {
+        "x": 60,
+        "y": 10
+      },
+      "size": 140,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 52,
+      "focus": {
+        "x": 56,
+        "y": 7
+      },
+      "size": 113,
+      "title": null
+    }
+  }
+}

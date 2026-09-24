@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 10,
+  "id": "u1544h-ja",
+  "name": "จิงกิคือแมนคิลเลอร์ แจ็บเบอร์",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 55.9,
+      "y": 71.2
+    },
+    "hitPoint": {
+      "x": 4,
+      "y": -53.3
+    },
+    "overhead": {
+      "x": -0.4,
+      "y": -152.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 11,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -197,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 15,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -261,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 42,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5530,
+    "atk": 450,
+    "def": 300,
+    "spd": 97,
+    "crit": 15,
+    "critDmg": 160,
+    "evade": 6,
+    "hit": 10,
+    "skillEvade": 5,
+    "skillHit": 9,
+    "skillRes": 24
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 300
+        },
+        {
+          "type": "bleed",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "lifesteal",
+          "pct": 20,
+          "scope": "self"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "evadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 54,
+    "y": 63
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 33,
+      "focus": {
+        "x": 217,
+        "y": 1
+      },
+      "size": 90,
+      "title": null
+    }
+  },
+  "approved": true
+}

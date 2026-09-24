@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 10,
+  "id": "u1505e-so",
+  "name": "ลูกคนที่ 4 บ้านโยซากุระ ชิอง",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 46.4,
+      "y": 81
+    },
+    "hitPoint": {
+      "x": 1.5,
+      "y": -60.6
+    },
+    "overhead": {
+      "x": 0.4,
+      "y": -176.6
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 149.8,
+        "y": -236.6
+      },
+      "impactOffset": {
+        "x": 9.2,
+        "y": -83.4
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 9.2,
+        "y": -83.4
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 76,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 56,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 7.2,
+        "y": 18.5
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 7.2,
+        "y": 18.5
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    }
+  },
+  "stats": {
+    "hp": 3390,
+    "atk": 460,
+    "def": 190,
+    "spd": 113,
+    "crit": 23,
+    "critDmg": 180,
+    "evade": 13,
+    "hit": 20,
+    "skillEvade": 8,
+    "skillHit": 10,
+    "skillRes": 9
+  },
+  "category": "agi",
+  "role": "shooter",
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "critUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "critDmgUp",
+          "pct": 40,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 180
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 76,
+      "focus": {
+        "x": 70,
+        "y": 13
+      },
+      "size": 152,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 8,
+      "focus": {
+        "x": 90,
+        "y": 5
+      },
+      "size": 138,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 47,
+    "y": 60
+  }
+}

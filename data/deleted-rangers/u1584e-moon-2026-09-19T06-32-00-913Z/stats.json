@@ -1,0 +1,218 @@
+{
+  "id": "u1584e-moon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T14:56:33.911Z"
+  },
+  "name": {
+    "en": "Invincible Warrior Moon",
+    "th": "Moon นักสู้ไร้พ่าย"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "light",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "light",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 131190,
+      "perLevel": 16400,
+      "perLevelAfterMax": 65600
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 380500,
+      "perLevel": 47570,
+      "perLevelAfterMax": 190280
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 55,
+    "attackRange": 210,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 110,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 8,
+    "summonEnergy": 2030,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1583_moon",
+      "name": {
+        "en": "Whirlwind Flash",
+        "th": "พายุหมุนเฉียบพลัน"
+      },
+      "desc": {
+        "en": "Attacks with a full-force straight punch that unleashes a sharp whirlwind. Bad effects on enemies.\\n\\n*Continuously cancels enemy invincibility (4 sec)\\n*ATK x 4000% Area Damage \\n*Bunches enemies up ",
+        "th": "ปล่อยหมัดตรงเต็มแรงก่อให้เกิด\nพายุหมุนอันเฉียบคมเพื่อโจมตีศัตรู\nและสร้างผลลัพธ์ด้านลบ\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (4 วินาที)\\n*สร้างความเสียหาย 4000% ของพลังโจมตีลงในพื้นที่ \\n*ให้ศัตรูรวมตัวกัน "
+      },
+      "icon": "icons/skill_icon_sk1583_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1583_moon.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 6,
+      "range": 340,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.5
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1583_moon",
+      "name": {
+        "en": "Combat Stance",
+        "th": "พร้อมสู้"
+      },
+      "desc": {
+        "en": "Uses intimidation and inspires surrounding allies with fighting spirit. Good effects on allies.\\n\\n*ATK Speed +200% (7 sec)\\n*Skill Hit Rate +50% (7 sec)\\n*Skill Use Rate +50%  (7 sec)",
+        "th": "สร้างแรงกดดันมหาศาลปลุกใจรอบข้าง\nจนไฟนักสู้ลุกโชนและสร้างผลลัพธ์\nด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มความเร็วในการโจมตี 200% (7 วินาที)\\n*เพิ่มอัตราความแม่นยำของทักษะ 50% (7 วินาที)\\n*เพิ่มอัตราการใช้ทักษะ 50%  (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1583_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1583_moon.png",
+      "probability": 0.25,
+      "cooldownSec": 9,
+      "range": 360,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab233_antifreeze",
+      "name": {
+        "en": "Resistance: Deployment Freeze",
+        "th": "ต่อต้าน:หยุดศัตรูออกปฏิบัติการชั่วคราว"
+      },
+      "desc": {
+        "en": "Rangers with this Ability block enemies' Deployment Freeze Ability.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะป้องกันความสามารถ \"หยุดศัตรูออกปฏิบัติการชั่วคราว\" ของศัตรูได้"
+      },
+      "icon": "icons/ab233_antifreeze_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab234_minthief",
+      "name": {
+        "en": "Mineral Swipe",
+        "th": "หัวขโมยแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Each time deployed, has a high chance of stealing a certain amount of Minerals from opponents.\n\n- This Ability activates only in PVP and Guild Battles.\n- If an ally triggers an Ability of the same type, this one won’t activate again for 1 seconds.\n- You can't exceed your Mineral max, and you can't steal more Minerals than the opponent has left.",
+        "th": "ทุกครั้งที่ออกปฏิบัติการมีโอกาสสูงที่จะช่วงชิงแร่ธาตุจำนวนหนึ่งจากคู่ต่อสู้\n\n*ความสามารถนี้แสดงผลเฉพาะใน PVP และกิลด์วอร์\n*จะไม่แสดงผลซ้ำต่อเนื่องภายใน 1 วินาทีหลังมีความสามารถชนิดเดียวกันแสดงผลจากฝ่ายเดียวกัน\n*ไม่สามารถมีแร่ธาตุเกินแร่ธาตุสุงสุดของตนเอง และไม่สามารถช่วงชิงแร่ธาตุเกินแร่ธาตุที่เหลือของคู่ต่อสู้"
+      },
+      "icon": "icons/ab234_minthief_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1584e-moon",
+    "unitNameCode": "u1584e-moon_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 8,
+    "summonEnergy": 2030,
+    "unitCategoryType": "AGI",
+    "attackRange": 210,
+    "attackDelay": 55,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1584e-moon_desc",
+    "initialAttack": 131190,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 380500,
+    "movingSpeed": 110,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 16400,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 47570,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1583_moon",
+    "skillCode": "sk1583_moon",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1583_moon",
+    "skillCode3": "hsk1583_moon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab233_antifreeze",
+    "abilityCode": "ab233_antifreeze",
+    "abilityCategoryCode": "ab233_antifreeze",
+    "iconAbilityCode2": "ab234_minthief",
+    "abilityCode2": "ab234_minthief",
+    "abilityCategoryCode2": "ab234_minthief",
+    "elementOpen": "2",
+    "unitElement": "light",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 190280,
+    "attackIncreaseAmountMax": 65600,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

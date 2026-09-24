@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 10,
+  "id": "u1341e-brown",
+  "name": "Brown อัศวินแห่งแสง",
+  "form": "body",
+  "fps": 30,
+  "element": "light",
+  "anchors": {
+    "ground": {
+      "x": 71.1,
+      "y": 80.3
+    },
+    "hitPoint": {
+      "x": 1.5,
+      "y": -49.8
+    },
+    "overhead": {
+      "x": 0.9,
+      "y": -170.2
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 13,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -221.7,
+          "y": 1.1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 48,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -233.8,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 34,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 6250,
+    "atk": 230,
+    "def": 490,
+    "spd": 95,
+    "crit": 3,
+    "critDmg": 140,
+    "evade": 8,
+    "hit": 6,
+    "skillEvade": 10,
+    "skillHit": 5,
+    "skillRes": 29
+  },
+  "category": "str",
+  "role": "tank",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 180
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "shield",
+          "pct": 18,
+          "turns": 2
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "speedUp",
+          "pct": 10,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "portrait": {
+    "x": 72,
+    "y": 6.5
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 41,
+      "focus": {
+        "x": 36,
+        "y": -5
+      },
+      "size": 119,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 60,
+    "y": 79
+  },
+  "approved": true
+}

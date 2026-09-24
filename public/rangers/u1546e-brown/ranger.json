@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 10,
+  "id": "u1546e-brown",
+  "name": "Brown หัวหน้าอสูร",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 64.2,
+      "y": 79.8
+    },
+    "hitPoint": {
+      "x": 0,
+      "y": -48.1
+    },
+    "overhead": {
+      "x": 1.1,
+      "y": -153.3
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -122.5,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 54,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 5120,
+    "atk": 370,
+    "def": 290,
+    "spd": 106,
+    "crit": 11,
+    "critDmg": 165,
+    "evade": 7,
+    "hit": 12,
+    "skillEvade": 9,
+    "skillHit": 11,
+    "skillRes": 19
+  },
+  "category": "str",
+  "role": "fighter",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 240
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillResDown",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": false,
+      "frame": 10,
+      "focus": {
+        "x": 72,
+        "y": 2
+      },
+      "size": 167,
+      "title": null
+    },
+    "skill1": {
+      "enabled": true,
+      "frame": 58,
+      "focus": {
+        "x": 164,
+        "y": -39
+      },
+      "size": 129,
+      "title": null
+    }
+  },
+  "face": {
+    "x": 42,
+    "y": 71
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 10,
+  "id": "u1069h-zelga",
+  "name": "เซลกาดิส นักดาบเวทย์ผู้เก่งกาจ",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 86,
+      "y": 92
+    },
+    "hitPoint": {
+      "x": 0,
+      "y": -60
+    },
+    "overhead": {
+      "x": 0.4,
+      "y": -162.7
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -178,
+          "y": 0
+        },
+        "speed": 1800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": -16.6,
+        "y": -11.5
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 37,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 3890,
+    "atk": 540,
+    "def": 215,
+    "spd": 116,
+    "crit": 19,
+    "critDmg": 170,
+    "evade": 12,
+    "hit": 23,
+    "skillEvade": 12,
+    "skillHit": 5,
+    "skillRes": 13
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 160
+        },
+        {
+          "type": "critDown",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "critDmgDown",
+          "pct": 40,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "evadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 66,
+    "y": 64
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 10,
+      "focus": {
+        "x": 95,
+        "y": 12
+      },
+      "size": 106,
+      "title": null
+    }
+  },
+  "approved": true
+}

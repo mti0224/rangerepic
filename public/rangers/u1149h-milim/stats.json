@@ -1,0 +1,217 @@
+{
+  "id": "u1149h-milim",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T04:59:28.308Z"
+  },
+  "name": {
+    "en": "Tyrant Milim",
+    "th": "ทรราชผู้ทำลายล้าง มิลิม"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 39400,
+      "perLevel": 5000,
+      "perLevelAfterMax": 6500
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1500,
+      "perLevel": 190,
+      "perLevelAfterMax": 250
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 182000,
+      "perLevel": 22800,
+      "perLevelAfterMax": 29700
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 54,
+    "attackRange": 300,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 60,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1430,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1149_milim",
+      "name": {
+        "en": "Delicious Honey",
+        "th": "น้ำผึ้งแสนอร่อย"
+      },
+      "desc": {
+        "en": "Be happy with Rimuru's hand-made honey. Good effects to allies.\\n\\n*ATK +250% (10 sec)\\n*ATK Speed +250% (10 sec)\\n*Critical Damage +250% (10 sec)",
+        "th": "มีความสุขจากการกินน้ำผึ้งที่ริมุรุผลิต\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มพลังโจมตี 250% (10 วินาที)\\n*เพิ่มความเร็วในการโจมตี 250% (10 วินาที)\\n*เพิ่มค่าความเสียหายจากคริติคอลฮิต 250% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1149_milim.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1149_milim.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 350,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1149_milim",
+      "name": {
+        "en": "Drago Buster",
+        "th": "ระเบิดดาวมังกร"
+      },
+      "desc": {
+        "en": "Fires energy from hands.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*ATK x 3800% Area Damage \\n*Enemy Skill Range -60% (7 sec)",
+        "th": "ปล่อยคลื่นพลังงานรุนแรงจากสองมือ\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3800% ของพลังโจมตีลงในพื้นที่ \\n*ลดพื้นที่การใช้ทักษะของศัตรู 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1149_milim.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1149_milim.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 666,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_slim",
+      "name": {
+        "en": "Group: TenSura",
+        "th": "[กลุ่ม] เกิดใหม่เป็นสไลม์"
+      },
+      "desc": {
+        "en": "TenSura Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เกิดใหม่เป็นสไลม์' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_slim_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab218_revive",
+      "name": {
+        "en": "Revive",
+        "th": "ฟื้นพลัง"
+      },
+      "desc": {
+        "en": "Rangers will have a high chance of being revived when they are defeated.\nRangers will be revived with 70% HP. This Ability will only activate once.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้ มีโอกาสสูงที่จะฟื้นพลัง\nพลังชีวิตจะฟื้นฟูขึ้นประมาณ 70% เมื่อใช้ความสามารถ และไม่สามารถใช้ซ้ำได้อีก"
+      },
+      "icon": "icons/ab218_revive_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1149h-milim",
+    "unitNameCode": "u1149h-milim_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1430,
+    "unitCategoryType": "AGI",
+    "attackRange": 300,
+    "attackDelay": 54,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1149h-milim_desc",
+    "initialAttack": 39400,
+    "specialAttack": 0,
+    "defence": 1500,
+    "specialDefence": 0,
+    "initialHp": 182000,
+    "movingSpeed": 60,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 5000,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 190,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 22800,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1149_milim",
+    "skillCode": "sk1149_milim",
+    "iconSkillCode2": "usk1149_milim",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1149_milim",
+    "skillCode3": "hsk1149_milim",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_slim",
+    "abilityCode": "ab701_team_slim",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab218_revive",
+    "abilityCode2": "ab218_revive",
+    "abilityCategoryCode2": "ab218_revive",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 29700,
+    "attackIncreaseAmountMax": 6500,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 250,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

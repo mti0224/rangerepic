@@ -1,0 +1,217 @@
+{
+  "id": "u1111h-seijuro",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.628Z"
+  },
+  "name": {
+    "en": "Flower Div. Capt. Seijuro",
+    "th": "หัวหน้าหน่วยกลุ่มบุปผา เซย์จูโร่"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 6100,
+      "perLevel": 800,
+      "perLevelAfterMax": 1100
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1500,
+      "perLevel": 190,
+      "perLevelAfterMax": 250
+    },
+    "mdef": {
+      "initial": 1840,
+      "perLevel": 210,
+      "perLevelAfterMax": 280
+    },
+    "hp": {
+      "initial": 75000,
+      "perLevel": 9400,
+      "perLevelAfterMax": 12300
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 99,
+    "attackRange": 140,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 90,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 14,
+    "summonEnergy": 680,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1111_seijuro",
+      "name": {
+        "en": "Captain's Orders",
+        "th": "คำสั่งหัวหน้าหน่วย"
+      },
+      "desc": {
+        "en": "Points his trusty sword at the enemy and orders the Flower Division to attack, casting positive effects on allies.\\n\\n*Recovers 50% of HP \\n*Cancels continuous damage ",
+        "th": "ยื่นดาบเล่มโปรดไปทาง\nศัตรูออกคำสั่งรบกับกลุ่มบุปผา\nสร้างผลลัพธ์ด้านบวกแก่พรรคพวก\\n\\n*ฟื้นฟูพลังชีวิต 50% ของพลังชีวิต \\n*ยกเลิกความเสียหายต่อเนื่อง "
+      },
+      "icon": "icons/skill_icon_sk1111_seijuro.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1111_seijuro.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 150,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1111_seijuro",
+      "name": {
+        "en": "Crossblade Tempest",
+        "th": "ดาบไร้ลักษณ์ \"อาราชิ\""
+      },
+      "desc": {
+        "en": "Overwhelms surrounding enemies with a series of strikes, inflicting harmful effects on enemies.\\n\\n*ATK x 2400% Area Damage \\n*Enemy ATK Speed -40% (7 sec)\\n*Enemy Move Speed -40% (7 sec)",
+        "th": "โจมตีต่อเนื่องกดดันศัตรูโดยรอบ\nสร้างผลลัพธ์ด้านลบแก่ศัตรู\\n*สร้างความเสียหาย2400%ของพลังโจมตีลงในพื้นที่ \\n*ลดความเร็วในการโจมตีของศัตรู 40% (7 วินาที)\\n*ลดความเร็วการเคลื่อนที่ของศัตรู 40% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1111_seijuro.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1111_seijuro.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 200,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_saku",
+      "name": {
+        "en": "Group: Sakura Wars",
+        "th": "[กลุ่ม] New Sakura Wars"
+      },
+      "desc": {
+        "en": "Sakura Wars Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ \"พลังโจมตี\" ในการต่อสู้เมื่อติดตั้งเรนเจอร์ \"โคลาโบ New Sakura Wars\" ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด5ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_saku_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab301_absorb_wat",
+      "name": {
+        "en": "Absorb: Water",
+        "th": "ดูดซับการโจมตี: น้ำ"
+      },
+      "desc": {
+        "en": "Get a boost when attacked by Water-type enemies.\\n(Physical DEF/Magical DEF/Skill Resistance)",
+        "th": "จะแสดงผลลัพธ์ด้านบวกหากได้รับการโจมตีโดยศัตรูธาตุน้ำ\\n(พลังป้องกันกายภาพ, พลังป้องกันทางเวทย์, ต้านทักษะ)"
+      },
+      "icon": "icons/ab301_absorb_non_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1111h-seijuro",
+    "unitNameCode": "u1111h-seijuro_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 14,
+    "summonEnergy": 680,
+    "unitCategoryType": "STR",
+    "attackRange": 140,
+    "attackDelay": 99,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1111h-seijuro_desc",
+    "initialAttack": 6100,
+    "specialAttack": 0,
+    "defence": 1500,
+    "specialDefence": 1840,
+    "initialHp": 75000,
+    "movingSpeed": 90,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 800,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 190,
+    "specialDefenceDelta": 210,
+    "hpIncreaseAmount": 9400,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1111_seijuro",
+    "skillCode": "sk1111_seijuro",
+    "iconSkillCode2": "usk1111_seijuro",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1111_seijuro",
+    "skillCode3": "hsk1111_seijuro",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 1800,
+    "extractionCrystal2Gain": 200,
+    "extractionCrystal3Gain": 30,
+    "iconAbilityCode": "ab701_team_saku",
+    "abilityCode": "ab701_team_saku",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab301_absorb_wat",
+    "abilityCode2": "ab301_absorb_wat",
+    "abilityCategoryCode2": "ab301_absorb",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 12300,
+    "attackIncreaseAmountMax": 1100,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 250,
+    "specialDefenceDeltaMax": 280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 10,
+  "id": "u1157h-ryuu",
+  "name": "อดีตนักผจญภัย ริว",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 53.6,
+      "y": 79.1
+    },
+    "hitPoint": {
+      "x": -0.5,
+      "y": -61.9
+    },
+    "overhead": {
+      "x": -1,
+      "y": -163.7
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 18,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -800,
+          "y": 0
+        },
+        "speed": 1800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 32,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -800,
+          "y": 0
+        },
+        "speed": 1800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 44,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": -71.8
+      },
+      "impactOffset": {
+        "x": -89.5,
+        "y": -144.4
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 3030,
+    "atk": 520,
+    "def": 155,
+    "spd": 110,
+    "crit": 14,
+    "critDmg": 155,
+    "evade": 7,
+    "hit": 9,
+    "skillEvade": 8,
+    "skillHit": 25,
+    "skillRes": 20
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "burn",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        },
+        {
+          "type": "damage",
+          "pct": 250
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "silence",
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 59
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 14,
+      "focus": {
+        "x": 96,
+        "y": 10
+      },
+      "size": 103,
+      "title": null
+    }
+  },
+  "approved": true
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1216h-towa",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.699Z"
+  },
+  "name": {
+    "en": "Sesshomaru's Daughter Towa Higurashi",
+    "th": "ลูกสาวของเส็ตโชมารู ฮิกุราชิ โทวะ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 34870,
+      "perLevel": 4360,
+      "perLevelAfterMax": 5670
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2200,
+      "perLevel": 280,
+      "perLevelAfterMax": 370
+    },
+    "mdef": {
+      "initial": 2600,
+      "perLevel": 290,
+      "perLevelAfterMax": 380
+    },
+    "hp": {
+      "initial": 354000,
+      "perLevel": 44250,
+      "perLevelAfterMax": 57530
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 80,
+    "attackRange": 55,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 109,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1820,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1216_towa",
+      "name": {
+        "en": "Azure Dragon Wave",
+        "th": "พลังทลายมังกรฟ้า"
+      },
+      "desc": {
+        "en": "Unleashes a blue dragon\ndemonic energy wave.\nBad effects on enemies.\\n*Advance \\n*Cancels enemy invincibility skills \\n*ATK x 3300% Area Damage \\n*Stuns enemies (5 sec)\\n*Enemy Skill Resistance -40% (10 sec)",
+        "th": "ปล่อยคลื่นดาบมังกรสีน้ำเงิน\nด้วยพลังอสูรขั้นสูงสุด\\n*เคลื่อนที่ไปยังกองทัพศัตรู \\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3300% ของพลังโจมตีลงในพื้นที่ \\n*ทำให้ศัตรูชะงัก (5 วินาที)\\n*ลดการต้านทักษะของศัตรูในพื้นที่ 40% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1216_towa.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1216_towa.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 280,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1216_towa",
+      "name": {
+        "en": "Counterattack",
+        "th": "เอาล่ะ ได้เวลาโต้กลับแล้ว"
+      },
+      "desc": {
+        "en": "Unleashes demonic powers.\nGood effects on allies.\\n\\n*Creates a shield over an area (5 sec)\\n*HP +400% (7 sec)",
+        "th": "ปลดปล่อยพลังอสูรอันทรงพลัง\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (5 วินาที)\\n*เพิ่มพลังชีวิต 400% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1216_towa.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1216_towa.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_yh",
+      "name": {
+        "en": "Group: Yashahime",
+        "th": "[กลุ่ม] ยาฉะฮิเมะ"
+      },
+      "desc": {
+        "en": "Yashahime Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ ยาฉะฮิเมะ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_yh_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab219_mineraladd2",
+      "name": {
+        "en": "Enemy Cost Increase2",
+        "th": "ศัตรูใช้แร่ธาตุเพิ่มขึ้น2"
+      },
+      "desc": {
+        "en": "Gives a set chance of greatly increasing the Mineral Cost for one of the opposing team's Rangers when Rangers with this Ability are deployed. \\nThis Ability can activate from 10 seconds after the battle starts.",
+        "th": "มีโอกาสในระดับหนึ่งที่จะเพิ่มค่าแร่ธาตุเรนเจอร์ซึ่งจะออกปฏิบัติการของทีมศัตรู 1 ตัวอย่างมากเมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการ \\nความสามารถนี้จะแสดงผลเมื่อผ่านไป 10 วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab219_mineraladd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1216h-towa",
+    "unitNameCode": "u1216h-towa_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1820,
+    "unitCategoryType": "STR",
+    "attackRange": 55,
+    "attackDelay": 80,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1216h-towa_desc",
+    "initialAttack": 34870,
+    "specialAttack": 0,
+    "defence": 2200,
+    "specialDefence": 2600,
+    "initialHp": 354000,
+    "movingSpeed": 109,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 4360,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 280,
+    "specialDefenceDelta": 290,
+    "hpIncreaseAmount": 44250,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1216_towa",
+    "skillCode": "sk1216_towa",
+    "iconSkillCode2": "usk1216_towa",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1216_towa",
+    "skillCode3": "hsk1216_towa",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_yh",
+    "abilityCode": "ab701_team_yh",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab219_mineraladd2",
+    "abilityCode2": "ab219_mineraladd2",
+    "abilityCategoryCode2": "ab219_mineraladd",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 57530,
+    "attackIncreaseAmountMax": 5670,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 370,
+    "specialDefenceDeltaMax": 380,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

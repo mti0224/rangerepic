@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 10,
+  "id": "u1052h-sonic",
+  "name": "โซนิค\nผู้เร็วที่สุดในประวัติศาสตร์",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 60,
+      "y": 70
+    },
+    "hitPoint": {
+      "x": 0.9,
+      "y": -54.7
+    },
+    "overhead": {
+      "x": -0.5,
+      "y": -147.9
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 19,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1300,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 45,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1300,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 28,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4040,
+    "atk": 550,
+    "def": 195,
+    "spd": 111,
+    "crit": 29,
+    "critDmg": 195,
+    "evade": 10,
+    "hit": 23,
+    "skillEvade": 6,
+    "skillHit": 14,
+    "skillRes": 15
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 250
+        },
+        {
+          "type": "dispelBuffs"
+        },
+        {
+          "type": "speedDown",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "barrier",
+          "turns": 1
+        },
+        {
+          "type": "speedUp",
+          "pct": 60,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 38,
+      "focus": {
+        "x": 75,
+        "y": -233
+      },
+      "size": 115,
+      "title": null
+    }
+  },
+  "approved": true
+}

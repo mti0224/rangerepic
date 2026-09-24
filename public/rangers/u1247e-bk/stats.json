@@ -1,0 +1,217 @@
+{
+  "id": "u1247e-bk",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.718Z"
+  },
+  "name": {
+    "en": "World's #1 High Schooler Baki Hanma",
+    "th": "เด็กม.ปลายที่เก่งที่สุด ฮันมะ บากิ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 80120,
+      "perLevel": 10020,
+      "perLevelAfterMax": 40080
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 295400,
+      "perLevel": 36930,
+      "perLevelAfterMax": 147720
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 58,
+    "attackRange": 220,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 93,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1630,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1246_bk",
+      "name": {
+        "en": "3 Strike Rush",
+        "th": "จู่โจม 3 ชุด"
+      },
+      "desc": {
+        "en": "Sprints at opponents,\nand hits them 3 times.\nBad effects on enemies\\n\\n*Continuously cancels enemy invincibility (5 sec)\\n*ATK x 3100% Area Damage \\n*Stuns enemies (5 sec)",
+        "th": "พุ่งเข้าหาศัตรูและทำการโจมตี\nสามขั้นอย่างรวดเร็ว\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (5 วินาที)\\n*สร้างความเสียหาย 3100% ของพลังโจมตีลงในพื้นที่ \\n*ทำให้ศัตรูชะงัก (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1246_bk.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1246_bk.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 8,
+      "range": 310,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1246_bk",
+      "name": {
+        "en": "Liberation of Power",
+        "th": "การต่อสู้คือการปลดพลัง"
+      },
+      "desc": {
+        "en": "Yujiro Hanma puts charged\npower into the ground.\nGood effects on allies\\n\\n*Creates a shield over an area (4 sec)\\n*ATK +300% (7 sec)\\n*Resets the Skill cooldown of some allies. ",
+        "th": "ฮันมะ ยูจิโร่ปรากฏตัวโดยกะทันหัน\nสะสมพลังแล้วปล่อยลงบนพื้น\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (4 วินาที)\\n*เพิ่มพลังโจมตี 300% (7 วินาที)\\n*รีเซ็ตเวลารอทักษะของเรนเจอร์พรรคพวกส่วนหนึ่ง "
+      },
+      "icon": "icons/skill_icon_hsk1246_bk.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1246_bk.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 8,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_bk",
+      "name": {
+        "en": "Group: Baki Hanma",
+        "th": "[กลุ่ม] ฮันมะ บากิ"
+      },
+      "desc": {
+        "en": "Baki Hanma Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ ฮันมะ บากิ' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_bk_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab219_mineraladd2",
+      "name": {
+        "en": "Enemy Cost Increase2",
+        "th": "ศัตรูใช้แร่ธาตุเพิ่มขึ้น2"
+      },
+      "desc": {
+        "en": "Gives a set chance of greatly increasing the Mineral Cost for one of the opposing team's Rangers when Rangers with this Ability are deployed. \\nThis Ability can activate from 10 seconds after the battle starts.",
+        "th": "มีโอกาสในระดับหนึ่งที่จะเพิ่มค่าแร่ธาตุเรนเจอร์ซึ่งจะออกปฏิบัติการของทีมศัตรู 1 ตัวอย่างมากเมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการ \\nความสามารถนี้จะแสดงผลเมื่อผ่านไป 10 วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab219_mineraladd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1247e-bk",
+    "unitNameCode": "u1247e-bk_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1630,
+    "unitCategoryType": "AGI",
+    "attackRange": 220,
+    "attackDelay": 58,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1247e-bk_desc",
+    "initialAttack": 80120,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 295400,
+    "movingSpeed": 93,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 10020,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 36930,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1246_bk",
+    "skillCode": "sk1246_bk",
+    "iconSkillCode2": "usk1246_bk",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1246_bk",
+    "skillCode3": "hsk1246_bk",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_bk",
+    "abilityCode": "ab701_team_bk",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab219_mineraladd2",
+    "abilityCode2": "ab219_mineraladd2",
+    "abilityCategoryCode2": "ab219_mineraladd",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 147720,
+    "attackIncreaseAmountMax": 40080,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

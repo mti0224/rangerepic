@@ -1,0 +1,88 @@
+{
+  "id": "u1257e-boss",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.5,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.64,
+      "y": 0.46
+    }
+  },
+  "attackRangePt": 335,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 160,
+        "y": 140
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "CURVE",
+        "enabled": true,
+        "rotation": "ANGLE_LERP",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "self"
+      },
+      "area": 260
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 380
+    }
+  }
+}

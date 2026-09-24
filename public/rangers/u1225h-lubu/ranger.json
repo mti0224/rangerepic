@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 10,
+  "id": "u1225h-lubu",
+  "name": "วีรบุรุษผู้แกร่งสุดในจีน ลิโป้",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 75.1,
+      "y": 100.1
+    },
+    "hitPoint": {
+      "x": -0.4,
+      "y": -58.6
+    },
+    "overhead": {
+      "x": 0,
+      "y": -175.8
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 26,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -146,
+          "y": 0
+        },
+        "speed": 950,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 45,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -268,
+          "y": 0
+        },
+        "speed": 800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 51,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5450,
+    "atk": 435,
+    "def": 320,
+    "spd": 109,
+    "crit": 13,
+    "critDmg": 165,
+    "evade": 10,
+    "hit": 6,
+    "skillEvade": 8,
+    "skillHit": 14,
+    "skillRes": 23
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 220
+        },
+        {
+          "type": "lifesteal",
+          "pct": 15,
+          "scope": "own_row"
+        },
+        {
+          "type": "trueDamage",
+          "pct": 100
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "regen",
+          "pct": 8,
+          "turns": 3
+        },
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "shield",
+          "pct": 15,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 75,
+    "y": 83
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 36,
+      "focus": {
+        "x": 66,
+        "y": -17
+      },
+      "size": 152,
+      "title": null
+    }
+  },
+  "approved": true
+}

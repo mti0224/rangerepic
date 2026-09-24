@@ -1,0 +1,213 @@
+{
+  "id": "u92008-colo",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T12:55:13.946Z"
+  },
+  "name": {
+    "en": "u92008-colo",
+    "th": null
+  },
+  "grade": 8,
+  "tier": "base8",
+  "maxLevel": 120,
+  "unitType": "",
+  "category": "AGI",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 171377,
+      "perLevel": 5712,
+      "perLevelAfterMax": 5712
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 8500870,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 1492033,
+      "perLevel": 49730,
+      "perLevelAfterMax": 49730
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 29,
+    "attackRange": 125,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 115,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.95,
+    "skillResistance": 0.95,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 9,
+    "summonEnergy": 1450,
+    "maxLeonardPoint": 10
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "csk1001",
+      "name": {
+        "en": null,
+        "th": null
+      },
+      "desc": {
+        "en": null,
+        "th": null
+      },
+      "icon": null,
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_csk1001.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 340,
+      "basis": null
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "csk1105",
+      "name": {
+        "en": null,
+        "th": null
+      },
+      "desc": {
+        "en": null,
+        "th": null
+      },
+      "icon": null,
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_csk1105.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 310,
+      "basis": null
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab227_st_kback_str",
+      "name": {
+        "en": "Deploy Knockback: Strength",
+        "th": "กระเด็นถอยหลังเมื่อออกปฏิบัติการ: พลัง"
+      },
+      "desc": {
+        "en": "Has a high chance of knocking back all Strength type enemies and canceling their invincibility skill effects when Rangers deploy.\n- Activates 5 seconds after battles start.\n- You must wait 6 seconds before you can use an Ability again after using one with the same effect on the same type of Ranger.\n- Bosses, Guardians, and special type enemies are not affected by this Ability.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะทำให้ศัตรูชนิด \"พลัง\" ทั้งหมดกระเด็นไปด้านหลังและยกเลิกทักษะอมตะ\n*จะแสดงผลหลังเริ่มการต่อสู้ไปแล้ว 5 วินาที\n*หากความสามารถที่มีผลลัพธ์เหมือนกันมีเป้าหมายเป็นเรนเจอร์ชนิดเดียวกัน จะไม่แสดงผลต่อเนื่องโดยห่างกันเป็นเวลา 6 วินาที\n*ใช้ความสามารถนี้กับผู้พิทักษ์, บอส และศัตรูชนิดพิเศษไม่ได้"
+      },
+      "icon": "icons/ab227_st_kback_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u92008-colo",
+    "unitNameCode": "u92008-colo_nm",
+    "grade": 8,
+    "unitType": "",
+    "productionSpeed": 9,
+    "summonEnergy": 1450,
+    "unitCategoryType": "AGI",
+    "attackRange": 125,
+    "attackDelay": 29,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u92008-colo_desc",
+    "initialAttack": 171377,
+    "specialAttack": 0,
+    "defence": 8500870,
+    "specialDefence": 0,
+    "initialHp": 1492033,
+    "movingSpeed": 115,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 5712,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 49730,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 120,
+    "iconSkillCode": "csk1001",
+    "skillCode": "csk1001",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "csk1105",
+    "skillCode3": "csk1105",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.95,
+    "skillResistance": 0.95,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 0,
+    "extractionCrystal2Gain": 0,
+    "extractionCrystal3Gain": 0,
+    "iconAbilityCode": "ab227_st_kback_str",
+    "abilityCode": "ab227_st_kback_str",
+    "abilityCategoryCode": "",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 10,
+    "hpIncreaseAmountMax": 49730,
+    "attackIncreaseAmountMax": 5712,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

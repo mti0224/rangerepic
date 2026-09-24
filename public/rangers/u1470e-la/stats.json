@@ -1,0 +1,217 @@
+{
+  "id": "u1470e-la",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T13:25:37.105Z"
+  },
+  "name": {
+    "en": "Monster Nut Adventurer Laios",
+    "th": "นักผจญภัยผู้รักมอนสเตอร์ ไลออส"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 47810,
+      "perLevel": 5980,
+      "perLevelAfterMax": 23920
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 557700,
+      "perLevel": 69720,
+      "perLevelAfterMax": 278880
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 54,
+    "attackRange": 110,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 110,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1469_la",
+      "name": {
+        "en": "Holy Water Sprinkling",
+        "th": "สาดน้ำศักดิ์สิทธิ์"
+      },
+      "desc": {
+        "en": "Sprinkles holy water about to attack.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*ATK x 3000% Area Damage \\n*Enemy knockback ",
+        "th": "สาดน้ำศักดิ์สิทธิ์ไปรอบๆ เพื่อโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง "
+      },
+      "icon": "icons/skill_icon_sk1469_la.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1469_la.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 4,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1469_la",
+      "name": {
+        "en": "Hunting Stance",
+        "th": "กระบวนท่าหมาล่าเนื้อ"
+      },
+      "desc": {
+        "en": "Imitates a hunting dog to intimidate.\nGood effects on allies.\\n\\n*Creates a shield over an area (4 sec)\\n*Move Speed +190% (7 sec)\\n*Skill Evade Rate +60% (7 sec)",
+        "th": "เลียนแบบหมาล่าเนื้อเพื่อข่มขู่ศัตรู\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (4 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 190% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1469_la.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1469_la.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2502",
+      "name": {
+        "en": "Group: Delicious in Dungeon",
+        "th": "[กลุ่ม] สูตรลับตำรับดันเจียน"
+      },
+      "desc": {
+        "en": "Delicious in Dungeon Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ สูตรลับตำรับดันเจียน' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2502_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab604_copyally2",
+      "name": {
+        "en": "Ally Clone+",
+        "th": "โคลนนิ่งพรรคพวก+"
+      },
+      "desc": {
+        "en": "Has a high chance of summoning 1 allied team Ranger when Rangers deploy.\n- Flyer and Air Ambush Rangers are not eligible to be summoned in this way. \n- The Abilities of allied Rangers summoned by this Ability won't activate.\n- Summoned Rangers won't consume any Mineral and will have no effects on redeploy times.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะเรียกเรนเจอร์ในทีมเดียวกันออกมา 1 ตัว\n*เรนเจอร์บินและเรนเจอร์สกัดกั้นยูนิตบินจะไม่เข้าข่าย\n*ความสามารถของเรนเจอร์พรรคพวกที่เรียกด้วยความสามารถนี้จะไม่แสดงผล\n*เรนเจอร์พรรคพวกที่ถูกเรียกจะไม่ใช้แร่ธาตุ และไม่มีผลกระทบต่อเวลารอสร้าง"
+      },
+      "icon": "icons/ab604_copyally_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1470e-la",
+    "unitNameCode": "u1470e-la_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "unitCategoryType": "STR",
+    "attackRange": 110,
+    "attackDelay": 54,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1470e-la_desc",
+    "initialAttack": 47810,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 557700,
+    "movingSpeed": 110,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 5980,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 69720,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1469_la",
+    "skillCode": "sk1469_la",
+    "iconSkillCode2": "usk1469_la",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1469_la",
+    "skillCode3": "hsk1469_la",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2502",
+    "abilityCode": "ab701_team_2502",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab604_copyally2",
+    "abilityCode2": "ab604_copyally2",
+    "abilityCategoryCode2": "ab604_copyally",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 278880,
+    "attackIncreaseAmountMax": 23920,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

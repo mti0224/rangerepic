@@ -1,0 +1,89 @@
+{
+  "id": "u1329e-moon",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.51,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.5,
+      "y": 0.55
+    }
+  },
+  "attackRangePt": 380,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 290,
+        "y": 220
+      },
+      "moveSpeed": 40,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "self"
+      },
+      "area": 330
+    },
+    "skill2": {
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.3
+      },
+      "area": 360
+    }
+  }
+}

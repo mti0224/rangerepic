@@ -1,0 +1,217 @@
+{
+  "id": "u1052h-sonic",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T05:09:14.695Z"
+  },
+  "name": {
+    "en": "World's Fastest Sonic",
+    "th": "โซนิค\nผู้เร็วที่สุดในประวัติศาสตร์"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 26400,
+      "perLevel": 3300,
+      "perLevelAfterMax": 4300
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 960,
+      "perLevel": 120,
+      "perLevelAfterMax": 200
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 138000,
+      "perLevel": 17300,
+      "perLevelAfterMax": 22500
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 66,
+    "attackRange": 120,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "movingSpeed": 154,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1052_sonic",
+      "name": {
+        "en": "Spin Dash",
+        "th": "สปินแดช"
+      },
+      "desc": {
+        "en": "Sonic attacks enemies by crashing into them while spinning rapidly.\\n\\n*Cancels enemy buffs  \\n*ATK x 3800% Area Damage \\n*Enemy knockback ",
+        "th": "โซนิคจะหมุนตัวอย่างรวดเร็วเพื่อเพิ่ม\nความเร็วแล้วพุ่งเข้าใส่ศัตรูเพื่อโจมตี\\n\\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*สร้างความเสียหาย 3800% ของพลังโจมตีลงในพื้นที่ \\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง "
+      },
+      "icon": "icons/skill_icon_sk1052_sonic.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1052_sonic.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 10,
+      "range": 480,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1052_sonic",
+      "name": {
+        "en": "Super Sonic",
+        "th": "ซูเปอร์โซนิค"
+      },
+      "desc": {
+        "en": "Sonic uses the Chaos Emeralds to enter a Super Form, casting positive effects on allies.\\n\\n*Creates a shield over an area (4 sec)\\n*Move Speed +190% (7 sec)\\n*ATK Speed +320% (7 sec)",
+        "th": "โซนิคจะแปลงร่างเป็นขั้นซูเปอร์\nด้วยพลังของเคออสเอเมอรัลด์\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (4 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 190% (7 วินาที)\\n*เพิ่มความเร็วในการโจมตี 320% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1052_sonic.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1052_sonic.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 350,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab103_angel",
+      "name": {
+        "en": "Guardian Angel",
+        "th": "เทพพิทักษ์"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't get knocked out instantaneously\\nin advent stages with the Reaper obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ตกอยู่ในสภาพที่ไม่สามารถต่อสู้ได้ถึงแม้ผลลัพธ์ของ \\n\"ยมทูต\" จะแสดงผลในเสตจจุติก็ตาม"
+      },
+      "icon": "icons/ab103_angel_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab601_clone",
+      "name": {
+        "en": "Spawn Clone",
+        "th": "สร้างร่างโคลน"
+      },
+      "desc": {
+        "en": "Sometimes 1 additional Ranger is produced at no extra cost.",
+        "th": "มีโอกาสผลิตเรนเจอร์พร้อมกัน 2 ตัวด้วยการใช้แร่ธาตุเพียง 1 ตัว"
+      },
+      "icon": "icons/ab213_2generate_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1052h-sonic",
+    "unitNameCode": "u1052h-sonic_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1470,
+    "unitCategoryType": "AGI",
+    "attackRange": 120,
+    "attackDelay": 66,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1052h-sonic_desc",
+    "initialAttack": 26400,
+    "specialAttack": 0,
+    "defence": 960,
+    "specialDefence": 0,
+    "initialHp": 138000,
+    "movingSpeed": 154,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 3300,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 120,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 17300,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1052_sonic",
+    "skillCode": "sk1052_sonic",
+    "iconSkillCode2": "usk1052_sonic",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1052_sonic",
+    "skillCode3": "hsk1052_sonic",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab103_angel",
+    "abilityCode": "ab103_angel",
+    "abilityCategoryCode": "ab103_angel",
+    "iconAbilityCode2": "ab601_clone",
+    "abilityCode2": "ab601_clone",
+    "abilityCategoryCode2": "ab601_clone",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 22500,
+    "attackIncreaseAmountMax": 4300,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 200,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

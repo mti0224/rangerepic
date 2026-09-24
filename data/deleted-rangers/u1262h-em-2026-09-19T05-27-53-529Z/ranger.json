@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 10,
+  "id": "u1262h-em",
+  "name": "ผู้ท้าชิงตำแหน่งราชา เอมิเลีย",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 55,
+      "y": 84.9
+    },
+    "hitPoint": {
+      "x": -1.2,
+      "y": -68.5
+    },
+    "overhead": {
+      "x": -0.4,
+      "y": -131.1
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 105.6,
+        "y": -70
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": -72.2
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 59,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 800,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 53.8,
+        "y": 58.3
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 25,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 3400,
+    "atk": 540,
+    "def": 160,
+    "spd": 107,
+    "crit": 7,
+    "critDmg": 160,
+    "evade": 5,
+    "hit": 11,
+    "skillEvade": 10,
+    "skillHit": 24,
+    "skillRes": 12
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 320
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        },
+        {
+          "type": "breakInvincible"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 10,
+          "turns": 2
+        },
+        {
+          "type": "heal",
+          "pct": 20
+        }
+      ]
+    }
+  }
+}

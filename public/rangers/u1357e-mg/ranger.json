@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 10,
+  "id": "u1357e-mg",
+  "name": "เด็กสาวโคมะสุดเพี้ยน เมกุมิน",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 91.1,
+      "y": 93.8
+    },
+    "hitPoint": {
+      "x": 2.700000000000003,
+      "y": -60.9
+    },
+    "overhead": {
+      "x": 0.8,
+      "y": -191.6
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 800,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 29.3,
+        "y": 4
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "manual",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 29.3,
+        "y": 4
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 31,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": -91.1,
+        "y": -93.8
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "auto",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 55,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": -91.1,
+        "y": -93.8
+      },
+      "impactOffset": {
+        "x": 140.5,
+        "y": 0.4
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "moveSpeedOverride": null,
+      "positioning": "manual",
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 140.5,
+        "y": 0.4
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    }
+  },
+  "stats": {
+    "hp": 3080,
+    "atk": 510,
+    "def": 175,
+    "spd": 105,
+    "crit": 10,
+    "critDmg": 155,
+    "evade": 8,
+    "hit": 9,
+    "skillEvade": 8,
+    "skillHit": 28,
+    "skillRes": 16
+  },
+  "category": "int",
+  "role": "mage",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 290
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 4,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 200
+        },
+        {
+          "type": "breakInvincible"
+        }
+      ]
+    }
+  },
+  "portrait": {
+    "x": 85.5,
+    "y": -4
+  },
+  "face": {
+    "x": 77,
+    "y": 84
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 27,
+      "focus": {
+        "x": 98,
+        "y": 3
+      },
+      "size": 232,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 55,
+      "focus": {
+        "x": 136,
+        "y": -6
+      },
+      "size": 125,
+      "title": null
+    }
+  }
+}

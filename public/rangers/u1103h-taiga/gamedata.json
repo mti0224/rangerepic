@@ -1,0 +1,88 @@
+{
+  "id": "u1103h-taiga",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.58,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.52,
+      "y": 0.6
+    }
+  },
+  "attackRangePt": 290,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 45,
+        "y": 49
+      },
+      "moveSpeed": 40,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 550
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 330
+    }
+  }
+}

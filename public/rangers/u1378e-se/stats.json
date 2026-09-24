@@ -1,0 +1,217 @@
+{
+  "id": "u1378e-se",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.840Z"
+  },
+  "name": {
+    "en": "Adventurer Sein",
+    "th": "นักผจญภัย ซายน์"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 72890,
+      "perLevel": 9120,
+      "perLevelAfterMax": 36480
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 291800,
+      "perLevel": 36480,
+      "perLevelAfterMax": 145920
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 70,
+    "attackRange": 240,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 90,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1377_se",
+      "name": {
+        "en": "Goddess's 3 Spears",
+        "th": "สามง่ามเทพธิดา"
+      },
+      "desc": {
+        "en": "3 magical light beams\npierce enemies. Bad\neffects on enemies.\\n\\n*ATK x 2800% Area Damage \\n*Makes enemy skills unusable (4 sec)\\n*Enemy Attack Range -35% (10 sec)",
+        "th": "ปล่อยลำแสงเวทมนตร์ 3 สายโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*สร้างความเสียหาย 2800% ของพลังโจมตีลงในพื้นที่ \\n*ห้ามศัตรูใช้ทักษะ (4 วินาที)\\n*ลดระยะโจมตีของศัตรู 35% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1377_se.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1377_se.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 280,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1377_se",
+      "name": {
+        "en": "Awakening Spell",
+        "th": "เวทมนตร์ปลุกให้ตื่น"
+      },
+      "desc": {
+        "en": "Cancels curses, healing\nallies. Good effects\non allies.\\n\\n*HP x 40% Area Recovery (per sec) (7 sec)\\n*Removes allies' debuffs \\n*Skill Evade Rate +60% (7 sec)",
+        "th": "ลบคำสาปและรักษาผลด้านลบให้พรรคพวก\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*ฟื้นฟูพลังชีวิตในพื้นที่ 40% ของพลังชีวิต (ต่อ 1 วินาที) (7 วินาที)\\n*ยกเลิกผลลัพธ์ด้านลบของพรรคพวก \\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1377_se.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1377_se.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2402",
+      "name": {
+        "en": "Group: Frieren",
+        "th": "[กลุ่ม] Frieren"
+      },
+      "desc": {
+        "en": "Frieren Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ Frieren' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2402_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1378e-se",
+    "unitNameCode": "u1378e-se_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "unitCategoryType": "AGI",
+    "attackRange": 240,
+    "attackDelay": 70,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1378e-se_desc",
+    "initialAttack": 72890,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 291800,
+    "movingSpeed": 90,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 9120,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 36480,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1377_se",
+    "skillCode": "sk1377_se",
+    "iconSkillCode2": "usk1377_se",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1377_se",
+    "skillCode3": "hsk1377_se",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2402",
+    "abilityCode": "ab701_team_2402",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab213_lastatk",
+    "abilityCode2": "ab213_lastatk",
+    "abilityCategoryCode2": "ab213_lastatk",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 145920,
+    "attackIncreaseAmountMax": 36480,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

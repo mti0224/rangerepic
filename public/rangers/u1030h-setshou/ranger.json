@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 10,
+  "id": "u1030h-setshou",
+  "name": "เส็ตโชมารู ผู้ใช้ดาบเขี้ยวฟ้าฟื้น",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 66,
+      "y": 81
+    },
+    "hitPoint": {
+      "x": 2,
+      "y": -59.6
+    },
+    "overhead": {
+      "x": 0.2,
+      "y": -173.2
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 21,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 17,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 24,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4070,
+    "atk": 625,
+    "def": 175,
+    "spd": 101,
+    "crit": 8,
+    "critDmg": 160,
+    "evade": 8,
+    "hit": 9,
+    "skillEvade": 9,
+    "skillHit": 26,
+    "skillRes": 21
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 190
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 25
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "regen",
+          "pct": 6,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 80,
+    "y": 59
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 22,
+      "focus": {
+        "x": 67,
+        "y": -215
+      },
+      "size": 113,
+      "title": null
+    }
+  }
+}

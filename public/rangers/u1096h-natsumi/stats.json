@@ -1,0 +1,217 @@
+{
+  "id": "u1096h-natsumi",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.619Z"
+  },
+  "name": {
+    "en": "Earth's Final Defense Natsumi",
+    "th": "นัทสึมิ แนวป้องกันสุดท้ายของโลก"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 38900,
+      "perLevel": 4900,
+      "perLevelAfterMax": 6400
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1160,
+      "perLevel": 150,
+      "perLevelAfterMax": 200
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 178000,
+      "perLevel": 22300,
+      "perLevelAfterMax": 29000
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 50,
+    "attackRange": 120,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 110,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1410,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1096_natsumi",
+      "name": {
+        "en": "Aegis System (Shield)",
+        "th": "ระบบอีจิส (โล่)"
+      },
+      "desc": {
+        "en": "Activates the Aegis System barrier. Gives beneficial effects to allies.\\n\\n*Reflects 50% of incoming skill damage as physical damage (10 sec)\\n*Reflects 50% of incoming skill damage as magic damage (10 sec)",
+        "th": "ใช้บาเรียจากระบบอีจิส สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สะท้อนความเสียหายทักษะที่ได้รับ 50% ด้วยความเสียหายทางกายภาพ (10 วินาที)\\n*สะท้อนความเสียหายทักษะที่ได้รับ 50% ด้วยความเสียหายทางเวทย์ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1096_natsumi.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1096_natsumi.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 280,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1096_natsumi",
+      "name": {
+        "en": "Aegis System (Rifle)",
+        "th": "ระบบอีจิส (ไรเฟิล)"
+      },
+      "desc": {
+        "en": "Fires the Aegis System rifle. Inflicts harmful effects on enemies.\\n\\n*Moves enemies to the back \\n*ATK x 3600% Area Damage \\n*Cancels enemy invincibility skills \\n*Stuns enemies (2 sec)",
+        "th": "ยิงปืนไรเฟิลจากระบบอีจิส สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*เคลื่อนย้ายเรนเจอร์ศัตรูลงไปแนวหลัง \\n*สร้างความเสียหาย 3600% ของพลังโจมตีลงในพื้นที่ \\n*ยกเลิกทักษะอมตะของศัตรู \\n*ทำให้ศัตรูชะงัก (2 วินาที)"
+      },
+      "icon": "icons/skill_icon_usk1096_natsumi.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_usk1096_natsumi.png",
+      "probability": 0.4000000059604645,
+      "cooldownSec": 5,
+      "range": 380,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab104_souleye",
+      "name": {
+        "en": "Eagle Eyes",
+        "th": "นัยน์ตาแห่งวิญญาณ"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be blinded in advent stages \\nwith the Ink obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"หมึกทมิฬ\" จะแสดงผลในเสตจจุติก็ตาม"
+      },
+      "icon": "icons/ab104_souleye_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab502_anti_ice",
+      "name": {
+        "en": "Resistance: Blizzard",
+        "th": "ต่อต้าน: พายุหิมะ"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Ice Shot and Blizzard items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มยิงน้ำแข็งและพายุหิมะได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1096h-natsumi",
+    "unitNameCode": "u1096h-natsumi_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1410,
+    "unitCategoryType": "AGI",
+    "attackRange": 120,
+    "attackDelay": 50,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1096h-natsumi_desc",
+    "initialAttack": 38900,
+    "specialAttack": 0,
+    "defence": 1160,
+    "specialDefence": 0,
+    "initialHp": 178000,
+    "movingSpeed": 110,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 4900,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 150,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 22300,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1096_natsumi",
+    "skillCode": "sk1096_natsumi",
+    "iconSkillCode2": "usk1096_natsumi",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1096_natsumi",
+    "skillCode3": "hsk1096_natsumi",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab104_souleye",
+    "abilityCode": "ab104_souleye",
+    "abilityCategoryCode": "ab104_souleye",
+    "iconAbilityCode2": "ab502_anti_ice",
+    "abilityCode2": "ab502_anti_ice",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 29000,
+    "attackIncreaseAmountMax": 6400,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 200,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

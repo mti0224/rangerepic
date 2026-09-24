@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 10,
+  "id": "u1588e-es",
+  "name": "สายเดือดพล่าน โซจิ",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "anchors": {
+    "ground": {
+      "x": 60.6,
+      "y": 89.7
+    },
+    "hitPoint": {
+      "x": 1.5,
+      "y": -65.3
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -177.4
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 24,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 44.4,
+        "y": -60
+      },
+      "impactOffset": {
+        "x": 2,
+        "y": -62.5
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 1500,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 50,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 1.1,
+        "y": -54.9
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "aimTilt": true,
+      "aimTiltFinish": true
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 54,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 21,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": -31.8,
+        "y": -0.1
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": -51.2,
+        "y": -52.2
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    }
+  },
+  "stats": {
+    "hp": 4010,
+    "atk": 650,
+    "def": 160,
+    "spd": 102,
+    "crit": 8,
+    "critDmg": 165,
+    "evade": 7,
+    "hit": 10,
+    "skillEvade": 7,
+    "skillHit": 27,
+    "skillRes": 16
+  },
+  "category": "int",
+  "role": "mage",
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "hitUp",
+          "pct": 15,
+          "turns": 2
+        },
+        {
+          "type": "skillHitUp",
+          "pct": 15,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 230
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 56,
+    "y": 63
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 11,
+      "focus": {
+        "x": 77,
+        "y": 30
+      },
+      "size": 99,
+      "title": null
+    }
+  },
+  "approved": true
+}

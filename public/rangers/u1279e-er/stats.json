@@ -1,0 +1,217 @@
+{
+  "id": "u1279e-er",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.746Z"
+  },
+  "name": {
+    "en": "Founding Titan FS.Eren",
+    "th": "ไททันบรรพบุรุษ FS.เอเลน"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 50260,
+      "perLevel": 6290,
+      "perLevelAfterMax": 25160
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 573500,
+      "perLevel": 71690,
+      "perLevelAfterMax": 286760
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 70,
+    "attackRange": 80,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 108,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1810,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1278_er",
+      "name": {
+        "en": "War Hammer Power",
+        "th": "พลังค้อนสงคราม"
+      },
+      "desc": {
+        "en": "Turns into Attack Titan, fires needles out of ground. Bad effects on enemies.\\n\\n*Advance \\n*Cancels enemy invincibility skills \\n*ATK x 3600% Area Damage ",
+        "th": "แปลงร่างเป็นไททันจู่โจมและโจมตีศัตรู ด้วยการยิงเข็มขนาดยักษ์จากพื้นดิน สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*เคลื่อนที่ไปยังกองทัพศัตรู \\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3600% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1278_er.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1278_er.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 6,
+      "range": 350,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1278_er",
+      "name": {
+        "en": "Armor Harden",
+        "th": "กลายเป็นของแข็ง"
+      },
+      "desc": {
+        "en": "Attack Titan hardens body for better defense. Good effects on allies.\\n\\n*Creates a shield over an area (4 sec)\\n*HP +400% (7 sec)\\n*Skill Evade Rate +60% (7 sec)",
+        "th": "แปลงร่างเป็นไททันจู่โจมและทำให้ ร่างกายแข็งตัวเพื่อเพิ่มพลังป้องกัน สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*สร้างบาเรียในพื้นที่ (4 วินาที)\\n*เพิ่มพลังชีวิต 400% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1278_er.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1278_er.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_at2",
+      "name": {
+        "en": "Group: Attack on Titan2",
+        "th": "[กลุ่ม] \"ผ่าพิภพไททัน\"2"
+      },
+      "desc": {
+        "en": "Attack on Titan2 Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ \"ผ่าพิภพไททัน\"2' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_at2_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab224_cooltimeadd",
+      "name": {
+        "en": "Deployment Freeze",
+        "th": "หยุดศัตรูออกปฏิบัติการชั่วคราว"
+      },
+      "desc": {
+        "en": "Gives a high chance that 1 Ranger on the opposite team will have the time until it can be redeployed frozen for a fixed amount of time when a Ranger with this Ability is deployed. Activates 10 seconds after the battle starts.",
+        "th": "เมื่อเรนเจอร์ที่มีความสามารถนี้ออกปฏิบัติการจะมีโอกาสสูงที่จะหยุดเกจเวลารอสร้างของเรนเจอร์ทีมตรงข้าม1ตัวในช่วงระยะเวลาหนึ่งความสามารถนี้จะแสดงผลเมื่อผ่านไป10วินาทีหลังเริ่มการต่อสู้"
+      },
+      "icon": "icons/ab224_cooltimeadd_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1279e-er",
+    "unitNameCode": "u1279e-er_nm",
+    "grade": 9,
+    "unitType": "SPLASH",
+    "productionSpeed": 7,
+    "summonEnergy": 1810,
+    "unitCategoryType": "STR",
+    "attackRange": 80,
+    "attackDelay": 70,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1279e-er_desc",
+    "initialAttack": 50260,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 573500,
+    "movingSpeed": 108,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 6290,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 71690,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1278_er",
+    "skillCode": "sk1278_er",
+    "iconSkillCode2": "usk1278_er",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1278_er",
+    "skillCode3": "hsk1278_er",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_at2",
+    "abilityCode": "ab701_team_at2",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab224_cooltimeadd",
+    "abilityCode2": "ab224_cooltimeadd",
+    "abilityCategoryCode2": "ab224_cooltimeadd",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 286760,
+    "attackIncreaseAmountMax": 25160,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

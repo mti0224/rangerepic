@@ -1,0 +1,89 @@
+{
+  "id": "u1631e-sally",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.48,
+      "y": 0.09
+    },
+    "faceCenter": {
+      "x": 0.51,
+      "y": 0.64
+    }
+  },
+  "attackRangePt": 580,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 108,
+        "y": 75
+      },
+      "moveSpeed": 20,
+      "angle": {
+        "start": -75,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 0.5
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "NONE",
+        "enabled": false,
+        "rotation": "NONE",
+        "loopNormal": false
+      },
+      "hitPointRate": 0
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 30
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": false,
+        "rotation": "FIXED",
+        "loopNormal": false
+      },
+      "hitPointRate": 0
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "self"
+      },
+      "area": 330
+    },
+    "skill2": {
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.5
+      },
+      "area": 390
+    }
+  }
+}

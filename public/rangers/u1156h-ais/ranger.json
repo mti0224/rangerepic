@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 10,
+  "id": "u1156h-ais",
+  "name": "นักผจญภัยชั้น 1 อายส์",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "int",
+  "role": "mage",
+  "anchors": {
+    "ground": {
+      "x": 89,
+      "y": 84.8
+    },
+    "hitPoint": {
+      "x": 2.2,
+      "y": -66.7
+    },
+    "overhead": {
+      "x": 0.5,
+      "y": -164.9
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 23,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 19,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 40,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -614,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4040,
+    "atk": 660,
+    "def": 170,
+    "spd": 105,
+    "crit": 10,
+    "critDmg": 165,
+    "evade": 8,
+    "hit": 12,
+    "skillEvade": 8,
+    "skillHit": 24,
+    "skillRes": 16
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "speedUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "skillHitUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "atkUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 230
+        },
+        {
+          "type": "trueDamage",
+          "pct": 50
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "skillResDown",
+          "pct": 30,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 48,
+    "y": 55
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 27,
+      "focus": {
+        "x": 563,
+        "y": -133
+      },
+      "size": 96,
+      "title": null
+    }
+  },
+  "approved": true
+}

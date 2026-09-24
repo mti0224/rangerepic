@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 10,
+  "id": "u1096h-natsumi",
+  "name": "นัทสึมิ แนวป้องกันสุดท้ายของโลก",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 85,
+      "y": 90
+    },
+    "hitPoint": {
+      "x": 0.6,
+      "y": -80.5
+    },
+    "overhead": {
+      "x": 0.7,
+      "y": -192.7
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 25,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 37,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 45,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -415,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 2680,
+    "atk": 445,
+    "def": 170,
+    "spd": 114,
+    "crit": 28,
+    "critDmg": 195,
+    "evade": 16,
+    "hit": 16,
+    "skillEvade": 10,
+    "skillHit": 11,
+    "skillRes": 6
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "shield",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 3,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 120
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 72,
+    "y": 61
+  },
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 32,
+      "focus": {
+        "x": 107,
+        "y": -204
+      },
+      "size": 113,
+      "title": null
+    }
+  },
+  "approved": true
+}

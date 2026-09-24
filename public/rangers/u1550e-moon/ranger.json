@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 10,
+  "id": "u1550e-moon",
+  "name": "Moon คัปปะผู้ชุ่มฉ่ำ",
+  "form": "body",
+  "fps": 30,
+  "element": "dark",
+  "anchors": {
+    "ground": {
+      "x": 54.3,
+      "y": 75.9
+    },
+    "hitPoint": {
+      "x": 2.8,
+      "y": -56.6
+    },
+    "overhead": {
+      "x": 0.5,
+      "y": -164.8
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 10,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 7.8,
+        "y": -9.8
+      },
+      "impactOffset": {
+        "x": -0.2,
+        "y": -36.2
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "arc",
+        "arcHeight": 150,
+        "speed": 1200,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 20,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": -0.2,
+        "y": -36.2
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill1": {
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 33,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 66.5,
+        "y": -23.6
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": -18.5
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 1200,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "castPre": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 35,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": -18.5
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    },
+    "skill2": {
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 62,
+      "castSpeedCap": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "castPre": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      }
+    }
+  },
+  "stats": {
+    "hp": 3990,
+    "atk": 580,
+    "def": 185,
+    "spd": 115,
+    "crit": 26,
+    "critDmg": 185,
+    "evade": 12,
+    "hit": 18,
+    "skillEvade": 8,
+    "skillHit": 12,
+    "skillRes": 8
+  },
+  "category": "agi",
+  "role": "shooter",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 260
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "silence",
+          "turns": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 25,
+          "turns": 2
+        },
+        {
+          "type": "critDmgUp",
+          "pct": 40,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 48,
+    "y": 70
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 34,
+      "focus": {
+        "x": 93,
+        "y": -15
+      },
+      "size": 116,
+      "title": null
+    }
+  }
+}

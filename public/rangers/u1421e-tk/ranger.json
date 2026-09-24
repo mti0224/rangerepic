@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 10,
+  "id": "u1421e-tk",
+  "name": "สัญญาณเปิดศึก ทาเคมิจิ",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "agi",
+  "role": "shooter",
+  "anchors": {
+    "ground": {
+      "x": 50.9,
+      "y": 74
+    },
+    "hitPoint": {
+      "x": 0.5,
+      "y": -64.5
+    },
+    "overhead": {
+      "x": 0.3,
+      "y": -153.3
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 23,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -331,
+          "y": 2.5
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 39,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 31,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -379.6,
+          "y": 1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 4070,
+    "atk": 510,
+    "def": 195,
+    "spd": 114,
+    "crit": 24,
+    "critDmg": 190,
+    "evade": 12,
+    "hit": 23,
+    "skillEvade": 9,
+    "skillHit": 10,
+    "skillRes": 11
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "cleanse"
+        },
+        {
+          "type": "skillResUp",
+          "pct": 30,
+          "turns": 2
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 260
+        },
+        {
+          "type": "skillHitDown",
+          "pct": 30,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 63
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": false,
+      "frame": 39,
+      "focus": {
+        "x": 60,
+        "y": -7
+      },
+      "size": 154,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 29,
+      "focus": {
+        "x": 314,
+        "y": -4
+      },
+      "size": 109,
+      "title": null
+    }
+  }
+}

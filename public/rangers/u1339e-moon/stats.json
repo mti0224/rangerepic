@@ -1,0 +1,217 @@
+{
+  "id": "u1339e-moon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.805Z"
+  },
+  "name": {
+    "en": "Shadow Hunter Moon",
+    "th": "Moon นักล่าเงา"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 62780,
+      "perLevel": 7850,
+      "perLevelAfterMax": 31400
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2800,
+      "perLevel": 350,
+      "perLevelAfterMax": 1400
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 268500,
+      "perLevel": 33570,
+      "perLevelAfterMax": 134280
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 56,
+    "attackRange": 350,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 88,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1400,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1338_moon",
+      "name": {
+        "en": "Treasure Chest",
+        "th": "หีบสมบัติ"
+      },
+      "desc": {
+        "en": "Moon finds treasure. Good effects on surrounding allies.\\n\\n*ATK +200% (10 sec)\\n*Critical Damage +200% (10 sec)\\n*Changes regular attacks to area attacks (10 sec)",
+        "th": "Moon ที่ค้นพบสมบัติ\nสร้างผลลัพธ์ด้านบวกให้พรรคพวกรอบๆ\\n\\n*เพิ่มพลังโจมตี 200% (10 วินาที)\\n*เพิ่มค่าความเสียหายจากคริติคอลฮิต 200% (10 วินาที)\\n*เปลี่ยนจากการโจมตีปกติเป็นการโจมตีพื้นที่ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1338_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1338_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 300,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1338_moon",
+      "name": {
+        "en": "Mimic",
+        "th": "กล่องมอนสเตอร์"
+      },
+      "desc": {
+        "en": "Kicks a Mimic chest at enemies to attack them. Bad effects on enemies.\\n\\n*Cancels enemy buffs  \\n*ATK x 3000% Area Damage \\n*Enemy Evade Rate -50% (7 sec)",
+        "th": "เตะกล่องมอนสเตอร์ใส่ศัตรูเพื่อโจมตี\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกผลลัพธ์บัฟของศัตรู \\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ลดอัตราการหลบหลีกของศัตรู 50% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1338_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1338_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 320,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab102_mask",
+      "name": {
+        "en": "Gas Mask",
+        "th": "มาส์ก"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't take damage in advent stages \\nwith the Poison Gas obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับความเสียหายถึงแม้ผลลัพธ์ของ \\n\"แก๊สพิษ\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab102_mask_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab227_st_kback_agi",
+      "name": {
+        "en": "Deploy Knockback: Agility",
+        "th": "กระเด็นถอยหลังเมื่อออกปฏิบัติการ: ความว่องไว"
+      },
+      "desc": {
+        "en": "Has a high chance of knocking back all Agility type enemies and canceling their invincibility skill effects when Rangers deploy.\n- Activates 5 seconds after battles start.\n- You must wait 6 seconds before you can use an Ability again after using one with the same effect on the same type of Ranger.\n- Bosses, Guardians, and special type enemies are not affected by this Ability.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะทำให้ศัตรูชนิด \"ความว่องไว\" ทั้งหมดกระเด็นไปด้านหลังและยกเลิกทักษะอมตะ\n*จะแสดงผลหลังเริ่มการต่อสู้ไปแล้ว 5 วินาที\n*หากความสามารถที่มีผลลัพธ์เหมือนกันมีเป้าหมายเป็นเรนเจอร์ชนิดเดียวกัน จะไม่แสดงผลต่อเนื่องโดยห่างกันเป็นเวลา 6 วินาที\n*ใช้ความสามารถนี้กับผู้พิทักษ์, บอส และศัตรูชนิดพิเศษไม่ได้"
+      },
+      "icon": "icons/ab227_st_kback_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1339e-moon",
+    "unitNameCode": "u1339e-moon_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 7,
+    "summonEnergy": 1400,
+    "unitCategoryType": "AGI",
+    "attackRange": 350,
+    "attackDelay": 56,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1339e-moon_desc",
+    "initialAttack": 62780,
+    "specialAttack": 0,
+    "defence": 2800,
+    "specialDefence": 0,
+    "initialHp": 268500,
+    "movingSpeed": 88,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 7850,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 350,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 33570,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1338_moon",
+    "skillCode": "sk1338_moon",
+    "iconSkillCode2": "usk1338_moon",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1338_moon",
+    "skillCode3": "hsk1338_moon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab102_mask",
+    "abilityCode": "ab102_mask",
+    "abilityCategoryCode": "ab102_mask",
+    "iconAbilityCode2": "ab227_st_kback_agi",
+    "abilityCode2": "ab227_st_kback_agi",
+    "abilityCategoryCode2": "ab227_strike",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 134280,
+    "attackIncreaseAmountMax": 31400,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 1400,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

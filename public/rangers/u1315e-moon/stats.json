@@ -1,0 +1,217 @@
+{
+  "id": "u1315e-moon",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.794Z"
+  },
+  "name": {
+    "en": "Croc King Moon",
+    "th": "Moon ราชาจระเข้"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 56670,
+      "perLevel": 7090,
+      "perLevelAfterMax": 28360
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4400,
+      "perLevel": 550,
+      "perLevelAfterMax": 2200
+    },
+    "mdef": {
+      "initial": 5200,
+      "perLevel": 580,
+      "perLevelAfterMax": 2320
+    },
+    "hp": {
+      "initial": 676300,
+      "perLevel": 84540,
+      "perLevelAfterMax": 338160
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 62,
+    "attackRange": 50,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 90,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 2120,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1314_moon",
+      "name": {
+        "en": "Bulk Up",
+        "th": "เบ่งกล้าม"
+      },
+      "desc": {
+        "en": "Squeeze out strength, casting positive effects on allies.\\n\\n*Area Magical DEF +30000 (5 sec)\\n*Reflects 80% of incoming skill damage as magic damage (5 sec)\\n*Changes regular attacks to area attacks (5 sec)",
+        "th": "รวบรวมพลังสร้างผลลัพธ์ด้านบวก\nให้แก่ตนเองและพรรคพวก\\n\\n*เพิ่มพลังเวทย์ป้องกันในพื้นที่ 30000 หน่วย (5 วินาที)\\n*สะท้อนความเสียหายทักษะที่ได้รับ 80% ด้วยความเสียหายทางเวทย์ (5 วินาที)\\n*เปลี่ยนจากการโจมตีปกติเป็นการโจมตีพื้นที่ (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1314_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1314_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 260,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1314_moon",
+      "name": {
+        "en": "Iron Tail",
+        "th": "หางเหล็ก"
+      },
+      "desc": {
+        "en": "Dives into the enemies and hits them with the tail.\\n\\n*ATK x 3000% Area Damage \\n*Negates enemies' regen (5 sec)\\n*Enemy Skill Evade Rate -50% (5 sec)",
+        "th": "พุ่งไปหาศัตรูและฟาดด้วยหาง\\n\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ขัดขวางการฟื้นฟูพลังชีวิตต่อเนื่องของศัตรู (5 วินาที)\\n*ลดอัตราการหลบทักษะของศัตรู 50% (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1314_moon.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1314_moon.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 330,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab105_frozenheart",
+      "name": {
+        "en": "Stone Cold",
+        "th": "หัวใจยะเยือก"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be turned against their allies \\nin stages with the Siren Song obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"ลำนำเย้ายวน\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab105_frozenheart_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab220_waterghost2",
+      "name": {
+        "en": "Same Fate 2",
+        "th": "พลีชีพ 2"
+      },
+      "desc": {
+        "en": "When the Ranger is defeated, it will randomly take 1 of the enemies with it. It has a high chance of activating in PVP and Guild War only, and will not activate in other battles. (Guardians will not be affected by this Ability)",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้ จะพลีชีพสุ่มปราบฝั่งศัตรู1ตัว โดยมีโอกาสแสดงผลสูงเฉพาะในโหมด PVPและกิลด์วอร์ แต่จะไม่แสดงผลในการต่อสู้อื่นๆ (ใช้ความสามารถนี้กับผู้พิทักษ์ไม่ได้)"
+      },
+      "icon": "icons/ab220_waterghost_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1315e-moon",
+    "unitNameCode": "u1315e-moon_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 7,
+    "summonEnergy": 2120,
+    "unitCategoryType": "STR",
+    "attackRange": 50,
+    "attackDelay": 62,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1315e-moon_desc",
+    "initialAttack": 56670,
+    "specialAttack": 0,
+    "defence": 4400,
+    "specialDefence": 5200,
+    "initialHp": 676300,
+    "movingSpeed": 90,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 7090,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 550,
+    "specialDefenceDelta": 580,
+    "hpIncreaseAmount": 84540,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1314_moon",
+    "skillCode": "sk1314_moon",
+    "iconSkillCode2": "usk1314_moon",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1314_moon",
+    "skillCode3": "hsk1314_moon",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab105_frozenheart",
+    "abilityCode": "ab105_frozenheart",
+    "abilityCategoryCode": "ab105_frozenheart",
+    "iconAbilityCode2": "ab220_waterghost2",
+    "abilityCode2": "ab220_waterghost2",
+    "abilityCategoryCode2": "ab220_waterghost",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 338160,
+    "attackIncreaseAmountMax": 28360,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 2200,
+    "specialDefenceDeltaMax": 2320,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

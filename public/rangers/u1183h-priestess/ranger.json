@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 10,
+  "id": "u1183h-priestess",
+  "name": "นักบวชผู้ได้รับ \"นิมิต\" นักบวชหญิง",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "int",
+  "role": "support",
+  "anchors": {
+    "ground": {
+      "x": 58.7,
+      "y": 72.1
+    },
+    "hitPoint": {
+      "x": 3.2,
+      "y": -62.1
+    },
+    "overhead": {
+      "x": 0.5,
+      "y": -164.1
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 20,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 23,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 27,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul3",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    }
+  },
+  "stats": {
+    "hp": 4210,
+    "atk": 415,
+    "def": 205,
+    "spd": 125,
+    "crit": 6,
+    "critDmg": 145,
+    "evade": 11,
+    "hit": 10,
+    "skillEvade": 10,
+    "skillHit": 22,
+    "skillRes": 32
+  },
+  "skills": {
+    "skill1": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "ally_all",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 20
+        },
+        {
+          "type": "regen",
+          "pct": 10,
+          "turns": 3
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "row",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 210
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 51,
+    "y": 57
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 24,
+      "focus": {
+        "x": 71,
+        "y": -8
+      },
+      "size": 100,
+      "title": null
+    }
+  },
+  "approved": true
+}

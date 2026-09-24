@@ -1,0 +1,217 @@
+{
+  "id": "u1157h-ryuu",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T04:53:57.537Z"
+  },
+  "name": {
+    "en": "Pro Adventurer Ryu",
+    "th": "อดีตนักผจญภัย ริว"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 5400,
+      "perLevel": 800,
+      "perLevelAfterMax": 1100
+    },
+    "matk": {
+      "initial": 47900,
+      "perLevel": 4800,
+      "perLevelAfterMax": 6300
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1200,
+      "perLevel": 140,
+      "perLevelAfterMax": 190
+    },
+    "hp": {
+      "initial": 146000,
+      "perLevel": 18300,
+      "perLevelAfterMax": 23800
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 82,
+    "attackRange": 325,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 58,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1360,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1157_ryuu",
+      "name": {
+        "en": "Crozzo Double Strike",
+        "th": "ดาบเวทคู่"
+      },
+      "desc": {
+        "en": "Strikes the opponent with 2 swords.\\n\\n*ATK x 2400% Area Damage \\n*Enemy ATK -50% (10 sec)\\n*Enemy Skill Evade Rate -40% (10 sec)",
+        "th": "โจมตีศัตรูด้วยดาบเวทสองเล่มในมือ สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*สร้างความเสียหาย 2400% ของพลังโจมตีลงในพื้นที่ \\n*ลดพลังโจมตีของศัตรู 50% (10 วินาที)\\n*ลดอัตราการหลบทักษะของศัตรู 40% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1157_ryuu.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1157_ryuu.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 360,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1157_ryuu",
+      "name": {
+        "en": "Luminous Wind",
+        "th": "ลูมินัส วินด์"
+      },
+      "desc": {
+        "en": "Showers enemies with magic bullets.\\n\\n*Cancels enemy invincibility skills \\n*ATK x 3200% Area Damage \\n*Makes enemy skills unusable (5 sec)",
+        "th": "ปล่อยกระสุนเวทย์จำนวนมากออกไป สร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*สร้างความเสียหาย 3200% ของพลังโจมตีลงในพื้นที่ \\n*ห้ามศัตรูใช้ทักษะ (5 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1157_ryuu.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1157_ryuu.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 415,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_dun",
+      "name": {
+        "en": "Group: DanMachi3",
+        "th": "[กลุ่ม] \"ดันมาจิ 3\""
+      },
+      "desc": {
+        "en": "DanMachi3 Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ \"ดันมาจิ 3\"' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_dun_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab211_passres_wat",
+      "name": {
+        "en": "Nullify Skill Resistance\\n: Water",
+        "th": "ต้านการต้านทักษะ: น้ำ"
+      },
+      "desc": {
+        "en": "Fixed chance of ignoring a Water element enemy's Skill Resistance when attacking.",
+        "th": "มีโอกาสทำให้การต้านทักษะของศัตรูธาตุน้ำไม่มีผลเมื่อโจมตี"
+      },
+      "icon": "icons/ab211_passres_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1157h-ryuu",
+    "unitNameCode": "u1157h-ryuu_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1360,
+    "unitCategoryType": "INT",
+    "attackRange": 325,
+    "attackDelay": 82,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1157h-ryuu_desc",
+    "initialAttack": 5400,
+    "specialAttack": 47900,
+    "defence": 0,
+    "specialDefence": 1200,
+    "initialHp": 146000,
+    "movingSpeed": 58,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 800,
+    "specialAttackDelta": 4800,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 140,
+    "hpIncreaseAmount": 18300,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1157_ryuu",
+    "skillCode": "sk1157_ryuu",
+    "iconSkillCode2": "usk1157_ryuu",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1157_ryuu",
+    "skillCode3": "hsk1157_ryuu",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_dun",
+    "abilityCode": "ab701_team_dun",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab211_passres_wat",
+    "abilityCode2": "ab211_passres_wat",
+    "abilityCategoryCode2": "ab211_passres",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 23800,
+    "attackIncreaseAmountMax": 1100,
+    "specialAttackDeltaMax": 6300,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 190,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

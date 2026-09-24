@@ -1,0 +1,218 @@
+{
+  "id": "u1588e-es",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.915Z"
+  },
+  "name": {
+    "en": "Flamebaiter Soji",
+    "th": "สายเดือดพล่าน โซจิ"
+  },
+  "grade": 9,
+  "tier": "base9",
+  "maxLevel": 160,
+  "unitType": "HP",
+  "category": "INT",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 19400,
+      "perLevel": 2780,
+      "perLevelAfterMax": 11120
+    },
+    "matk": {
+      "initial": 174600,
+      "perLevel": 17460,
+      "perLevelAfterMax": 69840
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 1280
+    },
+    "hp": {
+      "initial": 275800,
+      "perLevel": 34480,
+      "perLevelAfterMax": 137920
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 69,
+    "attackRange": 395,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 82,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1587_es",
+      "name": {
+        "en": "Enflame",
+        "th": "โด๊ป"
+      },
+      "desc": {
+        "en": "Blue flames come out of Soji's\nsmartphone and cover him.\nGood effects on allies.\\n\\n*attack range +20% (10 sec)\\n*Allies' Skill Range +30% (10 sec)",
+        "th": "มีเพลิงสีน้ำเงินออกมาจากสมาร์ทโฟนปกคลุมทั่วร่าง\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มระยะโจมตี 20% (10 วินาที)\\n*เพิ่มพื้นที่การใช้ทักษะของพรรคพวก 30% (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1587_es.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1587_es.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 360,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1587_es",
+      "name": {
+        "en": "Demon Flame Flying Axe Kick",
+        "th": "วิชาเพลิงอสูร เพลิงใต้นภา"
+      },
+      "desc": {
+        "en": "Jumps up high, leg wrapped in demon\nflames, and swings it down on enemies.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*Enemy Skill Evade Rate -60% (6 sec)\\n*Makes enemy skills unusable (6 sec)\\n*ATK x 4500% Area Damage ",
+        "th": "ใช้เพลิงอสูรห่อหุ้มเท้า กระโดดขึ้นสูง\nแล้วเหวี่ยงเท้าที่ยกขึ้นลงมาเพื่อโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ลดอัตราการหลบทักษะของศัตรู 60% (6 วินาที)\\n*ห้ามศัตรูใช้ทักษะ (6 วินาที)\\n*สร้างความเสียหาย 4500% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_hsk1587_es.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1587_es.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 7,
+      "range": 400,
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.05
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_2604",
+      "name": {
+        "en": "Group: Dead Account",
+        "th": "[กลุ่ม] เดดแอ็กเคานต์"
+      },
+      "desc": {
+        "en": "Dead Account Tie-Up! Put Rangers of a group into a Team and HP buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังชีวิต' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เดดแอ็กเคานต์' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_2604_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab604_copyally2",
+      "name": {
+        "en": "Ally Clone+",
+        "th": "โคลนนิ่งพรรคพวก+"
+      },
+      "desc": {
+        "en": "Has a high chance of summoning 1 allied team Ranger when Rangers deploy.\n- Flyer and Air Ambush Rangers are not eligible to be summoned in this way. \n- The Abilities of allied Rangers summoned by this Ability won't activate.\n- Summoned Rangers won't consume any Mineral and will have no effects on redeploy times.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะเรียกเรนเจอร์ในทีมเดียวกันออกมา 1 ตัว\n*เรนเจอร์บินและเรนเจอร์สกัดกั้นยูนิตบินจะไม่เข้าข่าย\n*ความสามารถของเรนเจอร์พรรคพวกที่เรียกด้วยความสามารถนี้จะไม่แสดงผล\n*เรนเจอร์พรรคพวกที่ถูกเรียกจะไม่ใช้แร่ธาตุ และไม่มีผลกระทบต่อเวลารอสร้าง"
+      },
+      "icon": "icons/ab604_copyally_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1588e-es",
+    "unitNameCode": "u1588e-es_nm",
+    "grade": 9,
+    "unitType": "HP",
+    "productionSpeed": 7,
+    "summonEnergy": 1540,
+    "unitCategoryType": "INT",
+    "attackRange": 395,
+    "attackDelay": 69,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1588e-es_desc",
+    "initialAttack": 19400,
+    "specialAttack": 174600,
+    "defence": 0,
+    "specialDefence": 2800,
+    "initialHp": 275800,
+    "movingSpeed": 82,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2780,
+    "specialAttackDelta": 17460,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 34480,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 160,
+    "iconSkillCode": "sk1587_es",
+    "skillCode": "sk1587_es",
+    "iconSkillCode2": "usk1587_es",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1587_es",
+    "skillCode3": "hsk1587_es",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 9000,
+    "extractionCrystal2Gain": 1800,
+    "extractionCrystal3Gain": 300,
+    "iconAbilityCode": "ab701_team_2604",
+    "abilityCode": "ab701_team_2604",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab604_copyally2",
+    "abilityCode2": "ab604_copyally2",
+    "abilityCategoryCode2": "ab604_copyally",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 137920,
+    "attackIncreaseAmountMax": 11120,
+    "specialAttackDeltaMax": 69840,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 1280,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1262h-em",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-18T15:29:26.551Z"
+  },
+  "name": {
+    "en": "Royal Candidate Emilia",
+    "th": "ผู้ท้าชิงตำแหน่งราชา เอมิเลีย"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "INT",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 7940,
+      "perLevel": 1140,
+      "perLevelAfterMax": 1490
+    },
+    "matk": {
+      "initial": 71500,
+      "perLevel": 7150,
+      "perLevelAfterMax": 9300
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 1400,
+      "perLevel": 160,
+      "perLevelAfterMax": 210
+    },
+    "hp": {
+      "initial": 194200,
+      "perLevel": 24280,
+      "perLevelAfterMax": 31570
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 65,
+    "attackRange": 410,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 90,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.2,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1680,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1262_em",
+      "name": {
+        "en": "Goodnight!",
+        "th": "ราตรีสวัสดิ์"
+      },
+      "desc": {
+        "en": "Summons Puck and attacks with strong ice magic.\nBad effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*Makes enemy skills unusable (6 sec)\\n*ATK x 3000% Area Damage ",
+        "th": "เรียกแพ็คและโจมตีด้วยเวทย์น้ำแข็งอานุภาพสูง\nสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ห้ามศัตรูใช้ทักษะ (6 วินาที)\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ "
+      },
+      "icon": "icons/skill_icon_sk1262_em.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1262_em.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 8,
+      "range": 310,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1262_em",
+      "name": {
+        "en": "Lesser Spirit Talk",
+        "th": "สนทนากับเหล่าภูต"
+      },
+      "desc": {
+        "en": "Communes with lesser spirits.\nGood effects on allies.\\n\\n*Skill Resistance +60% (7 sec)\\n*Skill Evade Rate +60% (7 sec)\\n*HP x 60% Area Recovery (per sec) (7 sec)",
+        "th": "สนทนากับเหล่าภูต\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มการต้านทักษะ 60% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 60% (7 วินาที)\\n*ฟื้นฟูพลังชีวิตในพื้นที่ 60% ของพลังชีวิต (ต่อ 1 วินาที) (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1262_em.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1262_em.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_rz",
+      "name": {
+        "en": "Group: Re:ZERO",
+        "th": "[กลุ่ม] Re: ZERO"
+      },
+      "desc": {
+        "en": "Re:ZERO Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ Re: ZERO' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_rz_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab227_st_stun_agi",
+      "name": {
+        "en": "Deploy Stun: Agility",
+        "th": "ชะงักเมื่อออกปฏิบัติการ: ความว่องไว"
+      },
+      "desc": {
+        "en": "Has a high chance of stunning all Agility type enemies and canceling their invincibility skill effects when Rangers deploy.\n- Activates 5 seconds after battles start.\n- You must wait 6 seconds before you can use an Ability again after using one with the same effect on the same type of Ranger.\n- Bosses, Guardians, and special type enemies are not affected by this Ability.",
+        "th": "เมื่อออกปฏิบัติการมีโอกาสสูงที่จะทำให้ศัตรูชนิด \"ความว่องไว\" ทั้งหมดชะงักและยกเลิกทักษะอมตะ\n*จะแสดงผลหลังเริ่มการต่อสู้ไปแล้ว 5 วินาที\n*หากความสามารถที่มีผลลัพธ์เหมือนกันมีเป้าหมายเป็นเรนเจอร์ชนิดเดียวกัน จะไม่แสดงผลต่อเนื่องโดยห่างกันเป็นเวลา 6 วินาที\n*ใช้ความสามารถนี้กับผู้พิทักษ์, บอส และศัตรูชนิดพิเศษไม่ได้"
+      },
+      "icon": "icons/ab227_st_stun_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1262h-em",
+    "unitNameCode": "u1262h-em_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1680,
+    "unitCategoryType": "INT",
+    "attackRange": 410,
+    "attackDelay": 65,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1262h-em_desc",
+    "initialAttack": 7940,
+    "specialAttack": 71500,
+    "defence": 0,
+    "specialDefence": 1400,
+    "initialHp": 194200,
+    "movingSpeed": 90,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 1140,
+    "specialAttackDelta": 7150,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 160,
+    "hpIncreaseAmount": 24280,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1262_em",
+    "skillCode": "sk1262_em",
+    "iconSkillCode2": "usk1262_em",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1262_em",
+    "skillCode3": "hsk1262_em",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.2,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_rz",
+    "abilityCode": "ab701_team_rz",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab227_st_stun_agi",
+    "abilityCode2": "ab227_st_stun_agi",
+    "abilityCategoryCode2": "ab227_strike",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 31570,
+    "attackIncreaseAmountMax": 1490,
+    "specialAttackDeltaMax": 9300,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 210,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

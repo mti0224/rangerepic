@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 10,
+  "id": "u1296e-db",
+  "name": "ปีศาจต้นกำเนิด ดิอาโบล",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "anchors": {
+    "ground": {
+      "x": 50.5,
+      "y": 82.4
+    },
+    "hitPoint": {
+      "x": 1.8,
+      "y": -72.4
+    },
+    "overhead": {
+      "x": 0.4,
+      "y": -171.3
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 30,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -241.1,
+          "y": 1.1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": null,
+      "muzzle": {
+        "x": 61.9,
+        "y": -71.2
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": -74.1
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      },
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -252.5,
+          "y": 1.1
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": -74.1
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 58,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "stats": {
+    "hp": 5920,
+    "atk": 435,
+    "def": 320,
+    "spd": 104,
+    "crit": 11,
+    "critDmg": 165,
+    "evade": 9,
+    "hit": 10,
+    "skillEvade": 8,
+    "skillHit": 8,
+    "skillRes": 20
+  },
+  "category": "str",
+  "role": "fighter",
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 280
+        },
+        {
+          "type": "dispelBuffs"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "self",
+      "effects": [
+        {
+          "type": "skillEvadeUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "regen",
+          "pct": 10,
+          "turns": 3
+        },
+        {
+          "type": "heal",
+          "pct": 15
+        }
+      ]
+    }
+  },
+  "portrait": {
+    "x": 45,
+    "y": -22
+  },
+  "face": {
+    "x": 46,
+    "y": 52
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 14,
+      "focus": {
+        "x": 65,
+        "y": -2
+      },
+      "size": 115,
+      "title": null
+    }
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "id": "u1298h-vt",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-19T10:57:55.777Z"
+  },
+  "name": {
+    "en": "The Unleashed Veldora",
+    "th": "ผู้ถูกปลดปล่อย เวลโดร่า"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "AGI",
+  "element": "tree",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "wood",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 39810,
+      "perLevel": 4980,
+      "perLevelAfterMax": 6480
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1400,
+      "perLevel": 180,
+      "perLevelAfterMax": 240
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 149200,
+      "perLevel": 18650,
+      "perLevelAfterMax": 24250
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 74,
+    "attackRange": 280,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 101,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1330,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1298_vt",
+      "name": {
+        "en": "Faust",
+        "th": "ราชันแห่งความถ่องแท้"
+      },
+      "desc": {
+        "en": "Uses manga knowledge\nto attack enemies. Bad\neffects on enemies.\\n\\n*ATK x 2800% Area Damage \\n*Enemy knockback \\n*Enemy ATK -30% (7 sec)",
+        "th": "นำความรู้ที่ได้จากการ์ตูนมาเป็นทักษะ\nของตนเองเพื่อโจมตีศัตรู\nสร้างผลลัพธ์ด้านลบให้แก่ศัตรู\\n\\n*สร้างความเสียหาย 2800% ของพลังโจมตีลงในพื้นที่ \\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง \\n*ลดพลังโจมตีของศัตรู 30% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1298_vt.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1298_vt.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1298_vt",
+      "name": {
+        "en": "Full Open Aura",
+        "th": "ออร่าเต็มกำลัง"
+      },
+      "desc": {
+        "en": "Builds up an aura and\nreleases power. Good\neffects to allies.\\n\\n*Critical Rate +50% (7 sec)\\n*Critical Damage +300% (7 sec)\\n*Hit Rate +40%  (7 sec)",
+        "th": "รวบรวมออร่าเพื่อปลดปล่อยพลัง\nสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราการติดคริติคอล 50% (7 วินาที)\\n*เพิ่มค่าความเสียหายจากคริติคอลฮิต 300% (7 วินาที)\\n*เพิ่มอัตราความแม่นยำ 40%  (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1298_vt.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1298_vt.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 360,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab701_team_sl2",
+      "name": {
+        "en": "Group: TenSura2",
+        "th": "[กลุ่ม] เกิดใหม่เป็นสไลม์2"
+      },
+      "desc": {
+        "en": "TenSura2 Tie-Up! Put Rangers of a group into a Team and ATK buffs will be applied in battle.\nYou must have a Team of at least 2 Rangers for group buffs to apply. The more Rangers you have in a Team from the same group, the stronger the buffs will be. (There are 5 buff levels.)",
+        "th": "จะได้รับผลลัพธ์บัฟ 'พลังโจมตี' ในการต่อสู้เมื่อติดตั้งเรนเจอร์ 'โคลาโบ เกิดใหม่เป็นสไลม์2' ลงในทีม\n\nจะได้รับเมื่อติดตั้งอย่างน้อย 2 ตัว และสามารถอัพเกรดผลลัพธ์บัฟได้สูงสุด 5 ขั้นหากติดตั้งเรนเจอร์หลายตัวจากกลุ่มเดียวกัน"
+      },
+      "icon": "icons/ab701_team_sl2_icon.png",
+      "groupBuff": true
+    },
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": true
+    }
+  ],
+  "raw": {
+    "unitCode": "u1298h-vt",
+    "unitNameCode": "u1298h-vt_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1330,
+    "unitCategoryType": "AGI",
+    "attackRange": 280,
+    "attackDelay": 74,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1298h-vt_desc",
+    "initialAttack": 39810,
+    "specialAttack": 0,
+    "defence": 1400,
+    "specialDefence": 0,
+    "initialHp": 149200,
+    "movingSpeed": 101,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 4980,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 180,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 18650,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1298_vt",
+    "skillCode": "sk1298_vt",
+    "iconSkillCode2": "usk1298_vt",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1298_vt",
+    "skillCode3": "hsk1298_vt",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab701_team_sl2",
+    "abilityCode": "ab701_team_sl2",
+    "abilityCategoryCode": "ab701_team",
+    "iconAbilityCode2": "ab213_lastatk",
+    "abilityCode2": "ab213_lastatk",
+    "abilityCategoryCode2": "ab213_lastatk",
+    "elementOpen": "2",
+    "unitElement": "tree",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 24250,
+    "attackIncreaseAmountMax": 6480,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 240,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}

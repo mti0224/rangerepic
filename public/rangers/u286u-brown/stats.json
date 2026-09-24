@@ -1,0 +1,204 @@
+{
+  "id": "u286u-brown",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T13:06:01.186Z"
+  },
+  "name": {
+    "en": "White Tiger Brown",
+    "th": "Brown ไวท์ไทเกอร์"
+  },
+  "grade": 8,
+  "tier": "ultra",
+  "maxLevel": 140,
+  "unitType": "SPEED",
+  "category": "AGI",
+  "element": "fire",
+  "elementOpen": "1",
+  "suggest": {
+    "element": "fire",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 4909,
+      "perLevel": 614,
+      "perLevelAfterMax": 614
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 176,
+      "perLevel": 22,
+      "perLevelAfterMax": 22
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 54262,
+      "perLevel": 6783,
+      "perLevelAfterMax": 6783
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 57,
+    "attackRange": 458,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "movingSpeed": 163,
+    "critChance": 0.25,
+    "critRatio": 3,
+    "avoid": 0.195,
+    "skillAvoid": 0.173,
+    "skillResistance": 0,
+    "antiAvoid": 0,
+    "antiSkillAvoid": 0
+  },
+  "cost": {
+    "productionSpeed": 6,
+    "summonEnergy": 1188,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk28_brown",
+      "name": {
+        "en": "Fierce Attack",
+        "th": "พลังอำมหิต"
+      },
+      "desc": {
+        "en": "Summons a ruthlessly powerful fist and greatly damages enemies for a set period of time.\\n\\n* ATK × 50% Area Damage per sec (12 sec)",
+        "th": "สร้างความเสียหายให้ศัตรูอย่างต่อเนื่อง ภายในช่วงระยะเวลาที่กำหนด ด้วยพลังหมัดอันรุนแรง\\n\\n* พลังโจมตี x 50% ทำลายพื้นที่ต่อวินาที (12 วิ)"
+      },
+      "icon": "icons/skill_icon_vigorous_attack.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_vigorous_attack.png",
+      "probability": 0.23000000417232516,
+      "cooldownSec": 4,
+      "range": 30,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": {
+      "slot": "skill2",
+      "code": "usk021_brown2",
+      "name": {
+        "en": "Tiger Spirit",
+        "th": "พลังแห่งพยัคฆ์"
+      },
+      "desc": {
+        "en": "This skill knocks back enemies and deals damage\\n\\n* ATK × 1500% Damage\\n* Enemy knock-back",
+        "th": "ศัตรูที่ถูกทักษะโจมตีนั้น จะได้รับความเสียหายและกระเด็นไปด้านหลัง\\n\\n* พลังโจมตี x 1500% ทำลาย\\n* โจมตีทำให้ศัตรูชะงักถอยหลัง"
+      },
+      "icon": "icons/skill_icon_ultimate_agent.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_ultimate_agent.png",
+      "probability": 0.2800000011920929,
+      "cooldownSec": 4,
+      "range": 600,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill3": null,
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab101_caffein",
+      "name": {
+        "en": "Caffeine",
+        "th": "คาเฟอีน"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't fall asleep in advent stages \\nwith the Deep Sleep obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่หลับถึงแม้ผลลัพธ์ของ \\n\"หลับสนิทนิทรา\" จะแสดงผลในสเตจจุติก็ตาม"
+      },
+      "icon": "icons/ab101_caffein_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u286u-brown",
+    "unitNameCode": "u286u-brown_nm",
+    "grade": 8,
+    "unitType": "SPEED",
+    "productionSpeed": 6,
+    "summonEnergy": 1188,
+    "unitCategoryType": "AGI",
+    "attackRange": 458,
+    "attackDelay": 57,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u286u-brown_desc",
+    "initialAttack": 4909,
+    "specialAttack": 0,
+    "defence": 176,
+    "specialDefence": 0,
+    "initialHp": 54262,
+    "movingSpeed": 163,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0,
+    "antiSkillAvoidProb": 0,
+    "attackIncreaseAmount": 614,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 22,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 6783,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk28_brown",
+    "skillCode": "sk28_brown",
+    "iconSkillCode2": "usk021_brown2",
+    "skillCode2": "usk021_brown2",
+    "iconSkillCode3": "hsk021_brown2",
+    "skillCode3": "",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.25,
+    "criticalRatio": 3,
+    "avoidProbability": 0.195,
+    "skillAvoidProbability": 0.173,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "VERYFAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 1,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 1800,
+    "extractionCrystal2Gain": 200,
+    "extractionCrystal3Gain": 30,
+    "iconAbilityCode": "ab101_caffein",
+    "abilityCode": "ab101_caffein",
+    "abilityCategoryCode": "ab101_caffein",
+    "iconAbilityCode2": "ab102_mask_X",
+    "abilityCode2": "",
+    "abilityCategoryCode2": "",
+    "elementOpen": "1",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 6783,
+    "attackIncreaseAmountMax": 614,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 22,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      "sp0403"
+    ]
+  }
+}

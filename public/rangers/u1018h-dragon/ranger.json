@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 10,
+  "id": "u1018h-dragon",
+  "name": "ไลบร้า ชิริว",
+  "form": "body",
+  "fps": 30,
+  "element": "water",
+  "category": "str",
+  "role": "fighter",
+  "anchors": {
+    "ground": {
+      "x": 69,
+      "y": 80
+    },
+    "hitPoint": {
+      "x": -0.7,
+      "y": -50.7
+    },
+    "overhead": {
+      "x": -0.7,
+      "y": -162.5
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 18,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -261,
+          "y": 0
+        },
+        "speed": 1200,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 15,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -139,
+          "y": 0
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 27,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 5580,
+    "atk": 430,
+    "def": 325,
+    "spd": 99,
+    "crit": 15,
+    "critDmg": 155,
+    "evade": 11,
+    "hit": 14,
+    "skillEvade": 6,
+    "skillHit": 9,
+    "skillRes": 18
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_front",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 300
+        },
+        {
+          "type": "dispelBuffs"
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        },
+        {
+          "type": "speedDown",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "breakInvincible"
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 2,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 20
+        },
+        {
+          "type": "skillEvadeUp",
+          "pct": 20,
+          "turns": 2
+        },
+        {
+          "type": "evadeUp",
+          "pct": 20,
+          "turns": 2
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 80,
+    "y": 60
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 11,
+      "focus": {
+        "x": 65,
+        "y": 6
+      },
+      "size": 94,
+      "title": null
+    }
+  },
+  "approved": true
+}

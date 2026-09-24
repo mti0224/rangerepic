@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 10,
+  "id": "u1558e-bf",
+  "name": "สุนัขเห็นอนาคต บอนด์",
+  "form": "body",
+  "fps": 30,
+  "element": "wood",
+  "category": "str",
+  "role": "tank",
+  "anchors": {
+    "ground": {
+      "x": 68,
+      "y": 66.2
+    },
+    "hitPoint": {
+      "x": 1,
+      "y": -50.5
+    },
+    "overhead": {
+      "x": 30.2,
+      "y": -134.6
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 22,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -242,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 29,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": true,
+        "stopOffset": {
+          "x": -242,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 41,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 1,
+    "atk": 9999,
+    "def": 0,
+    "spd": 20,
+    "crit": 1,
+    "critDmg": 1,
+    "evade": 60,
+    "hit": 1,
+    "skillEvade": 1,
+    "skillHit": 50,
+    "skillRes": 1
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 10,
+      "area": "all",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 1000
+        },
+        {
+          "type": "breakInvincible"
+        },
+        {
+          "type": "trueDamage",
+          "pct": 100
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 10,
+      "area": "self",
+      "effects": [
+        {
+          "type": "heal",
+          "pct": 100
+        },
+        {
+          "type": "shield",
+          "pct": 50,
+          "turns": 2
+        },
+        {
+          "type": "barrier",
+          "turns": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 94,
+    "y": 40
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 31,
+      "focus": {
+        "x": 269,
+        "y": -88
+      },
+      "size": 138,
+      "title": null
+    }
+  },
+  "approved": true
+}

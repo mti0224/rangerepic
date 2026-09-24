@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 10,
+  "id": "u1247e-bk",
+  "name": "เด็กม.ปลายที่เก่งที่สุด ฮันมะ บากิ",
+  "form": "body",
+  "fps": 30,
+  "element": "fire",
+  "category": "agi",
+  "role": "assassin",
+  "anchors": {
+    "ground": {
+      "x": 44.8,
+      "y": 79.4
+    },
+    "hitPoint": {
+      "x": 0.7,
+      "y": -54.9
+    },
+    "overhead": {
+      "x": 0.3,
+      "y": -164
+    }
+  },
+  "clips": {
+    "idle": "idle",
+    "walk": "walk",
+    "hitLight": "target",
+    "hitHeavy": "knockback",
+    "stun": "target",
+    "die": "knockback"
+  },
+  "actions": {
+    "attack": {
+      "castPre": null,
+      "cast": "attack_ready",
+      "release": "attack",
+      "releaseFrame": 9,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 90,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -254.8,
+          "y": 0.5
+        },
+        "speed": 1000,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 130.8,
+        "y": -67.4
+      },
+      "impactOffset": {
+        "x": -98.2,
+        "y": -66.9
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": -98.2,
+        "y": -66.9
+      },
+      "projectile": {
+        "asset": "bul",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill1": {
+      "castPre": null,
+      "cast": "s_attack_ready",
+      "release": "s_attack",
+      "releaseFrame": 20,
+      "castSpeedCap": null,
+      "positioning": "manual",
+      "moveSpeedOverride": 90,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -795.5,
+          "y": 2
+        },
+        "speed": 1800,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 146.6,
+        "y": -77.1
+      },
+      "impactOffset": {
+        "x": -94.2,
+        "y": -75.6
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": {
+        "asset": "bul2",
+        "mode": "flight",
+        "path": "straight",
+        "arcHeight": null,
+        "speed": 3685,
+        "rotate": "none",
+        "fitFlight": false
+      }
+    },
+    "skill2": {
+      "castPre": null,
+      "cast": "s2_attack_ready",
+      "release": "s2_attack",
+      "releaseFrame": 39,
+      "castSpeedCap": null,
+      "positioning": "auto",
+      "moveSpeedOverride": null,
+      "approach": {
+        "enabled": false,
+        "stopOffset": {
+          "x": -140,
+          "y": 0
+        },
+        "speed": 600,
+        "returnHome": true
+      },
+      "muzzle": {
+        "x": 0,
+        "y": 0
+      },
+      "impactOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "finishSplit": false,
+      "finishOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "projectile": null
+    }
+  },
+  "stats": {
+    "hp": 2590,
+    "atk": 440,
+    "def": 170,
+    "spd": 115,
+    "crit": 27,
+    "critDmg": 190,
+    "evade": 15,
+    "hit": 15,
+    "skillEvade": 10,
+    "skillHit": 12,
+    "skillRes": 3
+  },
+  "skills": {
+    "skill1": {
+      "kind": "attack",
+      "cost": 2,
+      "area": "single_any",
+      "effects": [
+        {
+          "type": "damage",
+          "pct": 180
+        },
+        {
+          "type": "stun",
+          "turns": 1
+        }
+      ]
+    },
+    "skill2": {
+      "kind": "buff",
+      "cost": 3,
+      "area": "own_row",
+      "effects": [
+        {
+          "type": "atkUp",
+          "pct": 30,
+          "turns": 2
+        },
+        {
+          "type": "shield",
+          "pct": 12,
+          "turns": 2
+        },
+        {
+          "type": "energyGain",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  "face": {
+    "x": 50,
+    "y": 55
+  },
+  "approved": true,
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 11,
+      "focus": {
+        "x": 238,
+        "y": 4
+      },
+      "size": 117,
+      "title": null,
+      "bullet": {
+        "file": "bul2",
+        "frame": 27,
+        "offset": {
+          "x": 171,
+          "y": 3
+        }
+      },
+      "body": false
+    },
+    "skill2": {
+      "enabled": false,
+      "frame": 33,
+      "focus": {
+        "x": 49,
+        "y": 10
+      },
+      "size": 135,
+      "title": null
+    }
+  }
+}

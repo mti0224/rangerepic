@@ -1,0 +1,217 @@
+{
+  "id": "u1017h-cygnus",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-20T05:34:02.985Z"
+  },
+  "name": {
+    "en": "Aquarius Hyoga",
+    "th": "อควอเรียส เฮียวกะ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "INT",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "int",
+    "role": "mage"
+  },
+  "stats": {
+    "atk": {
+      "initial": 2700,
+      "perLevel": 400,
+      "perLevelAfterMax": 600
+    },
+    "matk": {
+      "initial": 23800,
+      "perLevel": 2400,
+      "perLevelAfterMax": 3200
+    },
+    "def": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 114000,
+      "perLevel": 14300,
+      "perLevelAfterMax": 18600
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 66,
+    "attackRange": 420,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 76,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0,
+    "antiAvoid": 0.25,
+    "antiSkillAvoid": 0.25
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1390,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1017_cygnus",
+      "name": {
+        "en": "Diamond Dust",
+        "th": "ไดมอนด์ดัสต์"
+      },
+      "desc": {
+        "en": "Inflicts negative effects on the enemy with an extreme chill.\\n\\n*ATK per sec x 200% Area Damage (10 sec)\\n*Changes Wood elemental enemies to Fire. (10 sec)",
+        "th": "โจมตีศัตรูด้วยไอเย็นระดับสุดขั้ว สร้างผลลัพธ์ด้านลบให้แก่ศัตรู\\n\\n*สร้างความเสียหาย 200% ของพลังโจมตีลงในพื้นที่ทุกวินาที (10 วินาที)\\n*เปลี่ยนศัตรูธาตุไม้เป็นธาตุไฟ (10 วินาที)"
+      },
+      "icon": "icons/skill_icon_sk1017_cygnus.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1017_cygnus.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 500,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1017_cygnus",
+      "name": {
+        "en": "Aurora Thunder Attack",
+        "th": "ออโรร่า ธันเดอร์ แอตแท็ค"
+      },
+      "desc": {
+        "en": "Releases an intense chill, helping allies.\\n\\n*Skill Hit Rate +33% (7 sec)\\n*Skill Use Rate +60%  (7 sec)\\n*ATK Speed +150% (7 sec)",
+        "th": "ปล่อยไอเย็นระดับสุดขั้ว เพื่อสร้างผลลัพธ์ด้านบวกให้แก่พรรคพวก\\n\\n*เพิ่มอัตราความแม่นยำของทักษะ 33% (7 วินาที)\\n*เพิ่มอัตราการใช้ทักษะ 60%  (7 วินาที)\\n*เพิ่มความเร็วในการโจมตี 150% (7 วินาที)"
+      },
+      "icon": "icons/skill_icon_hsk1017_cygnus.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1017_cygnus.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab104_souleye",
+      "name": {
+        "en": "Eagle Eyes",
+        "th": "นัยน์ตาแห่งวิญญาณ"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be blinded in advent stages \\nwith the Ink obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"หมึกทมิฬ\" จะแสดงผลในเสตจจุติก็ตาม"
+      },
+      "icon": "icons/ab104_souleye_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab503_anti_met",
+      "name": {
+        "en": "Resistance: Hellfire",
+        "th": "ต่อต้าน: ไฟนรก"
+      },
+      "desc": {
+        "en": "Frequently avoids the effects of Meteor and Hellfire items.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้ มีโอกาสสูงที่จะหลบผลลัพธ์ไอเท็มดาวตกและไฟนรกได้"
+      },
+      "icon": "icons/ab211_antitem_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1017h-cygnus",
+    "unitNameCode": "u1017h-cygnus_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1390,
+    "unitCategoryType": "INT",
+    "attackRange": 420,
+    "attackDelay": 66,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1017h-cygnus_desc",
+    "initialAttack": 2700,
+    "specialAttack": 23800,
+    "defence": 0,
+    "specialDefence": 0,
+    "initialHp": 114000,
+    "movingSpeed": 76,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.25,
+    "antiSkillAvoidProb": 0.25,
+    "attackIncreaseAmount": 400,
+    "specialAttackDelta": 2400,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 14300,
+    "energyReinforcementRate": 0,
+    "attackScope": 5,
+    "projectileAttackScope": 150,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1017_cygnus",
+    "skillCode": "sk1017_cygnus",
+    "iconSkillCode2": "usk1017_cygnus",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1017_cygnus",
+    "skillCode3": "hsk1017_cygnus",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab104_souleye",
+    "abilityCode": "ab104_souleye",
+    "abilityCategoryCode": "ab104_souleye",
+    "iconAbilityCode2": "ab503_anti_met",
+    "abilityCode2": "ab503_anti_met",
+    "abilityCategoryCode2": "ab501_anti",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 18600,
+    "attackIncreaseAmountMax": 600,
+    "specialAttackDeltaMax": 3200,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
