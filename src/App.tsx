@@ -1,4 +1,4 @@
-// ── หน้า Editor · ปุ่ม "ทดลองเล่น" เปิดหน้าเล่น (play.html) ในแท็บใหม่ — คนละหน้า คนละ bundle ──
+// Ranger Editor 後台；正式環境由 server/admin-server.mjs 在外層處理登入驗證。
 import RangerEditor from './editor/RangerEditor'
 
 export default function App() {
@@ -7,7 +7,12 @@ export default function App() {
       <nav className="topnav">
         <b>LINE Rangers 回合制戰鬥</b>
         <button className="sel">Ranger 編輯器</button>
-        <button onClick={() => window.open('/play.html', '_blank', 'noopener')}>⚔ ทดลองเล่น 5v5 ↗</button>
+        <button onClick={() => window.open('/play.html', '_blank', 'noopener')}>⚔ 試玩 5v5 ↗</button>
+        {import.meta.env.PROD && (
+          <form action="/logout" method="post" style={{ display: 'contents' }}>
+            <button type="submit">登出</button>
+          </form>
+        )}
       </nav>
       <div className="page"><RangerEditor /></div>
     </div>

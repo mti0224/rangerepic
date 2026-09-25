@@ -1,0 +1,16 @@
+[Unit]
+Description=RangerEpic Admin Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/rangerepic
+EnvironmentFile=/home/ubuntu/rangerepic-admin.env
+ExecStart=/usr/bin/node server/admin-server.mjs
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
