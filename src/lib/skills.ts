@@ -89,7 +89,7 @@ export const EFFECTS: Record<EffectType, EffectDef> = {
   damage:          { kind: 'attack', label: '造成傷害', params: { pct: pct('攻擊力的 %', 250, 1000), pierce: { label: '無視白色護盾 %', min: 0, max: 100, step: 5, default: 0 } } },
   damageHp:        { kind: 'attack', label: '依施放者體力造成傷害', params: { pct: pct('施放者最大體力的 %', 10, 100), pierce: { label: '無視白色護盾 %', min: 0, max: 100, step: 5, default: 0 } }, note: '傷害基礎 = 施放者最大體力（不是 ATK）；適合高體力角色，仍正常計算 DEF／屬性／爆擊' },
   elementShift:    { kind: 'attack', label: '改變目標屬性', params: { turns: turns(2) }, choice: { key: 'element', options: ['fire', 'water', 'wood', 'light', 'dark'], default: 'fire' }, note: '目標暫時變為此屬性，可利用屬性相剋提高我方傷害' },
-  selfHpCost:      { kind: 'both', label: '消耗自身體力', params: { pct: pct('% ของ HP สูงสุดตัวเอง', 10, 50) }, note: '施放時消耗自身體力（不會因此死亡，至少保留 1）' },
+  selfHpCost:      { kind: 'both', label: '消耗自身體力', params: { pct: pct('自身最大體力的 %', 10, 50) }, note: '施放時消耗自身體力（不會因此死亡，至少保留 1）' },
   selfVulnerable:  { kind: 'both', label: '自身易傷代價', params: { pct: pct('%', 25, 100), turns: turns(2) }, note: '施放者暫時受到更多傷害' },
   trueDamage:      { kind: 'attack', label: '真實傷害', params: { pct: pct('攻擊力的 %', 100, 1000) }, note: '直接扣除體力，不受白色護盾／DEF／爆擊影響；無敵屏障仍可阻擋（搭配「解除無敵效果」可穿透）' },
   breakInvincible: { kind: 'attack', label: '解除無敵效果（穿透屏障）', params: {} },

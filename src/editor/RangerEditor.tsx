@@ -413,7 +413,7 @@ export default function RangerEditor() {
       const r = await fetchRangerAssets(id)
       if (!r.ok) throw new Error('找不到此 Ranger')
       const kb = (r.written ?? []).reduce((s, w) => s + w.bytes, 0) / 1024
-      setStatus('โหลด ' + id + ' 完成（' + kb.toFixed(0) + ' KB）')
+      setStatus('下載 ' + id + ' 完成（' + kb.toFixed(0) + ' KB）')
       setNewId('')
       await refreshList()
       setSelected(id)
@@ -463,7 +463,7 @@ export default function RangerEditor() {
               </button>
             </li>
           ))}
-          {!rangers.length && <li className="empty">ยังไม่มีRanger — พิมพ์รหัสด้านบนเพื่อโหลด</li>}
+          {!rangers.length && <li className="empty">尚無 Ranger — 請在上方輸入 ID 下載</li>}
         </ul>
       </aside>
 
@@ -518,7 +518,7 @@ export default function RangerEditor() {
             </div>
           </>
         ) : (
-          <div className="placeholder">เลือกRangerจากรายการทางซ้าย</div>
+          <div className="placeholder">請從左側清單選擇 Ranger</div>
         )}
       </main>
 
@@ -663,7 +663,7 @@ export default function RangerEditor() {
 
               {tab === 'clips' && (
                 <>
-                  <p className="note">จับคู่動畫片段ในไฟล์เข้า與สถานะที่เกมต้องใช้</p>
+                  <p className="note">將檔案中的動畫片段對應到遊戲所需狀態</p>
                   {(Object.keys(config.clips) as (keyof typeof config.clips)[]).map(k => (
                     <Field key={k} label={k}>
                       <select
@@ -716,8 +716,8 @@ export default function RangerEditor() {
                         />
                         <h3>技能施放過場</h3>
                         <div className="cutin-actions">
-                          <span className="note" style={{ margin: 0 }}>{config.cutins?.[action]?.enabled ? '● มี技能過場' : '○ ยังไม่มี技能過場'}</span>
-                          <button onClick={() => { setCutinSlot(action); setTab('cutin') }}>🎬 ไปเมนู技能過場</button>
+                          <span className="note" style={{ margin: 0 }}>{config.cutins?.[action]?.enabled ? '● 已設定過場' : '○ 尚未設定過場'}</span>
+                          <button onClick={() => { setCutinSlot(action); setTab('cutin') }}>🎬 前往過場編輯</button>
                         </div>
                         <h3>動畫</h3>
                       </>
@@ -740,7 +740,7 @@ export default function RangerEditor() {
                       </select>
                     </Field>
 
-                    <Field label="เฟรมที่ปล่อย投射物 (readyLen)">
+                    <Field label="投射物發射幀（readyLen）">
                       <div className="inline">
                         <input type="number" value={actionCfg.releaseFrame}
                           onChange={e => edit('actions.' + action + '.releaseFrame', Number(e.target.value))} />
@@ -755,7 +755,7 @@ export default function RangerEditor() {
                       return (
                         <div className="cast-info warn">
                           {castLen > suggest
-                            ? `施放階段長 ${castLen}f แต่ ${castLen - suggest}f，但最後角色已消失 `
+                            ? `施放階段共 ${castLen}f，但最後 ${castLen - suggest}f 角色已消失`
                             : '依規則應在施放→釋放的交界點'}
                           <i>
                             <button onClick={() => edit('actions.' + action + '.releaseFrame', suggest)}>
@@ -839,7 +839,7 @@ export default function RangerEditor() {
                           </label>
                           <p className="note">
                             移動 {walkDist.toFixed(0)} 單位 ≈ {walkSec.toFixed(2)}s{ap.returnHome ? ` · 往返 ${(walkSec * 2).toFixed(2)}s` : ''}
-                            {!config.clips.walk && ' · ⚠ ไม่มี動畫片段移動 ใช้ท่ายืนแทน (ตั้งได้ที่แท็บ動畫片段)'}
+                            {!config.clips.walk && ' · ⚠ 沒有走路動畫，將使用待機動畫（可在「動畫片段」分頁設定）'}
                           </p>
                         </>
                       )
@@ -860,7 +860,7 @@ export default function RangerEditor() {
 
                     {plan && plan.type === 'shot' && gameMove && (
                       plan.isInstant ? (
-                        <p className="note">ท่านี้ไม่飛行 (เกิดที่เป้าเลย) — ความ快ไม่มีผล เวลาขึ้น與ความยาว動畫片段 normal</p>
+                        <p className="note">此動作不飛行（直接生成於目標）— 速度不影響，持續時間取決於 normal 動畫長度</p>
                       ) : (() => {
                         const base = gameMove.moveSpeed > 0 ? gameMove.moveSpeed : PROJECTILE_FALLBACK_SPEED
                         const cur = actionCfg.moveSpeedOverride ?? base
@@ -868,7 +868,7 @@ export default function RangerEditor() {
                           n === null || !Number.isFinite(n) || n <= 0 ? null : Math.round(n * 10) / 10)
                         const perSec = cur * PROJECTILE_SPEED_SCALE * (config.fps || 30)
                         return (
-                          <Field label={'ความ快投射物' + (actionCfg.moveSpeedOverride === null ? '（來自遊戲資料）' : '（自訂）')}>
+                          <Field label={'投射物速度' + (actionCfg.moveSpeedOverride === null ? '（來自遊戲資料）' : '（自訂）')}>
                             <div className="inline">
                               <input type="range" min={1} max={Math.max(150, Math.ceil(base * 3))} step={1} value={cur}
                                 onChange={e => set(Number(e.target.value))} />
@@ -894,7 +894,7 @@ export default function RangerEditor() {
                         <Field label="投射物方向">
                           <label className="check">
                             <input type="checkbox" checked={tilt} onChange={e => edit('actions.' + action + '.aimTilt', e.target.checked)} />
-                            เฉียงตาม命中點 (ยิงเป้าสูง/ต่ำกว่า หัว投射物ชี้ไปทางนั้น · ทางโค้งหมุนตามโค้ง)
+                            依命中點傾斜（攻擊較高／較低目標時，投射物朝向目標；弧線會隨軌跡旋轉）
                           </label>
                           <label className="check" style={tilt ? undefined : { opacity: 0.45, cursor: 'not-allowed' }}
                             title={tilt ? '' : '請先勾選「依命中點傾斜」'}>
@@ -925,7 +925,7 @@ export default function RangerEditor() {
                         <option value="manual">手動設定（拖曳錨點）</option>
                       </select>
                     </Field>
-                    {!gameMove && <p className="note">ท่านี้ไม่มีข้อมูลเกม — ต้องตั้ง職業และ投射物เอง</p>}
+                    {!gameMove && <p className="note">此動作沒有遊戲資料 — 必須手動設定位置與投射物</p>}
                     {manual && (
                       <>
                         <VecField label="發射點（以自身站立點為基準）" color={ANCHOR_COLORS.muzzle} value={actionCfg.muzzle}
@@ -943,14 +943,14 @@ export default function RangerEditor() {
                               if (e.target.checked && livePoints) edit('actions.' + action + '.finishOffset', { ...livePoints.impactOffset })
                               edit('actions.' + action + '.finishSplit', e.target.checked)
                             }} />
-                          แยก職業 finish (ระเบิด) ออกจากnormal 終點 (投射物)
+                          將 finish（爆炸）位置與 normal（投射物）終點分開
                         </label>
                         {actionCfg.finishSplit && (
                           <>
-                            <VecField label={'จุด finish (' + (plan.isBuff ? '以施放者站立點為基準' : '以目標站立點為基準') + ')'}
+                            <VecField label={'finish 點（' + (plan.isBuff ? '以施放者站立點為基準' : '以目標站立點為基準') + '）'}
                               color={ANCHOR_COLORS.finish} value={actionCfg.finishOffset}
                               onChange={v => edit('actions.' + action + '.finishOffset', v)} />
-                            {plan.finishFrames === 0 && <p className="note">⚠ ไฟล์投射物ของท่านี้ไม่มี動畫片段 finish — จุดนี้จะไม่มีอะไรให้เห็น</p>}
+                            {plan.finishFrames === 0 && <p className="note">⚠ 此動作的投射物檔案沒有 finish 動畫，因此此位置不會顯示效果</p>}
                           </>
                         )}
                       </>
@@ -963,9 +963,9 @@ export default function RangerEditor() {
                       <>
                         <h3>投射物（自訂）</h3>
                         {availableBullets.length === 0 ? (
-                          <p className="note">ไม่มีไฟล์投射物 — ตีประชิด เป้าโดนตีทันทีที่เฟรมปล่อย</p>
+                          <p className="note">沒有投射物檔案 — 視為近戰，目標會在發射幀立即受擊</p>
                         ) : (
-                          <Field label="ไฟล์投射物">
+                          <Field label="投射物檔案">
                             <select
                               value={actionCfg.projectile?.asset ?? ''}
                               onChange={e => edit('actions.' + action + '.projectile', e.target.value
@@ -1031,7 +1031,7 @@ export default function RangerEditor() {
                 {config.approved ? '✓ 已核准（可遊玩）' : '✓ 核准為可遊玩'}
               </button>
               {/* 刪除ตามโฟลเดอร์ที่เลือกในราย名稱 (ไม่ใช้ id ใน檔案 — กัน刪除ผิดตัวถ้า id ในไฟล์ไม่ตรง名稱โฟลเดอร์) */}
-              <button className="danger" onClick={() => selected && setConfirmDelete(selected)} title="刪除Rangerตัวนี้">🗑 刪除</button>
+              <button className="danger" onClick={() => selected && setConfirmDelete(selected)} title="刪除此 Ranger">🗑 刪除</button>
             </div>
           </>
         ) : (
@@ -1044,7 +1044,7 @@ export default function RangerEditor() {
       {confirmDelete && (
         <div className="modal-back" onClick={() => setConfirmDelete(null)}>
           <div className="modal" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}>
-            <h3>刪除Rangerนี้?</h3>
+            <h3>刪除此 Ranger？</h3>
             <p><b>{properNameZhTw(confirmDelete) ?? rangers.find(r => r.id === confirmDelete)?.name ?? confirmDelete}</b> ({confirmDelete})</p>
             <p className="note">
               此 Ranger 的所有檔案（圖片、動畫、設定）將移至回收資料夾 <code>data/deleted-rangers/</code><br />
@@ -1139,7 +1139,7 @@ function ShotSummary({ plan, assets, kind, fps, speedMul, tailSec, speedOverride
   if (plan.type === 'melee') {
     return (
       <div className="cast-info">
-        {plan.isBuff ? 'บัฟ — ไม่มีไฟล์投射物' : 'ตีประชิด — ไม่มีไฟล์投射物 เป้าโดนตีทันทีที่เฟรมปล่อย'}
+        {plan.isBuff ? '增益 — 無投射物檔案' : '近戰 — 無投射物檔案，目標會在發射幀立即受擊'}
         {move && <b>資料指定檔案: {move.animationPart ?? '-'} (本機不存在)</b>}
         {basis && <i style={{ color: 'var(--dim)' }}>觸發基準: {basis} — 目前固定攻擊所選目標</i>}
       </div>
@@ -1165,7 +1165,7 @@ function ShotSummary({ plan, assets, kind, fps, speedMul, tailSec, speedOverride
         {' → finish '}{plan.finishFrames}f = {sec(plan.finishTicks).toFixed(2)}s
       </b>
       <i style={{ color: over > 0.8 ? 'var(--warn)' : 'var(--dim)' }}>
-        釋放後動作剩餘 {tailSec.toFixed(2)}s → {over > 0 ? `投射物จบ慢กว่าท่า ${over.toFixed(2)}s` : '投射物จบก่อนท่า'}
+        釋放後動作剩餘 {tailSec.toFixed(2)}s → {over > 0 ? `投射物比角色動作晚結束 ${over.toFixed(2)}s` : '投射物早於角色動作結束'}
       </i>
       <i style={{ color: 'var(--dim)' }}>
         瞄準：{aim}
@@ -1180,7 +1180,7 @@ function ShotSummary({ plan, assets, kind, fps, speedMul, tailSec, speedOverride
         </i>
       )}
       {plan.hasArc && <i style={{ color: 'var(--dim)' }}>拋物線最高點 {plan.arcPeak.toFixed(0)}</i>}
-      {bullet?.geometry.selfArc && <i style={{ color: 'var(--dim)' }}>動畫片段ลอยขึ้นเองแล้ว → ไม่ใส่โค้งซ้ำ</i>}
+      {bullet?.geometry.selfArc && <i style={{ color: 'var(--dim)' }}>動畫本身已有上下浮動 → 不再額外套用弧線</i>}
       {ov && <i>使用檔案例外設定：{JSON.stringify(ov)}</i>}
     </div>
   )
@@ -1218,7 +1218,7 @@ function applyGameInfo(cfg: RangerConfig, info: GameInfo): RangerConfig {
   const role = g.role && ROLES[g.role].category === category ? g.role : ROLES[cfg.role].category === category ? cfg.role : rolesOf(category)[0]
   return {
     ...cfg,
-    name: cfg.name === cfg.id ? info.name.th ?? info.name.en ?? cfg.name : cfg.name,
+    name: cfg.name === cfg.id ? properNameZhTw(cfg.id) ?? info.name.zh ?? info.name.th ?? info.name.en ?? cfg.name : cfg.name,
     element: g.element ?? cfg.element,
     category,
     role,

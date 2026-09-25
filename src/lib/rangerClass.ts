@@ -51,7 +51,7 @@ export interface RoleInfo { category: Category; label: string; hint: string }
 
 export const ROLES: Record<Role, RoleInfo> = {
   tank:     { category: 'str', label: '坦克',      hint: '體力高、耐打、攻擊較低' },
-  fighter:  { category: 'str', label: '戰士',    hint: 'เลือดเยอะรองจาก坦克 แต่ตีแรงกว่า' },
+  fighter:  { category: 'str', label: '戰士',    hint: '體力僅次於坦克，但攻擊力更高' },
   shooter:  { category: 'agi', label: '射手',     hint: '物理攻擊高、爆擊率高' },
   assassin: { category: 'agi', label: '刺客',     hint: '物理爆發高、爆擊率高、體力較低、速度快' },
   mage:     { category: 'int', label: '法師',     hint: '魔法攻擊高，通常擅長範圍攻擊' },
