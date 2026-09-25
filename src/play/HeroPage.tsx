@@ -23,7 +23,7 @@ import type { RangerConfig, Stats } from '@/lib/rangerConfig'
 import { IconBack, IconBag, IconBolt, IconCoin, IconGem, IconHeroes, IconLock, IconSearch, IconSwap, IconSwords } from './icons'
 import { CardArt, Stars, nameOf, type RangerData } from './TeamBuilder'
 import { UI_SRC } from './uiAssets'
-import { areaLong, describeEffect, elementName, localName, roleName } from './i18n'
+import { areaLong, describeEffect, elementName, localName, roleName, t } from './i18n'
 import { categoryName, traitLabel, traitText, ui, useLang } from './uiText'
 import { fmtNum, type Profile } from './profile'
 import './heroPage.css'
@@ -275,7 +275,7 @@ function TabBody({ tab, d }: { tab: Tab; d: RangerData }) {
                 {gi?.icon ? <img src={`/rangers/${id}/${gi.icon}`} alt="" /> : <span>S{i + 1}</span>}
               </div>
               <div className="hp-skill-txt">
-                <b>{localName(gi?.name) ?? `Skill ${i + 1}`}</b>
+                <b>{localName(gi?.name, gi?.code) ?? (i ? t('skill2') : t('skill1'))}</b>
                 <span className="hp-skill-meta">
                   <i className="hp-pill cost"><img className="hp-cost" src={UI_SRC.mineral} alt="" />{ui('cost')} {sk.cost}</i>
                   <i className="hp-pill">{sk.kind === 'buff' ? ui('skillBuff') : ui('skillAttack')}</i>
