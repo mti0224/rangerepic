@@ -190,6 +190,15 @@
 .hp .hp-art-name { display: grid; gap: 4px; justify-items: center; }
 .hp .hp-art-name img.stars { width: clamp(64px, 11dvh, 120px); }
 .hp .hp-art-name b { font-size: 1.05em; color: var(--lb-gold-2); text-align: center; }
+.hp .hp-class-current { color: var(--lb-dim); font-size: 0.68em; max-width: 95%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp .hp-class-switch { width: min(100%, 320px); display: grid; gap: 3px; justify-items: center; }
+.hp .hp-class-switch > span { color: var(--lb-dim); font-size: 0.58em; text-transform: uppercase; letter-spacing: 0.08em; }
+.hp .hp-class-switch > div { width: 100%; display: flex; gap: 4px; overflow-x: auto; padding: 2px; }
+.hp .hp-class-switch button {
+  flex: none; max-width: 180px; padding: 4px 8px; border: 1px solid var(--lb-line-soft); border-radius: 999px;
+  background: rgba(3, 8, 22, 0.6); color: var(--lb-dim); font-size: 0.58em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hp .hp-class-switch button.on { border-color: var(--lb-gold); color: var(--lb-gold-2); background: rgba(245, 197, 66, 0.08); }
 
 /* ── ค่าพลัง + อุปกรณ์ ── */
 /* ค่าพลัง: ชื่อ + ตัวเลข (ไม่มีหลอด) · ยาวเกินกรอบก็เลื่อนดูได้ */
@@ -259,6 +268,7 @@
 .hp .hp-card.on { border-color: var(--lb-gold); box-shadow: 0 0 calc(14px * var(--lb-fx)) rgba(245, 197, 66, 0.35); }
 .hp .hp-card .tb-card-art { width: 100%; height: auto; aspect-ratio: 1; border-radius: calc(var(--lb-r-sm) - 2px); }
 .hp .hp-card b { font-size: 0.66em; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp .hp-card-classes { font-size: 0.52em; color: var(--lb-dim); line-height: 1; }
 .hp .hp-card-el, .hp .hp-card-cat {
   position: absolute; top: 8px; z-index: 2;
   width: clamp(16px, 2.6dvh, 26px); height: clamp(16px, 2.6dvh, 26px);

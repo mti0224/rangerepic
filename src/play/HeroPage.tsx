@@ -31,6 +31,7 @@ import { fmtNum, type Profile } from './profile'
 import { heroLevel, heroStats, isFavorite, toggleFavorite, useCollection } from './collection'
 import { ActiveSets, GearPicker, GearSlotButton, LevelControl } from './GearUI'
 import type { GearSlot } from '@/lib/gear'
+import { characterIdOfRanger, characterName, groupByCharacter } from '@/lib/characterModel'
 import './heroPage.css'
 
 type Tab = 'info' | 'skills' | 'upgrade' | 'limit'
@@ -72,7 +73,7 @@ export default function HeroPage({ data, profile, onClose }: {
   profile: Profile
   onClose: () => void
 }) {
-  useLang()
+  const lang = useLang()
   const col = useCollection()
   const [picker, setPicker] = useState<GearSlot | null>(null)
   const [tab, setTab] = useState<Tab>('info')
@@ -98,7 +99,14 @@ export default function HeroPage({ data, profile, onClose }: {
     return [...rows].sort(key[sort])
   }, [data, element, category, role, sort, col])
 
+  // 角色與職業／造型分離：底部先以 Character 分組，再由中央切換該角色的 class variant。
+  // 現階段 variant 仍是舊 Ranger id；之後 classId 可以改成完全自訂而不影響圖資 id。
+  const characterGroups = useMemo(() => groupByCharacter(list, d => d.item.id), [list])
+  const allCharacterGroups = useMemo(() => groupByCharacter(data, d => d.item.id), [data])
   const hero = data.find(d => d.item.id === pickedId) ?? list[0] ?? data[0] ?? null
+  const heroCharacterId = hero ? characterIdOfRanger(hero.item.id) : null
+  const heroCharacter = heroCharacterId ? allCharacterGroups.find(g => g.characterId === heroCharacterId) ?? null : null
+  const heroCharacterName = hero && heroCharacterId ? characterName(heroCharacterId, lang, nameOf(hero)) : ''
   const heroName = (id: string) => { const d = data.find(x => x.item.id === id); return d ? nameOf(d) : id }
   const elementOf = (id: string) => data.find(x => x.item.id === id)?.config?.element ?? null
   // ค่าพลังจริง (เลเวล + อุปกรณ์) เทียบกับค่าตั้งต้น
@@ -121,7 +129,7 @@ export default function HeroPage({ data, profile, onClose }: {
       {/* ── แถบบน ── */}
       <header className="hp-top">
         <button className="hp-back" onClick={onClose}><IconBack size={18} />{ui('lobby')}</button>
-        <h1><IconHeroes size={20} />{ui('ownedHeroes')}<small>{data.length}</small></h1>
+        <h1><IconHeroes size={20} />{ui('ownedHeroes')}<small>{allCharacterGroups.length}</small></h1>
         <div className="hp-wallet">
           <span className="hp-cur gold"><IconCoin size={15} />{fmtNum(profile.gold)}</span>
           <span className="hp-cur gem"><IconGem size={15} />{fmtNum(profile.gem)}</span>
@@ -148,7 +156,27 @@ export default function HeroPage({ data, profile, onClose }: {
           {hero && (
             <div className="hp-art-name">
               <Stars id={hero.item.id} grade={hero.item.grade} />
-              <b>{nameOf(hero)}</b>
+              <b>{heroCharacterName}</b>
+              {(heroCharacter?.variants.length ?? 0) > 1 || heroCharacterName !== nameOf(hero)
+                ? <small className="hp-class-current">{nameOf(hero)}</small>
+                : null}
+              {(heroCharacter?.variants.length ?? 0) > 1 && (
+                <div className="hp-class-switch" aria-label={ui('classSelect')}>
+                  <span>{ui('classSelect')}</span>
+                  <div>
+                    {heroCharacter!.variants.map(v => (
+                      <button
+                        key={v.item.id}
+                        className={v.item.id === hero.item.id ? 'on' : ''}
+                        onClick={() => setPickedId(v.item.id)}
+                        title={nameOf(v)}
+                      >
+                        {nameOf(v)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </section>
@@ -224,28 +252,35 @@ export default function HeroPage({ data, profile, onClose }: {
             และเปิด overflow ค้างไว้เสมอ พื้นที่แถบเลื่อนจึงถูกจองไว้ตลอด ฟิลเตอร์แล้วภาพไม่ขยับขึ้นลง */}
         <div className="hp-scroll" ref={scrollRef} onWheel={onWheel}>
           <div className="hp-cards">
-            {list.map(d => (
-              <button
-                key={d.item.id}
-                className={'hp-card' + (hero?.item.id === d.item.id ? ' on' : '')}
-                onClick={() => setPickedId(d.item.id)}
-                title={nameOf(d)}
-              >
-                {/* รูป + แถบล่างของรูป: Lv. ซ้าย · ดาวที่ชอบ ขวา */}
-                <span className="hp-card-pic">
-                  <CardArt d={d} />
-                  <span className="hp-card-badges">
-                    <i className="hp-card-lv">Lv.{heroLevel(col, d.item.id)}</i>
-                    {isFavorite(col, d.item.id) && <i className="hp-card-fav"><IconStar size={13} filled /></i>}
+            {characterGroups.map(group => {
+              const current = heroCharacterId === group.characterId
+                ? group.variants.find(v => v.item.id === hero?.item.id)
+                : null
+              const d = current ?? group.variants[0]
+              const display = characterName(group.characterId, lang, nameOf(d))
+              return (
+                <button
+                  key={group.characterId}
+                  className={'hp-card' + (heroCharacterId === group.characterId ? ' on' : '')}
+                  onClick={() => setPickedId(d.item.id)}
+                  title={display}
+                >
+                  <span className="hp-card-pic">
+                    <CardArt d={d} />
+                    <span className="hp-card-badges">
+                      <i className="hp-card-lv">Lv.{heroLevel(col, d.item.id)}</i>
+                      {isFavorite(col, d.item.id) && <i className="hp-card-fav"><IconStar size={13} filled /></i>}
+                    </span>
                   </span>
-                </span>
-                {d.item.element && <img className="hp-card-el" src={UI_SRC.element[d.item.element]} alt="" />}
-                {d.item.category && <img className="hp-card-cat" src={UI_SRC.category[d.item.category]} alt="" />}
-                <span className="hp-card-stars"><Stars id={d.item.id} grade={d.item.grade} /></span>
-                <b>{nameOf(d)}</b>
-              </button>
-            ))}
-            {!list.length && <p className="hp-dim">{ui('noMatch')}</p>}
+                  {d.item.element && <img className="hp-card-el" src={UI_SRC.element[d.item.element]} alt="" />}
+                  {d.item.category && <img className="hp-card-cat" src={UI_SRC.category[d.item.category]} alt="" />}
+                  <span className="hp-card-stars"><Stars id={d.item.id} grade={d.item.grade} /></span>
+                  <b>{display}</b>
+                  {group.variants.length > 1 && <small className="hp-card-classes">{ui('classCount', { n: String(group.variants.length) })}</small>}
+                </button>
+              )
+            })}
+            {!characterGroups.length && <p className="hp-dim">{ui('noMatch')}</p>}
           </div>
         </div>
       </footer>
