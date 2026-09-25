@@ -15,7 +15,7 @@ import { properNameZhTw } from './zhNames'
 
 export type Lang = 'zh-TW' | 'en' | 'th'
 export const LANGS: Lang[] = ['zh-TW', 'en', 'th']
-const STORAGE_KEY = 'lr:lang'
+const STORAGE_KEY = 'lr:lang:v2'
 
 let lang: Lang = (() => {
   try {
@@ -29,6 +29,7 @@ const listeners = new Set<(l: Lang) => void>()
 export function setLang(next: Lang): void {
   lang = next
   try { localStorage.setItem(STORAGE_KEY, next) } catch { /* จำไม่ได้ก็ใช้ได้แค่รอบนี้ */ }
+  if (typeof document !== 'undefined') document.documentElement.lang = next === 'zh-TW' ? 'zh-Hant-TW' : next
   for (const fn of listeners) fn(next)
 }
 /** ฟังการเปลี่ยนภาษา (คืนฟังก์ชันเลิกฟัง) */
