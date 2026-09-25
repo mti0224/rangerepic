@@ -394,7 +394,7 @@ export function CutinPanel({ assets, config, info, slot, onSlot, onChange }: {
           </div>
           <p className="note">
             ซูมมากเกิน ×3 รูปสไปรต์จะเริ่มแตก · ข้อความว่าง = ใช้ชื่อสกิลจากข้อมูลเกม<br />
-            กด <b>Save</b> ด้านบนเพื่อบันทึกลง ranger.json
+            點擊上方的 <b>儲存</b>，即可寫入 ranger.json
           </p>
         </>
       )}
