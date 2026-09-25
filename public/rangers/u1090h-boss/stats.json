@@ -1,0 +1,235 @@
+{
+  "id": "u1090h-boss",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-25T16:57:09.239Z"
+  },
+  "name": {
+    "en": "Evil Croc Game Boss",
+    "th": "Boss เกมจระเข้ชั่วร้าย",
+    "zh": "兇猛鱷魚牙醫部長",
+    "jp": "凶悪のワニゲーム部長"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 18700,
+      "perLevel": 2400,
+      "perLevelAfterMax": 3200
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2300,
+      "perLevel": 290,
+      "perLevelAfterMax": 380
+    },
+    "mdef": {
+      "initial": 2800,
+      "perLevel": 320,
+      "perLevelAfterMax": 420
+    },
+    "hp": {
+      "initial": 189000,
+      "perLevel": 23700,
+      "perLevelAfterMax": 30900
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 69,
+    "attackRange": 220,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 60,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1060,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1090_boss",
+      "name": {
+        "en": "Shiny!",
+        "th": "วิบวับ",
+        "zh": "潔淨光亮",
+        "jp": "ピカピカ"
+      },
+      "desc": {
+        "en": "The crocodile's shiny teeth give beneficial effects to surrounding allies.\\n\\n*HP +270% (10 sec)\\n*Changes regular attacks to area attacks (10 sec)",
+        "th": "สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวกด้วยจระเข้ที่ฟันสะอาดแล้ว\\n\\n*เพิ่มพลังชีวิต 270% (10 วินาที)\\n*เปลี่ยนจากการโจมตีปกติเป็นการโจมตีพื้นที่ (10 วินาที)",
+        "zh": "靠牙齒變乾淨的鱷魚讓夥伴獲得正面效果。\\n\\n*提升體力270% (10秒)\\n*將普通攻擊轉換為範圍攻擊 (10秒)",
+        "jp": "綺麗な歯になったワニのおかげで、味方に良い効果を与えます。\\n\\n*体力270%アップ (10秒)\\n*通常攻撃を範囲攻撃に変化 (10秒)"
+      },
+      "icon": "icons/skill_icon_sk1090_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1090_boss.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 12,
+      "range": 330,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1090_boss",
+      "name": {
+        "en": "Go, go, Evil Croc!",
+        "th": "ลุยเลย เกมจระเข้ชั่วร้าย!",
+        "zh": "鱷魚牙醫兇猛突擊",
+        "jp": "突撃！凶悪のワニゲーム！"
+      },
+      "desc": {
+        "en": "Charges at enemies with a crocodile at super high speed.\\n\\n*ATK x 4000% Area Damage \\n*Enemy knockback \\n*Continuously cancels enemy invincibility (3 sec)",
+        "th": "จระเข้ความเร็วสูงจะพุ่งเข้าชนศัตรู\\n\\n*สร้างความเสียหาย 4000% ของพลังโจมตีลงในพื้นที่ \\n*โจมตีทำให้ศัตรูกระเด็นถอยหลัง \\n*ยกเลิกภาวะอมตะของศัตรู อย่างต่อเนื่อง (3 วินาที)",
+        "zh": "讓全速衝刺的鱷魚衝向敵方陣容。\\n\\n*攻擊力×4000%的範圍傷害 \\n*產生擊退效果 \\n*解除敵人的持續無敵狀態 (3秒)",
+        "jp": "最大速力のワニが敵陣へ突進します。\\n\\n*攻撃力×4000%の範囲ダメージ \\n*敵軍ノックバック効果 \\n*敵の無敵持続解除 (3秒)"
+      },
+      "icon": "icons/skill_icon_usk1090_boss.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_usk1090_boss.png",
+      "probability": 0.5,
+      "cooldownSec": 5,
+      "range": 500,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab105_frozenheart",
+      "name": {
+        "en": "Stone Cold",
+        "th": "หัวใจยะเยือก",
+        "zh": "堅忍的心臟",
+        "jp": "凍りついた心臓"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be turned against their allies \\nin stages with the Siren Song obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"ลำนำเย้ายวน\" จะแสดงผลในสเตจจุติก็ตาม",
+        "zh": "當降臨關卡發動「誘惑之歌」妨礙效果時，\\n持有這個能力的Ranger不會受到影響。",
+        "jp": "降臨ステージで「誘惑の歌」妨害効果発動の際、\\nこのアビリティを保有しているレンジャーは誘惑の歌の影響を受けません。"
+      },
+      "icon": "icons/ab105_frozenheart_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ",
+        "zh": "妨礙礦物生產",
+        "jp": "ミネラル生産妨害"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)",
+        "zh": "奪取對方隊伍的礦物，降低礦物生產速度。\\n(有此能力的Ranger參與戰鬥時，將降低對方的礦物生產速度)",
+        "jp": "相手チームのミネラルを奪い取って生産速度を落とします。\\n(アビリティを所持したレンジャーが戦闘に参加すると減少)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1090h-boss",
+    "unitNameCode": "u1090h-boss_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 1060,
+    "unitCategoryType": "STR",
+    "attackRange": 220,
+    "attackDelay": 69,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1090h-boss_desc",
+    "initialAttack": 18700,
+    "specialAttack": 0,
+    "defence": 2300,
+    "specialDefence": 2800,
+    "initialHp": 189000,
+    "movingSpeed": 60,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 2400,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 290,
+    "specialDefenceDelta": 320,
+    "hpIncreaseAmount": 23700,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1090_boss",
+    "skillCode": "sk1090_boss",
+    "iconSkillCode2": "usk1090_boss",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1090_boss",
+    "skillCode3": "hsk1090_boss",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab105_frozenheart",
+    "abilityCode": "ab105_frozenheart",
+    "abilityCategoryCode": "ab105_frozenheart",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 30900,
+    "attackIncreaseAmountMax": 3200,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 380,
+    "specialDefenceDeltaMax": 420,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
