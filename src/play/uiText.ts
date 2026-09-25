@@ -209,8 +209,204 @@ const T = {
 } as const satisfies Record<string, readonly [string, string]>
 
 export type UiKey = keyof typeof T
+const ZH: Record<UiKey, string> = {
+  "appTitle": "LINE Rangers 競技場",
+  "appSub": "5v5 回合制對戰",
+  "myTeam": "我方隊伍",
+  "enemyTeam": "敵方隊伍",
+  "random": "隨機",
+  "clear": "清除",
+  "start": "開始戰鬥",
+  "needBoth": "雙方隊伍都至少要放入 1 名 Ranger",
+  "loading": "正在載入 Rangers…",
+  "loadFail": "載入失敗",
+  "rangers": "RANGERS",
+  "search": "搜尋名稱…",
+  "all": "全部",
+  "element": "屬性",
+  "role": "定位",
+  "klass": "類型",
+  "sort": "排序",
+  "sortGrade": "★ 星等",
+  "sortName": "名稱",
+  "sortHp": "HP",
+  "sortAtk": "ATK",
+  "sortSpd": "攻擊速度",
+  "noMatch": "沒有符合篩選條件的 Rangers",
+  "noRangers": "目前沒有可用的 Rangers",
+  "empty": "空",
+  "front": "前排",
+  "back": "後排",
+  "info": "詳細資料",
+  "remove": "移除",
+  "change": "更換",
+  "current": "目前欄位",
+  "close": "關閉",
+  "help": "遊玩方式",
+  "reserve": "特殊列",
+  "reserveHint": "不上場 · 輪到我方時可召喚並施放技能",
+  "howReserve": "特殊列（召喚）",
+  "reserveText": "每支隊伍最多可在特殊列放入 2 名 Ranger，他們不會直接上場。輪到我方任一 Ranger 行動時，可改為召喚其中一名（快捷鍵 A/S 或 D/F）施放技能 1 或技能 2；會消耗該技能的 Cost，並使用自身原始能力值（不套用排位加成與增益）。施放後離場，並進入我方 8 個回合的休息時間。",
+  "rotate": "請將手機旋轉為橫向以進行遊戲",
+  "inAppWarn": "此 App 內建瀏覽器無法全螢幕遊玩，建議改用 Chrome 開啟以獲得最佳體驗",
+  "inAppHowTo": "點擊右上角 ⋯，選擇「在瀏覽器中開啟」或「在 Safari 中開啟」即可全螢幕遊玩",
+  "openBrowser": "在 Chrome 開啟",
+  "tapFullscreen": "點擊以全螢幕繼續",
+  "pickTitle": "選擇 Ranger — {team} · {row}",
+  "inMine": "我方",
+  "inEnemy": "敵方",
+  "teamFull": "隊伍已滿",
+  "pickHint": "點擊空欄位選擇 Ranger · 點擊卡片查看詳細資料 · 可拖曳卡片放入欄位或交換位置",
+  "placing": "已選擇：{name} — 點擊空欄位放置",
+  "detailEmpty": "選擇 Ranger 以查看能力值與技能",
+  "stats": "能力值",
+  "skills": "技能",
+  "ability": "定位能力",
+  "normalAttack": "普通攻擊",
+  "normalAttackText": "100% ATK · Cost +1",
+  "cost": "Cost",
+  "goodFit": "適合此排",
+  "howTo": "遊玩方式",
+  "howRows": "排位加成",
+  "howRoles": "定位能力",
+  "howControls": "操作方式",
+  "controlsText": "輪到你時選擇普通攻擊／技能 1／技能 2（快捷鍵 Z／X／C），再點擊目標。若只有一個可選目標，再按一次相同快捷鍵即可自動瞄準。AUTO 會自動進行戰鬥；速度按鈕依序切換 x1 → x2 → x4。",
+  "energyText": "技能會消耗隊伍能量（Cost），普通攻擊可獲得 +1 Cost。擊倒敵方全隊即可獲勝；若達到 80 回合上限，剩餘 HP 百分比較高的一方獲勝。",
+  "statHp": "HP",
+  "statAtk": "ATK",
+  "statDef": "DEF",
+  "statSpd": "攻擊速度",
+  "statCrit": "暴擊率",
+  "statCritDmg": "暴擊傷害",
+  "statEvade": "閃避率",
+  "statHit": "命中率",
+  "statSkillEvade": "技能閃避率",
+  "statSkillHit": "技能命中率",
+  "statSkillRes": "技能抵抗",
+  "statSkillDmgRes": "技能傷害抵抗",
+  "lobby": "大廳",
+  "reserveRow": "特殊列",
+  "lvShort": "Lv.",
+  "power": "總戰力",
+  "myTeamShort": "我的隊伍",
+  "editTeam": "編輯隊伍",
+  "noTeamYet": "尚未配置隊伍",
+  "modes": "遊戲模式",
+  "soon": "即將推出",
+  "ready": "可遊玩",
+  "modePractice": "練習對戰",
+  "modePracticeSub": "配置雙方隊伍後立即進行對戰",
+  "modeCampaign": "冒險模式",
+  "modeCampaignSub": "挑戰關卡並取得金幣與裝備",
+  "modeArena": "競技場",
+  "modeArenaSub": "挑戰其他玩家的防守隊伍",
+  "modeBoss": "Boss 討伐",
+  "modeBossSub": "組隊挑戰強大的 Boss",
+  "modeDaily": "每日任務",
+  "modeDailySub": "完成每日小任務並領取獎勵",
+  "navHeroes": "Rangers",
+  "navTeam": "隊伍",
+  "navBag": "背包",
+  "navShop": "商店",
+  "navGacha": "召喚",
+  "navMail": "信箱",
+  "navSettings": "設定",
+  "battleNow": "戰鬥",
+  "panelHeroesSub": "升級、進化並查看你擁有的 Rangers",
+  "panelBagSub": "素材、裝備與消耗道具",
+  "panelShopSub": "每日特價、禮包與貨幣兌換",
+  "panelGachaSub": "使用寶石或票券召喚新的 Rangers",
+  "panelMailSub": "領取獎勵並查看營運公告",
+  "wip": "開發中",
+  "wipNote": "頁面版型已完成，功能將於後續加入。",
+  "theme": "主題",
+  "themeNeon": "霓虹",
+  "themePixel": "像素",
+  "language": "語言",
+  "resetProfile": "重設測試資料",
+  "more": "更多",
+  "tabInfo": "資訊",
+  "tabSkills": "技能",
+  "tabUpgrade": "強化",
+  "tabLimit": "突破",
+  "powAtk": "攻擊力",
+  "powHp": "體力",
+  "powDef": "防禦力",
+  "powSpd": "攻擊速度",
+  "powCrit": "暴擊率",
+  "gearWeapon": "武器",
+  "gearArmor": "防具",
+  "gearAcc": "飾品",
+  "gearTome": "魔法書",
+  "filter": "篩選",
+  "levelLabel": "等級",
+  "ownedHeroes": "Rangers",
+  "panelUpgradeSub": "消耗金幣與素材提升能力值",
+  "panelLimitSub": "使用重複 Ranger 突破等級上限",
+  "levelSoon": "等級系統尚未開放",
+  "skillAttack": "攻擊技能",
+  "skillBuff": "輔助技能",
+  "bannerStd": "一般召喚",
+  "bannerStdSub": "所有 Rangers，常駐開放",
+  "bannerEvent": "活動召喚",
+  "bannerEventSub": "精選 Rangers，期間限定",
+  "bannerGear": "裝備召喚",
+  "bannerGearSub": "武器、防具與其他裝備",
+  "gearSoon": "裝備系統尚未開放",
+  "pull1": "召喚 ×1",
+  "pull10": "召喚 ×10",
+  "pickUp": "機率提升",
+  "rates": "提供機率",
+  "guarantee10": "10 連召喚保證稀有以上",
+  "notEnoughGem": "寶石不足",
+  "tapPack": "點擊卡包開啟",
+  "tapCard": "點擊卡片揭曉",
+  "skipAll": "全部略過",
+  "done": "完成",
+  "rarityCommon": "普通",
+  "rarityRare": "稀有",
+  "rarityEpic": "史詩",
+  "rarityLegend": "傳說",
+  "newTag": "新",
+  "freeGem": "測試版：目前尚不扣除寶石",
+  "navProfile": "個人資料",
+  "navEvents": "活動",
+  "navQuests": "任務",
+  "navPass": "賽季通行證",
+  "navNotice": "公告",
+  "navGuild": "公會",
+  "navRank": "排行榜",
+  "navCodex": "圖鑑",
+  "navAchieve": "成就",
+  "panelRankSub": "賽季排行榜",
+  "panelCodexSub": "收錄你曾遇過的 Ranger、道具與敵人",
+  "panelAchieveSub": "累積成就與對應獎勵",
+  "navForge": "裝備強化",
+  "navFriends": "好友",
+  "addFriend": "新增好友",
+  "online": "上線",
+  "play": "遊玩",
+  "leader": "隊長",
+  "modeStory": "主線故事",
+  "modeStorySub": "依序攻略主線關卡",
+  "modeSide": "支線故事",
+  "modeSideSub": "期間限定章節與活動",
+  "modeDungeon": "地下城",
+  "modeDungeonSub": "取得金幣與強化素材",
+  "modeTower": "高塔",
+  "modeTowerSub": "逐層挑戰，層與層之間不恢復 HP",
+  "panelEventsSub": "期間限定活動與獎勵",
+  "panelQuestsSub": "每日、每週與成就任務",
+  "panelPassSub": "賽季獎勵進度",
+  "panelNoticeSub": "更新資訊與公告",
+  "panelGuildSub": "公會大廳、成員與公會戰",
+  "panelForgeSub": "強化並升級裝備",
+  "panelFriendsSub": "好友清單、支援 Ranger 與贈禮"
+}
+
 export const ui = (k: UiKey, vars?: Record<string, string>): string => {
-  let s: string = T[k][getLang() === 'th' ? 1 : 0]
+  const lang = getLang()
+  let s: string = lang === 'zh-TW' ? ZH[k] : T[k][lang === 'th' ? 1 : 0]
   if (vars) for (const [key, v] of Object.entries(vars)) s = s.replace(`{${key}}`, v)
   return s
 }
@@ -222,7 +418,8 @@ export function useLang(): Lang {
   return l
 }
 
-const pick = (pair: readonly [string, string]) => pair[getLang() === 'th' ? 1 : 0]
+const pick = (pair: readonly [string, string], zhTw?: string) =>
+  getLang() === 'zh-TW' ? (zhTw ?? pair[0]) : pair[getLang() === 'th' ? 1 : 0]
 
 /** ความสามารถประจำตำแหน่ง (ตรงกับค่าจริงใน lib/roleTraits.ts) */
 const TRAIT: Record<Role, { label: readonly [string, string]; text: readonly [string, string] }> = {
@@ -233,15 +430,25 @@ const TRAIT: Record<Role, { label: readonly [string, string]; text: readonly [st
   mage: { label: ['Arcane Power', 'เวทรุนแรง'], text: ['Skill damage +20%', 'ดาเมจสกิลแรงขึ้น 20%'] },
   support: { label: ['Caretaker', 'สายเลี้ยง'], text: ['Heals and shields +25% · team starts with +1 Cost', 'ฮีล/โล่ที่ให้เพิ่ม 25% · ทีมเริ่มเกมพลังงาน +1'] },
 }
-export const traitLabel = (r: Role): string => pick(TRAIT[r].label)
-export const traitText = (r: Role): string => pick(TRAIT[r].text)
+const TRAIT_ZH: Record<Role, { label: string; text: string }> = {
+  tank: { label: '壁壘', text: '受到傷害 −15% · 敵人會優先鎖定' },
+  fighter: { label: '吸血', text: '造成傷害的 15% 轉為恢復' },
+  shooter: { label: '神射手', text: '普通攻擊傷害 +25%' },
+  assassin: { label: '暗殺', text: '可攻擊任意敵人（無視前排）· 對 HP 低於 50% 的目標傷害 +30%' },
+  mage: { label: '魔力強化', text: '技能傷害 +20%' },
+  support: { label: '支援', text: '治療與護盾 +25% · 隊伍起始 Cost +1' },
+}
+export const traitLabel = (r: Role): string => getLang() === 'zh-TW' ? TRAIT_ZH[r].label : pick(TRAIT[r].label)
+export const traitText = (r: Role): string => getLang() === 'zh-TW' ? TRAIT_ZH[r].text : pick(TRAIT[r].text)
 
 /** โบนัสแถว (ตรงกับ lib/formation.ts) */
 export const rowBonusText = (row: Row): string =>
   row === 'front'
-    ? pick(['DEF +30% · HP +15% — best for Tank / Fighter', 'DEF +30% · HP +15% — เหมาะกับแทงค์ / ไฟเตอร์'])
-    : pick(['ATK +15% · Crit +8 — best for Shooter / Assassin / Mage / Support', 'ATK +15% · คริ +8 — เหมาะกับนักยิง / นักฆ่า / นักเวท / ซัพพอร์ต'])
-export const rowBonusShort = (row: Row): string => (row === 'front' ? 'DEF +30% · HP +15%' : pick(['ATK +15% · Crit +8', 'ATK +15% · คริ +8']))
+    ? pick(['DEF +30% · HP +15% — best for Tank / Fighter', 'DEF +30% · HP +15% — เหมาะกับแทงค์ / ไฟเตอร์'], 'DEF +30% · HP +15% — 適合坦克／戰士')
+    : pick(['ATK +15% · Crit +8 — best for Shooter / Assassin / Mage / Support', 'ATK +15% · คริ +8 — เหมาะกับนักยิง / นักฆ่า / นักเวท / ซัพพอร์ต'], 'ATK +15% · 暴擊 +8 — 適合射手／刺客／法師／輔助')
+export const rowBonusShort = (row: Row): string =>
+  row === 'front' ? 'DEF +30% · HP +15%' : pick(['ATK +15% · Crit +8', 'ATK +15% · คริ +8'], 'ATK +15% · 暴擊 +8')
 
 const CATEGORY: Record<Category, readonly [string, string]> = { str: ['STR', 'พลัง'], agi: ['AGI', 'ว่องไว'], int: ['INT', 'ไหวพริบ'] }
-export const categoryName = (c: Category): string => pick(CATEGORY[c])
+const CATEGORY_ZH: Record<Category, string> = { str: '力量型', agi: '敏捷型', int: '智慧型' }
+export const categoryName = (cat: Category): string => getLang() === 'zh-TW' ? CATEGORY_ZH[cat] : pick(CATEGORY[cat])
