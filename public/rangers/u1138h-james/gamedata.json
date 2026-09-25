@@ -1,0 +1,89 @@
+{
+  "id": "u1138h-james",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.55,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.5,
+      "y": 0.7
+    }
+  },
+  "attackRangePt": 340,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 118,
+        "y": 0
+      },
+      "moveSpeed": 60,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 0
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "NONE",
+        "enabled": false,
+        "rotation": "NONE",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 240,
+        "y": 0
+      },
+      "moveSpeed": 80,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 0
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "self"
+      },
+      "area": 210
+    },
+    "skill2": {
+      "basis": {
+        "type": "rear",
+        "multiplier": 1.5
+      },
+      "area": 350
+    }
+  }
+}
