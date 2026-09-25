@@ -51,6 +51,7 @@ import { defaultSkills, type EffectType, type LifestealScope, type SkillArea, ty
 import { statsWithPosition } from '@/lib/formation'
 import { passiveSum, type PassiveDef } from '@/lib/passives'
 import { BattleAI } from './ai'
+import { playableIdentityOfRanger, type AssetVariantId, type CharacterId, type ClassId } from '@/lib/characterModel'
 
 /** smart = ให้คะแนนทุกทางเลือก · basic = แบบเดิม (สุ่มท่า ตีตัวเลือดน้อยสุด) · random = สุ่มล้วน */
 export type AiLevel = 'smart' | 'basic' | 'random'
@@ -58,7 +59,11 @@ export type AiLevel = 'smart' | 'basic' | 'random'
 export type Team = 0 | 1
 
 export interface UnitSetup {
+  /** 舊存檔／舊呼叫端相容欄位。新程式不要把它當成 Character id。 */
   rangerId: string
+  characterId?: CharacterId
+  classId?: ClassId
+  assetVariantId?: AssetVariantId
   row: Row
   /** ช่องในแถว: แถวหน้า 0–1, แถวหลัง 0–2 */
   lane: number
@@ -118,7 +123,11 @@ export interface Status {
 
 export interface Unit {
   uid: string
+  /** 舊相容欄位；目前等同 assetVariantId，未來可能不再相同。 */
   rangerId: string
+  characterId: CharacterId
+  classId: ClassId
+  assetVariantId: AssetVariantId
   /** เลเวลฮีโร่ (แสดงผลอย่างเดียว) */
   level: number
   team: Team
@@ -344,9 +353,13 @@ export class Battle {
   }
 
   private makeUnit(u: UnitSetup, t: Team, s: Stats, spd: number, uid: string): Unit {
+    const legacy = playableIdentityOfRanger(u.assetVariantId ?? u.rangerId)
     return {
       uid,
       rangerId: u.rangerId,
+      characterId: u.characterId ?? legacy.characterId,
+      classId: u.classId ?? legacy.classId,
+      assetVariantId: u.assetVariantId ?? legacy.assetVariantId,
       level: u.level ?? 1,
       team: t as Team,
       row: u.row,

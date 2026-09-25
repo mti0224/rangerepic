@@ -28,6 +28,7 @@ import StoryEnd from './StoryEnd'
 import { STAGES } from '@/lib/stages'
 import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice, openInExternalBrowser, useFullscreen } from './screen'
 import { ui, useLang } from './uiText'
+import { playableIdentityOfRanger } from '@/lib/characterModel'
 
 const FORMATION_KEY = 'lr:formation'
 /** หน้าไหนอยู่ที่ URL ไหน (Netlify ส่งทุกเส้นทางมาที่หน้าเดียว → อ่านจาก pathname เอง) */
@@ -374,14 +375,40 @@ function BattleView({ formation, kits, seed, story, storyResult, data, onStoryEn
       const kit = id ? kits.get(id) : undefined
       if (!id || !kit) return []
       const [row, lane] = k.split('-') as [Row, string]
-      return [{ rangerId: id, row, lane: Number(lane), element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, ...power(team, id, kit, k) }]
+      const ident = playableIdentityOfRanger(id)
+      return [{
+        rangerId: id,
+        characterId: ident.characterId,
+        classId: ident.classId,
+        assetVariantId: ident.assetVariantId,
+        row,
+        lane: Number(lane),
+        element: kit.config.element,
+        category: kit.config.category,
+        role: kit.config.role,
+        skills: kit.config.skills,
+        ...power(team, id, kit, k),
+      }]
     })
     // แถวพิเศษ (อัญเชิญ): ไม่ลงสนาม · ไม่มีโบนัสแถว (เลเวล/อุปกรณ์เป็นพลังของตัวเอง ยังนับ)
     const reserves = (team: Team): UnitSetup[] => RESERVE_KEYS.flatMap((k, i) => {
       const id = formation[team][k]
       const kit = id ? kits.get(id) : undefined
       if (!id || !kit) return []
-      return [{ rangerId: id, row: 'back' as Row, lane: i, element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, ...power(team, id, kit, k) }]
+      const ident = playableIdentityOfRanger(id)
+      return [{
+        rangerId: id,
+        characterId: ident.characterId,
+        classId: ident.classId,
+        assetVariantId: ident.assetVariantId,
+        row: 'back' as Row,
+        lane: i,
+        element: kit.config.element,
+        category: kit.config.category,
+        role: kit.config.role,
+        skills: kit.config.skills,
+        ...power(team, id, kit, k),
+      }]
     })
     const sc = new BattleScene(new Battle([setups(0), setups(1)], seed, [reserves(0), reserves(1)]), kits, thumbs, rerender)
     if (story) { sc.hud.backLabel = ui('backToMap'); sc.hud.customResult = true }

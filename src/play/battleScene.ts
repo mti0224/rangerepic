@@ -373,7 +373,7 @@ export class BattleScene {
     // ตำแหน่งยืนตามจำนวนตัวในแถว (วางตัวเดียว → อยู่กลางแถว ฯลฯ)
     const slots = opts.layout === 'fixed' ? new Map<string, Vec2>() : formationSlots(battle.units)
     for (const unit of battle.units) {
-      const kit = kits.get(unit.rangerId)
+      const kit = kits.get(unit.assetVariantId)
       if (!kit) continue
       const player = new SamPlayer(kit.assets.sam)
       player.playClip(kit.config.clips.idle, { loop: true })
@@ -396,7 +396,7 @@ export class BattleScene {
       })
     }
     for (const unit of [...battle.reserves[0], ...battle.reserves[1]]) {
-      const kit = kits.get(unit.rangerId)
+      const kit = kits.get(unit.assetVariantId)
       if (!kit) continue
       const player = new SamPlayer(kit.assets.sam)
       player.playClip(kit.config.clips.idle, { loop: true })
@@ -541,17 +541,17 @@ export class BattleScene {
 
   nameOf(u: Unit): string {
     const kit = this.view(u.uid)?.kit
-    return (getLang() === 'zh' ? properNameZhTw(u.rangerId) : null) ?? localName(kit?.info?.name) ?? kit?.config.name ?? u.rangerId
+    return (getLang() === 'zh' ? properNameZhTw(u.assetVariantId) : null) ?? localName(kit?.info?.name) ?? kit?.config.name ?? u.assetVariantId
   }
   infoOf(u: Unit): GameInfo | null { return this.view(u.uid)?.kit.info ?? null }
   /** รูปเรนเจอร์ใน HUD = thumb.png + ตำแหน่งหน้า (แท็บ "รูปหน้า" ใน editor) · รูปยังไม่โหลด = null */
   faceOf(u: Unit): { img: HTMLImageElement; center: Vec2 } | null {
-    const img = this.thumbs.get(u.rangerId)
+    const img = this.thumbs.get(u.assetVariantId)
     if (!imageReady(img)) return null
-    let center = this.faces.get(u.rangerId)
+    let center = this.faces.get(u.assetVariantId)
     if (!center) {
       center = portraitCenter(img, this.view(u.uid)?.kit.config.face)
-      this.faces.set(u.rangerId, center)
+      this.faces.set(u.assetVariantId, center)
     }
     return { img, center }
   }
