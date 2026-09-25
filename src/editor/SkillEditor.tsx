@@ -9,6 +9,7 @@ import {
 } from '@/lib/skills'
 import { ELEMENT_LABEL, type Element } from '@/lib/rangerClass'
 import type { GameSkillInfo } from '@/lib/rangerApi'
+import { properNameZhTw } from '@/play/zhNames'
 
 const BASIS_LABEL: Record<string, string> = { self: 'ตัวเอง', front: 'ศัตรูแถวหน้า', rear: 'ศัตรูแถวหลัง' }
 
@@ -47,8 +48,7 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
             ? <img src={`/rangers/${encodeURIComponent(rangerId)}/${info.icon}`} alt="" />
             : <div className="skill-icon-empty">?</div>}
           <div>
-            <b>{info.name.th ?? info.name.en ?? info.code}</b>
-            {info.name.th && info.name.en && <i>{info.name.en}</i>}
+            <b>{properNameZhTw(info.code) ?? info.name.en ?? info.name.th ?? info.code}</b>
             {info.basis && <span className="note" style={{ margin: 0 }}>ในเกมเล็ง: {BASIS_LABEL[info.basis.type] ?? info.basis.type}</span>}
           </div>
         </div>
