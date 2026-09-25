@@ -6,20 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:admin": "tsc -b && vite build",
-    "start:admin": "node server/admin-server.mjs",
-    "check:admin": "node --check server/admin-server.mjs && node --check scripts/hash-admin-password.mjs",
-    "hash:admin-password": "node scripts/hash-admin-password.mjs",
     "preview": "vite preview",
     "fetch-ranger": "node scripts/fetch-ranger.mjs",
-    "test": "node scripts/test-player.mjs && node scripts/test-shotrules.mjs && node scripts/test-scene.mjs && node scripts/test-anchors.mjs && node scripts/test-labels.mjs && node scripts/test-battle.mjs && node scripts/test-class.mjs && node scripts/test-skills.mjs && node scripts/test-formation.mjs && node scripts/test-ai.mjs && node scripts/test-rules.mjs && node scripts/test-reserve.mjs && node scripts/test-rules-v3.mjs && node scripts/test-rules-v4.mjs",
+    "test": "node scripts/test-player.mjs && node scripts/test-shotrules.mjs && node scripts/test-scene.mjs && node scripts/test-anchors.mjs && node scripts/test-labels.mjs && node scripts/test-battle.mjs && node scripts/test-class.mjs && node scripts/test-skills.mjs && node scripts/test-formation.mjs && node scripts/test-ai.mjs && node scripts/test-ai-plan.mjs && node scripts/test-rules.mjs && node scripts/test-reserve.mjs && node scripts/test-rules-v3.mjs && node scripts/test-rules-v4.mjs && node scripts/test-gear.mjs && node scripts/test-stages.mjs && node scripts/test-pass.mjs",
     "scan-clips": "node scripts/scan-clips.mjs",
     "fetch-gamedata": "node scripts/fetch-gamedata.mjs",
     "probe-battles": "node scripts/probe-real-battles.mjs",
     "fetch-lerico": "node scripts/fetch-lerico.mjs",
     "sim-balance": "node scripts/sim-balance.mjs",
     "sim-ai": "node scripts/sim-ai.mjs",
-    "build:play": "tsc -b && vite build --mode play"
+    "build:play": "tsc -b && vite build --mode play",
+    "build:admin": "tsc -b && vite build",
+    "start:admin": "node server/admin-server.mjs",
+    "check:admin": "node --check server/admin-server.mjs && node --check scripts/hash-admin-password.mjs",
+    "hash:admin-password": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

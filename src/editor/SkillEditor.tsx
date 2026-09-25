@@ -1,17 +1,19 @@
 // ====================================================
-// SkillEditor — ตั้งค่าความสามารถของสกิลในการรบ (類型 / Cost / 作用範圍 / รายการความสามารถ)
+// SkillEditor — ตั้งค่าความสามารถของสกิลในการรบ (ประเภท / Cost / ความกว้าง / รายการความสามารถ)
 // แยกจากส่วนอนิเมชั่นของท่า — แก้ตรงนี้ไม่กระทบคลิปหรือตำแหน่งกระสุน
 // ====================================================
 
 import {
-  AREA_LABEL, AREAS_OF, EFFECTS, effectsOf, HEAL_SCALE_LABEL, LIFESTEAL_SCOPE_LABEL, newEffect,
+  AREAS_OF, EFFECTS, effectsOf, newEffect,
   type EffectType, type HealScale, type LifestealScope, type ParamDef, type ParamKey, type SkillDef, type SkillKind,
 } from '@/lib/skills'
-import { ELEMENT_LABEL, type Element } from '@/lib/rangerClass'
+import type { Element } from '@/lib/rangerClass'
 import type { GameSkillInfo } from '@/lib/rangerApi'
-import { properNameZhTw } from '@/play/zhNames'
+import {
+  areaLabel, e, effectLabel, effectNote, elementLabel, gameName, healScaleLabel, lifestealScopeLabel, paramLabel, useELang,
+} from './i18n'
 
-const BASIS_LABEL: Record<string, string> = { self: '自身', front: '前排敵人', rear: '後排敵人' }
+const BASIS_KEY = { self: 'basisSelf', front: 'basisFront', rear: 'basisRear' } as const
 
 export default function SkillEditor({ skill, rangerId, info, onChange }: {
   skill: SkillDef
@@ -19,14 +21,15 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
   info: GameSkillInfo | null
   onChange: (next: SkillDef) => void
 }) {
+  useELang()
   const set = (patch: Partial<SkillDef>) => onChange({ ...skill, ...patch })
   const used = new Set(skill.effects.map(e => e.type))
   const addable = effectsOf(skill.kind).filter(t => !used.has(t))
 
   const changeKind = (kind: SkillKind) => {
     if (kind === skill.kind) return
-    // เปลี่ยน類型 → 作用範圍เริ่มใหม่ · เก็บเฉพาะความสามารถที่ใช้กับ類型ใหม่ได้
-    const kept = skill.effects.filter(e => EFFECTS[e.type].kind === kind)
+    // เปลี่ยนประเภท → ความกว้างเริ่มใหม่ · เก็บเฉพาะความสามารถที่ใช้กับประเภทใหม่ได้
+    const kept = skill.effects.filter(x => EFFECTS[x.type].kind === kind)
     set({
       kind,
       area: AREAS_OF[kind][0],
@@ -37,8 +40,11 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
   const setParam = (i: number, key: ParamKey, def: ParamDef, raw: string) => {
     const n = Math.round(Number(raw))
     const value = Number.isFinite(n) ? Math.max(def.min, Math.min(def.max, n)) : def.default
-    set({ effects: skill.effects.map((e, j) => (j === i ? { ...e, [key]: value } : e)) })
+    set({ effects: skill.effects.map((x, j) => (j === i ? { ...x, [key]: value } : x)) })
   }
+
+  const skillName = gameName(info?.name)
+  const basisKey = info?.basis ? BASIS_KEY[info.basis.type as keyof typeof BASIS_KEY] : undefined
 
   return (
     <div className="skill-editor">
@@ -48,65 +54,69 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
             ? <img src={`/rangers/${encodeURIComponent(rangerId)}/${info.icon}`} alt="" />
             : <div className="skill-icon-empty">?</div>}
           <div>
-            <b>{properNameZhTw(info.code) ?? info.name.en ?? info.name.th ?? info.code}</b>
-            {info.basis && <span className="note" style={{ margin: 0 }}>遊戲目標：{BASIS_LABEL[info.basis.type] ?? info.basis.type}</span>}
+            <b>{skillName ?? info.code}</b>
+            {info.name.en && skillName !== info.name.en && <i>{info.name.en}</i>}
+            {info.basis && (
+              <span className="note" style={{ margin: 0 }}>
+                {e('inGameAim', { b: basisKey ? e(basisKey) : info.basis.type })}
+              </span>
+            )}
           </div>
         </div>
       )}
 
       <div className="skill-row">
         <label>
-          <span>類型</span>
-          <select value={skill.kind} onChange={e => changeKind(e.target.value as SkillKind)}>
-            <option value="attack">攻擊技能</option>
-            <option value="buff">輔助技能</option>
+          <span>{e('fKind')}</span>
+          <select value={skill.kind} onChange={ev => changeKind(ev.target.value as SkillKind)}>
+            <option value="attack">{e('kindAttack')}</option>
+            <option value="buff">{e('kindBuff')}</option>
           </select>
         </label>
         <label>
           <span>Cost</span>
           <input type="number" min={0} max={10} value={skill.cost}
-            onChange={e => set({ cost: Math.max(0, Math.min(10, Math.round(Number(e.target.value) || 0))) })} />
+            onChange={ev => set({ cost: Math.max(0, Math.min(10, Math.round(Number(ev.target.value) || 0))) })} />
         </label>
       </div>
       <label className="skill-field">
-        <span>作用範圍</span>
-        <select value={skill.area} onChange={e => set({ area: e.target.value as SkillDef['area'] })}>
-          {AREAS_OF[skill.kind].map(a => <option key={a} value={a}>{AREA_LABEL[a]}</option>)}
+        <span>{e('fArea')}</span>
+        <select value={skill.area} onChange={ev => set({ area: ev.target.value as SkillDef['area'] })}>
+          {AREAS_OF[skill.kind].map(a => <option key={a} value={a}>{areaLabel(a)}</option>)}
         </select>
       </label>
-      {skill.area === 'row' && (
-        <p className="note">敵方前排有 2 名時只能選擇前排（整排命中）；剩 1 名或 0 名時可選後排</p>
-      )}
-      {(skill.area === 'row' || skill.area === 'all') && skill.effects.some(e => e.type === 'stun' || e.type === 'silence') && (
-        <p className="note">範圍技能的昏迷／沉默較難命中：整排 ×0.7、全體 ×0.5（相對於原始機率）</p>
+      {skill.area === 'row' && <p className="note">{e('rowNote')}</p>}
+      {(skill.area === 'row' || skill.area === 'all') && skill.effects.some(x => x.type === 'stun' || x.type === 'silence') && (
+        <p className="note">{e('wideNote')}</p>
       )}
 
       <div className="effect-list">
-        {skill.effects.length === 0 && <p className="note">尚無技能效果 — 可從下方清單新增</p>}
-        {skill.effects.map((e, i) => {
-          const def = EFFECTS[e.type]
+        {skill.effects.length === 0 && <p className="note">{e('noEffects')}</p>}
+        {skill.effects.map((ef, i) => {
+          const def = EFFECTS[ef.type]
           const params = Object.entries(def.params) as [ParamKey, ParamDef][]
+          const note = effectNote(ef.type)
           return (
-            <div key={e.type} className="effect-row">
+            <div key={ef.type} className="effect-row">
               <span className="effect-name">
-                {def.label}
-                {def.note && <small className="effect-note">{def.note}</small>}
+                {effectLabel(ef.type)}
+                {note && <small className="effect-note">{note}</small>}
               </span>
               {params.map(([key, p]) => (
                 <label key={key} className="effect-param">
-                  <input type="number" min={p.min} max={p.max} step={p.step} value={e[key] ?? p.default}
+                  <input type="number" min={p.min} max={p.max} step={p.step} value={ef[key] ?? p.default}
                     onChange={ev => setParam(i, key, p, ev.target.value)} />
-                  <span>{p.label}</span>
+                  <span>{paramLabel(p.label)}</span>
                 </label>
               ))}
               {def.choice && (() => {
                 const c = def.choice
                 // ป้ายในลิสต์: ขอบเขตดูดเลือด · สเกลฮีล/โล่ · ธาตุที่เปลี่ยนเป็น
                 const label = (o: string) =>
-                  c.key === 'scope' ? LIFESTEAL_SCOPE_LABEL[o as LifestealScope]
-                    : c.key === 'scale' ? HEAL_SCALE_LABEL[o as HealScale]
-                      : ELEMENT_LABEL[o as Element]
-                const cur = c.key === 'scope' ? e.scope : c.key === 'scale' ? e.scale : e.element
+                  c.key === 'scope' ? lifestealScopeLabel(o as LifestealScope)
+                    : c.key === 'scale' ? healScaleLabel(o as HealScale)
+                      : elementLabel(o as Element)
+                const cur = c.key === 'scope' ? ef.scope : c.key === 'scale' ? ef.scale : ef.element
                 return (
                   <select className="effect-choice" value={cur ?? c.default}
                     onChange={ev => set({
@@ -118,18 +128,18 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
                   </select>
                 )
               })()}
-              <button className="effect-x" title="刪除" onClick={() => set({ effects: skill.effects.filter((_, j) => j !== i) })}>×</button>
+              <button className="effect-x" title={e('remove')} onClick={() => set({ effects: skill.effects.filter((_, j) => j !== i) })}>×</button>
             </div>
           )
         })}
       </div>
       {addable.length > 0 && (
-        <select className="effect-add" value="" onChange={e => {
-          if (!e.target.value) return
-          set({ effects: [...skill.effects, newEffect(e.target.value as EffectType)] })
+        <select className="effect-add" value="" onChange={ev => {
+          if (!ev.target.value) return
+          set({ effects: [...skill.effects, newEffect(ev.target.value as EffectType)] })
         }}>
-          <option value="">+ 新增技能效果…</option>
-          {addable.map(t => <option key={t} value={t}>{EFFECTS[t].label}</option>)}
+          <option value="">{e('addEffect')}</option>
+          {addable.map(t => <option key={t} value={t}>{effectLabel(t)}</option>)}
         </select>
       )}
     </div>

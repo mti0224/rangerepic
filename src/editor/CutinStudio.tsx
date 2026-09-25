@@ -2,10 +2,10 @@
 // CutinStudio — เมนู "คัตซีน" ของ editor (แท็บแยก)
 //
 // กลางจอ (CutinStage) = คัตซีนจริงขนาดเต็ม เห็นเหมือนในจอดวลเป๊ะ
-//   ลากตัวละคร = ย้ายตำแหน่ง · 滾輪 = 縮放เข้า/ออกตรงจุดที่ชี้ · ปุ่ม方向鍵 = 微調 (Shift = มากขึ้น)
+//   ลากตัวละคร = ย้ายตำแหน่ง · ล้อเมาส์ = ซูมเข้า/ออกตรงจุดที่ชี้ · ปุ่มลูกศร = ขยับทีละนิด (Shift = มากขึ้น)
 //   แถบรูปเฟรมด้านล่าง = คลิกเลือกท่าที่จะจับภาพ · ▶ = เล่นทั้งลำดับ
-// ขวา (CutinPanel) = เลือกสกิล · เปิด/ปิด · 圖層 (ตัวเรนเจอร์ / กระสุน bul) · 文字 · 縮放 · รีเซ็ต
-// มีกระสุน → เลือกได้ว่าจะปรับ "ภาพรวม" (拖曳 = 移動畫面 · แถบเฟรม = ท่าของตัว) หรือ "กระสุน" (拖曳 = 移動投射物 · แถบเฟรม = 投射物幀)
+// ขวา (CutinPanel) = เลือกสกิล · เปิด/ปิด · เลเยอร์ (ตัวเรนเจอร์ / กระสุน bul) · ข้อความ · ซูม · รีเซ็ต
+// มีกระสุน → เลือกได้ว่าจะปรับ "ภาพรวม" (ลาก = ย้ายทั้งภาพ · แถบเฟรม = ท่าของตัว) หรือ "กระสุน" (ลาก = ย้ายกระสุน · แถบเฟรม = เฟรมกระสุน)
 // ค่าที่เก็บ = CutinConfig (lib/cutin.ts) — ใช้ตัววาดเดียวกับจอดวล
 // ====================================================
 
@@ -22,6 +22,7 @@ import type { GameInfo } from '@/lib/rangerApi'
 import type { RangerAssets } from '@/lib/rangerAssets'
 import type { RangerConfig } from '@/lib/rangerConfig'
 import type { SkillSlot } from '@/lib/skills'
+import { e, gameName, getELang, useELang } from './i18n'
 import { properNameZhTw } from '@/play/zhNames'
 
 const W = 1280
@@ -34,10 +35,10 @@ const THUMB = 64
 
 export const SLOTS: SkillSlot[] = ['skill1', 'skill2']
 
-/** ชื่อสกิลจากข้อมูลเกม (技能 2 บางตัวเก็บในช่อง skill3) */
+/** ชื่อสกิลจากข้อมูลเกม (สกิล 2 บางตัวเก็บในช่อง skill3) */
 export function skillNameOf(info: GameInfo | null, slot: SkillSlot): string {
   const s = slot === 'skill1' ? info?.skills.skill1 : info?.skills.skill2 ?? info?.skills.skill3
-  return properNameZhTw(s?.code ?? '') ?? s?.name.zh ?? s?.name.th ?? s?.name.en ?? (slot === 'skill1' ? '技能 1' : '技能 2')
+  return (getELang() === 'zh' ? properNameZhTw(s?.code ?? '') : null) ?? gameName(s?.name) ?? e(slot === 'skill1' ? 'tabSkill1' : 'tabSkill2')
 }
 
 /** ไฟล์กระสุนที่โหลดไว้ เรียงชื่อ · ของสกิลนี้ (ตามค่ามาตรฐาน / ที่ตั้งไว้ในท่า) ขึ้นก่อน */
@@ -57,6 +58,7 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
   slot: SkillSlot
   onChange: (next: CutinConfig | undefined) => void
 }) {
+  useELang()
   const { sam, sprites } = assets
   const action = config.actions[slot]
   const cfg = config.cutins?.[slot]
@@ -67,7 +69,7 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
   const [enemySide, setEnemySide] = useState(false)
   const [playing, setPlaying] = useState(false)
   const drag = useRef<{ x: number; y: number; focus: { x: number; y: number }; offset: { x: number; y: number } | null } | null>(null)
-  /** ปรับอะไรอยู่: ภาพรวม (ย้ายทั้งภาพ + เฟรมของตัว) หรือกระสุน (ย้ายกระสุน + 投射物幀) */
+  /** ปรับอะไรอยู่: ภาพรวม (ย้ายทั้งภาพ + เฟรมของตัว) หรือกระสุน (ย้ายกระสุน + เฟรมกระสุน) */
   const [target, setTarget] = useState<'all' | 'bullet'>('all')
   const hasBullet = !!cfg?.bullet && !!assets.bullets[cfg.bullet.file]
   const hasBody = cfg?.body !== false
@@ -115,12 +117,12 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
     return () => cancelAnimationFrame(raf)
   }, [art, title, config.element, side, playing])
 
-  // 滾輪 = 縮放 (ผูกเองแบบ non-passive ไม่ให้หน้าเลื่อน)
-  const wheelRef = useRef<(e: WheelEvent) => void>(() => {})
+  // ล้อเมาส์ = ซูม (ผูกเองแบบ non-passive ไม่ให้หน้าเลื่อน)
+  const wheelRef = useRef<(ev: WheelEvent) => void>(() => {})
   useEffect(() => {
     const cv = canvasRef.current
     if (!cv) return
-    const h = (e: WheelEvent) => { e.preventDefault(); wheelRef.current(e) }
+    const h = (ev: WheelEvent) => { ev.preventDefault(); wheelRef.current(ev) }
     cv.addEventListener('wheel', h, { passive: false })
     return () => cv.removeEventListener('wheel', h)
   }, [])
@@ -132,30 +134,30 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
   /** ทีมขวากลับด้าน → ทิศแกน x ของโลกกลับ */
   const flipX = enemySide ? -1 : 1
 
-  wheelRef.current = (e: WheelEvent) => {
+  wheelRef.current = (ev: WheelEvent) => {
     if (!cfg) return
-    // 縮放รอบจุดที่ชี้: จุดโลกใต้เมาส์อยู่ที่เดิม
-    const p = toCanvas(e.clientX, e.clientY)
+    // ซูมรอบจุดที่ชี้: จุดโลกใต้เมาส์อยู่ที่เดิม
+    const p = toCanvas(ev.clientX, ev.clientY)
     const f = focusScreen(side)
     const k = CUTIN_FOCUS_PX / cfg.size
-    const size = clampSize(cfg.size * (e.deltaY > 0 ? 1.1 : 1 / 1.1))
+    const size = clampSize(cfg.size * (ev.deltaY > 0 ? 1.1 : 1 / 1.1))
     const k2 = CUTIN_FOCUS_PX / size
     const wx = cfg.focus.x + flipX * (p.x - f.x) / k, wy = cfg.focus.y + (p.y - f.y) / k
     onChange({ ...cfg, size, focus: { x: Math.round(wx - flipX * (p.x - f.x) / k2), y: Math.round(wy - (p.y - f.y) / k2) } })
   }
 
-  const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const onDown = (ev: React.PointerEvent<HTMLCanvasElement>) => {
     if (!cfg || playing) return
-    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* ไม่เป็นไร */ }
-    e.currentTarget.focus()
-    const p = toCanvas(e.clientX, e.clientY)
+    try { ev.currentTarget.setPointerCapture(ev.pointerId) } catch { /* ไม่เป็นไร */ }
+    ev.currentTarget.focus()
+    const p = toCanvas(ev.clientX, ev.clientY)
     drag.current = { x: p.x, y: p.y, focus: { ...cfg.focus }, offset: cfg.bullet ? { ...cfg.bullet.offset } : null }
     setDragging(true)
   }
-  const onMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const onMove = (ev: React.PointerEvent<HTMLCanvasElement>) => {
     const d = drag.current
     if (!d || !cfg) return
-    const p = toCanvas(e.clientX, e.clientY)
+    const p = toCanvas(ev.clientX, ev.clientY)
     const k = CUTIN_FOCUS_PX / cfg.size
     if (moveBullet && d.offset && cfg.bullet) {
       // ลากกระสุนไปทางขวา = เยื้องไปทางขวา (ฝั่งศัตรูกลับด้าน)
@@ -166,12 +168,12 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
     onChange({ ...cfg, focus: { x: Math.round(d.focus.x - flipX * (p.x - d.x) / k), y: Math.round(d.focus.y - (p.y - d.y) / k) } })
   }
   const onUp = () => { drag.current = null; setDragging(false) }
-  const onKey = (e: React.KeyboardEvent<HTMLCanvasElement>) => {
+  const onKey = (ev: React.KeyboardEvent<HTMLCanvasElement>) => {
     if (!cfg) return
-    const step = e.shiftKey ? 10 : 2
-    const d = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key]
+    const step = ev.shiftKey ? 10 : 2
+    const d = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[ev.key]
     if (!d) return
-    e.preventDefault()
+    ev.preventDefault()
     if (moveBullet && cfg.bullet) {
       const o = cfg.bullet.offset
       onChange({ ...cfg, bullet: { ...cfg.bullet, offset: { x: o.x - d[0] * flipX, y: o.y - d[1] } } })
@@ -180,7 +182,7 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
     onChange({ ...cfg, focus: { x: cfg.focus.x + d[0] * flipX, y: cfg.focus.y + d[1] } })
   }
 
-  if (!frames.length) return <div className="placeholder">此技能沒有可擷取畫面的動畫</div>
+  if (!frames.length) return <div className="placeholder">{e('noClipToCapture')}</div>
 
   return (
     <div className="cutin-studio">
@@ -199,13 +201,13 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
           onKeyDown={onKey}
         />
         {cfg?.enabled && !art && (
-          <div className="cutin-off"><p>所選幀沒有畫面 — 請從下方時間軸選擇其他幀</p></div>
+          <div className="cutin-off"><p>{e('frameNoArt')}</p></div>
         )}
         {!cfg?.enabled && (
           <div className="cutin-off">
-            <p>{skillNameOf(info, slot)} — 尚未設定過場</p>
+            <p>{e('noCutinFor', { skill: skillNameOf(info, slot) })}</p>
             <button className="primary" onClick={() => onChange(cfg ? { ...cfg, enabled: true } : defaultCutin(sam, sprites, action))}>
-              ＋ 為此技能啟用過場
+              {e('enableCutin')}
             </button>
           </div>
         )}
@@ -213,20 +215,20 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
       {cfg?.enabled && (
         <>
           <div className="transport">
-            <button onClick={() => setPlaying(true)} disabled={playing}>▶ 播放預覽</button>
-            <label className="check"><input type="checkbox" checked={enemySide} onChange={e => setEnemySide(e.target.checked)} /> 以敵方視角預覽</label>
+            <button onClick={() => setPlaying(true)} disabled={playing}>{e('playPreview')}</button>
+            <label className="check"><input type="checkbox" checked={enemySide} onChange={ev => setEnemySide(ev.target.checked)} /> {e('enemySideView')}</label>
             {hasBullet && hasBody && (
               <div className="seg seg-inline">
-                <button className={target === 'all' ? 'sel' : ''} onClick={() => setTarget('all')}>調整整體</button>
-                <button className={target === 'bullet' ? 'sel' : ''} onClick={() => setTarget('bullet')}>調整投射物 ({cfg.bullet!.file})</button>
+                <button className={target === 'all' ? 'sel' : ''} onClick={() => setTarget('all')}>{e('adjustAll')}</button>
+                <button className={target === 'bullet' ? 'sel' : ''} onClick={() => setTarget('bullet')}>{e('adjustBullet', { f: cfg.bullet!.file })}</button>
               </div>
             )}
             <span className="hint-inline">
-              {moveBullet ? '拖曳 = 移動投射物' : '拖曳 = 移動畫面'} · 滾輪 = 縮放 · 方向鍵 = 微調 · 虛線框 = 焦點範圍
+              {moveBullet ? e('dragBullet') : e('dragAll')} · {e('cutinHintTail')}
             </span>
           </div>
           {(() => {
-            // 圖層ที่กำลังเลือกเฟรม: กระสุน (ตอน調整投射物 / เปิดแค่กระสุน) หรือตัวเรนเจอร์
+            // เลเยอร์ที่กำลังเลือกเฟรม: กระสุน (ตอนปรับกระสุน / เปิดแค่กระสุน) หรือตัวเรนเจอร์
             const bl = editBullet && cfg.bullet ? cfg.bullet : null
             const list = bl ? bulletFrames(assets, bl.file) : frames
             const cur = Math.max(0, Math.min(list.length - 1, bl ? bl.frame : cfg.frame))
@@ -237,10 +239,10 @@ export function CutinStage({ assets, config, info, slot, onChange: emit }: {
             return (
               <>
                 <div className="frame-scrub">
-                  <span className="scrub-label">{bl ? `投射物幀 (${bl.file})` : 'Ranger 幀'}</span>
-                  <button title="上一幀" disabled={cur <= 0} onClick={() => pick(cur - 1)}>◀</button>
-                  <input type="range" min={0} max={Math.max(0, list.length - 1)} value={cur} onChange={e => pick(Number(e.target.value))} />
-                  <button title="下一幀" disabled={cur >= list.length - 1} onClick={() => pick(cur + 1)}>▶</button>
+                  <span className="scrub-label">{bl ? e('bulletFrameLabel', { f: bl.file }) : e('bodyFrameLabel')}</span>
+                  <button title={e('prevFrame')} disabled={cur <= 0} onClick={() => pick(cur - 1)}>◀</button>
+                  <input type="range" min={0} max={Math.max(0, list.length - 1)} value={cur} onChange={ev => pick(Number(ev.target.value))} />
+                  <button title={e('nextFrame')} disabled={cur >= list.length - 1} onClick={() => pick(cur + 1)}>▶</button>
                   <span className="meta">{cur + 1}/{list.length} · {list[cur]?.clip} #{list[cur]?.index}</span>
                 </div>
                 {bl ? (
@@ -276,7 +278,7 @@ function FrameStrip({ sam, sprites, frames, selected, onSelect, fitAll = false }
 }) {
   const refs = useRef<(HTMLCanvasElement | null)[]>([])
   const selRef = useRef<HTMLButtonElement | null>(null)
-  // มาตราส่วนเดียวกันทุกเฟรม (เทียบเฟรมแรก) — เห็นตัวละครขยับจริง ไม่縮放เข้าออกไปมา
+  // มาตราส่วนเดียวกันทุกเฟรม (เทียบเฟรมแรก) — เห็นตัวละครขยับจริง ไม่ซูมเข้าออกไปมา
   const view = useMemo(() => {
     let b: ReturnType<typeof frameBounds> = null
     for (const f of fitAll ? frames : frames.slice(0, 1)) {
@@ -326,6 +328,7 @@ export function CutinPanel({ assets, config, info, slot, onSlot, onChange }: {
   onSlot: (s: SkillSlot) => void
   onChange: (slot: SkillSlot, next: CutinConfig | undefined) => void
 }) {
+  useELang()
   const cfg = config.cutins?.[slot]
   const action = config.actions[slot]
   const set = (patch: Partial<CutinConfig>) => { if (cfg) onChange(slot, clampCutin(assets, action, { ...cfg, ...patch })) }
@@ -338,8 +341,8 @@ export function CutinPanel({ assets, config, info, slot, onSlot, onChange }: {
       <div className="seg">
         {SLOTS.map(s => (
           <button key={s} className={s === slot ? 'sel' : ''} onClick={() => onSlot(s)}>
-            {s === 'skill1' ? '技能 1' : '技能 2'}
-            <small>{config.cutins?.[s]?.enabled ? '● 已設定過場' : '○ 無'}</small>
+            {e(s === 'skill1' ? 'tabSkill1' : 'tabSkill2')}
+            <small>{config.cutins?.[s]?.enabled ? e('hasCutin') : e('noCutinShort')}</small>
           </button>
         ))}
       </div>
@@ -347,55 +350,55 @@ export function CutinPanel({ assets, config, info, slot, onSlot, onChange }: {
 
       <label className="check">
         <input type="checkbox" checked={!!cfg?.enabled}
-          onChange={e => onChange(slot, e.target.checked
+          onChange={ev => onChange(slot, ev.target.checked
             ? (cfg ? { ...cfg, enabled: true } : defaultCutin(assets.sam, assets.sprites, action))
             : cfg ? { ...cfg, enabled: false } : undefined)} />
-        <span>使用此技能時顯示過場</span>
+        <span>{e('cutinEnable')}</span>
       </label>
 
       {cfg?.enabled && (
         <>
           <div className="cutin-layers">
-            <b>圖層</b>
+            <b>{e('layers')}</b>
             <label className="check">
               <input type="checkbox" checked={hasBody} disabled={hasBody && !bullet}
-                onChange={e => set({ body: e.target.checked })} />
-              <span>Ranger 本體（body）</span>
+                onChange={ev => set({ body: ev.target.checked })} />
+              <span>{e('layerBody')}</span>
             </label>
             <label className="check">
               <input type="checkbox" checked={!!bullet} disabled={!files.length || (!!bullet && !hasBody)}
-                onChange={e => set({ bullet: e.target.checked ? defaultBullet(assets, files[0].file, cfg.focus) : null })} />
-              <span>投射物／技能效果</span>
+                onChange={ev => set({ bullet: ev.target.checked ? defaultBullet(assets, files[0].file, cfg.focus) : null })} />
+              <span>{e('layerBullet')}</span>
               {bullet && (
-                <select value={bullet.file} onChange={e => set({ bullet: defaultBullet(assets, e.target.value, cfg.focus) })}>
-                  {files.map(f => <option key={f.file} value={f.file}>{f.file}{f.own ? '（此技能）' : ''}</option>)}
+                <select value={bullet.file} onChange={ev => set({ bullet: defaultBullet(assets, ev.target.value, cfg.focus) })}>
+                  {files.map(f => <option key={f.file} value={f.file}>{f.file}{f.own ? e('ownBullet') : ''}</option>)}
                 </select>
               )}
             </label>
-            {!files.length && <span className="note" style={{ margin: 0 }}>此 Ranger 沒有投射物檔案</span>}
-            <span className="note" style={{ margin: 0 }}>至少要啟用 1 個圖層；投射物會繪製在角色上方</span>
+            {!files.length && <span className="note" style={{ margin: 0 }}>{e('noBulletForThis')}</span>}
+            <span className="note" style={{ margin: 0 }}>{e('layerNote')}</span>
           </div>
           <label className="cutin-row">
-            <span>文字</span>
+            <span>{e('cutinTitle')}</span>
             <input type="text" value={cfg.title ?? ''} placeholder={skillNameOf(info, slot)}
-              onChange={e => set({ title: e.target.value === '' ? null : e.target.value })} />
-            <button title="恢復技能名稱" disabled={cfg.title === null} onClick={() => set({ title: null })}>↺</button>
+              onChange={ev => set({ title: ev.target.value === '' ? null : ev.target.value })} />
+            <button title={e('backToSkillName')} disabled={cfg.title === null} onClick={() => set({ title: null })}>↺</button>
           </label>
           <label className="cutin-row">
-            <span>縮放</span>
+            <span>{e('zoom')}</span>
             <input type="range" min={0.3} max={6} step={0.05} value={zoom}
-              onChange={e => set({ size: clampSize(CUTIN_FOCUS_PX / Number(e.target.value)) })} />
+              onChange={ev => set({ size: clampSize(CUTIN_FOCUS_PX / Number(ev.target.value)) })} />
             <span className="meta">×{zoom.toFixed(2)}</span>
           </label>
           <div className="cutin-actions">
             <button onClick={() => {
               const base = defaultCutin(assets.sam, assets.sprites, action)
               onChange(slot, { ...base, title: cfg.title, body: cfg.body, bullet: bullet ? defaultBullet(assets, bullet.file, base.focus) : null })
-            }}>↺ 重設位置／縮放／幀</button>
+            }}>{e('resetPosZoomFrame')}</button>
           </div>
           <p className="note">
-            縮放超過 ×3 後 Sprite 會開始模糊；文字留空 = 使用遊戲資料中的技能名稱<br />
-            點擊上方的 <b>儲存</b>，即可寫入 ranger.json
+            {e('cutinNote1')}<br />
+            {e('cutinNote2')}
           </p>
         </>
       )}

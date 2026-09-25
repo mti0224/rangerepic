@@ -273,6 +273,7 @@ async function listRangerItems() {
       approved: data?.approved === true,
       grade: typeof stats?.grade === 'number' ? stats.grade : null,
       name: data?.name && data.name !== d.name ? data.name : gameNameOf(stats) || d.name,
+      gameNames: stats?.name || undefined,
       bullets,
       role: data?.role || null,
       element: data?.element || null,

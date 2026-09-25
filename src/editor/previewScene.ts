@@ -6,14 +6,14 @@
 //   2. เฟรม body เดินผ่าน readyLen → วางแผนการยิงจากข้อมูลเกม (shotRules.planShot)
 //        ไม่มีไฟล์กระสุน = ตีประชิด เป้าโดนตีทันที
 //   3. ช่วง normal: ท่าไม่บินเล่นคาที่เป้าจนครบความยาว / กระสุนบินเคลื่อนที่ (โค้ง/หมุนได้)
-//   4. ถึงเป้า → เป้าโดนตี 1 ครั้งต่อนัด (增益ไม่โดน)
+//   4. ถึงเป้า → เป้าโดนตี 1 ครั้งต่อนัด (บัฟไม่โดน)
 //        มีเป้าเดียว = ตัวที่ผู้เล่นเล็ง ทุกท่ายิงไปหาตัวนี้ (ดาเมจหมู่ต่อคนรอบข้างทำทีหลัง)
 //        ตีธรรมดา = หุ่นกะพริบแดง 4 ติ๊ก · สกิล = หุ่นเล่นท่า target
 //   5. ช่วง finish: เล่นครั้งเดียวที่จุดกระทบ แล้วลบกระสุน
-//   6. body เล่นต่อไปเอง ไม่รอกระสุน — ถ้าวน ก็發射นัดใหม่ในรอบถัดไป
+//   6. body เล่นต่อไปเอง ไม่รอกระสุน — ถ้าวน ก็ปล่อยนัดใหม่ในรอบถัดไป
 //
-// ท่าที่ติ๊ก "เดินเข้าไปก่อนโจมตี": เดิน(walk) → หยุดที่จุดหยุด → ร่าย/發射 → เดินกลับ(หันหลัง) → ยืน
-// กระสุนที่發射ออกไปแล้วจำตำแหน่งตอน發射ไว้ ไม่ขยับตามตัวละครตอนเดินกลับ
+// ท่าที่ติ๊ก "เดินเข้าไปก่อนโจมตี": เดิน(walk) → หยุดที่จุดหยุด → ร่าย/ปล่อย → เดินกลับ(หันหลัง) → ยืน
+// กระสุนที่ปล่อยออกไปแล้วจำตำแหน่งตอนปล่อยไว้ ไม่ขยับตามตัวละครตอนเดินกลับ
 //
 // เวลาทั้งหมดนับเป็น "ติ๊กของ body" (1 ติ๊ก = 1 เฟรมของไฟล์ตัวละคร) เหมือนต้นฉบับ
 // พิกัดภายในทั้งหมดเป็น kiwi space (พิกัดดิบของไฟล์ผู้ยิง) — เลื่อนทั้งโลกตอนวาดทีเดียว
@@ -29,6 +29,7 @@ import {
   type HitPlan, type ShotPlan, type ShotPlanData, type TargetPoints,
 } from '@/lib/shotRules'
 import { KIND_OF, approachOffsetOf, bodyFpsOf, planAction, standOf } from '@/lib/actionPlan'
+import { e } from './i18n'
 
 export { KIND_OF }
 
@@ -66,7 +67,7 @@ export class PreviewScene {
   /** วาดเส้นทางกระสุนของแอ็กชันที่เปิดอยู่ */
   showPlan = false
   /**
-   * วาดเครื่องหมาย + ป้าย "發射 / 落點" ด้วยไหม
+   * วาดเครื่องหมาย + ป้าย "ปล่อย / ตก" ด้วยไหม
    * ปิดตอนโหมดตั้งเอง เพราะหมุดที่ลากได้อยู่ตำแหน่งเดียวกันพอดี ป้ายจะซ้อนกันสองชุด
    */
   planLabels = true
@@ -170,7 +171,7 @@ export class PreviewScene {
     this.attacker.playClip(clip, { speed, loop: true })
   }
 
-  /** โหมดแก้ไข: เล่นท่าโจมตีวน — 發射นัดใหม่ทุกรอบ (ถ้าติ๊กเดิน ก็เดินไป-ตี-เดินกลับ วนไป) */
+  /** โหมดแก้ไข: เล่นท่าโจมตีวน — ปล่อยนัดใหม่ทุกรอบ (ถ้าติ๊กเดิน ก็เดินไป-ตี-เดินกลับ วนไป) */
   loopAction(name: ActionName, speed: number): void {
     this.startRun(name, speed, true)
   }
@@ -229,7 +230,7 @@ export class PreviewScene {
     this.prevFrame = -1
     this.spawnedThisRun = false
 
-    // ไม่เดิน + วน = ให้ตัวเล่นท่าวนเอง (ยิงทุกรอบที่เฟรมเดินผ่านจุด發射)
+    // ไม่เดิน + วน = ให้ตัวเล่นท่าวนเอง (ยิงทุกรอบที่เฟรมเดินผ่านจุดปล่อย)
     if (!walks && this.loopRun) {
       this.attacker.playAction(this.castClips(name), a.release, { speed: this.speed, loop: true, castSpeedCap: a.castSpeedCap })
       return
@@ -239,7 +240,7 @@ export class PreviewScene {
       speed: this.speed,
       castSpeedCap: a.castSpeedCap,
       onEnd: () => {
-        // ท่าจบก่อนเฟรมเดินผ่านจุด發射 (อัปเดตเดียวกระโดดข้าม) → ยังต้อง發射นัดนี้
+        // ท่าจบก่อนเฟรมเดินผ่านจุดปล่อย (อัปเดตเดียวกระโดดข้าม) → ยังต้องปล่อยนัดนี้
         if (!this.spawnedThisRun) this.spawn()
         this.actionActive = false
         if (walks && a.approach.returnHome) this.beginReturn()
@@ -249,7 +250,7 @@ export class PreviewScene {
     })
   }
 
-  /** ลากแถบเวลา — ต้องจำเฟรมใหม่ ไม่งั้นอัปเดตถัดไปจะนับว่า "เดินผ่านจุด發射" */
+  /** ลากแถบเวลา — ต้องจำเฟรมใหม่ ไม่งั้นอัปเดตถัดไปจะนับว่า "เดินผ่านจุดปล่อย" */
   seek(frame: number): void {
     this.attacker.seek(frame)
     this.prevFrame = this.attacker.globalFrame
@@ -303,7 +304,7 @@ export class PreviewScene {
       }
     }
 
-    // ── จังหวะ發射: เฟรม body เดินผ่าน readyLen ──
+    // ── จังหวะปล่อย: เฟรม body เดินผ่าน readyLen ──
     if (this.action && this.actionActive) {
       const a = this.config.actions[this.action]
       const readyLen = Math.min(a.releaseFrame, Math.max(0, this.attacker.totalFrames - 1))
@@ -365,7 +366,7 @@ export class PreviewScene {
       if (ghost) renderSAMFrame(ctx, ghost, sam.images, sprites, sx(stop.x), sy(stop.y), zoom, undefined, false, 0, 0, 0.28)
     }
 
-    // ลำดับเลเยอร์ (ล่าง → บน): เป้า → ผู้โจมตี → กระสุน/เอฟเฟกต์/增益 (เหมือนสนามรบ)
+    // ลำดับเลเยอร์ (ล่าง → บน): เป้า → ผู้โจมตี → กระสุน/เอฟเฟกต์/บัฟ (เหมือนสนามรบ)
     const paintShots = (buff: boolean) => {
       for (const s of this.shots) {
         if (s.plan.isBuff !== buff) continue
@@ -474,7 +475,7 @@ export class PreviewScene {
     }
   }
 
-  /** เครื่องหมายจุด發射 (ฟ้า) และจุด落點 (ชมพู) — ไม่มีสำหรับท่าประชิด */
+  /** เครื่องหมายจุดปล่อย (ฟ้า) และจุดตก (ชมพู) — ไม่มีสำหรับท่าประชิด */
   private paintPlan(
     ctx: CanvasRenderingContext2D, plan: ShotPlan,
     sx: (x: number) => number, sy: (y: number) => number,
@@ -507,9 +508,9 @@ export class PreviewScene {
       }
       ctx.stroke()
       ctx.restore()
-      if (this.planLabels) cross(plan.start, '#60a5fa', '發射')
+      if (this.planLabels) cross(plan.start, '#60a5fa', e('planRelease'))
     }
-    if (this.planLabels) cross(plan.end, '#f472b6', plan.isBuff ? '增益' : plan.isInstant ? '生成於此' : '落點')
-    if (this.planLabels && plan.finishAt) cross(plan.finishAt, '#f97316', '爆炸')
+    if (this.planLabels) cross(plan.end, '#f472b6', e(plan.isBuff ? 'planBuff' : plan.isInstant ? 'planHere' : 'planLand'))
+    if (this.planLabels && plan.finishAt) cross(plan.finishAt, '#f97316', e('planBurst'))
   }
 }

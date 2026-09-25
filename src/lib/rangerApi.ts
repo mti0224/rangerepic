@@ -4,6 +4,8 @@ import type { Category, Element, RangerConfig, Role } from './rangerConfig'
 export interface RangerListItem {
   id: string
   name: string
+  /** ชื่อจากข้อมูลเกมทุกภาษา — มีเฉพาะตอน dev (editor ใช้แสดงรายชื่อตามภาษาที่เลือก) */
+  gameNames?: GameText
   configured: boolean
   /** อนุมัติแล้ว = พร้อมเล่น → แสดงในหน้าจัดทีม */
   approved: boolean
@@ -71,16 +73,23 @@ export const loadGameInfo = (id: string): Promise<GameInfo | null> =>
     .then(r => (r.ok && r.headers.get('content-type')?.includes('json') ? r.json() as Promise<GameInfo> : null))
     .catch(() => null)
 
+/** ข้อความหลายภาษาจาก API ต้นทาง — ภาษาที่เพิ่มทีหลังอาจไม่มีในไฟล์เก่า (optional) */
+export interface GameText {
+  en: string | null
+  th: string | null
+  zh?: string | null
+  jp?: string | null
+}
 export interface GameSkillInfo {
   code: string
-  name: { en: string | null; th: string | null; zh?: string | null }
-  desc: { en: string | null; th: string | null; zh?: string | null }
+  name: GameText
+  desc: GameText
   icon: string | null
   basis: { type: string; multiplier?: number | null } | null
 }
 export interface GameInfo {
   id: string
-  name: { en: string; th: string | null; zh?: string | null }
+  name: GameText & { en: string }
   /** ระดับดาว 1–9 */
   grade?: number | null
   /** ขั้นในเกม เช่น "base9", "hyper" */
