@@ -533,7 +533,7 @@ export class BattleScene {
 
   nameOf(u: Unit): string {
     const kit = this.view(u.uid)?.kit
-    return localName(kit?.info?.name) ?? kit?.config.name ?? u.rangerId
+    return localName(kit?.info?.name, u.rangerId) ?? kit?.config.name ?? u.rangerId
   }
   infoOf(u: Unit): GameInfo | null { return this.view(u.uid)?.kit.info ?? null }
   /** รูปเรนเจอร์ใน HUD = thumb.png + ตำแหน่งหน้า (แท็บ "รูปหน้า" ใน editor) · รูปยังไม่โหลด = null */
@@ -850,7 +850,7 @@ export class BattleScene {
     const skill = info ? (action === 'skill1' ? info.skills.skill1 : info.skills.skill2 ?? info.skills.skill3) : null
     return {
       art,
-      title: cfg.title?.trim() || localName(skill?.name) || (action === 'skill1' ? t('skill1') : t('skill2')),
+      title: cfg.title?.trim() || localName(skill?.name, skill?.code) || (action === 'skill1' ? t('skill1') : t('skill2')),
       element: v.unit.element,
       side: flip ? 'right' : 'left',
     }
