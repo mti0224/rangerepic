@@ -5,9 +5,9 @@
 //   ชนะทาง ×2 · ธาตุเดียวกัน ×1 · แพ้ทาง ×0.5 · ไม่เกี่ยวกัน (เช่น light ตี fire) ×1
 //
 // ชนิด (ใช้จัดกลุ่มตำแหน่ง · ดาเมจใช้ ATK/DEF ชุดเดียวกันทุกชนิด)
-//   str (พลัง)    สายกายภาพเลือดเยอะ  · ตำแหน่ง แทงค์ / ไฟเตอร์
-//   agi (ว่องไว)  สายกายภาพคริ        · ตำแหน่ง นักยิง / นักฆ่า
-//   int (ไหวพริบ) สายเวท              · ตำแหน่ง นักเวท / ซัพพอร์ต
+//   str (พลัง)    สายกายภาพเลือดเยอะ  · ตำแหน่ง 坦克 / 戰士
+//   agi (ว่องไว)  สายกายภาพคริ        · ตำแหน่ง 射手 / 刺客
+//   int (ไหวพริบ) สายเวท              · ตำแหน่ง 法師 / 輔助
 // ====================================================
 
 import type { Stats } from './rangerConfig'
@@ -18,7 +18,7 @@ export type Role = 'tank' | 'fighter' | 'shooter' | 'assassin' | 'mage' | 'suppo
 
 export const ELEMENTS: Element[] = ['fire', 'water', 'wood', 'light', 'dark']
 export const ELEMENT_LABEL: Record<Element, string> = {
-  fire: 'ไฟ (Fire)', water: 'น้ำ (Water)', wood: 'ไม้ (Wood)', light: 'แสง (Light)', dark: 'มืด (Dark)',
+  fire: '火（Fire）', water: '水（Water）', wood: '木（Wood）', light: '光（Light）', dark: '暗（Dark）',
 }
 
 /** ธาตุที่ธาตุนี้ชนะ */
@@ -42,20 +42,20 @@ export function elementMultiplier(attacker: Element | undefined, target: Element
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {
-  str: 'พลัง (STR)',
-  agi: 'ว่องไว (AGI)',
-  int: 'ไหวพริบ (INT)',
+  str: '力量型（STR）',
+  agi: '敏捷型（AGI）',
+  int: '智慧型（INT）',
 }
 
 export interface RoleInfo { category: Category; label: string; hint: string }
 
 export const ROLES: Record<Role, RoleInfo> = {
-  tank:     { category: 'str', label: 'แทงค์',      hint: 'เลือดเยอะ อึด ตีเบา' },
-  fighter:  { category: 'str', label: 'ไฟเตอร์',    hint: 'เลือดเยอะรองจากแทงค์ แต่ตีแรงกว่า' },
-  shooter:  { category: 'agi', label: 'นักยิง',     hint: 'ตีกายภาพแรง คริสูง' },
-  assassin: { category: 'agi', label: 'นักฆ่า',     hint: 'ตีกายภาพรุนแรง คริสูง เลือดน้อย เร็ว' },
-  mage:     { category: 'int', label: 'นักเวท',     hint: 'ตีเวทแรง มักเป็นวงกว้าง' },
-  support:  { category: 'int', label: 'ซัพพอร์ต',   hint: 'ตีเวทเบากว่า เน้นติดสถานะ/บัฟเพื่อน' },
+  tank:     { category: 'str', label: '坦克',      hint: '體力高、耐打、攻擊較低' },
+  fighter:  { category: 'str', label: '戰士',    hint: 'เลือดเยอะรองจาก坦克 แต่ตีแรงกว่า' },
+  shooter:  { category: 'agi', label: '射手',     hint: '物理攻擊高、爆擊率高' },
+  assassin: { category: 'agi', label: '刺客',     hint: '物理爆發高、爆擊率高、體力較低、速度快' },
+  mage:     { category: 'int', label: '法師',     hint: '魔法攻擊高，通常擅長範圍攻擊' },
+  support:  { category: 'int', label: '輔助',   hint: '魔法攻擊較低，偏重狀態效果與我方增益' },
 }
 
 export const rolesOf = (c: Category): Role[] => (Object.keys(ROLES) as Role[]).filter(r => ROLES[r].category === c)
@@ -91,9 +91,9 @@ export function randomStats(role: Role, rand: () => number = Math.random): Stats
 
 /** ชื่อค่าพลังที่แสดงในหน้า editor (ลำดับนี้ = ลำดับที่แสดง) */
 export const STAT_LABEL: Record<keyof Stats, string> = {
-  hp: 'HP', atk: 'ATK', def: 'DEF', spd: 'Speed',
-  crit: 'Critical Rate %', critDmg: 'Critical Damage %',
-  evade: 'Evade Rate %', hit: 'Hit Rate %',
-  skillEvade: 'Skill Evade Rate %', skillHit: 'Skill Hit Rate %', skillRes: 'Skill Resistance %',
-  skillDmgRes: 'Skill Damage Resistance %',
+  hp: '體力 (HP)', atk: '攻擊力 (ATK)', def: '防禦力 (DEF)', spd: '速度',
+  crit: '爆擊率 %', critDmg: '爆擊傷害 %',
+  evade: '閃避率 %', hit: '命中率 %',
+  skillEvade: '技能閃避率 %', skillHit: '技能命中率 %', skillRes: '技能抗性 %',
+  skillDmgRes: '技能傷害抗性 %',
 }

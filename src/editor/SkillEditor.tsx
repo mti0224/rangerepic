@@ -1,5 +1,5 @@
 // ====================================================
-// SkillEditor — ตั้งค่าความสามารถของสกิลในการรบ (ประเภท / Cost / ความกว้าง / รายการความสามารถ)
+// SkillEditor — ตั้งค่าความสามารถของสกิลในการรบ (類型 / Cost / 作用範圍 / รายการความสามารถ)
 // แยกจากส่วนอนิเมชั่นของท่า — แก้ตรงนี้ไม่กระทบคลิปหรือตำแหน่งกระสุน
 // ====================================================
 
@@ -11,7 +11,7 @@ import { ELEMENT_LABEL, type Element } from '@/lib/rangerClass'
 import type { GameSkillInfo } from '@/lib/rangerApi'
 import { properNameZhTw } from '@/play/zhNames'
 
-const BASIS_LABEL: Record<string, string> = { self: 'ตัวเอง', front: 'ศัตรูแถวหน้า', rear: 'ศัตรูแถวหลัง' }
+const BASIS_LABEL: Record<string, string> = { self: '自身', front: '前排敵人', rear: '後排敵人' }
 
 export default function SkillEditor({ skill, rangerId, info, onChange }: {
   skill: SkillDef
@@ -25,7 +25,7 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
 
   const changeKind = (kind: SkillKind) => {
     if (kind === skill.kind) return
-    // เปลี่ยนประเภท → ความกว้างเริ่มใหม่ · เก็บเฉพาะความสามารถที่ใช้กับประเภทใหม่ได้
+    // เปลี่ยน類型 → 作用範圍เริ่มใหม่ · เก็บเฉพาะความสามารถที่ใช้กับ類型ใหม่ได้
     const kept = skill.effects.filter(e => EFFECTS[e.type].kind === kind)
     set({
       kind,
@@ -49,17 +49,17 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
             : <div className="skill-icon-empty">?</div>}
           <div>
             <b>{properNameZhTw(info.code) ?? info.name.en ?? info.name.th ?? info.code}</b>
-            {info.basis && <span className="note" style={{ margin: 0 }}>ในเกมเล็ง: {BASIS_LABEL[info.basis.type] ?? info.basis.type}</span>}
+            {info.basis && <span className="note" style={{ margin: 0 }}>遊戲目標：{BASIS_LABEL[info.basis.type] ?? info.basis.type}</span>}
           </div>
         </div>
       )}
 
       <div className="skill-row">
         <label>
-          <span>ประเภท</span>
+          <span>類型</span>
           <select value={skill.kind} onChange={e => changeKind(e.target.value as SkillKind)}>
-            <option value="attack">สกิลโจมตี</option>
-            <option value="buff">สกิลบัฟ</option>
+            <option value="attack">攻擊技能</option>
+            <option value="buff">輔助技能</option>
           </select>
         </label>
         <label>
@@ -69,20 +69,20 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
         </label>
       </div>
       <label className="skill-field">
-        <span>ความกว้าง</span>
+        <span>作用範圍</span>
         <select value={skill.area} onChange={e => set({ area: e.target.value as SkillDef['area'] })}>
           {AREAS_OF[skill.kind].map(a => <option key={a} value={a}>{AREA_LABEL[a]}</option>)}
         </select>
       </label>
       {skill.area === 'row' && (
-        <p className="note">แถวหน้าของศัตรูมี 2 ตัว → เลือกได้แค่แถวหน้า (โดนทั้งแถว) · เหลือ 1 หรือ 0 → เลือกแถวหลังได้</p>
+        <p className="note">敵方前排有 2 名時只能選擇前排（整排命中）；剩 1 名或 0 名時可選後排</p>
       )}
       {(skill.area === 'row' || skill.area === 'all') && skill.effects.some(e => e.type === 'stun' || e.type === 'silence') && (
-        <p className="note">ชะงัก/ห้ามสกิลจากสกิลวงกว้างติดยากกว่า: ทั้งแถว ×0.7 · ทั้งหมด ×0.5 ของโอกาสปกติ</p>
+        <p className="note">範圍技能的昏迷／沉默較難命中：整排 ×0.7、全體 ×0.5（相對於原始機率）</p>
       )}
 
       <div className="effect-list">
-        {skill.effects.length === 0 && <p className="note">ยังไม่มีความสามารถ — เพิ่มจากรายการด้านล่าง</p>}
+        {skill.effects.length === 0 && <p className="note">尚無技能效果 — 可從下方清單新增</p>}
         {skill.effects.map((e, i) => {
           const def = EFFECTS[e.type]
           const params = Object.entries(def.params) as [ParamKey, ParamDef][]
@@ -118,7 +118,7 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
                   </select>
                 )
               })()}
-              <button className="effect-x" title="ลบ" onClick={() => set({ effects: skill.effects.filter((_, j) => j !== i) })}>×</button>
+              <button className="effect-x" title="刪除" onClick={() => set({ effects: skill.effects.filter((_, j) => j !== i) })}>×</button>
             </div>
           )
         })}
@@ -128,7 +128,7 @@ export default function SkillEditor({ skill, rangerId, info, onChange }: {
           if (!e.target.value) return
           set({ effects: [...skill.effects, newEffect(e.target.value as EffectType)] })
         }}>
-          <option value="">+ เพิ่มความสามารถ…</option>
+          <option value="">+ 新增技能效果…</option>
           {addable.map(t => <option key={t} value={t}>{EFFECTS[t].label}</option>)}
         </select>
       )}

@@ -1,9 +1,9 @@
 // ====================================================
-// PortraitEditor — แท็บ "รูปหน้า": ลากกรอบสี่เหลี่ยมจัตุรัสไปครอบหน้าเรนเจอร์บน thumb.png
+// PortraitEditor — แท็บ "รูป臉部": ลากกรอบสี่เหลี่ยมจัตุรัสไปครอบ臉部เรนเจอร์บน thumb.png
 //
 // รูปต้นทาง = thumb.png (รูปเดียวกับในรายชื่อเรนเจอร์ด้านซ้าย)
-// กรอบขนาดคงที่ (PORTRAIT_SIZE พิกเซลของ thumb) เท่ากันทุกตัว — ย้ายได้ ย่อ/ขยายไม่ได้ · กรอบอยู่ในรูปเสมอ
-// ผลลัพธ์ในจอดวล (มุมซ้ายล่าง + แถบลำดับเทิร์น) = ทั้งรูป ไม่ตัดเป็นกรอบ โดยให้กรอบหน้าอยู่กลางช่อง
+// กรอบขนาดคงที่ (PORTRAIT_SIZE พิกเซลของ thumb) เท่ากันทุกตัว — ย้ายได้ 不可縮放 · กรอบอยู่ในรูปเสมอ
+// ผลลัพธ์ในจอดวล (左下角 + แถบลำดับเทิร์น) = ทั้ง圖片 ไม่ตัดเป็นกรอบ โดยให้กรอบ臉部อยู่กลางช่อง
 // ลาก = ย้ายกรอบ · ปุ่มลูกศร = ขยับทีละ 1 px (Shift = 5) · คลิกนอกกรอบ = ย้ายกรอบมาตรงนั้น
 // ====================================================
 
@@ -15,7 +15,7 @@ import { PANEL_FACE_ZOOM, PORTRAIT_SIZE, clampPortrait, defaultPortrait, drawFoc
 const VIEW = 300
 /** ความคมของแคนวาส (วาดใหญ่กว่าที่แสดง) */
 const DPR = 2
-/** ขนาดตัวอย่างที่แสดง = ขนาดในจอดวล (รูปใหญ่มุมซ้ายล่าง / รูปในแถบลำดับเทิร์น) */
+/** ขนาดตัวอย่างที่แสดง = ขนาดในจอดวล (รูปใหญ่左下角 / รูปในแถบลำดับเทิร์น) */
 const PREVIEW_SIZES = [92]
 
 export default function PortraitEditor({ config, onChange }: {
@@ -49,7 +49,7 @@ export default function PortraitEditor({ config, onChange }: {
     return { scale, ox: (VIEW - w * scale) / 2, oy: (VIEW - h * scale) / 2 }
   }, [img])
 
-  // ── วาดรูป + กรอบ ──
+  // ── วาด圖片 + กรอบ ──
   useEffect(() => {
     const cv = canvasRef.current
     const g = cv?.getContext('2d')
@@ -100,14 +100,14 @@ export default function PortraitEditor({ config, onChange }: {
       if (!cv || !g) return
       g.setTransform(1, 0, 0, 1, 0, 0)
       g.clearRect(0, 0, cv.width, cv.height)
-      // เหมือนจอดวล: ทั้งรูป หน้าอยู่กลางกล่อง (ไม่ตัดเป็นกรอบหน้า)
+      // เหมือนจอดวล: ทั้ง圖片 臉部อยู่กลางกล่อง (ไม่ตัดเป็นกรอบ臉部)
       g.imageSmoothingQuality = 'high'
       drawFocused(g, img, center, (px * DPR) / 2, (px * DPR) / 2, px * DPR * PANEL_FACE_ZOOM)
     })
   }, [img, center?.x, center?.y])
 
-  if (missing) return <p className="note">ไม่พบ thumb.png ของตัวนี้ — โหลดไฟล์เรนเจอร์ใหม่จาก lerico ก่อน</p>
-  if (!imageReady(img) || !view || !center) return <p className="note">กำลังโหลดรูป…</p>
+  if (missing) return <p className="note">找不到此 Ranger 的 thumb.png — 請先重新從 lerico 下載 Ranger 資源</p>
+  if (!imageReady(img) || !view || !center) return <p className="note">正在載入圖片…</p>
 
   const set = (p: Vec2) => {
     const c = clampPortrait(img, p)
@@ -145,8 +145,8 @@ export default function PortraitEditor({ config, onChange }: {
   return (
     <div className="portrait-editor">
       <p className="note">
-        ลากกรอบสีทองไปครอบ<b>หน้า</b>ของเรนเจอร์ — กรอบขนาดเท่ากันทุกตัว ({PORTRAIT_SIZE}×{PORTRAIT_SIZE} px) ย่อ/ขยายไม่ได้<br />
-        รูปนี้ใช้เป็นรูปเรนเจอร์ในจอดวล (มุมซ้ายล่าง และแถบลำดับเทิร์น) · ปุ่มลูกศรขยับทีละ 1 (Shift = 5)
+        拖曳金色框以框住<b>臉部</b>；所有 Ranger 使用相同框大小 ({PORTRAIT_SIZE}×{PORTRAIT_SIZE} px) 不可縮放<br />
+        此圖片會用於戰鬥畫面的 Ranger 頭像（左下角與回合順序列）；方向鍵每次移動 1 px（Shift = 5）
       </p>
       <canvas
         ref={canvasRef}
@@ -170,12 +170,12 @@ export default function PortraitEditor({ config, onChange }: {
               height={px * DPR}
               style={{ width: px, height: px }}
             />
-            <span>มุมซ้ายล่าง</span>
+            <span>左下角</span>
           </div>
         ))}
         <div className="portrait-actions">
-          <div className="meta">กึ่งกลาง ({center.x}, {center.y}) · รูป {img.naturalWidth}×{img.naturalHeight}{config.face ? '' : ' · เดาอัตโนมัติ'}</div>
-          <button onClick={() => onChange(undefined)} disabled={!config.face}>↺ กลับไปใช้ตำแหน่งอัตโนมัติ</button>
+          <div className="meta">中心 ({center.x}, {center.y}) · 圖片 {img.naturalWidth}×{img.naturalHeight}{config.face ? '' : ' · 自動推測'}</div>
+          <button onClick={() => onChange(undefined)} disabled={!config.face}>↺ 恢復自動位置</button>
         </div>
       </div>
     </div>
