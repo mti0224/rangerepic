@@ -20,6 +20,7 @@ import { EVOLUTION_LABEL, evolutionOf, starImageUrl } from '@/lib/rangerGrade'
 import { loadGameInfo, refreshGameData, type GameInfo } from '@/lib/rangerApi'
 import { KIND_OF, PreviewScene } from './previewScene'
 import { frontLineGap } from '@/play/battleScene'
+import { properNameZhTw } from '@/play/zhNames'
 import {
   ACTION_NAMES, DEFAULT_APPROACH, DEFAULT_BULLET, DEFAULT_PROJECTILE_SPEED, defaultRangerConfig, migrateRangerConfig, withDefaultGround,
   readyLengthUntilVanish,
@@ -453,7 +454,7 @@ export default function RangerEditor() {
               >
                 <img src={'/rangers/' + r.id + '/thumb.png'} alt="" onError={e => { e.currentTarget.style.visibility = 'hidden' }} />
                 <span>
-                  <b>{r.name}</b>
+                  <b>{properNameZhTw(r.id) ?? r.name}</b>
                   {starImageUrl(r.grade, evolutionOf(r.id)) && (
                     <img className="stars" src={starImageUrl(r.grade, evolutionOf(r.id))!} alt={`${r.grade} ดาว`} title={`${r.grade} ดาว · ${EVOLUTION_LABEL[evolutionOf(r.id)]}`} />
                   )}
@@ -538,7 +539,7 @@ export default function RangerEditor() {
                 <>
                   {gameInfo ? (
                     <div className="cast-info">
-                      ข้อมูลจากเกม: <b>{gameInfo.name.th ?? gameInfo.name.en}</b>
+                      遊戲資料：<b>{properNameZhTw(config.id) ?? gameInfo.name.en ?? gameInfo.name.th}</b>
                       <div className="grade-row">
                         {starImageUrl(gameInfo.grade, evolutionOf(config.id)) && <img className="stars" src={starImageUrl(gameInfo.grade, evolutionOf(config.id))!} alt="" />}
                         <span>ระดับ {gameInfo.grade ?? '?'} ดาว · Evolution <b>{EVOLUTION_LABEL[evolutionOf(config.id)]}</b></span>
@@ -1044,7 +1045,7 @@ export default function RangerEditor() {
         <div className="modal-back" onClick={() => setConfirmDelete(null)}>
           <div className="modal" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}>
             <h3>ลบเรนเจอร์นี้?</h3>
-            <p><b>{rangers.find(r => r.id === confirmDelete)?.name ?? confirmDelete}</b> ({confirmDelete})</p>
+            <p><b>{properNameZhTw(confirmDelete) ?? rangers.find(r => r.id === confirmDelete)?.name ?? confirmDelete}</b> ({confirmDelete})</p>
             <p className="note">
               ไฟล์ทั้งหมดของตัวนี้ (ภาพ อนิเมชัน ค่าที่ตั้งไว้) จะถูกย้ายไปถังขยะ <code>data/deleted-rangers/</code><br />
               จะหายจากรายชื่อและหน้าจัดทีม · ถ้าลบผิด ย้ายโฟลเดอร์กลับมาที่ <code>public/rangers/</code> เพื่อกู้คืน
