@@ -174,5 +174,27 @@
   "face": {
     "x": 49,
     "y": 42
+  },
+  "cutins": {
+    "skill1": {
+      "enabled": true,
+      "frame": 34,
+      "focus": {
+        "x": 42,
+        "y": -24
+      },
+      "size": 94,
+      "title": null
+    },
+    "skill2": {
+      "enabled": true,
+      "frame": 17,
+      "focus": {
+        "x": 38,
+        "y": -6
+      },
+      "size": 63,
+      "title": null
+    }
   }
 }
