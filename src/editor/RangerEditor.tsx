@@ -1019,7 +1019,7 @@ export default function RangerEditor() {
               <button className="primary" onClick={() => void save()} disabled={!dirty}>
                 {dirty ? 'บันทึก' : 'บันทึกแล้ว'}
               </button>
-              <button onClick={() => downloadConfig(config)}>Export</button>
+              <button onClick={() => downloadConfig(config)}>匯出設定</button>
             </div>
             <div className="save-bar">
               <button
