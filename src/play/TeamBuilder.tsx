@@ -20,11 +20,13 @@ import { fitsSlot } from '@/lib/formation'
 import { EVOLUTION_LABEL, evolutionOf, starImageUrl } from '@/lib/rangerGrade'
 import { PORTRAIT_SIZE, portraitCenter } from '@/lib/portrait'
 import { NORMAL_ATTACK } from './battle'
-import { areaLong, describeEffect, elementName, localName, roleName, t } from './i18n'
+import { areaLong, describeEffect, elementName, getLang, localName, roleName, t } from './i18n'
+import { properNameZhTw } from './zhNames'
 import { UI_SRC } from './uiAssets'
 import { categoryName, rowBonusShort, traitLabel, traitText, ui, useLang } from './uiText'
 import { IconCheck, IconClose, IconDice, IconInfo, IconPlus, IconSearch, IconSwap, IconSwords, IconTrash } from './icons'
 import type { Team } from './battle'
+import { TEAM_KEYS, teamName, useCollection } from './collection'
 
 /** ช่องในสนาม */
 export type FieldKey = 'front-0' | 'front-1' | 'back-0' | 'back-1' | 'back-2'
@@ -51,7 +53,7 @@ const elementBg = (el: Element | null) => (el ? { backgroundImage: `url(/ui/rg_b
 
 export interface RangerData { item: RangerListItem; config: RangerConfig | null; info: GameInfo | null }
 
-export const nameOf = (d: RangerData) => localName(d.info?.name, d.item.id) ?? d.item.name
+export const nameOf = (d: RangerData) => (getLang() === 'zh' ? properNameZhTw(d.item.id) : null) ?? localName(d.info?.name) ?? d.item.name
 
 export default function TeamBuilder({ data, formation, setFormation, onStart, busy, message }: {
   data: RangerData[]
@@ -62,6 +64,7 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
   message: string
 }) {
   const lang = useLang()   // รีเรนเดอร์เมื่อเปลี่ยนภาษา
+  const owned = useCollection()
   const byId = useMemo(() => new Map(data.map(d => [d.item.id, d])), [data])
   /** เรนเจอร์ที่เปิดแผงข้อมูลอยู่ */
   const [selected, setSelected] = useState<string | null>(null)
@@ -115,6 +118,20 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
       return next
     })
     setSlotSel(null)
+  }
+  /** ใช้เซ็ตทีมที่จัดไว้ (หน้าจัดทีมในหน้าหลัก) กับฝั่งนี้ — ตัวที่ไม่อยู่ในคลังแล้วเว้นช่องว่างไว้ */
+  const loadPreset = (team: Team, presetId: string) => {
+    const i = owned.teams.findIndex(p => p.id === presetId)
+    const p = owned.teams[i]
+    if (!p) return
+    setFormation(f => {
+      const n: Formation = [{ ...f[0] }, { ...f[1] }]
+      n[team] = emptyTeam()
+      for (const k of TEAM_KEYS) { const id = p.slots[k]; n[team][k] = id && byId.has(id) ? id : null }
+      return n
+    })
+    setSlotSel(null)
+    setToast(ui('presetLoaded', { name: teamName(p, i) }))
   }
   const clearTeam = (team: Team) => {
     setFormation(f => { const n: Formation = [{ ...f[0] }, { ...f[1] }]; n[team] = emptyTeam(); return n })
@@ -203,6 +220,13 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
         <header>
           <h2>{team === 0 ? ui('myTeam') : ui('enemyTeam')} <small>{count(team)}/5</small></h2>
           <div className="tb-btns">
+            {owned.teams.length > 0 && (
+              <select className="tb-preset" value="" title={ui('presetPick')}
+                onChange={e => { if (e.target.value) loadPreset(team, e.target.value) }}>
+                <option value="">{ui('presetUse')}</option>
+                {owned.teams.map((p, i) => <option key={p.id} value={p.id}>{teamName(p, i)}</option>)}
+              </select>
+            )}
             <button onClick={() => randomTeam(team)}><IconDice size={14} />{ui('random')}</button>
             <button className="ghost" onClick={() => clearTeam(team)}><IconTrash size={14} />{ui('clear')}</button>
           </div>
@@ -527,7 +551,7 @@ function Detail({ d, all }: { d: RangerData; all: RangerData[] }) {
                   {info?.icon ? <img src={`/rangers/${id}/${info.icon}`} alt="" /> : <span>S{i + 1}</span>}
                 </div>
                 <div>
-                  <b>{localName(info?.name, info?.code) ?? (i ? t('skill2') : t('skill1'))} <kbd>{i ? 'C' : 'X'}</kbd></b>
+                  <b>{(getLang() === 'zh' ? properNameZhTw(info?.code ?? '') : null) ?? localName(info?.name) ?? t(i ? 'skill2' : 'skill1')} <kbd>{i ? 'C' : 'X'}</kbd></b>
                   <small>{areaLong(sk.area)} · <img className="tb-cost" src={UI_SRC.mineral} alt="" /> {ui('cost')} {sk.cost}</small>
                   <ul>{sk.effects.map((e, j) => <li key={j}>{describeEffect(e)}</li>)}</ul>
                 </div>

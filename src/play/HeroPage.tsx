@@ -4,10 +4,11 @@
 //   แถบบน   ปุ่มกลับ · ชื่อหน้า · เงิน/เพชร/พลังงาน
 //   ซ้าย     แท็บ: ข้อมูล · สกิล · อัพเกรด · ข้ามขีดจำกัด  →  แผงเนื้อหาของแท็บ
 //   กลาง     ตัวละครตัวใหญ่ (เล่นท่ายืนจริงจากไฟล์ตัวละคร)
-//   ขวา      ค่าพลังหลัก 5 อย่าง (มีแถบเทียบกับตัวที่สูงสุดในคลัง) + ช่องอุปกรณ์ 4 ช่อง
+//   ขวา      ค่าพลังจริง (เลเวล + อุปกรณ์ + เซ็ต · ตัวเลขเขียว = ส่วนที่เพิ่มจากค่าตั้งต้น) + ช่องอุปกรณ์ 4 ช่อง
 //   ล่าง     ตัวกรอง/เรียง + แถวการ์ดฮีโร่ทั้งหมด (รูปโปรไฟล์แบบเดียวกับหน้าจัดทีม + ธาตุมุมบนซ้าย)
 //
-// ระบบที่ยังไม่มี (เลเวล · อัพเกรด · ข้ามขีดจำกัด · อุปกรณ์) วางช่องไว้ให้ครบแล้ว รอเติมทีหลัง
+// แท็บอัพเกรด = ปรับเลเวลฮีโร่ · กดช่องอุปกรณ์ = เลือกของจากกระเป๋ามาใส่ (collection.ts)
+// ยังไม่มีระบบ: ข้ามขีดจำกัด · คัมภีร์ (ช่องล็อกไว้)
 // ขนาด/สี/มุม ใช้ตัวแปรชุดเดียวกับหน้าหลัก (lobby.css) → เปลี่ยนธีมพร้อมกันทั้งเกม
 // ====================================================
 
@@ -20,15 +21,20 @@ import { CAMERA_ZOOM, VIEW_H } from './battleScene'
 import { EVOLUTION_LABEL, evolutionOf } from '@/lib/rangerGrade'
 import { ROLES, type Category, type Element, type Role } from '@/lib/rangerClass'
 import type { RangerConfig, Stats } from '@/lib/rangerConfig'
-import { IconBack, IconBag, IconBolt, IconCoin, IconGem, IconHeroes, IconLock, IconSearch, IconSwap, IconSwords } from './icons'
+import { IconBack, IconBag, IconBolt, IconCoin, IconGem, IconHeroes, IconLock, IconSearch, IconStar, IconSwap, IconSwords } from './icons'
 import { CardArt, Stars, nameOf, type RangerData } from './TeamBuilder'
 import { UI_SRC } from './uiAssets'
-import { areaLong, describeEffect, elementName, localName, roleName, t } from './i18n'
+import { areaLong, describeEffect, elementName, getLang, localName, roleName, t } from './i18n'
+import { properNameZhTw } from './zhNames'
 import { categoryName, traitLabel, traitText, ui, useLang } from './uiText'
 import { fmtNum, type Profile } from './profile'
+import { heroLevel, heroStats, isFavorite, toggleFavorite, useCollection } from './collection'
+import { ActiveSets, GearPicker, GearSlotButton, LevelControl } from './GearUI'
+import type { GearSlot } from '@/lib/gear'
 import './heroPage.css'
 
 type Tab = 'info' | 'skills' | 'upgrade' | 'limit'
+type Sort = 'grade' | 'name' | 'level' | 'fav'
 const ELEMENTS: Element[] = ['fire', 'water', 'wood', 'light', 'dark']
 
 /**
@@ -54,13 +60,12 @@ const HERO_ZOOM = 1.9
 const CATEGORIES: Category[] = ['str', 'agi', 'int']
 const ROLE_KEYS = Object.keys(ROLES) as Role[]
 
-/** ช่องอุปกรณ์ (ยังไม่มีระบบ — วางช่องไว้ก่อน) */
-const GEAR = [
-  { key: 'weapon', label: 'gearWeapon', icon: IconSwords },
-  { key: 'armor', label: 'gearArmor', icon: IconBag },
-  { key: 'acc', label: 'gearAcc', icon: IconGem },
-  { key: 'tome', label: 'gearTome', icon: IconSwap },
-] as const
+/** ช่องอุปกรณ์ · คัมภีร์ยังไม่มีของ (ล็อกไว้) */
+const GEAR: { slot: GearSlot; icon: typeof IconSwords }[] = [
+  { slot: 'weapon', icon: IconSwords },
+  { slot: 'armor', icon: IconBag },
+  { slot: 'acc', icon: IconGem },
+]
 
 export default function HeroPage({ data, profile, onClose }: {
   data: RangerData[]
@@ -68,11 +73,13 @@ export default function HeroPage({ data, profile, onClose }: {
   onClose: () => void
 }) {
   useLang()
+  const col = useCollection()
+  const [picker, setPicker] = useState<GearSlot | null>(null)
   const [tab, setTab] = useState<Tab>('info')
   const [element, setElement] = useState<Element | 'all'>('all')
   const [category, setCategory] = useState<Category | 'all'>('all')
   const [role, setRole] = useState<Role | 'all'>('all')
-  const [sort, setSort] = useState<'grade' | 'name'>('grade')
+  const [sort, setSort] = useState<Sort>('grade')
   const [pickedId, setPickedId] = useState<string | null>(null)
 
   const list = useMemo(() => {
@@ -80,12 +87,22 @@ export default function HeroPage({ data, profile, onClose }: {
       (element === 'all' || d.item.element === element)
       && (category === 'all' || d.item.category === category)
       && (role === 'all' || d.item.role === role))
-    return [...rows].sort((a, b) => (sort === 'name'
-      ? nameOf(a).localeCompare(nameOf(b))
-      : (b.item.grade ?? 0) - (a.item.grade ?? 0) || nameOf(a).localeCompare(nameOf(b))))
-  }, [data, element, category, role, sort])
+    // ทุกแบบเรียงต่อด้วยระดับดาว → ชื่อ เสมอ (ลำดับไม่กระโดดตอนค่าเท่ากัน)
+    const byGrade = (a: RangerData, b: RangerData) => (b.item.grade ?? 0) - (a.item.grade ?? 0) || nameOf(a).localeCompare(nameOf(b))
+    const key: Record<Sort, (a: RangerData, b: RangerData) => number> = {
+      grade: byGrade,
+      name: (a, b) => nameOf(a).localeCompare(nameOf(b)),
+      level: (a, b) => heroLevel(col, b.item.id) - heroLevel(col, a.item.id) || byGrade(a, b),
+      fav: (a, b) => Number(isFavorite(col, b.item.id)) - Number(isFavorite(col, a.item.id)) || byGrade(a, b),
+    }
+    return [...rows].sort(key[sort])
+  }, [data, element, category, role, sort, col])
 
   const hero = data.find(d => d.item.id === pickedId) ?? list[0] ?? data[0] ?? null
+  const heroName = (id: string) => { const d = data.find(x => x.item.id === id); return d ? nameOf(d) : id }
+  const elementOf = (id: string) => data.find(x => x.item.id === id)?.config?.element ?? null
+  // ค่าพลังจริง (เลเวล + อุปกรณ์) เทียบกับค่าตั้งต้น
+  const eff = hero?.config ? heroStats(col, hero.item.id, hero.config) : null
 
   // ล้อเมาส์ = เลื่อนแถวการ์ดแนวนอน (ไม่ต้องลากแถบเลื่อน) · มือถือปัดนิ้วได้ตามปกติ
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -121,7 +138,9 @@ export default function HeroPage({ data, profile, onClose }: {
         </nav>
 
         <section className="hp-panel">
-          {hero ? <TabBody tab={tab} d={hero} /> : <p className="hp-dim">{ui('noRangers')}</p>}
+          {hero
+            ? <TabBody tab={tab} d={hero} level={heroLevel(col, hero.item.id)} fav={isFavorite(col, hero.item.id)} />
+            : <p className="hp-dim">{ui('noRangers')}</p>}
         </section>
 
         <section className="hp-art">
@@ -137,24 +156,29 @@ export default function HeroPage({ data, profile, onClose }: {
         <aside className="hp-right">
           <div className="hp-stats">
             {POWER_ROWS.map(r => {
-              const v = hero?.config?.stats[r.k] ?? 0
+              const base = hero?.config?.stats[r.k] ?? 0
+              const v = eff?.[r.k] ?? base
+              const gain = Math.round(v - base)
               return (
                 <div key={r.k} className="hp-stat">
                   <span>{ui(r.label)}</span>
-                  <em>{v.toLocaleString()}{r.pct ? '%' : ''}</em>
+                  <em>{v.toLocaleString()}{r.pct ? '%' : ''}{gain > 0 && <small>+{gain.toLocaleString()}</small>}</em>
                 </div>
               )
             })}
           </div>
 
+          {hero && <ActiveSets col={col} heroId={hero.item.id} />}
           <div className="hp-gear">
-            {GEAR.map(g => (
-              <button key={g.key} className="hp-slot" title={ui(g.label)}>
-                <span className="hp-slot-ico"><g.icon size={20} /></span>
-                <small>{ui(g.label)}</small>
-                <i className="hp-slot-lock"><IconLock size={11} /></i>
-              </button>
+            {hero && GEAR.map(g => (
+              <GearSlotButton key={g.slot} col={col} heroId={hero.item.id} slot={g.slot}
+                icon={<g.icon size={20} />} onOpen={() => setPicker(g.slot)} />
             ))}
+            <button className="hp-slot locked" title={ui('gearTomeSoon')}>
+              <span className="hp-slot-ico"><IconSwap size={20} /></span>
+              <small>{ui('gearTome')}</small>
+              <i className="hp-slot-lock"><IconLock size={11} /></i>
+            </button>
           </div>
         </aside>
       </main>
@@ -190,8 +214,9 @@ export default function HeroPage({ data, profile, onClose }: {
           </div>
 
           <div className="hp-chips right">
-            <button className={sort === 'grade' ? 'on' : ''} onClick={() => setSort('grade')}>{ui('sortGrade')}</button>
-            <button className={sort === 'name' ? 'on' : ''} onClick={() => setSort('name')}>{ui('sortName')}</button>
+            {([['grade', 'sortGrade'], ['name', 'sortName'], ['level', 'sortLevel'], ['fav', 'sortFav']] as const).map(([k, label]) => (
+              <button key={k} className={sort === k ? 'on' : ''} onClick={() => setSort(k)}>{ui(label)}</button>
+            ))}
           </div>
         </div>
 
@@ -206,7 +231,14 @@ export default function HeroPage({ data, profile, onClose }: {
                 onClick={() => setPickedId(d.item.id)}
                 title={nameOf(d)}
               >
-                <CardArt d={d} />
+                {/* รูป + แถบล่างของรูป: Lv. ซ้าย · ดาวที่ชอบ ขวา */}
+                <span className="hp-card-pic">
+                  <CardArt d={d} />
+                  <span className="hp-card-badges">
+                    <i className="hp-card-lv">Lv.{heroLevel(col, d.item.id)}</i>
+                    {isFavorite(col, d.item.id) && <i className="hp-card-fav"><IconStar size={13} filled /></i>}
+                  </span>
+                </span>
                 {d.item.element && <img className="hp-card-el" src={UI_SRC.element[d.item.element]} alt="" />}
                 {d.item.category && <img className="hp-card-cat" src={UI_SRC.category[d.item.category]} alt="" />}
                 <span className="hp-card-stars"><Stars id={d.item.id} grade={d.item.grade} /></span>
@@ -217,23 +249,32 @@ export default function HeroPage({ data, profile, onClose }: {
           </div>
         </div>
       </footer>
+
+      {hero && picker && (
+        <GearPicker heroId={hero.item.id} slot={picker} heroName={heroName} elementOf={elementOf} onClose={() => setPicker(null)} />
+      )}
     </div>
   )
 }
 
 /** เนื้อหาของแต่ละแท็บ */
-function TabBody({ tab, d }: { tab: Tab; d: RangerData }) {
+function TabBody({ tab, d, level, fav }: { tab: Tab; d: RangerData; level: number; fav: boolean }) {
   const { element, category, role, grade, id } = d.item
   if (tab === 'info') {
     return (
       <div className="hp-info">
+        {/* ดาวมุมขวาบน = เพิ่ม/เอาออกจากฮีโร่ที่ชอบ */}
+        <button className={'hp-fav' + (fav ? ' on' : '')} onClick={() => toggleFavorite(id)}
+          title={ui(fav ? 'favRemove' : 'favAdd')} aria-pressed={fav}>
+          <IconStar size={22} filled={fav} />
+        </button>
         <div className="hp-tags">
           {element && <span className="hp-tag"><img src={UI_SRC.element[element]} alt="" />{elementName(element)}</span>}
           {category && <span className="hp-tag"><img src={UI_SRC.category[category]} alt="" />{categoryName(category)}</span>}
           {role && <span className="hp-tag role">{roleName(role)}</span>}
         </div>
         <div className="hp-rows">
-          <div><span>{ui('levelLabel')}</span><b>Lv. 1 <small>{ui('levelSoon')}</small></b></div>
+          <div><span>{ui('levelLabel')}</span><b>Lv. {level}</b></div>
           <div><span>{ui('sortGrade')}</span><b>{grade ? `★ ${grade}` : '—'} · {EVOLUTION_LABEL[evolutionOf(id)]}</b></div>
         </div>
         {role && (
@@ -275,7 +316,7 @@ function TabBody({ tab, d }: { tab: Tab; d: RangerData }) {
                 {gi?.icon ? <img src={`/rangers/${id}/${gi.icon}`} alt="" /> : <span>S{i + 1}</span>}
               </div>
               <div className="hp-skill-txt">
-                <b>{localName(gi?.name, gi?.code) ?? (i ? t('skill2') : t('skill1'))}</b>
+                <b>{(getLang() === 'zh' ? properNameZhTw(gi?.code ?? '') : null) ?? localName(gi?.name) ?? t(i ? 'skill2' : 'skill1')}</b>
                 <span className="hp-skill-meta">
                   <i className="hp-pill cost"><img className="hp-cost" src={UI_SRC.mineral} alt="" />{ui('cost')} {sk.cost}</i>
                   <i className="hp-pill">{sk.kind === 'buff' ? ui('skillBuff') : ui('skillAttack')}</i>
@@ -290,10 +331,12 @@ function TabBody({ tab, d }: { tab: Tab; d: RangerData }) {
     )
   }
 
+  if (tab === 'upgrade') return <LevelControl heroId={id} base={d.config?.stats ?? null} />
+
   return (
     <div className="hp-wip">
       <div className="hp-wip-badge">{ui('wip')}</div>
-      <p>{tab === 'upgrade' ? ui('panelUpgradeSub') : ui('panelLimitSub')}</p>
+      <p>{ui('panelLimitSub')}</p>
       <p className="hp-dim">{ui('wipNote')}</p>
     </div>
   )

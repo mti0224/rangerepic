@@ -14,11 +14,18 @@ import { defaultRangerConfig, migrateRangerConfig, withDefaultGround, type Actio
 import { Battle, type Team, type UnitSetup } from './battle'
 import { BattleScene, VIEW_H, VIEW_W, type RangerKit } from './battleScene'
 import { toggleUnitCard, type HudHit } from './battleHud'
-import { cycleLang, setLang, type Lang } from './i18n'
+import { LANGS, LANG_LABEL, cycleLang, setLang, type Lang } from './i18n'
 import { toggleCutins } from '@/lib/cutin'
 import TeamBuilder, { ALL_KEYS, HowToContent, Modal, RESERVE_KEYS, SLOT_KEYS, emptyTeam, type Formation, type RangerData, type TeamSlots } from './TeamBuilder'
 import { IconBack, IconClose, IconHelp, IconSwords } from './icons'
-import Lobby from './Lobby'
+import Lobby, { type PanelKey } from './Lobby'
+import { TEAM_KEYS, addGear, getCollection, heroLevel, heroPassives, heroStats, recordStage, setStory } from './collection'
+import { BOSS_HP_MUL, rewardFor, stageById, starsFor, type StageDef } from '@/lib/stages'
+import { effectiveStats } from '@/lib/gear'
+import { loadProfile, saveProfile } from './profile'
+import type { StoryResult } from './StoryMap'
+import StoryEnd from './StoryEnd'
+import { STAGES } from '@/lib/stages'
 import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice, openInExternalBrowser, useFullscreen } from './screen'
 import { ui, useLang } from './uiText'
 
@@ -53,6 +60,12 @@ export default function PlayMode() {
   const [kits, setKits] = useState<Map<string, RangerKit> | null>(null)
   const [seed, setSeed] = useState(1)
   const [showHelp, setShowHelp] = useState(false)
+  /** ด่านเนื้อเรื่องที่กำลังเล่น (null = ดวลฝึกซ้อม) · ทีมสองฝั่งของด่านแยกจากทีมที่จำไว้ในหน้าจัดทีม */
+  const [storyRun, setStoryRun] = useState<{ stage: StageDef; teamId: string; formation: Formation } | null>(null)
+  /** ผลด่านล่าสุด → หน้าจบด่าน (ลอยทับจอดวล) */
+  const [storyResult, setStoryResult] = useState<StoryResult | null>(null)
+  /** หน้าที่เปิดค้างไว้ตอนกลับมาหน้าหลัก (กลับจากด่าน = แผนที่) */
+  const [lobbyPanel, setLobbyPanel] = useState<PanelKey | null>(null)
   /** กดเมาส์ค้าง → เคอร์เซอร์ถุงมือแบบกด (เหมือนจอดวล) */
   const [pressing, setPressing] = useState(false)
   useEffect(() => {
@@ -106,10 +119,45 @@ export default function PlayMode() {
   }, [formation])
 
   // ── โหลดทุกตัวที่ลงสนาม ──
-  const start = async () => {
+  const start = () => loadAndFight(formation, () => setStage('setup'))
+
+  /** ด่านเนื้อเรื่อง: ทีมเรา = เซ็ตทีมที่เลือก · ศัตรู = ตามข้อมูลด่าน */
+  const playStage = (stageId: string, teamId: string) => {
+    const stage = stageById(stageId)
+    const team = getCollection().teams.find(t => t.id === teamId)
+    if (!stage || !team) return
+    const ok = new Set(data.map(d => d.item.id))
+    const mine = emptyTeam()
+    for (const k of TEAM_KEYS) { const id = team.slots[k]; mine[k] = id && ok.has(id) ? id : null }
+    const foe = emptyTeam()
+    for (const en of stage.enemies) if (ok.has(en.id)) foe[en.slot] = en.id
+    const f: Formation = [mine, foe]
+    setStoryRun({ stage, teamId, formation: f })
+    // ตัวละครบนแผนที่ยืนที่ด่านที่กำลังเล่น (มาจากปุ่ม "ไปด่านต่อไป" ก็ตาม)
+    setStory({ at: stage.id })
+    setStoryResult(null)
+    void loadAndFight(f, () => { setStoryRun(null); setLobbyPanel('story'); setStage('lobby') })
+  }
+
+  /** จบด่าน (ครั้งแรกที่ขึ้นหน้าจอจบ) → ดาว · บันทึก · แจกรางวัล */
+  const finishStage = (stage: StageDef, r: { win: boolean; alliesLost: number; turns: number }) => {
+    const stars = starsFor(r, stage)
+    let reward: StoryResult['reward'] = null
+    let firstClear = false
+    if (stars > 0) {
+      firstClear = recordStage(stage.id, stars).firstClear
+      const rw = rewardFor(stage, firstClear, Math.random)
+      const profile = loadProfile()
+      saveProfile({ ...profile, gold: profile.gold + rw.gold, gem: profile.gem + rw.gem })
+      reward = { gold: rw.gold, gem: rw.gem, gear: rw.gear ? addGear(rw.gear) : null }
+    }
+    setStoryResult({ stageId: stage.id, win: r.win, stars, firstClear, reward })
+  }
+
+  const loadAndFight = async (f: Formation, onFail: () => void) => {
     // มือถือ: เข้าเต็มจอ + ล็อกแนวนอน (ต้องเรียกทันทีในจังหวะกดปุ่ม ก่อน await ใดๆ)
     if (isTouchDevice()) enterGameFullscreen()
-    const ids = [...new Set([...Object.values(formation[0]), ...Object.values(formation[1])].filter((x): x is string => !!x))]
+    const ids = [...new Set([...Object.values(f[0]), ...Object.values(f[1])].filter((x): x is string => !!x))]
     setStage('loading')
     setMessage('')
     const map = new Map<string, RangerKit>()
@@ -131,18 +179,58 @@ export default function PlayMode() {
     } catch (e) {
       for (const k of map.values()) k.assets.dispose()
       setMessage(ui('loadFail') + ': ' + String(e))
-      setStage('setup')
+      onFail()
     }
   }
 
   const backToSetup = () => {
     if (kits) for (const k of kits.values()) k.assets.dispose()
     setKits(null)
+    // ด่านเนื้อเรื่อง → กลับไปที่แผนที่ (ด่านถัดไปเล่นอนิเมชั่นปลดล็อคเอง)
+    if (storyRun) { setStoryRun(null); setStoryResult(null); setLobbyPanel('story'); setStage('lobby'); return }
     setStage('setup')
   }
 
+  /** หน้าจบด่าน → ไปด่านต่อไปด้วยทีมเดิม */
+  const nextStage = () => {
+    if (!storyRun) return
+    const next = STAGES[STAGES.indexOf(storyRun.stage) + 1]
+    if (!next) return
+    if (kits) for (const k of kits.values()) k.assets.dispose()
+    setKits(null)
+    playStage(next.id, storyRun.teamId)
+  }
+
   if (stage === 'battle' && kits) {
-    return <BattleView formation={formation} kits={kits} seed={seed} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} />
+    return (
+      <BattleView
+        formation={storyRun?.formation ?? formation}
+        kits={kits}
+        seed={seed}
+        story={storyRun?.stage ?? null}
+        storyResult={storyResult}
+        data={data}
+        onStoryEnd={r => { if (storyRun) finishStage(storyRun.stage, r) }}
+        onNextStage={storyResult?.win && storyRun && STAGES[STAGES.indexOf(storyRun.stage) + 1] ? nextStage : null}
+        onBack={backToSetup}
+        onRestart={() => { setStoryResult(null); setSeed(s => s + 1) }}
+      />
+    )
+  }
+
+  // ด่านเนื้อเรื่อง: หน้าจอโหลดของตัวเอง (ไม่ผ่านหน้าจัดทีม)
+  if (stage === 'loading' && storyRun) {
+    return (
+      <div className="play-app">
+        <div className="pa-overlay">
+          <div className="pa-load-card">
+            {progress.id && <img src={`/rangers/${progress.id}/thumb.png`} alt="" />}
+            <p>{ui('loading')} {progress.done + 1 > progress.total ? progress.total : progress.done + 1}/{progress.total}</p>
+            <div className="pa-bar"><i style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%` }} /></div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (stage === 'lobby') {
@@ -150,7 +238,12 @@ export default function PlayMode() {
       <div className={'play-app' + (pressing ? ' pressing' : '')} onPointerDownCapture={e => { if (e.button === 0) setPressing(true) }}>
         <RotateHint />
         <InAppNotice />
-        <Lobby data={data} onTeam={() => setStage('setup')} onBattle={() => setStage('setup')} />
+        <Lobby
+          data={data}
+          onBattle={() => setStage('setup')}
+          onPlayStage={playStage}
+          initialPanel={lobbyPanel}
+        />
       </div>
     )
   }
@@ -226,18 +319,27 @@ function RotateHint() {
 function LangSwitch() {
   const lang = useLang()
   const opt = (l: Lang, label: string) => (
-    <button className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>{label}</button>
+    <button key={l} className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>{label}</button>
   )
-  return <div className="pa-lang" role="group" aria-label="語言">{opt('zh-TW', '繁中')}{opt('th', 'ไทย')}{opt('en', 'EN')}</div>
+  return <div className="pa-lang" role="group" aria-label="Language">{LANGS.map(l => opt(l, LANG_LABEL[l]))}</div>
 }
 
 
 // ────────────────────────────────────────────────────────────
 
-function BattleView({ formation, kits, seed, onBack, onRestart }: {
+function BattleView({ formation, kits, seed, story, storyResult, data, onStoryEnd, onNextStage, onBack, onRestart }: {
   formation: Formation
   kits: Map<string, RangerKit>
   seed: number
+  /** ด่านเนื้อเรื่อง (null = ดวลฝึกซ้อม) — ศัตรูใช้เลเวลของด่าน · ตัวบอสเลือดคูณ */
+  story: StageDef | null
+  /** ผลของด่านรอบนี้ (มาหลังขึ้นหน้าจอจบ) → หน้าจบด่าน */
+  storyResult: StoryResult | null
+  data: RangerData[]
+  /** มี = ชนะและมีด่านถัดไป */
+  onNextStage: (() => void) | null
+  /** จบด่าน (เรียกครั้งเดียวต่อการดวลแต่ละรอบ รวมรอบที่กดเล่นใหม่) */
+  onStoryEnd: (r: { win: boolean; alliesLost: number; turns: number }) => void
   onBack: () => void
   onRestart: () => void
 }) {
@@ -256,22 +358,48 @@ function BattleView({ formation, kits, seed, onBack, onRestart }: {
   }, [kits])
 
   const scene = useMemo(() => {
+    // ทีมเรา (ฝั่งซ้าย) = ฮีโร่ในคลังของผู้เล่น → คิดเลเวล + อุปกรณ์ + โบนัสเซ็ต
+    // ทีมศัตรู = ดวลฝึกซ้อม: ค่าตั้งต้น (Lv.1) · ด่านเนื้อเรื่อง: เลเวลตามด่าน (ตัวบอสเลือด × BOSS_HP_MUL)
+    const col = getCollection()
+    const power = (team: Team, id: string, kit: RangerKit, key: string) => {
+      if (team === 0) return { stats: heroStats(col, id, kit.config), passives: heroPassives(col, id, kit.config.passives), level: heroLevel(col, id) }
+      const en = story?.enemies.find(e => e.slot === key && e.id === id)
+      if (!en) return { stats: kit.config.stats, passives: kit.config.passives, level: 1 }
+      const stats = effectiveStats(kit.config.stats, en.level, [], kit.config.element, true)
+      if (en.boss) stats.hp = Math.round(stats.hp * BOSS_HP_MUL)
+      return { stats, passives: kit.config.passives, level: en.level }
+    }
     const setups = (team: Team): UnitSetup[] => SLOT_KEYS.flatMap(k => {
       const id = formation[team][k]
       const kit = id ? kits.get(id) : undefined
       if (!id || !kit) return []
       const [row, lane] = k.split('-') as [Row, string]
-      return [{ rangerId: id, row, lane: Number(lane), stats: kit.config.stats, element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, passives: kit.config.passives }]
+      return [{ rangerId: id, row, lane: Number(lane), element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, ...power(team, id, kit, k) }]
     })
-    // แถวพิเศษ (อัญเชิญ): ไม่ลงสนาม · ค่าพลังดิบ
+    // แถวพิเศษ (อัญเชิญ): ไม่ลงสนาม · ไม่มีโบนัสแถว (เลเวล/อุปกรณ์เป็นพลังของตัวเอง ยังนับ)
     const reserves = (team: Team): UnitSetup[] => RESERVE_KEYS.flatMap((k, i) => {
       const id = formation[team][k]
       const kit = id ? kits.get(id) : undefined
       if (!id || !kit) return []
-      return [{ rangerId: id, row: 'back' as Row, lane: i, stats: kit.config.stats, element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, passives: kit.config.passives }]
+      return [{ rangerId: id, row: 'back' as Row, lane: i, element: kit.config.element, category: kit.config.category, role: kit.config.role, skills: kit.config.skills, ...power(team, id, kit, k) }]
     })
-    return new BattleScene(new Battle([setups(0), setups(1)], seed, [reserves(0), reserves(1)]), kits, thumbs, rerender)
-  }, [formation, kits, thumbs, seed, rerender])
+    const sc = new BattleScene(new Battle([setups(0), setups(1)], seed, [reserves(0), reserves(1)]), kits, thumbs, rerender)
+    if (story) { sc.hud.backLabel = ui('backToMap'); sc.hud.customResult = true }
+    return sc
+  }, [formation, kits, thumbs, seed, rerender, story])
+
+  // ด่านเนื้อเรื่อง: ขึ้นหน้าจอจบ → ส่งผล (ครั้งเดียวต่อฉาก · กดเล่นใหม่ = ฉากใหม่ ส่งผลใหม่)
+  const reported = useRef<BattleScene | null>(null)
+  useEffect(() => {
+    if (!story || scene.phase !== 'ended' || reported.current === scene) return
+    reported.current = scene
+    const b = scene.battle
+    onStoryEnd({
+      win: b.winner === 0,
+      alliesLost: b.units.filter(u => u.team === 0 && !u.alive).length,
+      turns: b.turn,
+    })
+  })
 
   // เปิดให้เครื่องมือตรวจภาพเรียก scene ได้ (เช่นสั่งเดินเฟรมแล้วดัมพ์ภาพ) — ใช้ตอนพัฒนา
   useEffect(() => {
@@ -455,6 +583,22 @@ function BattleView({ formation, kits, seed, onBack, onRestart }: {
           </svg>
           <span>{ui('tapFullscreen')}</span>
         </button>
+      )}
+      {story && storyResult && scene.phase === 'ended' && (
+        <StoryEnd
+          stage={story}
+          result={storyResult}
+          turns={scene.battle.turn}
+          heroes={[
+            ...scene.battle.units.filter(u => u.team === 0).map(u => ({ id: u.rangerId, level: u.level, ko: !u.alive })),
+            // แถวพิเศษ (อัญเชิญ) — ได้ EXP ครึ่งเดียว
+            ...scene.battle.reserves[0].map(u => ({ id: u.rangerId, level: u.level, ko: false, reserve: true })),
+          ]}
+          byId={new Map(data.map(d => [d.item.id, d]))}
+          onExit={onBack}
+          onReplay={onRestart}
+          onNext={onNextStage}
+        />
       )}
       <div className="battle-stage">
         <canvas

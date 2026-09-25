@@ -20,7 +20,8 @@ import type { GameInfo, GameSkillInfo } from '@/lib/rangerApi'
 import { ENERGY_MAX, TURN_LIMIT, previewLoss, type ActionPreview, type Battle, type Team, type Unit } from './battle'
 import { isDebuffLabel } from './statusLabels'
 import { cutinsOn } from '@/lib/cutin'
-import { areaLong, areaShort, describeEffect, elementName, localName, roleName, statusLabel, t, turnsShort } from './i18n'
+import { areaLong, areaShort, describeEffect, elementName, getLang, localName, roleName, statusLabel, t, turnsShort } from './i18n'
+import { properNameZhTw } from './zhNames'
 import { UI_SRC, categoryIcon, elementIcon, uiImage } from './uiAssets'
 import { lerpSAMFrame, renderSAMFrame } from '@/lib/animation/samRenderer'
 import { loadButtonRing, type RingFx } from '@/lib/effects'
@@ -215,6 +216,10 @@ export function toggleUnitCard(): void {
 
 export class BattleHud {
   menuOpen = false
+  /** ป้ายปุ่ม "กลับ" (จบเกม + เมนู) — ไม่ตั้ง = กลับหน้าจัดทีม · ด่านเนื้อเรื่องตั้งเป็น "แผนที่" */
+  backLabel: string | null = null
+  /** หน้าจบเกมทำเองข้างนอก (ด่านเนื้อเรื่อง: หน้าสรุปผลแบบ DOM) → ไม่วาดแถบผลแพ้ชนะ/ปุ่มในแคนวาส */
+  customResult = false
   /** ตำแหน่งเมาส์บนจอตรรกะ (null = ไม่อยู่บนแคนวาส) */
   hover: Vec2 | null = null
   private boxes: Box[] = []
@@ -311,7 +316,8 @@ export class BattleHud {
     this.drawFoeReserves(ctx)
     this.drawUnitCard(ctx)
     this.hover = hover
-    if (ended) this.drawResult(ctx)
+    if (ended && !this.customResult) this.drawResult(ctx)
+    else if (ended) this.boxes = []
     else if (this.s.paused && !this.menuOpen) this.drawPausedTag(ctx)
     if (this.menuOpen) this.drawMenu(ctx)
     ctx.restore()
@@ -728,14 +734,15 @@ export class BattleHud {
       ctx.fillRect(bx + hpW, by, bw * (shield / total), 7)
     }
     ctx.font = F(10)
-    const hpText = `${fmt(u.hp)}/${fmt(u.maxHp)}${shield > 0 ? ` +${fmt(shield)}` : ''}`
+    // โล่ขาวเห็นเป็นแถบขาวในหลอดแล้ว — ไม่ต้องเขียนตัวเลข +โล่ต่อท้าย
+    const hpText = `${fmt(u.hp)}/${fmt(u.maxHp)}`
     iconText(ctx, uiImage(UI_SRC.hp), hpText, bx, y + 61, 10, 13, C.text, 'left', 3, 'HP ')
   }
 
   private actionName(u: Unit, a: ActionName): string {
     if (a === 'attack') return t('attack')
     const info = gameSkill(this.s.infoOf(u), a)
-    return localName(info?.name, info?.code) ?? (a === 'skill1' ? t('skill1') : t('skill2'))
+    return (getLang() === 'zh' ? properNameZhTw(info?.code ?? '') : null) ?? localName(info?.name) ?? (a === 'skill1' ? t('skill1') : t('skill2'))
   }
 
   private actionIcon(u: Unit, a: ActionName): HTMLImageElement | null {
@@ -1304,7 +1311,7 @@ export class BattleHud {
       outlined(ctx, `${t(this.s.timerOn && this.s.timeLeftSec <= 0 ? 'timeUp' : 'turnLimit')} ${r.pct[0].toFixed(1)}% vs ${r.pct[1].toFixed(1)}%`, W / 2, H / 2 - 64, C.gold, 4)
     }
     this.button(ctx, W / 2 - 150, H / 2 + 20, 140, 42, t('retry'), { kind: 'restart' }, { size: 16, active: true })
-    this.button(ctx, W / 2 + 10, H / 2 + 20, 140, 42, t('team'), { kind: 'back' }, { size: 16 })
+    this.button(ctx, W / 2 + 10, H / 2 + 20, 140, 42, this.backLabel ?? t('team'), { kind: 'back' }, { size: 16 })
   }
 
   private drawMenu(ctx: CanvasRenderingContext2D): void {
@@ -1325,7 +1332,7 @@ export class BattleHud {
     const bw = w - 60, bx = x + 30
     this.button(ctx, bx, y + 58, bw, 40, this.s.paused ? t('resume') : t('pause'), { kind: 'pause' }, { size: 16 })
     this.button(ctx, bx, y + 106, bw, 40, t('restart'), { kind: 'restart' }, { size: 16 })
-    this.button(ctx, bx, y + 154, bw, 40, t('backToTeam'), { kind: 'back' }, { size: 16 })
+    this.button(ctx, bx, y + 154, bw, 40, this.backLabel ?? t('backToTeam'), { kind: 'back' }, { size: 16 })
     // ภาษา: กดวน อังกฤษ ⇄ ไทย (ปุ่มบอกภาษาที่ใช้อยู่)
     this.button(ctx, bx, y + 202, bw, 40, t('language'), { kind: 'lang' }, { size: 16 })
     this.button(ctx, bx, y + 250, bw, 40, cutinsOn() ? t('cutinOn') : t('cutinOff'), { kind: 'cutin' }, { size: 16 })

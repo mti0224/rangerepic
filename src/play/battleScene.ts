@@ -28,7 +28,8 @@ import { elementIcon } from './uiAssets'
 import type { GameInfo } from '@/lib/rangerApi'
 import { BattleHud, PREVIEW_BLINK_HZ } from './battleHud'
 import { isDebuffLabel } from './statusLabels'
-import { localName, statusLabel, t, turnsShort } from './i18n'
+import { getLang, localName, statusLabel, t, turnsShort } from './i18n'
+import { properNameZhTw } from './zhNames'
 import { imageReady, portraitCenter } from '@/lib/portrait'
 
 export { STATUS_LABEL } from './statusLabels'
@@ -38,6 +39,8 @@ const STUN_SKIP_SEC = 0.6
 const ICON_SHIELD_ABOVE_BAR = 30
 /** ตัวที่ยังไม่ตั้งจุดเหนือหัว: หลอดเลือด/ป้ายสถานะ/ตัวเลขลอยเหนือระดับหน้าเท่านี้ (หน่วยโลก) */
 const HEAD_ABOVE_FACE = 93
+/** หลอดเลือดยกสูงกว่าจุดเหนือหัวเท่านี้ (หน่วยโลก) — เว้นที่ให้ป้าย Lv. ใต้หลอด */
+const HP_BAR_RAISE = 16
 /** ดาวชะงักอยู่ที่ระดับหัวเดิม (ใต้หลอด) — หลอดยกสูงขึ้น ดาวไม่ขยับตาม */
 const ICON_STUN_BELOW_BAR = 38 + (HEAD_ABOVE_FACE - 75)
 /** ไอคอนสถานะเหนือหัว: สถานะไหนมีไอคอน */
@@ -64,7 +67,8 @@ const LEFT_SLOTS_PX = {
   back: [{ x: 315, y: 430 }, { x: 170, y: 530 }, { x: 275, y: 630 }],
 }
 /** ลูกศรเล็งอยู่เหนือหลอดเลือดกี่ px (จอ) */
-const AIM_MARK_ABOVE = 44
+/** ลูกศรเล็งเหนือหลอดเลือด (px) — เผื่อที่ให้ป้ายบัฟ/ดีบัฟ + ตัวเลขไกด์ที่อยู่เหนือหลอด */
+const AIM_MARK_ABOVE = 57
 /** ยกทั้งกลุ่มขึ้น (px จอ) เว้นที่ด้านล่างจอไว้ใส่ UI · แถวหลังบนสุดยังยืนบนพื้นหญ้า ต่ำกว่าแนวน้ำ (~y 313) */
 const FIELD_SHIFT_Y = -60
 /** เลื่อนทั้งสนาม (ทั้งสองทีม) ไปทางขวา (px จอ) — เว้นที่ซ้ายจอให้รางลำดับเทิร์น */
@@ -493,9 +497,13 @@ export class BattleScene {
       const actor = this.pendingActor
       this.pendingActor = null
       this.pendingAction = null
+      this.pendingCaster = null
       const plan = this.battle.planAuto(actor)
-      if (plan) this.startAction(actor, plan.action, plan.target)
-      else { this.phase = 'ended'; this.onChange?.() }
+      // แผนอาจเป็นการอัญเชิญ (เป้าเป็นของสกิลตัวแถวพิเศษ) — ต้องเรียกผ่าน startSummon
+      // (เดิมใช้ startAction ตลอด → ตัวที่ถึงตาเอาท่าตัวเองไปใส่เป้าของสกิลอัญเชิญ เช่น ตีเพื่อนที่ควรได้ฮีล)
+      if (!plan) { this.phase = 'ended'; this.onChange?.() }
+      else if (plan.caster) this.startSummon(actor, plan.caster, plan.action, plan.target)
+      else this.startAction(actor, plan.action, plan.target)
     }
   }
 
@@ -533,7 +541,7 @@ export class BattleScene {
 
   nameOf(u: Unit): string {
     const kit = this.view(u.uid)?.kit
-    return localName(kit?.info?.name, u.rangerId) ?? kit?.config.name ?? u.rangerId
+    return (getLang() === 'zh' ? properNameZhTw(u.rangerId) : null) ?? localName(kit?.info?.name) ?? kit?.config.name ?? u.rangerId
   }
   infoOf(u: Unit): GameInfo | null { return this.view(u.uid)?.kit.info ?? null }
   /** รูปเรนเจอร์ใน HUD = thumb.png + ตำแหน่งหน้า (แท็บ "รูปหน้า" ใน editor) · รูปยังไม่โหลด = null */
@@ -713,6 +721,10 @@ export class BattleScene {
   }
 
   private startAction(actorUnit: Unit, action: ActionName, targetUnit: Unit): void {
+    // กันพลาด: สกิลโจมตีห้ามวิ่งไปหาเพื่อน / บัฟห้ามไปหาศัตรู → เปลี่ยนเป็นเป้าที่ดีที่สุดของท่านี้
+    if ((this.battle.skillOf(actorUnit, action).kind === 'attack') === (targetUnit.team === actorUnit.team)) {
+      targetUnit = this.battle.autoTarget(actorUnit, action) ?? targetUnit
+    }
     const actor = this.view(actorUnit.uid)
     const target = this.view(targetUnit.uid)
     if (!actor || !target) { this.phase = 'thinking'; return }
@@ -850,7 +862,7 @@ export class BattleScene {
     const skill = info ? (action === 'skill1' ? info.skills.skill1 : info.skills.skill2 ?? info.skills.skill3) : null
     return {
       art,
-      title: cfg.title?.trim() || localName(skill?.name, skill?.code) || (action === 'skill1' ? t('skill1') : t('skill2')),
+      title: cfg.title?.trim() || (getLang() === 'zh' ? properNameZhTw(skill?.code ?? '') : null) || localName(skill?.name) || (action === 'skill1' ? t('skill1') : t('skill2')),
       element: v.unit.element,
       side: flip ? 'right' : 'left',
     }
@@ -1128,6 +1140,12 @@ export class BattleScene {
     return { x: w.x, y: w.y - HEAD_ABOVE_FACE }
   }
 
+  /** จุดกึ่งกลางหลอดเลือด (พิกัดโลก) = เหนือหัวยกขึ้นอีก HP_BAR_RAISE */
+  private barWorld(v: UnitView): Vec2 {
+    const h = this.headWorld(v)
+    return { x: h.x, y: h.y - HP_BAR_RAISE }
+  }
+
   // ── เดินเวลา ──
 
   update(dtMs: number): void {
@@ -1277,7 +1295,7 @@ export class BattleScene {
   unitAnchor(uid: string): Vec2 | null {
     const v = this.view(uid)
     if (!v) return null
-    const h = this.headWorld(v)
+    const h = this.barWorld(v)
     return { x: h.x * CAMERA_ZOOM, y: h.y * CAMERA_ZOOM }
   }
 
@@ -1527,7 +1545,7 @@ export class BattleScene {
     if (stun) draw(fx.stun, stun, { x: head.x, y: head.y + ICON_STUN_BELOW_BAR })
     const barrier = v.icons.barrier
     // โล่อมตะหันไปทางเดียวกับตัวละคร → ฝั่งศัตรูกลับด้าน (ดาวชะงักหมุนรอบตัว ไม่ต้องกลับ)
-    if (barrier) draw(fx.barrier, barrier, { x: head.x, y: head.y - ICON_SHIELD_ABOVE_BAR }, v.unit.team === 1)
+    if (barrier) draw(fx.barrier, barrier, { x: head.x, y: head.y - HP_BAR_RAISE - ICON_SHIELD_ABOVE_BAR }, v.unit.team === 1)
   }
 
   private paintBackground(ctx: CanvasRenderingContext2D): void {
@@ -1692,7 +1710,7 @@ export class BattleScene {
     for (const u of aim) {
       const v = this.view(u.uid)
       if (!v || v.gone || !u.alive) continue
-      const h = this.headWorld(v)
+      const h = this.barWorld(v)
       const x = h.x * Z, y = h.y * Z - AIM_MARK_ABOVE + bob
       ctx.save()
       ctx.beginPath()
@@ -1713,7 +1731,7 @@ export class BattleScene {
 
   private paintHpBar(ctx: CanvasRenderingContext2D, v: UnitView, preview?: ActionPreview): void {
     const Z = CAMERA_ZOOM
-    const head = this.headWorld(v)
+    const head = this.barWorld(v)
     // หลอดสี่เหลี่ยมด้านขนานมุมมน (เฉียงแบบเดียวกับหลอดเลือดรวม: ทีมซ้าย "\" ทีมขวา "/") มีขอบดำ
     // ไอคอนธาตุอยู่ชิดหัวหลอด — แตะขอบกันพอดี ไม่ทับเนื้อหลอด
     const icon = elementIcon(v.unit.element)
@@ -1798,22 +1816,38 @@ export class BattleScene {
     ctx.restore()
     if (icon) ctx.drawImage(icon, x0, y + h / 2 - iconSize / 2, iconSize, iconSize)
 
-    if (preview) this.paintPreviewText(ctx, v, preview, x0 + full / 2, y - 6)
+    // Lv. ใต้หลอด (กึ่งกลางเนื้อหลอด ไม่นับไอคอนธาตุ)
+    ctx.save()
+    ctx.font = 'bold 10px LineBold, Krub, ui-sans-serif, system-ui'
+    ctx.textAlign = 'center'
+    ctx.lineJoin = 'round'
+    ctx.lineWidth = 2.5
+    ctx.strokeStyle = 'rgba(0,0,0,0.8)'
+    const lv = `Lv.${v.unit.level}`
+    const lx = x + w / 2
+    ctx.strokeText(lv, lx, y + h + 11)
+    ctx.fillStyle = '#ffffff'
+    ctx.fillText(lv, lx, y + h + 11)
+    ctx.restore()
 
-    // อมตะ/ชะงักมีไอคอนเหนือหัว · โล่เห็นในหลอดเลือด → ไม่ต้องเขียนป้ายซ้ำ
+    // ป้ายบัฟ/ดีบัฟเหนือหลอด · อมตะ/ชะงักมีไอคอนเหนือหัว · โล่เห็นในหลอดเลือด → ไม่ต้องเขียนป้ายซ้ำ
     const labeled = v.unit.statuses.filter(st => st.type !== 'barrier' && st.type !== 'stun' && st.type !== 'shield')
     if (labeled.length) {
       ctx.save()
       ctx.font = 'bold 10px LineBold, Krub, ui-sans-serif, system-ui'
       ctx.textAlign = 'center'
+      ctx.lineJoin = 'round'
       ctx.lineWidth = 2.5
       ctx.strokeStyle = 'rgba(0,0,0,0.7)'
       const text = labeled.slice(0, 3).map(st => statusLabel(st.type)).join(' ')
-      ctx.strokeText(text, x0 + full / 2, y + h + 13)
+      ctx.strokeText(text, x0 + full / 2, y - 4)
       ctx.fillStyle = labeled.some(st => isDebuffLabel(st.type)) ? '#e9d5ff' : '#a5f3fc'
-      ctx.fillText(text, x0 + full / 2, y + h + 13)
+      ctx.fillText(text, x0 + full / 2, y - 4)
       ctx.restore()
     }
+
+    // ตัวเลขไกด์อยู่เหนือป้ายสถานะ (ไม่มีป้าย = ชิดหลอด)
+    if (preview) this.paintPreviewText(ctx, v, preview, x0 + full / 2, y - (labeled.length ? 18 : 6))
   }
 
   /**
