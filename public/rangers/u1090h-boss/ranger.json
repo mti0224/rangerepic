@@ -105,7 +105,7 @@
       "approach": {
         "enabled": true,
         "stopOffset": {
-          "x": -140,
+          "x": -225.2,
           "y": 0
         },
         "speed": 600,
@@ -170,5 +170,6 @@
         }
       ]
     }
-  }
+  },
+  "approved": true
 }
