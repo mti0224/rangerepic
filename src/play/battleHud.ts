@@ -735,7 +735,7 @@ export class BattleHud {
   private actionName(u: Unit, a: ActionName): string {
     if (a === 'attack') return t('attack')
     const info = gameSkill(this.s.infoOf(u), a)
-    return localName(info?.name) ?? (a === 'skill1' ? t('skill1') : t('skill2'))
+    return localName(info?.name, info?.code) ?? (a === 'skill1' ? t('skill1') : t('skill2'))
   }
 
   private actionIcon(u: Unit, a: ActionName): HTMLImageElement | null {
