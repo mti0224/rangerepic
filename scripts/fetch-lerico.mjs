@@ -35,7 +35,8 @@ const SOURCES = {
   basics: '/api/getRangersBasics',
   skills: '/api/getSkills',
   abilities: '/api/v2/abilities',
-  ...Object.fromEntries(['en', 'th'].flatMap(lang =>
+  // ต้นทางใช้รหัส ja สำหรับญี่ปุ่น (jp ว่างเปล่า) — เราเก็บลงคีย์ jp ให้ตรงกับรหัสภาษาในเกม
+  ...Object.fromEntries(['en', 'th', 'zh', 'ja'].flatMap(lang =>
     ['UNIT', 'SKILL', 'ABILITY', 'PROPERTIES', 'CUSTOM'].map(k => [`${lang}_${k}`, `/api/v2/translate?keys=${lang}:${k}`]))),
 }
 
@@ -169,7 +170,7 @@ export async function fetchLericoData({ ids: onlyIds = [], refresh = false, log 
     skill: dict(raw[`${lang}_SKILL`], `${lang}:SKILL`),
     ability: dict(raw[`${lang}_ABILITY`], `${lang}:ABILITY`),
   })
-  const en = tr('en'), th = tr('th')
+  const en = tr('en'), th = tr('th'), zh = tr('zh'), jp = tr('ja')
 
   // warmycat: icon ของสกิล → 觸發基準
   const basisByIcon = new Map()
@@ -198,8 +199,11 @@ export async function fetchLericoData({ ids: onlyIds = [], refresh = false, log 
       return {
         slot,
         code,
-        name: { en: nameOf(en.skill, code), th: nameOf(th.skill, code) },
-        desc: { en: en.skill?.[`${code}_desc`] ?? null, th: th.skill?.[`${code}_desc`] ?? null },
+        name: { en: nameOf(en.skill, code), th: nameOf(th.skill, code), zh: nameOf(zh.skill, code), jp: nameOf(jp.skill, code) },
+        desc: {
+          en: en.skill?.[`${code}_desc`] ?? null, th: th.skill?.[`${code}_desc`] ?? null,
+          zh: zh.skill?.[`${code}_desc`] ?? null, jp: jp.skill?.[`${code}_desc`] ?? null,
+        },
         icon: saved ? `icons/${iconFile}` : null,
         iconUrl: `${RES}/skill_icon/${iconFile}`,
         probability: s.probability ?? null,
@@ -216,8 +220,11 @@ export async function fetchLericoData({ ids: onlyIds = [], refresh = false, log 
       return {
         code,
         // ชื่อต้องใช้ <code>_nm ของโค้ดตัวเองก่อนเสมอ (nameCode บางตัวชี้ผิด)
-        name: { en: nameOf(en.ability, code), th: nameOf(th.ability, code) },
-        desc: { en: en.ability?.[`${code}_desc`] ?? null, th: th.ability?.[`${code}_desc`] ?? null },
+        name: { en: nameOf(en.ability, code), th: nameOf(th.ability, code), zh: nameOf(zh.ability, code), jp: nameOf(jp.ability, code) },
+        desc: {
+          en: en.ability?.[`${code}_desc`] ?? null, th: th.ability?.[`${code}_desc`] ?? null,
+          zh: zh.ability?.[`${code}_desc`] ?? null, jp: jp.ability?.[`${code}_desc`] ?? null,
+        },
         icon: saved ? `icons/${iconFile}` : null,
         groupBuff: u.abilityCategoryCode === 'ab701_team' || String(code).startsWith('ab701_team'),
       }
@@ -228,7 +235,7 @@ export async function fetchLericoData({ ids: onlyIds = [], refresh = false, log 
     const out = {
       id,
       source: { lerico: API, fetchedAt: new Date().toISOString() },
-      name: { en: nameOf(en.unit, id) ?? id, th: nameOf(th.unit, id) },
+      name: { en: nameOf(en.unit, id) ?? id, th: nameOf(th.unit, id), zh: nameOf(zh.unit, id), jp: nameOf(jp.unit, id) },
       grade: u.grade ?? null,
       tier: tierOf(u),
       maxLevel: u.maxLevel ?? null,
