@@ -1,0 +1,235 @@
+{
+  "id": "u1137h-cony",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-25T16:51:18.686Z"
+  },
+  "name": {
+    "en": "Ultra Pink Cony",
+    "th": "Cony อัลตราพิงค์",
+    "zh": "終極粉紅衣兔兔",
+    "jp": "ウルトラピンクコニー"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "AGI",
+  "element": "light",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "light",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 31800,
+      "perLevel": 4000,
+      "perLevelAfterMax": 5200
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 1500,
+      "perLevel": 190,
+      "perLevelAfterMax": 250
+    },
+    "mdef": {
+      "initial": 1500,
+      "perLevel": 170,
+      "perLevelAfterMax": 230
+    },
+    "hp": {
+      "initial": 181000,
+      "perLevel": 22700,
+      "perLevelAfterMax": 29600
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 110,
+    "attackRange": 205,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYSLOW",
+    "moveSpeedType": "SLOW",
+    "movingSpeed": 53,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.3,
+    "skillAvoid": 0.3,
+    "skillResistance": 0,
+    "antiAvoid": 0.3,
+    "antiSkillAvoid": 0.3
+  },
+  "cost": {
+    "productionSpeed": 17,
+    "summonEnergy": 1490,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1137_cony",
+      "name": {
+        "en": "Big Heart Meteor",
+        "th": "บิ๊กฮาร์ทเมเทโอ",
+        "zh": "巨大心型流星",
+        "jp": "ビッグハートメテオ"
+      },
+      "desc": {
+        "en": "Shoots hearts of love, inflicting harmful effects on ground enemies.\\n\\n*Cancels enemy buffs \\n*ATK x 3000% Area Damage \\n*Stuns enemies (3 sec)",
+        "th": "ยิงหัวใจที่เปี่ยมด้วยความรักเพื่อสร้างผลลัพธ์ด้านลบให้ศัตรูบนพื้น\\n\\n*ยกเลิกผลลัพธ์บัฟของศัตรู\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในบริเวณ \\n*ทำให้ศัตรูชะงัก (3 วินาที)",
+        "zh": "給予地面的敵人愛的一擊並產生負面效果。\\n\\n* 解除敵人的增益效果 \\n* 攻擊力×3000%的範圍傷害 \\n* 電暈敵人（3秒）",
+        "jp": "愛を込めたハートを放ち、地上の敵に悪い効果を与えます。\\n\\n*敵のバフ効果解除 \\n*攻撃力×3000%の範囲ダメージ \\n*敵軍スタン (3秒)"
+      },
+      "icon": "icons/skill_icon_sk1137_cony.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1137_cony.png",
+      "probability": 0.4000000059604645,
+      "cooldownSec": 12,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1137_cony",
+      "name": {
+        "en": "Pink Ribbon Dance",
+        "th": "เต้นรำกับริบบิ้นชมพู",
+        "zh": "粉紅緞帶之舞",
+        "jp": "ピンクリボンダンス"
+      },
+      "desc": {
+        "en": "Performs a dance with pink ribbons, casting beneficial effects on allies.\\n\\n*Skill Evade Rate +30% (5 sec)\\n*Evade Rate +30% (5 sec)\\n*Move Speed +20% (5 sec)\\n- Only applies to Flyer units ",
+        "th": "สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวกด้วยการใช้ริบบิ้นชมพูเต้นรำ\\n\\n*เพิ่มอัตราการหลบทักษะ 30% (5 วินาที)\\n*เพิ่มอัตราการหลบหลีก 30% (5 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 20% (5 วินาที)\\n*มีผลเฉพาะยูนิตบิน ",
+        "zh": "透過緞帶舞讓夥伴獲得正面效果。\\n\\n*提升技能閃避機率30% （5秒）\\n*提升閃避機率30% （5秒）\\n*提升移動速度20% （5秒）\\n※只會套用於飛翔的角色 ",
+        "jp": "ピンクのリボンを使ったダンスで、味方に良い効果を与えます。\\n\\n*スキル回避率30%アップ (5秒)\\n*回避率30%アップ (5秒)\\n*移動速度20%アップ (5秒)\\n※ 飛行ユニットのみ適用 "
+      },
+      "icon": "icons/skill_icon_hsk1137_cony.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1137_cony.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 100,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab201_flight",
+      "name": {
+        "en": "Flyer",
+        "th": "บิน",
+        "zh": "飛翔",
+        "jp": "飛行"
+      },
+      "desc": {
+        "en": "Can attack Towers without receiving attacks from enemy units, excluding anti-air attacks. Deals reduced damage to Towers.\\nFlyer buff effects only apply to Flyer units. Ground unit buffs do not work on Flyers.",
+        "th": "หากไม่มีเรนเจอร์สกัดกั้นยูนิตบิน จะสามารถเข้าไปโจมตีป้อมปราการโดยไม่โดนเรนเจอร์ฝั่งศัตรูขัดขวางและไม่ได้รับการโจมตี แต่จะสร้างความเสียหายต่อป้อมปราการได้น้อยกว่า\\nผลลัพธ์บัฟของยูนิตบินจะส่งผลเฉพาะยูนิตบินเท่านั้น ไม่มีผลกับยูนิตบนพื้นดิน",
+        "zh": "不會受到非對空迎擊Ranger攻擊，能夠不受敵方Ranger妨礙而直接攻擊塔城。對塔城造成的傷害較小。\\n飛翔Ranger的增益效果僅會套用於飛翔Ranger身上，對地面的角色沒有效果。",
+        "jp": "飛行迎撃レンジャー以外からの攻撃を受けず、敵軍レンジャーに阻まれずにタワーを攻撃することができます。 タワーに与えるダメージは弱まります。\\n飛行ユニットのバフ効果は飛行ユニットにのみ適用され、地上ユニットのバフ効果は適用されません。"
+      },
+      "icon": "icons/ab201_flight_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab213_lastatk",
+      "name": {
+        "en": "Last Attack",
+        "th": "โจมตีครั้งสุดท้าย",
+        "zh": "最後的攻擊",
+        "jp": "最後の攻撃"
+      },
+      "desc": {
+        "en": "One of that Ranger's skills will activate when they are defeated.",
+        "th": "หากเรนเจอร์ที่เข้าข่ายพ่ายแพ้จะแสดงทักษะที่มีอยู่ 1 อย่าง",
+        "zh": "Ranger被打倒時將發動一項自己的技能。",
+        "jp": "該当レンジャーが倒される際、保有スキルの一つを発動します。"
+      },
+      "icon": "icons/ab213_lastatk_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1137h-cony",
+    "unitNameCode": "u1137h-cony_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 17,
+    "summonEnergy": 1490,
+    "unitCategoryType": "AGI",
+    "attackRange": 205,
+    "attackDelay": 110,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1137h-cony_desc",
+    "initialAttack": 31800,
+    "specialAttack": 0,
+    "defence": 1500,
+    "specialDefence": 1500,
+    "initialHp": 181000,
+    "movingSpeed": 53,
+    "unitSpecialAbilityType": "FLIGHT",
+    "antiAvoidProb": 0.3,
+    "antiSkillAvoidProb": 0.3,
+    "attackIncreaseAmount": 4000,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 190,
+    "specialDefenceDelta": 170,
+    "hpIncreaseAmount": 22700,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1137_cony",
+    "skillCode": "sk1137_cony",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1137_cony",
+    "skillCode3": "hsk1137_cony",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.3,
+    "skillAvoidProbability": 0.3,
+    "skillResistance": 0,
+    "attackSpeedType": "VERYSLOW",
+    "moveSpeedType": "SLOW",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab201_flight",
+    "abilityCode": "ab201_flight",
+    "abilityCategoryCode": "ab201_flight",
+    "iconAbilityCode2": "ab213_lastatk",
+    "abilityCode2": "ab213_lastatk",
+    "abilityCategoryCode2": "ab213_lastatk",
+    "elementOpen": "2",
+    "unitElement": "light",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 29600,
+    "attackIncreaseAmountMax": 5200,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 250,
+    "specialDefenceDeltaMax": 230,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
