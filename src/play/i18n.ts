@@ -11,7 +11,7 @@ import { ELEMENT_LABEL, type Element, type Role } from '@/lib/rangerClass'
 import type { HealScale, LifestealScope, SkillArea, SkillEffect } from '@/lib/skills'
 import { EFFECTS } from '@/lib/skills'
 import type { StatusType } from './battle'
-import { rangerNameZhTw } from './zhNames'
+import { properNameZhTw } from './zhNames'
 
 export type Lang = 'zh-TW' | 'en' | 'th'
 export const LANGS: Lang[] = ['zh-TW', 'en', 'th']
@@ -354,7 +354,7 @@ export const localName = (
   idOrCode?: string | null,
 ): string | null => {
   if (lang === 'zh-TW') {
-    return name?.zh ?? rangerNameZhTw(idOrCode) ?? name?.en ?? name?.th ?? null
+    return name?.zh ?? properNameZhTw(idOrCode) ?? name?.en ?? name?.th ?? null
   }
   if (!name) return null
   return lang === 'th' ? name.th ?? name.en : name.en ?? name.th
