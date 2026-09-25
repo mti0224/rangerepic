@@ -1,0 +1,235 @@
+{
+  "id": "u1134h-brown",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-25T16:47:25.111Z"
+  },
+  "name": {
+    "en": "Ultra Dark Brown",
+    "th": "Brown อัลตราแบล็ค",
+    "zh": "終極黑衣熊大",
+    "jp": "ウルトラブラックブラウン"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "SPLASH",
+  "category": "STR",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 23000,
+      "perLevel": 2900,
+      "perLevelAfterMax": 3800
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2240,
+      "perLevel": 280,
+      "perLevelAfterMax": 370
+    },
+    "mdef": {
+      "initial": 2640,
+      "perLevel": 300,
+      "perLevelAfterMax": 390
+    },
+    "hp": {
+      "initial": 272000,
+      "perLevel": 34000,
+      "perLevelAfterMax": 44200
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 100,
+    "attackRange": 50,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 98,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 1650,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk1134_brown",
+      "name": {
+        "en": "Fire Punch",
+        "th": "หมัดเพลิง",
+        "zh": "火焰拳",
+        "jp": "ファイアパンチ"
+      },
+      "desc": {
+        "en": "Throws a heavy punch, inflicting negative effects on enemies.\\n\\n*Cancels enemy invincibility skills \\n*Cancels HP regen \\n*ATK x 2000% Area Damage ",
+        "th": "ประสานพลังใส่หมัดแล้วโจมตีเพื่อสร้างผลลัพธ์ด้านลบให้ศัตรู\\n\\n*ยกเลิกทักษะอมตะของศัตรู \\n*ยกเลิกการฟื้นฟูพลังชีวิตต่อเนื่อง \\n*สร้างความเสียหาย 2000% ของพลังโจมตีลงในพื้นที่ ",
+        "zh": "將力量凝聚在拳頭上來進行攻擊，並對敵人產生負面效果。\\n\\n*解除敵人的無敵技能 \\n*解除體力持續回復狀態 \\n*攻擊力×2000%的範圍傷害 ",
+        "jp": "こぶしに力を込めて撃ち、敵に悪い効果を与えます。\\n\\n*敵の無敵スキル解除 \\n*体力持続回復の解除 \\n*攻撃力×2000%の範囲ダメージ "
+      },
+      "icon": "icons/skill_icon_sk1134_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1134_brown.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 7,
+      "range": 300,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk1134_brown",
+      "name": {
+        "en": "Ultra Lightning",
+        "th": "อัลตราไลท์นิ่ง",
+        "zh": "終極雷電",
+        "jp": "ウルトラライトニング"
+      },
+      "desc": {
+        "en": "Gives beneficial effects to surrounding allies with the leader's shout.\\n\\n*HP +400% (7 sec)\\n*Move Speed +150% (7 sec)\\n*Area Physical DEF +40000 (7 sec)",
+        "th": "สร้างผลลัพธ์ด้านบวกให้แก่พรรคพวกด้วยแรงเชียร์จากหัวหน้า\\n\\n*เพิ่มพลังชีวิต 400% (7 วินาที)\\n*เพิ่มความเร็วการเคลื่อนที่ 150% (7 วินาที)\\n*เพิ่มพลังป้องกันทางกายภาพในพื้นที่ 40000 หน่วย (7 วินาที)",
+        "zh": "透過隊長的氣勢讓夥伴獲得正面效果。\\n\\n*提升體力400% （7秒）\\n*提升移動速度150% （7秒）\\n*增加範圍內我方的物理防禦力40000 （7秒）",
+        "jp": "リーダーの気合で、味方に良い効果を与えます。\\n\\n*体力400%アップ (7秒)\\n*移動速度150%アップ (7秒)\\n*範囲物理防御力40000アップ (7秒)"
+      },
+      "icon": "icons/skill_icon_hsk1134_brown.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1134_brown.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 9,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab104_souleye",
+      "name": {
+        "en": "Eagle Eyes",
+        "th": "นัยน์ตาแห่งวิญญาณ",
+        "zh": "靈魂之眼",
+        "jp": "魂の目"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't be blinded in advent stages \\nwith the Ink obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่ได้รับผลกระทบใดๆ ถึงแม้ผลลัพธ์ของ \\n\"หมึกทมิฬ\" จะแสดงผลในเสตจจุติก็ตาม",
+        "zh": "當降臨關卡發動「墨」妨礙效果時，持有這個能力的Ranger不會受到影響。",
+        "jp": "降臨ステージで「墨」妨害効果発動の際、\\nこのアビリティを保有しているレンジャーは墨の影響を受けません。"
+      },
+      "icon": "icons/ab104_souleye_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab206_mindisturb",
+      "name": {
+        "en": "Mineral Mooch",
+        "th": "ขัดขวางการผลิตแร่ธาตุ",
+        "zh": "妨礙礦物生產",
+        "jp": "ミネラル生産妨害"
+      },
+      "desc": {
+        "en": "Steal the opposing team's minerals, slowing their production.\\n(Production is slowed by per Ranger with this Ability that joins the battle)",
+        "th": "ช่วงชิงแร่ธาตุของทีมตรงข้ามและลดความเร็วในการผลิตลง\\n(อัตราการผลิตช้าลงตามจำนวนเรนเจอร์ผู้มีความสามารถนี้ ที่เข้าร่วมการต่อสู้)",
+        "zh": "奪取對方隊伍的礦物，降低礦物生產速度。\\n(有此能力的Ranger參與戰鬥時，將降低對方的礦物生產速度)",
+        "jp": "相手チームのミネラルを奪い取って生産速度を落とします。\\n(アビリティを所持したレンジャーが戦闘に参加すると減少)"
+      },
+      "icon": "icons/ab206_mindisturb_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u1134h-brown",
+    "unitNameCode": "u1134h-brown_nm",
+    "grade": 8,
+    "unitType": "SPLASH",
+    "productionSpeed": 13,
+    "summonEnergy": 1650,
+    "unitCategoryType": "STR",
+    "attackRange": 50,
+    "attackDelay": 100,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u1134h-brown_desc",
+    "initialAttack": 23000,
+    "specialAttack": 0,
+    "defence": 2240,
+    "specialDefence": 2640,
+    "initialHp": 272000,
+    "movingSpeed": 98,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 2900,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 280,
+    "specialDefenceDelta": 300,
+    "hpIncreaseAmount": 34000,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk1134_brown",
+    "skillCode": "sk1134_brown",
+    "iconSkillCode2": "usk1134_brown",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk1134_brown",
+    "skillCode3": "hsk1134_brown",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "SLOW",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 8100,
+    "extractionCrystal2Gain": 900,
+    "extractionCrystal3Gain": 135,
+    "iconAbilityCode": "ab104_souleye",
+    "abilityCode": "ab104_souleye",
+    "abilityCategoryCode": "ab104_souleye",
+    "iconAbilityCode2": "ab206_mindisturb",
+    "abilityCode2": "ab206_mindisturb",
+    "abilityCategoryCode2": "ab206_mindisturb",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 44200,
+    "attackIncreaseAmountMax": 3800,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 370,
+    "specialDefenceDeltaMax": 390,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
