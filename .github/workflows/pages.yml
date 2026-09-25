@@ -1,29 +1,26 @@
 name: Deploy Ranger Epic to GitHub Pages
 
 on:
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types: [completed]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-vite"
   cancel-in-progress: true
 
 jobs:
   build:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout latest main
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -42,6 +39,25 @@ jobs:
           PAGES_BASE_PATH: /rangerepic/
         run: node scripts/prepare-github-pages.mjs
 
+      - name: Wait for branch Pages deployment
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in {1..60}; do
+            status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${GITHUB_SHA}&per_page=20" --jq '.workflow_runs[] | select(.name=="pages build and deployment" and .event=="dynamic") | .status' | head -n 1)"
+            conclusion="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${GITHUB_SHA}&per_page=20" --jq '.workflow_runs[] | select(.name=="pages build and deployment" and .event=="dynamic") | .conclusion' | head -n 1)"
+            echo "branch Pages status=${status:-not-found} conclusion=${conclusion:-none}"
+            if [ "$status" = "completed" ]; then
+              break
+            fi
+            if [ "$i" -eq 60 ]; then
+              echo "Timed out waiting for branch Pages deployment" >&2
+              exit 1
+            fi
+            sleep 3
+          done
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
@@ -51,7 +67,6 @@ jobs:
           path: ./dist-play
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
