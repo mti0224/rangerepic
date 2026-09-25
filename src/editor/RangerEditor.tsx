@@ -14,7 +14,7 @@ import { ELEMENTS, randomStats, ROLES, rolesOf, type Category } from '@/lib/rang
 import SkillEditor from './SkillEditor'
 import { newPassive, PASSIVES, PASSIVE_TYPES, type PassiveDef, type PassiveType } from '@/lib/passives'
 import {
-  categoryLabel, e, elementLabel, gameName, passiveLabel, passiveNote, roleHint, roleLabel, statLabel, STAT_KEYS, useELang,
+  categoryLabel, e, elementLabel, gameName, getELang, passiveLabel, passiveNote, roleHint, roleLabel, statLabel, STAT_KEYS, useELang,
   type EKey,
 } from './i18n'
 import { CutinPanel, CutinStage } from './CutinStudio'
@@ -1087,8 +1087,9 @@ export default function RangerEditor() {
  */
 function listName(r: RangerListItem): string {
   const g = r.gameNames
+  const auto = !g || r.name === r.id || r.name === g.th || r.name === g.en || r.name === g.zh
+  if (getELang() === 'zh' && auto) return properNameZhTw(r.id) ?? g?.zh ?? r.name
   if (!g) return r.name
-  const auto = r.name === g.th || r.name === g.en || r.name === g.zh
   return auto ? gameName(g) ?? r.name : r.name
 }
 
