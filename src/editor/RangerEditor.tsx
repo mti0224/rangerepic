@@ -141,8 +141,11 @@ export default function RangerEditor() {
         setAssets(a)
         setGameInfo(info)
         const base = withDefaultGround(saved ? migrateRangerConfig(saved) : defaultRangerConfig(selected, a.sam, bullets), a.geometry.autoStand)
-        // 個 Rangerที่ยังไม่เคย儲存 → เติม屬性/類型/職業/名稱จากข้อมูลเกมให้เลย (ตัวที่已儲存กดปุ่มใช้เอง)
-        setConfig(saved || !info ? base : applyGameInfo(base, info))
+        // 資料庫已有繁中名稱時，自動名稱優先顯示繁中；使用者手動命名則保留。
+        const zhName = properNameZhTw(selected)
+        const autoNamed = !base.name || base.name === selected || base.name === info?.name.th || base.name === info?.name.en
+        const localizedBase = zhName && autoNamed ? { ...base, name: zhName } : base
+        setConfig(saved || !info ? localizedBase : applyGameInfo(localizedBase, info))
         setDirty(!saved)
         const bulNote = bullets.length ? ' · 投射物 ' + bullets.join(', ') : ' · 無投射物（近戰）'
         setStatus((saved ? '已載入儲存設定' : '新 Ranger — 尚未設定') + bulNote)
@@ -1218,7 +1221,9 @@ function applyGameInfo(cfg: RangerConfig, info: GameInfo): RangerConfig {
   const role = g.role && ROLES[g.role].category === category ? g.role : ROLES[cfg.role].category === category ? cfg.role : rolesOf(category)[0]
   return {
     ...cfg,
-    name: cfg.name === cfg.id ? properNameZhTw(cfg.id) ?? info.name.zh ?? info.name.th ?? info.name.en ?? cfg.name : cfg.name,
+    name: (!cfg.name || cfg.name === cfg.id || cfg.name === info.name.th || cfg.name === info.name.en)
+      ? properNameZhTw(cfg.id) ?? info.name.zh ?? info.name.th ?? info.name.en ?? cfg.name
+      : cfg.name,
     element: g.element ?? cfg.element,
     category,
     role,

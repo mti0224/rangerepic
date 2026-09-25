@@ -22,6 +22,7 @@ import type { GameInfo } from '@/lib/rangerApi'
 import type { RangerAssets } from '@/lib/rangerAssets'
 import type { RangerConfig } from '@/lib/rangerConfig'
 import type { SkillSlot } from '@/lib/skills'
+import { properNameZhTw } from '@/play/zhNames'
 
 const W = 1280
 const H = 720
@@ -36,7 +37,7 @@ export const SLOTS: SkillSlot[] = ['skill1', 'skill2']
 /** ชื่อสกิลจากข้อมูลเกม (技能 2 บางตัวเก็บในช่อง skill3) */
 export function skillNameOf(info: GameInfo | null, slot: SkillSlot): string {
   const s = slot === 'skill1' ? info?.skills.skill1 : info?.skills.skill2 ?? info?.skills.skill3
-  return s?.name.th ?? s?.name.en ?? (slot === 'skill1' ? '技能 1' : '技能 2')
+  return properNameZhTw(s?.code ?? '') ?? s?.name.zh ?? s?.name.th ?? s?.name.en ?? (slot === 'skill1' ? '技能 1' : '技能 2')
 }
 
 /** ไฟล์กระสุนที่โหลดไว้ เรียงชื่อ · ของสกิลนี้ (ตามค่ามาตรฐาน / ที่ตั้งไว้ในท่า) ขึ้นก่อน */
