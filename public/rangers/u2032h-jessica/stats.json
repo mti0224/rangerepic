@@ -1,0 +1,235 @@
+{
+  "id": "u2032h-jessica",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-25T16:22:31.111Z"
+  },
+  "name": {
+    "en": "Red Ranger Jessica",
+    "th": "Jessica เรนเจอร์แดง",
+    "zh": "紅衣戰士潔西卡",
+    "jp": "レッドレンジャージェシカ"
+  },
+  "grade": 8,
+  "tier": "hyper",
+  "maxLevel": 140,
+  "unitType": "HP",
+  "category": "STR",
+  "element": "fire",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "fire",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 12420,
+      "perLevel": 1560,
+      "perLevelAfterMax": 2030
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 2000,
+      "perLevel": 250,
+      "perLevelAfterMax": 330
+    },
+    "mdef": {
+      "initial": 2400,
+      "perLevel": 270,
+      "perLevelAfterMax": 360
+    },
+    "hp": {
+      "initial": 121400,
+      "perLevel": 15180,
+      "perLevelAfterMax": 19740
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 82,
+    "attackRange": 60,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 75,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0,
+    "skillAvoid": 0,
+    "skillResistance": 0.3,
+    "antiAvoid": 0.2,
+    "antiSkillAvoid": 0.2
+  },
+  "cost": {
+    "productionSpeed": 13,
+    "summonEnergy": 770,
+    "maxLeonardPoint": 100
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk2032_jessica",
+      "name": {
+        "en": "Agents' Tea Time",
+        "th": "เวลาน้ำชาของเอเจนท์",
+        "zh": "情報員的下午茶時光",
+        "jp": "エージェントのティータイム"
+      },
+      "desc": {
+        "en": "Has a lightning-quick tea time break, giving beneficial effects to allies.\\n\\n*Creates a shield over an area (3 sec)\\n*HP +250% (7 sec)\\n*Skill Evade Rate +30% (7 sec)",
+        "th": "สร้างผลลัพธ์ปกป้องพรรคพวกด้วยเวลาน้ำชาชั่วพริบตา\\n\\n*สร้างบาเรียในพื้นที่ (3 วินาที)\\n*เพิ่มพลังชีวิต 250% (7 วินาที)\\n*เพิ่มอัตราการหลบทักษะ 30% (7 วินาที)",
+        "zh": "享受稍縱即逝的下午茶時光來發動保護夥伴的效果。\\n\\n*為範圍內夥伴形成防護罩 （3秒）\\n*提升體力250% （7秒）\\n*提升技能閃避機率30% （7秒）",
+        "jp": "一瞬のティータイムで味方を保護する効果を与えます。\\n\\n*範囲バリア形成 (3秒)\\n*体力250%アップ (7秒)\\n*スキル回避率30%アップ (7秒)"
+      },
+      "icon": "icons/skill_icon_sk2032_jessica.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk2032_jessica.png",
+      "probability": 0.3499999940395355,
+      "cooldownSec": 9,
+      "range": 250,
+      "basis": {
+        "type": "self"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk2032_jessica",
+      "name": {
+        "en": "Call in Leonard!",
+        "th": "เรียกลีโอนาร์ด!",
+        "zh": "呼叫李奧納德",
+        "jp": "レナード呼び出し！"
+      },
+      "desc": {
+        "en": "Attacks enemies by dropping Leonard-shaped blocks on them.\\n\\n*ATK x 3000% Area Damage \\n*Enemy Skill Resistance -50% (7 sec)",
+        "th": "โจมตีด้วยการปล่อยบล็อครูปลีโอนาร์ดตกใส่ศัตรู\\n\\n*สร้างความเสียหาย 3000% ของพลังโจมตีลงในพื้นที่ \\n*ลดการต้านทักษะของศัตรูในพื้นที่ 50% (7 วินาที)",
+        "zh": "在敵陣落下李奧納德造型的方塊來攻擊。\\n\\n*攻擊力×3000%的範圍傷害 \\n*使範圍內敵人的技能抗性減少50% （7秒）",
+        "jp": "レナード状のブロックを敵陣に落として攻撃します。\\n\\n*攻撃力×3000%の範囲ダメージ \\n*範囲内の敵のスキル抵抗 50%ダウン (7秒)"
+      },
+      "icon": "icons/skill_icon_hsk2032_jessica.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk2032_jessica.png",
+      "probability": 0.25,
+      "cooldownSec": 9,
+      "range": 220,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab101_caffein",
+      "name": {
+        "en": "Caffeine",
+        "th": "คาเฟอีน",
+        "zh": "咖啡因",
+        "jp": "カフェイン"
+      },
+      "desc": {
+        "en": "Rangers with this Ability won't fall asleep in advent stages \\nwith the Deep Sleep obstacle effect.",
+        "th": "เรนเจอร์ที่มีความสามารถนี้จะไม่หลับถึงแม้ผลลัพธ์ของ \\n\"หลับสนิทนิทรา\" จะแสดงผลในสเตจจุติก็ตาม",
+        "zh": "當降臨關卡發動「沉眠」妨礙效果時，持有這個能力的Ranger不會睡著。",
+        "jp": "降臨ステージで「深い眠り」妨害効果発動の際、\\nこのアビリティを保有しているレンジャーは眠りません。"
+      },
+      "icon": "icons/ab101_caffein_icon.png",
+      "groupBuff": false
+    },
+    {
+      "code": "ab601_clone",
+      "name": {
+        "en": "Spawn Clone",
+        "th": "สร้างร่างโคลน",
+        "zh": "複製分身",
+        "jp": "クローン生成"
+      },
+      "desc": {
+        "en": "Sometimes 1 additional Ranger is produced at no extra cost.",
+        "th": "มีโอกาสผลิตเรนเจอร์พร้อมกัน 2 ตัวด้วยการใช้แร่ธาตุเพียง 1 ตัว",
+        "zh": "以一定機率只消耗生產1隻Ranger所需的礦物量就生產出2隻Ranger。",
+        "jp": "一定の確率で、1体分のミネラルを消費し2体のレンジャーが生産されます。"
+      },
+      "icon": "icons/ab213_2generate_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u2032h-jessica",
+    "unitNameCode": "u2032h-jessica_nm",
+    "grade": 8,
+    "unitType": "HP",
+    "productionSpeed": 13,
+    "summonEnergy": 770,
+    "unitCategoryType": "STR",
+    "attackRange": 60,
+    "attackDelay": 82,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u2032h-jessica_desc",
+    "initialAttack": 12420,
+    "specialAttack": 0,
+    "defence": 2000,
+    "specialDefence": 2400,
+    "initialHp": 121400,
+    "movingSpeed": 75,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 0.2,
+    "antiSkillAvoidProb": 0.2,
+    "attackIncreaseAmount": 1560,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 250,
+    "specialDefenceDelta": 270,
+    "hpIncreaseAmount": 15180,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 140,
+    "iconSkillCode": "sk2032_jessica",
+    "skillCode": "sk2032_jessica",
+    "iconSkillCode2": "usk2032_jessica",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk2032_jessica",
+    "skillCode3": "hsk2032_jessica",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0,
+    "skillAvoidProbability": 0,
+    "skillResistance": 0.3,
+    "attackSpeedType": "NORMAL",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 1,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 1800,
+    "extractionCrystal2Gain": 200,
+    "extractionCrystal3Gain": 30,
+    "iconAbilityCode": "ab101_caffein",
+    "abilityCode": "ab101_caffein",
+    "abilityCategoryCode": "ab101_caffein",
+    "iconAbilityCode2": "ab601_clone",
+    "abilityCode2": "ab601_clone",
+    "abilityCategoryCode2": "ab601_clone",
+    "elementOpen": "2",
+    "unitElement": "fire",
+    "maxLeonardPoint": 100,
+    "hpIncreaseAmountMax": 19740,
+    "attackIncreaseAmountMax": 2030,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 330,
+    "specialDefenceDeltaMax": 360,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
