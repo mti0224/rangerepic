@@ -71,6 +71,8 @@ export interface UnitSetup {
   skills?: Record<SkillSlot, SkillDef>
   /** พาสซีฟพิเศษประจำตัว (lib/passives.ts) */
   passives?: PassiveDef[]
+  /** เลเวลฮีโร่ — ไว้แสดงใต้หลอดเลือดเท่านั้น (ค่าพลังใน stats คิดเลเวลมาแล้ว) · ไม่ระบุ = 1 */
+  level?: number
 }
 
 /** ผลที่ค้างอยู่บนตัว (มีเทิร์น) */
@@ -117,6 +119,8 @@ export interface Status {
 export interface Unit {
   uid: string
   rangerId: string
+  /** เลเวลฮีโร่ (แสดงผลอย่างเดียว) */
+  level: number
   team: Team
   row: Row
   lane: number
@@ -343,6 +347,7 @@ export class Battle {
     return {
       uid,
       rangerId: u.rangerId,
+      level: u.level ?? 1,
       team: t as Team,
       row: u.row,
       lane: u.lane,
@@ -940,6 +945,11 @@ export class Battle {
   resolveAction(actor: Unit, action: ActionName, chosen: Unit): ActionResult {
     const skill = this.skillOf(actor, action)
     const normal = action === 'attack'
+    // กันพลาด: เป้าผิดฝั่ง (สกิลโจมตีเล็งเพื่อน / บัฟเล็งศัตรู) → เปลี่ยนเป็นเป้าที่ดีที่สุดของท่านี้ ไม่ลงผลกับทีมตัวเองเด็ดขาด
+    if ((skill.kind === 'attack') === (chosen.team === actor.team)) {
+      const fix = this.autoTarget(actor, action)
+      if (fix) chosen = fix
+    }
     const targets = this.affectedUnits(actor, action, chosen)
     const outcomes: Outcome[] = []
     let energyGained = 0

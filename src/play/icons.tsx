@@ -62,6 +62,13 @@ export const IconSearch = (p: IconProps) => svg(<><circle cx="11" cy="11" r="7" 
 /** บวก — เพิ่มลงทีม */
 export const IconPlus = (p: IconProps) => svg(<><path d="M12 5v14" /><path d="M5 12h14" /></>, p)
 
+/** ดาว — ฮีโร่ที่ชอบ (filled = เติมสีด้านใน) */
+export const IconStar = ({ filled, ...p }: IconProps & { filled?: boolean }) => svg(
+  <path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8Z" fill={filled ? 'currentColor' : 'none'} />, p)
+
+/** ลบ — ลดค่า (เลเวล / ตีบวก) */
+export const IconMinus = (p: IconProps) => svg(<path d="M5 12h14" />, p)
+
 // ── หน้าหลัก (Lobby) ──
 
 /** ลูกศรซ้าย — ย้อนกลับ */

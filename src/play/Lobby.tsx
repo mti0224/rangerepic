@@ -23,19 +23,26 @@ import {
   IconCheck, IconInfo, IconLock, IconMail, IconMap, IconPlus, IconShop, IconSkull, IconSwap, IconSwords,
   IconTeam, IconTrophy, IconUser,
 } from './icons'
-import { setLang, type Lang } from './i18n'
+import { LANGS, LANG_LABEL, setLang, type Lang } from './i18n'
 import { getTheme, onThemeChange, setTheme, type Theme } from './theme'
 import { DEFAULT_PROFILE, fmtNum, expToNext, loadProfile, saveProfile, type Profile } from './profile'
 import { ui, useLang } from './uiText'
 import { canFullscreen, enterGameFullscreen, isTouchDevice, useFullscreen } from './screen'
 import HeroPage from './HeroPage'
 import SummonPage from './SummonPage'
-import type { RangerData } from './TeamBuilder'
+import { nameOf, type RangerData } from './TeamBuilder'
+import { GearBag } from './GearUI'
+import TeamsPage from './TeamsPage'
+import StoryMap from './StoryMap'
+import SeasonPass from './SeasonPass'
+import { resetCollection } from './collection'
 import './lobby.css'
+// ปรับสำหรับมือถือแนวนอน — โหลดท้ายสุดเพื่อทับค่าของทุกหน้า (หน้าหลัก · ฮีโร่ · กระเป๋า · จัดทีม · กาชา)
+import './mobile.css'
 
 /** แผงที่ยังไม่มีระบบจริง — เปิดมาเห็นหัวข้อ + คำอธิบายว่าตรงนี้จะมีอะไร */
-type PanelKey = 'profile' | 'events' | 'quests' | 'pass' | 'notice' | 'mail' | 'settings'
-  | 'guild' | 'forge' | 'friends' | 'heroes' | 'bag' | 'shop' | 'gacha'
+export type PanelKey = 'profile' | 'events' | 'quests' | 'pass' | 'notice' | 'mail' | 'settings'
+  | 'guild' | 'forge' | 'friends' | 'heroes' | 'bag' | 'shop' | 'gacha' | 'team' | 'story'
   | 'rank' | 'codex' | 'achieve'
 
 type Ico = (p: { size?: number }) => JSX.Element
@@ -59,18 +66,21 @@ const DEMO_FRIENDS = [
   { name: 'Ranger D', online: false },
 ]
 
-export default function Lobby({ data, onTeam, onBattle }: {
+export default function Lobby({ data, onBattle, onPlayStage, initialPanel }: {
   /** คลังเรนเจอร์ทั้งหมด (ใช้ในหน้าฮีโร่) */
   data: RangerData[]
   /** ไปหน้าจัดทีม */
-  onTeam: () => void
   /** เริ่มโหมดที่เล่นได้ (ตอนนี้ = ดวลฝึกซ้อม → หน้าจัดทีม) */
   onBattle: () => void
+  /** เริ่มดวลด่านเนื้อเรื่องด้วยเซ็ตทีมที่เลือก */
+  onPlayStage: (stageId: string, teamId: string) => void
+  /** เปิดหน้าไหนเลยตอนเข้าหน้าหลัก (กลับจากด่าน = แผนที่ด่าน) */
+  initialPanel?: PanelKey | null
 }) {
   useLang()
   const theme = useTheme()
   const [profile, setProfile] = useState<Profile>(loadProfile)
-  const [panel, setPanel] = useState<PanelKey | null>(null)
+  const [panel, setPanel] = useState<PanelKey | null>(initialPanel ?? null)
   const [playOpen, setPlayOpen] = useState(false)
   const [stripOpen, setStripOpen] = useState(false)
   useEffect(() => { saveProfile(profile) }, [profile])
@@ -88,9 +98,17 @@ export default function Lobby({ data, onTeam, onBattle }: {
   }, [])
 
   const exp = expToNext(profile.level)
+  /** เงิน/เพชร/พลังงานบนแถบบนของหน้าเต็มจอ (กระเป๋า · จัดทีม) */
+  const wallet = (
+    <div className="hp-wallet">
+      <span className="hp-cur gold"><IconCoin size={15} />{fmtNum(profile.gold)}</span>
+      <span className="hp-cur gem"><IconGem size={15} />{fmtNum(profile.gem)}</span>
+      <span className="hp-cur energy"><IconBolt size={15} />{profile.energy}/{profile.energyMax}</span>
+    </div>
+  )
 
   const modes: ModeDef[] = [
-    { key: 'story', icon: IconMap, title: ui('modeStory'), sub: ui('modeStorySub'), tone: 'blue', big: true },
+    { key: 'story', icon: IconMap, title: ui('modeStory'), sub: ui('modeStorySub'), tone: 'blue', big: true, ready: true },
     { key: 'arena', icon: IconTrophy, title: ui('modeArena'), sub: ui('modeArenaSub'), tone: 'violet', big: true },
     { key: 'side', icon: IconCalendar, title: ui('modeSide'), sub: ui('modeSideSub'), tone: 'green' },
     { key: 'boss', icon: IconSkull, title: ui('modeBoss'), sub: ui('modeBossSub'), tone: 'red' },
@@ -100,7 +118,7 @@ export default function Lobby({ data, onTeam, onBattle }: {
     { key: 'daily', icon: IconCalendar, title: ui('modeDaily'), sub: ui('modeDailySub'), tone: 'green' },
   ]
 
-  const dock: { key: PanelKey | 'team'; icon: Ico; label: string }[] = [
+  const dock: { key: PanelKey; icon: Ico; label: string }[] = [
     { key: 'shop', icon: IconShop, label: ui('navShop') },
     { key: 'bag', icon: IconBag, label: ui('navBag') },
     { key: 'team', icon: IconTeam, label: ui('navTeam') },
@@ -200,7 +218,7 @@ export default function Lobby({ data, onTeam, onBattle }: {
       <nav className="lb-dock" ref={dockRef}>
         <div className="lb-dock-nav">
           {dock.map(n => (
-            <button key={n.key} className="lb-navbtn" onClick={() => (n.key === 'team' ? onTeam() : setPanel(n.key as PanelKey))}>
+            <button key={n.key} className="lb-navbtn" onClick={() => setPanel(n.key)}>
               <span className="lb-navico"><n.icon size={22} /></span>
               <small>{n.label}</small>
             </button>
@@ -220,7 +238,12 @@ export default function Lobby({ data, onTeam, onBattle }: {
               <button key={m.key}
                 className={`lb-mode ${m.tone}` + (m.big ? ' big' : '') + (m.ready ? ' ready' : ' locked')}
                 disabled={!m.ready}
-                onClick={() => { if (m.ready) { setPlayOpen(false); onBattle() } }}>
+                onClick={() => {
+                  if (!m.ready) return
+                  setPlayOpen(false)
+                  if (m.key === 'story') setPanel('story')
+                  else onBattle()
+                }}>
                 <span className="lb-mode-ico"><m.icon size={m.big ? 30 : 22} /></span>
                 <span className="lb-mode-txt"><b>{m.title}</b><small>{m.sub}</small></span>
                 <span className={'lb-tag' + (m.ready ? ' on' : '')}>
@@ -245,9 +268,36 @@ export default function Lobby({ data, onTeam, onBattle }: {
         ? <HeroPage data={data} profile={profile} onClose={() => setPanel(null)} />
         : panel === 'gacha'
           ? <SummonPage data={data} profile={profile} onProfile={setProfile} onClose={() => setPanel(null)} />
-          : panel && (
-          <LobbyPanel panel={panel} theme={theme} profile={profile} onProfile={setProfile} onClose={() => setPanel(null)} />
-        )}
+          // ซีซั่นพาส
+          : panel === 'pass'
+            ? <SeasonPass data={data} profile={profile} onProfile={setProfile} wallet={wallet} onClose={() => setPanel(null)} />
+          // เนื้อเรื่อง = แผนที่ด่าน
+          : panel === 'story'
+            ? (
+              <StoryMap
+                data={data}
+                wallet={wallet}
+                onClose={() => setPanel(null)}
+                onPlay={onPlayStage}
+                onTeams={() => setPanel('team')}
+              />
+            )
+          // ทีม = จัดเซ็ตทีมไว้หลายทีม (เลือกใช้ตอนเข้าโหมด)
+          : panel === 'team'
+            ? <TeamsPage data={data} wallet={wallet} onClose={() => setPanel(null)} />
+          // กระเป๋า / อัพอาวุธ = หน้าเดียวกัน (ของทั้งหมด + ตีบวก)
+          : panel === 'bag' || panel === 'forge'
+            ? (
+              <GearBag
+                heroName={id => { const d = data.find(x => x.item.id === id); return d ? nameOf(d) : id }}
+                elementOf={id => data.find(x => x.item.id === id)?.config?.element ?? null}
+                onClose={() => setPanel(null)}
+                wallet={wallet}
+              />
+            )
+            : panel && (
+              <LobbyPanel panel={panel} theme={theme} profile={profile} onProfile={setProfile} onClose={() => setPanel(null)} />
+            )}
     </div>
   )
 }
@@ -289,19 +339,19 @@ function LobbyPanel({ panel, theme, profile, onProfile, onClose }: {
   const TITLE: Record<PanelKey, string> = {
     profile: ui('navProfile'), events: ui('navEvents'), quests: ui('navQuests'), pass: ui('navPass'),
     notice: ui('navNotice'), mail: ui('navMail'), settings: ui('navSettings'), guild: ui('navGuild'),
-    forge: ui('navForge'), friends: ui('navFriends'), heroes: ui('navHeroes'), bag: ui('navBag'),
+    forge: ui('navForge'), friends: ui('navFriends'), heroes: ui('navHeroes'), bag: ui('navBag'), team: ui('teamsTitle'), story: ui('modeStory'),
     shop: ui('navShop'), gacha: ui('navGacha'),
     rank: ui('navRank'), codex: ui('navCodex'), achieve: ui('navAchieve'),
   }
   const SUB: Record<PanelKey, string> = {
     profile: '', events: ui('panelEventsSub'), quests: ui('panelQuestsSub'), pass: ui('panelPassSub'),
     notice: ui('panelNoticeSub'), mail: ui('panelMailSub'), settings: '', guild: ui('panelGuildSub'),
-    forge: ui('panelForgeSub'), friends: ui('panelFriendsSub'), heroes: ui('panelHeroesSub'),
+    forge: ui('panelForgeSub'), friends: ui('panelFriendsSub'), heroes: ui('panelHeroesSub'), team: '', story: '',
     bag: ui('panelBagSub'), shop: ui('panelShopSub'), gacha: ui('panelGachaSub'),
     rank: ui('panelRankSub'), codex: ui('panelCodexSub'), achieve: ui('panelAchieveSub'),
   }
   const langBtn = (l: Lang, label: string) => (
-    <button className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>{label}</button>
+    <button key={l} className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>{label}</button>
   )
   const themeBtn = (t: Theme, label: string) => (
     <button className={theme === t ? 'on' : ''} aria-pressed={theme === t} onClick={() => setTheme(t)}>{label}</button>
@@ -319,7 +369,7 @@ function LobbyPanel({ panel, theme, profile, onProfile, onClose }: {
           <div className="lb-settings">
             <div className="lb-set-row">
               <span>{ui('language')}</span>
-              <div className="lb-seg">{langBtn('th', 'ไทย')}{langBtn('en', 'EN')}</div>
+              <div className="lb-seg lb-seg-lang">{LANGS.map(l => langBtn(l, LANG_LABEL[l]))}</div>
             </div>
             <div className="lb-set-row">
               <span>{ui('theme')}</span>
@@ -327,7 +377,7 @@ function LobbyPanel({ panel, theme, profile, onProfile, onClose }: {
             </div>
             <div className="lb-set-row">
               <span>{ui('resetProfile')}</span>
-              <button className="lb-ghost" onClick={() => onProfile({ ...DEFAULT_PROFILE, name: profile.name })}>{ui('resetProfile')}</button>
+              <button className="lb-ghost" onClick={() => { onProfile({ ...DEFAULT_PROFILE, name: profile.name }); resetCollection() }}>{ui('resetProfile')}</button>
             </div>
           </div>
         ) : (

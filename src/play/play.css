@@ -101,7 +101,7 @@ body { background: var(--pa-bg); touch-action: manipulation; overscroll-behavior
 .pa-brand b { display: block; font-size: 18px; letter-spacing: 1px; color: var(--pa-gold2); }
 .pa-brand small { display: block; color: var(--pa-dim); font-size: 12px; margin-top: -2px; }
 .pa-lang { display: inline-flex; padding: 3px; gap: 3px; border-radius: 999px; background: var(--pa-card); border: 1px solid var(--pa-line); }
-.play-app .pa-lang button { border: 0; border-radius: 999px; padding: 4px 14px; background: transparent; color: var(--pa-dim); }
+.play-app .pa-lang button { border: 0; border-radius: 999px; padding: 4px 10px; background: transparent; color: var(--pa-dim); }
 .play-app .pa-lang button.on { background: var(--pa-gold); color: #3a2400; font-weight: 700; }
 
 .pa-loading { display: grid; place-items: center; gap: 12px; padding: 120px 0; color: var(--pa-dim); }
@@ -129,6 +129,7 @@ body { background: var(--pa-bg); touch-action: manipulation; overscroll-behavior
 .tb-team header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
 .tb-btns { display: flex; gap: 6px; }
 .tb-btns button { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; font-size: 12px; }
+.play-app .tb-preset { max-width: 11em; padding: 4px 8px; font-size: 12px; cursor: pointer; }
 .tb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .tb-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .tb-col.front { justify-content: center; }

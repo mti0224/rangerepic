@@ -229,6 +229,8 @@
 .lb .lb-friends-head h2 { margin: 0; font-size: 0.78em; letter-spacing: 0.14em; color: var(--lb-gold-2); text-transform: uppercase; }
 .lb .lb-friends-head span { font-size: 0.72em; color: var(--lb-dim); }
 .lb .lb-friends ul { list-style: none; display: grid; gap: clamp(3px, 0.6dvh, 7px); margin: 0; padding: 0; overflow: auto; min-height: 0; }
+/* แถวต้องหดตามคอลัมน์ได้ (ไม่งั้นชื่อไม่ตัด … และสถานะออนไลน์ล้นขอบ) */
+.lb .lb-friends li { min-width: 0; }
 .lb .lb-friend {
   display: flex; align-items: center; gap: 7px; width: 100%;
   padding: clamp(6px, 1.2dvh, 14px) clamp(8px, 1.3dvh, 16px);
@@ -368,6 +370,8 @@
   color: var(--lb-dim); font: inherit; font-size: 0.86em; cursor: pointer;
 }
 .lb .lb-seg button.on { background: var(--lb-accent); color: #06101f; }
+/* 4 ภาษา — ปุ่มแคบลงหน่อยไม่ให้ล้นแถว */
+.lb .lb-seg-lang button { padding: 5px 9px; }
 .lb .lb-ghost {
   padding: 6px 14px; background: none; border: 1px solid var(--lb-line);
   border-radius: var(--lb-r-sm); color: var(--lb-text); font: inherit; font-size: 0.86em; cursor: pointer;

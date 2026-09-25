@@ -9,14 +9,17 @@ import { fetchLericoData } from './scripts/fetch-lerico.mjs'
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
 /** ชื่อตัวละครจากข้อมูลเกม (stats.json): ไทยก่อน ไม่มีค่อยใช้อังกฤษ */
-const gameNameOf = (stats: { name?: { th?: string | null; en?: string | null } } | null): string | null =>
+const gameNameOf = (stats: { name?: { th?: string | null; en?: string | null; zh?: string | null } } | null): string | null =>
   stats?.name?.th?.trim() || stats?.name?.en?.trim() || null
 /** ถังขยะของเรนเจอร์ที่ลบจาก editor — ย้ายโฟลเดอร์มาไว้ที่นี่ (กู้คืนได้ด้วยการย้ายกลับ) ไม่ลบถาวร */
 const DELETED_DIR = path.join(ROOT, 'data', 'deleted-rangers')
 const ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
 
-/** รายชื่อเรนเจอร์ (ใช้ทั้ง GET /api/rangers และไฟล์ rangers/index.json ตอน build) */
-async function listRangerItems() {
+/**
+ * รายชื่อเรนเจอร์ (ใช้ทั้ง GET /api/rangers และไฟล์ rangers/index.json ตอน build)
+ * withGameNames = แนบชื่อจากเกมทุกภาษามาด้วย (editor ใช้แสดงรายชื่อตามภาษาที่เลือก · ไฟล์ index.json ไม่ต้องการ)
+ */
+async function listRangerItems(withGameNames = false) {
   const dirs = (await fs.readdir(RANGERS_DIR, { withFileTypes: true })).filter(d => d.isDirectory())
   return Promise.all(dirs.map(async d => {
     const dir = path.join(RANGERS_DIR, d.name)
@@ -29,7 +32,10 @@ async function listRangerItems() {
       .map(f => (f.match(/^(bul\d*)\.sam$/) ?? [])[1])
       .filter((b): b is string => !!b)
       .sort()
-    return { id: d.name, configured: !!data, approved: data?.approved === true, grade: typeof stats?.grade === 'number' ? stats.grade : null, name: data?.name && data.name !== d.name ? data.name : gameNameOf(stats) ?? d.name, bullets, role: data?.role ?? null, element: data?.element ?? null, category: data?.category ?? null }
+    const gameNames = withGameNames && stats?.name
+      ? { th: stats.name.th ?? null, en: stats.name.en ?? null, zh: stats.name.zh ?? null }
+      : undefined
+    return { id: d.name, configured: !!data, approved: data?.approved === true, grade: typeof stats?.grade === 'number' ? stats.grade : null, name: data?.name && data.name !== d.name ? data.name : gameNameOf(stats) ?? d.name, gameNames, bullets, role: data?.role ?? null, element: data?.element ?? null, category: data?.category ?? null }
   }))
 }
 
@@ -58,7 +64,7 @@ function rangerApi(): Plugin {
           // GET /api/rangers → รายชื่อเรนเจอร์ที่มีในเครื่อง
           if (req.method === 'GET' && seg[0] === 'rangers') {
             await fs.mkdir(RANGERS_DIR, { recursive: true })
-            const list = await listRangerItems()
+            const list = await listRangerItems(true)
             return send(200, { rangers: list })
           }
 

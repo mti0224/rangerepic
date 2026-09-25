@@ -183,7 +183,9 @@
 /* การ์ด */
 .sm .sm-cards {
   display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: clamp(6px, 1.4dvh, 18px); width: min(100%, 1000px);
+  gap: clamp(6px, 1.4dvh, 18px);
+  /* กว้างสุดเท่าที่ความสูงจอรับได้: การ์ด 3:4 สองแถว + ปุ่มล่าง ต้องพอดีจอ (มือถือแนวนอนไม่ล้นบน/ล่าง) */
+  width: min(100%, 1000px, calc(187.5dvh - 140px));
 }
 .sm .sm-cards.single { grid-template-columns: minmax(0, 1fr); width: min(100%, clamp(160px, 32dvh, 320px)); }
 .sm .sm-card {
