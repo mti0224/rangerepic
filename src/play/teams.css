@@ -1,0 +1,116 @@
+/* ====================================================
+   teams.css — หน้าจัดเซ็ตทีม (โครงเดียวกับหน้าฮีโร่ .hp · หน้าต่างแก้ไขใช้ .gr-modal ของ gear.css)
+   ผัง: ทีม : ชื่อ ........ แก้ไข ลบ
+        [ แถวหน้า □□ | แถวหลัง □□□ | พิเศษ □□ ]
+        [ + เพิ่มทีม ]
+   ==================================================== */
+
+.hp.tm { grid-template-rows: auto minmax(0, 1fr); }
+.lb :where(.tm, .tm-modal) :where(button, input) {
+  background: none; border: 1px solid transparent; border-radius: 0;
+  color: inherit; font: inherit; padding: 0; box-shadow: none;
+}
+
+.hp.tm .tm-list {
+  display: grid; align-content: start; gap: clamp(10px, 2dvh, 24px);
+  width: min(1180px, 100%); overflow: auto; min-height: 0; padding: 2px 4px clamp(10px, 2dvh, 24px);
+}
+.lb .tm-team { display: grid; gap: clamp(4px, 0.8dvh, 9px); }
+
+/* หัวทีม: ชื่อ (พิมพ์แก้ได้ตรงนั้นเลย) · ปุ่มแก้ไข/ลบ */
+.lb .tm-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px; }
+.lb .tm-name { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex: 1; font-size: 0.95em; }
+.lb .tm-name span { color: var(--lb-dim); white-space: nowrap; }
+.lb .tm-name input {
+  flex: 1; min-width: 4em; max-width: 18em; padding: 2px 4px !important;
+  color: var(--lb-text); font-weight: 700; cursor: text;
+  background: none !important; border: 0 !important; border-radius: 0 !important;
+  border-bottom: 1px dashed transparent !important;
+}
+.lb .tm-name input::placeholder { color: var(--lb-text); opacity: 1; }
+.lb .tm-name input:hover { border-bottom-color: var(--lb-line) !important; }
+.lb .tm-name input:focus { outline: none; border-bottom-color: var(--lb-accent) !important; }
+.lb .tm-actions { display: flex; align-items: center; gap: 6px; }
+.lb .tm-actions button {
+  padding: 4px 14px !important; cursor: pointer; font-size: 0.8em;
+  background: rgba(0, 0, 0, 0.4) !important; border: 1px solid var(--lb-line) !important; border-radius: var(--lb-r-sm) !important;
+}
+.lb .tm-actions button:hover { border-color: var(--lb-accent) !important; }
+.lb .tm-actions button.danger:hover, .lb .tm-actions .tm-confirm + button.danger { border-color: var(--lb-red) !important; color: var(--lb-red); }
+.lb .tm-confirm { font-size: 0.78em; color: var(--lb-red); }
+
+/* กล่องทีม: 3 กลุ่ม กว้างตามจำนวนช่อง (2 : 3 : 2) */
+.lb .tm-box {
+  display: grid; grid-template-columns: 2fr 3fr 2fr; gap: clamp(12px, 2.4dvh, 32px);
+  padding: clamp(8px, 1.5dvh, 18px) clamp(12px, 2.2dvh, 26px);
+  background: var(--lb-panel); border: 2px solid var(--lb-accent); border-radius: var(--lb-r-md);
+  box-shadow: var(--lb-shadow), var(--lb-shadow-in);
+}
+.lb .tm-group { display: grid; gap: clamp(4px, 0.8dvh, 9px); min-width: 0; }
+.lb .tm-group h4 { margin: 0; text-align: center; font-size: 0.82em; font-weight: 600; color: var(--lb-text); }
+.lb .tm-slots { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: clamp(5px, 1dvh, 12px); }
+.lb .tm-slot-wrap { position: relative; min-width: 0; }
+.lb .tm-slot {
+  position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; cursor: pointer;
+  background: rgba(3, 8, 22, 0.55) !important; border: 2px solid var(--lb-accent) !important; border-radius: var(--lb-r-sm) !important;
+  color: var(--lb-dim); transition: transform 0.12s, box-shadow 0.12s;
+}
+.lb .tm-slot:hover { transform: translateY(-2px); color: var(--lb-text); }
+.lb .tm-slot.filled { padding: 0 !important; }
+.lb .tm-slot .tb-card-art { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; }
+.lb .tm-slot.sel {
+  border-color: var(--lb-gold) !important;
+  box-shadow: 0 0 0 2px var(--lb-gold), 0 0 calc(16px * var(--lb-fx)) rgba(245, 197, 66, 0.55);
+}
+.lb .tm-slot-el { position: absolute; top: 4px; left: 4px; width: 26%; height: 26%; z-index: 1; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)); }
+.lb .tm-slot-lv {
+  position: absolute; left: 4px; bottom: 3px; z-index: 1;
+  padding: 0 5px; border-radius: 6px; background: rgba(0, 0, 0, 0.72);
+  font-size: 0.6em; font-style: normal; font-weight: 800; line-height: 1.5; color: var(--lb-gold-2);
+}
+.lb .tm-slot-x {
+  position: absolute; top: -6px; right: -6px; z-index: 2;
+  display: grid; place-items: center; width: 22px; height: 22px; cursor: pointer;
+  background: var(--lb-red) !important; border-radius: 50% !important; color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+}
+:root[data-theme="pixel"] .lb :is(.tm-slot-lv, .tm-slot-x) { border-radius: 0 !important; }
+
+.lb .tm-empty { margin: 0; text-align: center; color: var(--lb-dim); font-size: 0.85em; padding: 8px; }
+
+/* + เพิ่มทีม */
+.lb .tm-add {
+  display: grid; place-items: center; gap: 4px; min-height: clamp(90px, 20dvh, 200px); cursor: pointer;
+  background: var(--lb-panel) !important; border: 2px solid var(--lb-accent) !important; border-radius: var(--lb-r-md) !important;
+  color: var(--lb-text); font-size: 1em; transition: border-color 0.12s, transform 0.12s;
+}
+.lb .tm-add span { display: inline-flex; align-items: center; gap: 6px; }
+.lb .tm-add:hover:not(:disabled) { border-color: var(--lb-gold) !important; transform: translateY(-2px); }
+.lb .tm-add:disabled { opacity: 0.5; cursor: default; }
+.lb .tm-add small { color: var(--lb-dim); font-size: 0.72em; }
+
+/* ── หน้าต่างแก้ไขทีม ── */
+.lb .tm-modal .gr-modal-box { width: min(1240px, 100%); height: min(92dvh, 900px); }
+.lb .tm-modal .gr-modal-head .gr-dim { margin-left: auto; font-size: 0.72em; }
+.lb .tm-done { flex: none !important; padding: 6px 22px !important; }
+.lb .tm-edit-body { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: clamp(8px, 1.4dvh, 16px); min-height: 0; }
+.lb .tm-edit-body .tm-box { box-shadow: none; width: min(860px, 100%); justify-self: center; }
+.lb .tm-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lb .tm-filters .right { margin-left: auto; }
+.lb .tm-roster {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(74px, 13dvh, 132px), 1fr));
+  gap: clamp(5px, 1dvh, 10px); align-content: start; overflow: auto; min-height: 0; padding: 3px;
+}
+.lb .tm-roster .hp-card { width: auto; }
+.lb .tm-roster .hp-card.in-team { opacity: 0.55; }
+.lb .tm-roster .hp-card.in-team:hover { opacity: 0.85; }
+.lb .tm-in-team {
+  position: absolute; top: 34%; left: 50%; transform: translateX(-50%); z-index: 3;
+  padding: 1px 8px; border-radius: 999px; white-space: nowrap;
+  background: var(--lb-accent); color: #06101f; font-size: 0.6em; font-style: normal; font-weight: 800;
+}
+
+/* จอเตี้ย */
+@media (max-height: 430px) {
+  .lb .tm-modal .gr-modal-head .gr-dim { display: none; }
+}
