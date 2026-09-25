@@ -73,14 +73,14 @@ export const loadGameInfo = (id: string): Promise<GameInfo | null> =>
 
 export interface GameSkillInfo {
   code: string
-  name: { en: string | null; th: string | null }
-  desc: { en: string | null; th: string | null }
+  name: { en: string | null; th: string | null; zh?: string | null }
+  desc: { en: string | null; th: string | null; zh?: string | null }
   icon: string | null
   basis: { type: string; multiplier?: number | null } | null
 }
 export interface GameInfo {
   id: string
-  name: { en: string; th: string | null }
+  name: { en: string; th: string | null; zh?: string | null }
   /** ระดับดาว 1–9 */
   grade?: number | null
   /** ขั้นในเกม เช่น "base9", "hyper" */
