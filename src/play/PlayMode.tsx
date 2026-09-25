@@ -228,7 +228,7 @@ function LangSwitch() {
   const opt = (l: Lang, label: string) => (
     <button className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>{label}</button>
   )
-  return <div className="pa-lang" role="group" aria-label="Language">{opt('th', 'ไทย')}{opt('en', 'EN')}</div>
+  return <div className="pa-lang" role="group" aria-label="語言">{opt('zh-TW', '繁中')}{opt('th', 'ไทย')}{opt('en', 'EN')}</div>
 }
 
 
