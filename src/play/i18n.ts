@@ -11,16 +11,17 @@ import { ELEMENT_LABEL, type Element, type Role } from '@/lib/rangerClass'
 import type { HealScale, LifestealScope, SkillArea, SkillEffect } from '@/lib/skills'
 import { EFFECTS } from '@/lib/skills'
 import type { StatusType } from './battle'
+import { rangerNameZhTw } from './zhNames'
 
-export type Lang = 'en' | 'th'
-export const LANGS: Lang[] = ['en', 'th']
+export type Lang = 'zh-TW' | 'en' | 'th'
+export const LANGS: Lang[] = ['zh-TW', 'en', 'th']
 const STORAGE_KEY = 'lr:lang'
 
 let lang: Lang = (() => {
   try {
     const v = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
-    return v === 'th' ? 'th' : 'en'
-  } catch { return 'en' }
+    return v === 'en' || v === 'th' || v === 'zh-TW' ? v : 'zh-TW'
+  } catch { return 'zh-TW' }
 })()
 
 export const getLang = (): Lang => lang
@@ -83,11 +84,55 @@ const TEXT = {
   cooldown: ['TURNS', 'เทิร์น'],
 } as const satisfies Record<string, readonly [string, string]>
 
+const TEXT_ZH = {
+  turn: '回合',
+  ally: '我方',
+  enemy: '敵方',
+  overtime: '延長戰 · 傷害 ×',
+  attack: '普通攻擊',
+  skill1: '技能 1',
+  skill2: '技能 2',
+  teamCost: '隊伍 Cost +1',
+  shieldPlus: '護盾 +',
+  shield: '護盾',
+  dispel: '解除增益',
+  cleanse: '解除減益',
+  immune: '免疫',
+  status: '狀態',
+  paused: '已暫停',
+  victory: '勝利！',
+  defeat: '敗北',
+  draw: '平手',
+  timeUp: '時間到 · HP',
+  turnLimit: '回合上限 · HP',
+  retry: '↻ 再試一次',
+  team: '← 隊伍',
+  settings: '設定',
+  resume: '▶ 繼續',
+  pause: '⏸ 暫停',
+  restart: '↻ 重新開始',
+  backToTeam: '← 返回隊伍',
+  close: '關閉',
+  language: '語言 · 繁體中文',
+  cutinOn: '技能特寫 · 開',
+  cutinOff: '技能特寫 · 關',
+  unitCardOn: '滑鼠懸停資訊 · 開',
+  unitCardOff: '滑鼠懸停資訊 · 關',
+  stunned: '暈眩！',
+  miss: 'MISS',
+  barrierBreak: '護盾破壞',
+  blocked: '已格擋',
+  resist: '抵抗',
+  advanced: '行動提前 ▲',
+  cooldown: '回合',
+} as const satisfies Record<keyof typeof TEXT, string>
+
 export type TextKey = keyof typeof TEXT
-export const t = (k: TextKey): string => TEXT[k][lang === 'th' ? 1 : 0]
+export const t = (k: TextKey): string => lang === 'zh-TW' ? TEXT_ZH[k] : TEXT[k][lang === 'th' ? 1 : 0]
 
 /** จำนวนเทิร์น แบบสั้น (ป้ายสถานะ) */
-export const turnsShort = (n: number): string => (lang === 'th' ? `${n} เทิร์น` : `${n}T`)
+export const turnsShort = (n: number): string =>
+  lang === 'zh-TW' ? `${n} 回合` : lang === 'th' ? `${n} เทิร์น` : `${n}T`
 
 const STATUS: Record<StatusType, readonly [string, string]> = {
   stun: ['STUN', 'ชะงัก'], silence: ['SILENCE', 'ห้ามสกิล'], healBlock: ['HEAL BLOCK', 'ห้ามฟื้นฟู'],
@@ -101,19 +146,40 @@ const STATUS: Record<StatusType, readonly [string, string]> = {
   vulnerable: ['VULNERABLE', 'เปราะบาง'], sealCleanse: ['NO CLEANSE', 'ล้างไม่ได้'], elementShift: ['ELEMENT', 'เปลี่ยนธาตุ'],
   toughUp: ['TOUGH▲', 'ทนทาน▲'], skillDmgResUp: ['S.DMG RES▲', 'ต้านดาเมจสกิล▲'], taunt: ['TAUNT', 'ยั่วยุ'],
 }
+
+const STATUS_ZH: Record<StatusType, string> = {
+  stun: '暈眩', silence: '沉默', healBlock: '禁止恢復',
+  atkDown: 'ATK▼', evadeDown: '閃避▼', skillEvadeDown: '技能閃避▼', skillResDown: '技能抵抗▼',
+  speedDown: '攻速▼', critDown: '暴擊▼', critDmgDown: '暴傷▼',
+  hitDown: '命中▼', skillHitDown: '技能命中▼',
+  poison: '中毒', burn: '燃燒', bleed: '流血',
+  atkUp: 'ATK▲', regen: '持續恢復', shield: '護盾', barrier: '無敵',
+  evadeUp: '閃避▲', skillEvadeUp: '技能閃避▲', skillResUp: '技能抵抗▲', speedUp: '攻速▲',
+  critDmgUp: '暴傷▲', critUp: '暴擊▲', hitUp: '命中▲', skillHitUp: '技能命中▲',
+  vulnerable: '易傷', sealCleanse: '禁止解除', elementShift: '屬性變更',
+  toughUp: '減傷▲', skillDmgResUp: '技能傷害抵抗▲', taunt: '嘲諷',
+}
+
 /** ชื่อสั้นของสถานะ (ป้ายลอย · ใต้หลอดเลือด · ชิป) */
-export const statusLabel = (s: StatusType): string => STATUS[s][lang === 'th' ? 1 : 0]
+export const statusLabel = (s: StatusType): string =>
+  lang === 'zh-TW' ? STATUS_ZH[s] : STATUS[s][lang === 'th' ? 1 : 0]
 
 const ELEMENT: Record<Element, readonly [string, string]> = {
   fire: ['Fire', 'ไฟ'], water: ['Water', 'น้ำ'], wood: ['Wood', 'ไม้'], light: ['Light', 'แสง'], dark: ['Dark', 'มืด'],
 }
-export const elementName = (e: Element): string => ELEMENT[e][lang === 'th' ? 1 : 0]
+const ELEMENT_ZH: Record<Element, string> = { fire: '火', water: '水', wood: '木', light: '光', dark: '暗' }
+export const elementName = (e: Element): string =>
+  lang === 'zh-TW' ? ELEMENT_ZH[e] : ELEMENT[e][lang === 'th' ? 1 : 0]
 
 const ROLE: Record<Role, readonly [string, string]> = {
   tank: ['Tank', 'แทงค์'], fighter: ['Fighter', 'ไฟเตอร์'], shooter: ['Shooter', 'นักยิง'],
   assassin: ['Assassin', 'นักฆ่า'], mage: ['Mage', 'นักเวท'], support: ['Support', 'ซัพพอร์ต'],
 }
-export const roleName = (r: Role): string => ROLE[r][lang === 'th' ? 1 : 0]
+const ROLE_ZH: Record<Role, string> = {
+  tank: '坦克', fighter: '戰士', shooter: '射手', assassin: '刺客', mage: '法師', support: '輔助',
+}
+export const roleName = (r: Role): string =>
+  lang === 'zh-TW' ? ROLE_ZH[r] : ROLE[r][lang === 'th' ? 1 : 0]
 
 const AREA_SHORT: Record<SkillArea, readonly [string, string]> = {
   single_front: ['Single · Front', 'เดี่ยว · แถวหน้า'], single_any: ['Single · Any', 'เดี่ยว · ตัวไหนก็ได้'],
@@ -129,8 +195,26 @@ const AREA_LONG: Record<SkillArea, readonly [string, string]> = {
   self: ['Self', 'บัฟตัวเอง'], own_row: ['Allies in own row', 'บัฟแถวของตัวเอง'],
   ally_single: ['One chosen ally', 'บัฟเพื่อน 1 ตัวที่เลือก'], ally_all: ['All allies', 'บัฟเพื่อนทั้งหมด'],
 }
-export const areaShort = (a: SkillArea): string => AREA_SHORT[a][lang === 'th' ? 1 : 0]
-export const areaLong = (a: SkillArea): string => AREA_LONG[a][lang === 'th' ? 1 : 0]
+const AREA_SHORT_ZH: Record<SkillArea, string> = {
+  single_front: '單體 · 前排優先', single_any: '單體 · 任意',
+  row: '整排', row_any: '整排 · 任選', all: '全體敵人',
+  self: '自身', own_row: '自身所在排', ally_single: '單一隊友', ally_all: '全體隊友',
+}
+const AREA_LONG_ZH: Record<SkillArea, string> = {
+  single_front: '單一目標（前排優先）',
+  single_any: '單一目標（任意敵人）',
+  row: '敵方整排（前排優先）',
+  row_any: '敵方整排（可選任意一排）',
+  all: '全體敵人',
+  self: '自身',
+  own_row: '自身所在排的隊友',
+  ally_single: '指定 1 名隊友',
+  ally_all: '全體隊友',
+}
+export const areaShort = (a: SkillArea): string =>
+  lang === 'zh-TW' ? AREA_SHORT_ZH[a] : AREA_SHORT[a][lang === 'th' ? 1 : 0]
+export const areaLong = (a: SkillArea): string =>
+  lang === 'zh-TW' ? AREA_LONG_ZH[a] : AREA_LONG[a][lang === 'th' ? 1 : 0]
 
 /** ชื่ออังกฤษของความสามารถ (ภาษาไทยใช้ label ใน EFFECTS ของ lib/skills.ts) */
 const EFFECT_EN: Record<SkillEffect['type'], string> = {
@@ -148,6 +232,23 @@ const EFFECT_EN: Record<SkillEffect['type'], string> = {
   cleanse: 'Cleanse', energyGain: 'Team Cost',
 }
 
+
+const EFFECT_ZH: Record<SkillEffect['type'], string> = {
+  damage: '傷害', trueDamage: '真實傷害', breakInvincible: '解除無敵', stun: '暈眩', skillEvadeDown: '技能閃避率降低',
+  skillResDown: '技能抵抗降低', evadeDown: '閃避率降低', dispelBuffs: '解除敵方增益', atkDown: '攻擊力降低',
+  healBlock: '禁止恢復', silence: '沉默',
+  speedDown: '攻擊速度降低', critDown: '暴擊率降低', critDmgDown: '暴擊傷害降低', hitDown: '命中率降低', skillHitDown: '技能命中率降低',
+  poison: '中毒', burn: '燃燒', bleed: '流血', lifesteal: '吸血', actionAdvance: '行動提前',
+  vulnerable: '易傷', turnBurn: '縮短狀態回合', sealCleanse: '禁止解除減益',
+  damageHp: '依施放者最大 HP 造成傷害', elementShift: '屬性變更', selfHpCost: '消耗自身 HP', selfVulnerable: '自身易傷',
+  toughUp: '受到傷害降低', skillDmgResUp: '技能傷害抵抗提升', taunt: '嘲諷',
+  atkUp: '攻擊力提升', heal: '恢復', regen: '持續恢復', shield: '護盾', barrier: '無敵',
+  evadeUp: '閃避率提升', skillEvadeUp: '技能閃避率提升', skillResUp: '技能抵抗提升', speedUp: '攻擊速度提升',
+  critDmgUp: '暴擊傷害提升', critUp: '暴擊率提升', hitUp: '命中率提升', skillHitUp: '技能命中率提升',
+  cleanse: '解除減益', energyGain: '隊伍 Cost',
+}
+
+const SCALE_ZH: Record<HealScale, string> = { targetHp: '目標最大 HP', casterHp: '施放者最大 HP', casterAtk: '施放者 ATK' }
 const SCALE_TH: Record<HealScale, string> = { targetHp: 'HP สูงสุดของเป้า', casterHp: 'HP สูงสุดของผู้ร่าย', casterAtk: 'ATK ผู้ร่าย' }
 const SCALE_EN: Record<HealScale, string> = { targetHp: "target's max HP", casterHp: "caster's max HP", casterAtk: "caster's ATK" }
 const ELEMENT_EN: Record<Element, string> = { fire: 'Fire', water: 'Water', wood: 'Wood', light: 'Light', dark: 'Dark' }
@@ -155,12 +256,42 @@ const ELEMENT_EN: Record<Element, string> = { fire: 'Fire', water: 'Water', wood
 const pierceTh = (e: SkillEffect) => (e.pierce ? ` · ข้ามโล่ ${e.pierce}%` : '')
 const pierceEn = (e: SkillEffect) => (e.pierce ? ` · ignores ${e.pierce}% of shields` : '')
 
+const LIFESTEAL_ZH: Record<LifestealScope, string> = { self: '自身', own_row: '自身所在排', ally_all: '全體隊友' }
 const LIFESTEAL_TH: Record<LifestealScope, string> = { self: 'ตัวเอง', own_row: 'แถวตัวเอง', ally_all: 'เพื่อนทั้งหมด' }
 const LIFESTEAL_EN: Record<LifestealScope, string> = { self: 'self', own_row: 'own row', ally_all: 'all allies' }
 
 /** ข้อความสั้นของความสามารถ 1 อย่าง พร้อมตัวเลข (tooltip สกิล) */
 export function describeEffect(e: SkillEffect): string {
   const pct = e.pct ?? 0
+  if (lang === 'zh-TW') {
+    const tt = e.turns ? `（${e.turns} 回合）` : ''
+    const pierce = e.pierce ? ` · 無視 ${e.pierce}% 護盾` : ''
+    switch (e.type) {
+      case 'damage': return `造成 ATK ${pct}% 的傷害${pierce}`
+      case 'damageHp': return `造成施放者最大 HP ${pct}% 的傷害${pierce}`
+      case 'elementShift': return `將目標屬性變更為${ELEMENT_ZH[e.element ?? 'fire']}${tt}`
+      case 'selfHpCost': return `消耗自身最大 HP 的 ${pct}%（不會因此死亡）`
+      case 'selfVulnerable': return `自身受到傷害 +${pct}%${tt}`
+      case 'trueDamage': return `造成 ATK ${pct}% 的真實傷害（無視護盾與 DEF）`
+      case 'heal': return `恢復${SCALE_ZH[e.scale ?? 'targetHp']}的 ${pct}%`
+      case 'shield': return `獲得相當於${SCALE_ZH[e.scale ?? 'targetHp']} ${pct}% 的護盾${tt}`
+      case 'regen': return `每回合恢復${SCALE_ZH[e.scale ?? 'targetHp']}的 ${pct}%${tt}`
+      case 'energyGain': return `隊伍 Cost +${e.amount ?? 1}`
+      case 'poison': case 'burn': case 'bleed': return `${STATUS_ZH[e.type]}：每回合造成 ATK ${pct}% 的傷害${tt}`
+      case 'lifesteal': return `吸收造成傷害的 ${pct}% 並分配給${LIFESTEAL_ZH[e.scope ?? 'self']}`
+      case 'actionAdvance': return `行動提前 ${pct}%`
+      case 'speedUp': return `攻擊速度 +${pct}%${tt}`
+      case 'speedDown': return `攻擊速度 −${pct}%${tt}`
+      case 'vulnerable': return `目標受到傷害 +${pct}%${tt}`
+      case 'toughUp': return `受到傷害 −${pct}%${tt}`
+      case 'skillDmgResUp': return `技能傷害抵抗 +${pct}%${tt}`
+      case 'healBlock': return `恢復量 −${pct || 100}%${tt}`
+      case 'turnBurn': return `目標的狀態回合數立即減少 ${e.turns ?? 1} 回合（持續傷害立即觸發）`
+      case 'sealCleanse': return `禁止解除減益${tt}`
+      case 'taunt': return `嘲諷：敵人必須以普通攻擊鎖定此 Ranger${tt}`
+      default: return `${EFFECT_ZH[e.type]}${e.pct ? ` ${e.pct}%` : ''}${tt}`
+    }
+  }
   if (lang === 'th') {
     const tt = e.turns ? ` (${e.turns} เทิร์น)` : ''
     switch (e.type) {
@@ -217,6 +348,14 @@ export function describeEffect(e: SkillEffect): string {
   }
 }
 
-/** ชื่อจากข้อมูลเกมตามภาษา (ไทยไม่มี → อังกฤษ) */
-export const localName = (name: { en: string | null; th: string | null } | null | undefined): string | null =>
-  !name ? null : lang === 'th' ? name.th ?? name.en : name.en ?? name.th
+/** ชื่อจากข้อมูลเกมตามภาษา (繁中 Ranger 名稱優先採用 Ranger Book 翻譯資料庫) */
+export const localName = (
+  name: { en: string | null; th: string | null; zh?: string | null } | null | undefined,
+  idOrCode?: string | null,
+): string | null => {
+  if (lang === 'zh-TW') {
+    return name?.zh ?? rangerNameZhTw(idOrCode) ?? name?.en ?? name?.th ?? null
+  }
+  if (!name) return null
+  return lang === 'th' ? name.th ?? name.en : name.en ?? name.th
+}
