@@ -1,6 +1,6 @@
 {
-  "name": "Ranger Arena — 5v5 Turn-Based",
-  "short_name": "Ranger Arena",
+  "name": "LINE Rangers 競技場 — 5v5 回合制對戰",
+  "short_name": "Rangers 競技場",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",
