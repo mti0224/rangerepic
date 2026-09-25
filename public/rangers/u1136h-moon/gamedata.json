@@ -1,0 +1,88 @@
+{
+  "id": "u1136h-moon",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0.58,
+      "y": 0.07
+    },
+    "faceCenter": {
+      "x": 0.52,
+      "y": 0.7
+    }
+  },
+  "attackRangePt": 240,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 110,
+        "y": 154
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "CURVE",
+        "enabled": true,
+        "rotation": "ANGLE_LERP",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 500,
+        "y": 0
+      },
+      "moveSpeed": 20,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "CURVE",
+        "enabled": true,
+        "rotation": "ANGLE_LERP",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 250,
+        "y": 100
+      },
+      "moveSpeed": 30,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "CURVE",
+        "enabled": true,
+        "rotation": "ANGLE_LERP",
+        "loopNormal": true
+      },
+      "hitPointRate": 0
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 250
+    },
+    "skill2": {
+      "basis": {
+        "type": "front"
+      },
+      "area": 280
+    }
+  }
+}
