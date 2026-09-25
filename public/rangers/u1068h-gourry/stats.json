@@ -2,7 +2,7 @@
   "id": "u1068h-gourry",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.614Z"
+    "fetchedAt": "2026-09-25T12:25:29.075Z"
   },
   "name": {
     "en": "Legendary Swordsman Gourry",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 250,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 280,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "passive": null
   },

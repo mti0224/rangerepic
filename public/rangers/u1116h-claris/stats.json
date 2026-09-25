@@ -2,7 +2,7 @@
   "id": "u1116h-claris",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.653Z"
+    "fetchedAt": "2026-09-25T12:25:29.079Z"
   },
   "name": {
     "en": "Heir of Libromancy Claris",
@@ -85,10 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 240,
-      "basis": {
-        "type": "rear",
-        "multiplier": 1.2
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -107,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 380,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "passive": null
   },

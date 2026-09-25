@@ -2,7 +2,7 @@
   "id": "u1434e-boss",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T12:30:12.951Z"
+    "fetchedAt": "2026-09-25T12:25:29.100Z"
   },
   "name": {
     "en": "Golden Outlaw Boss",
@@ -85,9 +85,7 @@
       "probability": 0.25,
       "cooldownSec": 12,
       "range": 320,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,10 +104,7 @@
       "probability": 0.3499999940395355,
       "cooldownSec": 9,
       "range": 360,
-      "basis": {
-        "type": "rear",
-        "multiplier": 1.2
-      }
+      "basis": null
     },
     "passive": null
   },

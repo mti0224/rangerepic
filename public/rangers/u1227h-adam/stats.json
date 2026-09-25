@@ -2,7 +2,7 @@
   "id": "u1227h-adam",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.709Z"
+    "fetchedAt": "2026-09-25T12:25:29.087Z"
   },
   "name": {
     "en": "Father of All Adam",
@@ -85,9 +85,7 @@
       "probability": 0.3499999940395355,
       "cooldownSec": 5,
       "range": 350,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.25,
       "cooldownSec": 9,
       "range": 350,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

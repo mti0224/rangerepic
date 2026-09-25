@@ -2,7 +2,7 @@
   "id": "u1260e-brown",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.728Z"
+    "fetchedAt": "2026-09-25T12:25:29.089Z"
   },
   "name": {
     "en": "Rock Legend Brown",
@@ -85,10 +85,7 @@
       "probability": 0.3499999940395355,
       "cooldownSec": 8,
       "range": 360,
-      "basis": {
-        "type": "rear",
-        "multiplier": 1.15
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -107,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 300,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

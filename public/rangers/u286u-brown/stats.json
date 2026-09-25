@@ -2,7 +2,7 @@
   "id": "u286u-brown",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T13:06:01.186Z"
+    "fetchedAt": "2026-09-25T12:25:29.110Z"
   },
   "name": {
     "en": "White Tiger Brown",
@@ -85,9 +85,7 @@
       "probability": 0.23000000417232516,
       "cooldownSec": 4,
       "range": 30,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": {
       "slot": "skill2",
@@ -105,9 +103,7 @@
       "probability": 0.2800000011920929,
       "cooldownSec": 4,
       "range": 600,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill3": null,
     "passive": null

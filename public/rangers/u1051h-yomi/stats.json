@@ -2,7 +2,7 @@
   "id": "u1051h-yomi",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T05:13:32.697Z"
+    "fetchedAt": "2026-09-25T12:25:29.074Z"
   },
   "name": {
     "en": "Moon God Tsukuyomi Brown",
@@ -85,9 +85,7 @@
       "probability": 0.5,
       "cooldownSec": 12,
       "range": 400,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.5,
       "cooldownSec": 9,
       "range": 500,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

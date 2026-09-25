@@ -2,7 +2,7 @@
   "id": "u1017h-cygnus",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T05:34:02.985Z"
+    "fetchedAt": "2026-09-25T12:25:29.068Z"
   },
   "name": {
     "en": "Aquarius Hyoga",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 500,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 250,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

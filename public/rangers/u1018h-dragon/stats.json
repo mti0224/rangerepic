@@ -2,7 +2,7 @@
   "id": "u1018h-dragon",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T05:31:14.743Z"
+    "fetchedAt": "2026-09-25T12:25:29.069Z"
   },
   "name": {
     "en": "Libra Shiryu",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 500,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 250,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

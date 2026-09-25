@@ -2,7 +2,7 @@
   "id": "u1631e-sally",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.925Z"
+    "fetchedAt": "2026-09-25T12:25:29.110Z"
   },
   "name": {
     "en": "Sun Cancer Sally",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 330,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,10 +104,7 @@
       "probability": 0.4000000059604645,
       "cooldownSec": 15,
       "range": 390,
-      "basis": {
-        "type": "rear",
-        "multiplier": 1.5
-      }
+      "basis": null
     },
     "passive": null
   },

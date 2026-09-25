@@ -2,7 +2,7 @@
   "id": "u1225h-lubu",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T04:41:38.263Z"
+    "fetchedAt": "2026-09-25T12:25:29.087Z"
   },
   "name": {
     "en": "China's Strongest Lu Bu",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 280,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 320,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

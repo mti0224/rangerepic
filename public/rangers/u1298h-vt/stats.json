@@ -2,7 +2,7 @@
   "id": "u1298h-vt",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.777Z"
+    "fetchedAt": "2026-09-25T12:25:29.092Z"
   },
   "name": {
     "en": "The Unleashed Veldora",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 300,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 9,
       "range": 360,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

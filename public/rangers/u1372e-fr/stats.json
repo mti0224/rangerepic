@@ -2,7 +2,7 @@
   "id": "u1372e-fr",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.835Z"
+    "fetchedAt": "2026-09-25T12:25:29.098Z"
   },
   "name": {
     "en": "Beyond the End Frieren",
@@ -85,10 +85,7 @@
       "probability": 0.4000000059604645,
       "cooldownSec": 7,
       "range": 330,
-      "basis": {
-        "type": "rear",
-        "multiplier": 1.4
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -107,9 +104,7 @@
       "probability": 0.3499999940395355,
       "cooldownSec": 8,
       "range": 360,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

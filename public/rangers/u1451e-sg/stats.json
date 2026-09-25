@@ -2,7 +2,7 @@
   "id": "u1451e-sg",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T17:37:47.667Z"
+    "fetchedAt": "2026-09-25T12:25:29.102Z"
   },
   "name": {
     "en": "Silver Samurai Gintoki",
@@ -85,9 +85,7 @@
       "probability": 0.4000000059604645,
       "cooldownSec": 11,
       "range": 380,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.4000000059604645,
       "cooldownSec": 6,
       "range": 400,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "passive": null
   },

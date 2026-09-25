@@ -2,7 +2,7 @@
   "id": "u1050h-ama",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-20T05:19:01.109Z"
+    "fetchedAt": "2026-09-25T12:25:29.073Z"
   },
   "name": {
     "en": "Sun Goddess Amaterasu Cony",
@@ -85,10 +85,7 @@
       "probability": 0.5,
       "cooldownSec": 12,
       "range": 300,
-      "basis": {
-        "type": "rear",
-        "multiplier": 3
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -107,9 +104,7 @@
       "probability": 0.5,
       "cooldownSec": 9,
       "range": 600,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

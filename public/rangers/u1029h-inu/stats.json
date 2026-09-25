@@ -2,7 +2,7 @@
   "id": "u1029h-inu",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.593Z"
+    "fetchedAt": "2026-09-25T12:25:29.070Z"
   },
   "name": {
     "en": "Wielder of Tessaiga Inuyasha",
@@ -85,9 +85,7 @@
       "probability": 0.6000000238418579,
       "cooldownSec": 12,
       "range": 400,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.800000011920929,
       "cooldownSec": 9,
       "range": 350,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "passive": null
   },

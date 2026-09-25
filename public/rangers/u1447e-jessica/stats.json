@@ -2,7 +2,7 @@
   "id": "u1447e-jessica",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.863Z"
+    "fetchedAt": "2026-09-25T12:25:29.102Z"
   },
   "name": {
     "en": "Head Sister Jessica",
@@ -85,9 +85,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 12,
       "range": 330,
-      "basis": {
-        "type": "self"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.30000001192092896,
       "cooldownSec": 7,
       "range": 350,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "passive": null
   },

@@ -2,7 +2,7 @@
   "id": "u1032h-kikyou",
   "source": {
     "lerico": "https://rangers.lerico.net",
-    "fetchedAt": "2026-09-19T10:57:55.608Z"
+    "fetchedAt": "2026-09-25T12:25:29.071Z"
   },
   "name": {
     "en": "Spiritual Warrior Kikyo",
@@ -85,9 +85,7 @@
       "probability": 0.5,
       "cooldownSec": 12,
       "range": 350,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "skill2": null,
     "skill3": {
@@ -106,9 +104,7 @@
       "probability": 0.5,
       "cooldownSec": 9,
       "range": 300,
-      "basis": {
-        "type": "front"
-      }
+      "basis": null
     },
     "passive": null
   },
