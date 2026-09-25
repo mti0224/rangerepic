@@ -20,7 +20,7 @@ import { fitsSlot } from '@/lib/formation'
 import { EVOLUTION_LABEL, evolutionOf, starImageUrl } from '@/lib/rangerGrade'
 import { PORTRAIT_SIZE, portraitCenter } from '@/lib/portrait'
 import { NORMAL_ATTACK } from './battle'
-import { areaLong, describeEffect, elementName, localName, roleName } from './i18n'
+import { areaLong, describeEffect, elementName, localName, roleName, t } from './i18n'
 import { UI_SRC } from './uiAssets'
 import { categoryName, rowBonusShort, traitLabel, traitText, ui, useLang } from './uiText'
 import { IconCheck, IconClose, IconDice, IconInfo, IconPlus, IconSearch, IconSwap, IconSwords, IconTrash } from './icons'
@@ -51,7 +51,7 @@ const elementBg = (el: Element | null) => (el ? { backgroundImage: `url(/ui/rg_b
 
 export interface RangerData { item: RangerListItem; config: RangerConfig | null; info: GameInfo | null }
 
-export const nameOf = (d: RangerData) => localName(d.info?.name) ?? d.item.name
+export const nameOf = (d: RangerData) => localName(d.info?.name, d.item.id) ?? d.item.name
 
 export default function TeamBuilder({ data, formation, setFormation, onStart, busy, message }: {
   data: RangerData[]
@@ -527,7 +527,7 @@ function Detail({ d, all }: { d: RangerData; all: RangerData[] }) {
                   {info?.icon ? <img src={`/rangers/${id}/${info.icon}`} alt="" /> : <span>S{i + 1}</span>}
                 </div>
                 <div>
-                  <b>{localName(info?.name) ?? (i ? 'Skill 2' : 'Skill 1')} <kbd>{i ? 'C' : 'X'}</kbd></b>
+                  <b>{localName(info?.name, info?.code) ?? (i ? t('skill2') : t('skill1'))} <kbd>{i ? 'C' : 'X'}</kbd></b>
                   <small>{areaLong(sk.area)} · <img className="tb-cost" src={UI_SRC.mineral} alt="" /> {ui('cost')} {sk.cost}</small>
                   <ul>{sk.effects.map((e, j) => <li key={j}>{describeEffect(e)}</li>)}</ul>
                 </div>
