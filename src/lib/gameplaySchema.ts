@@ -124,6 +124,11 @@ export interface GameplayEffect {
   hits?: number
 }
 
+export interface EnemyNormalAttackDef extends NormalAttackDef {
+  /** Enemies may attach attack-skill-style effects to their mandatory normal attack. */
+  effects: GameplayEffect[]
+}
+
 export interface NormalSupportDef {
   target: NormalSupportTarget
   effects: GameplayEffect[]
@@ -137,6 +142,9 @@ export interface SkillTargetRule {
   selector: TargetSelector
 }
 export interface GameplaySkill {
+  /** Optional player-facing copy. When description is blank, UI falls back to mechanical effect text. */
+  name?: string
+  description?: string
   /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
   icon?: string
   target: SkillTargetRule
@@ -182,6 +190,9 @@ export interface AbilityCondition {
 
 export interface GameplayAbility {
   id: string
+  /** Optional player-facing copy. When description is blank, UI falls back to trigger/effect text. */
+  name?: string
+  description?: string
   /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
   icon?: string
   trigger: AbilityTrigger
@@ -204,6 +215,49 @@ export interface GameplayClass {
   normalSupport: NormalSupportDef
   skill: GameplaySkill
   abilities: GameplayAbility[]
+}
+
+export interface GameplayEnemy {
+  schemaVersion: 1
+  id: string
+  assetVariantId: string
+  role: string
+  names: LocalizedNames
+  description: string
+  stats: GameplayStats
+  /** Every enemy has a normal attack; unlike player classes it may attach extra hostile effects. */
+  normalAttack: EnemyNormalAttackDef
+  /** Skills and abilities are optional for enemies. */
+  skill?: GameplaySkill
+  abilities: GameplayAbility[]
+}
+
+export type GameplayCombatant = GameplayClass | GameplayEnemy
+
+export const GAMEPLAY_STAGE_SLOTS = ['front-0', 'front-1', 'back-0', 'back-1', 'back-2'] as const
+export type GameplayStageSlot = typeof GAMEPLAY_STAGE_SLOTS[number]
+
+export interface GameplayStageEnemyPlacement {
+  slot: GameplayStageSlot
+  enemyId: string
+}
+
+export interface GameplayStageWave {
+  id: string
+  name?: string
+  enemies: GameplayStageEnemyPlacement[]
+}
+
+export interface GameplayStage {
+  schemaVersion: 1
+  id: string
+  names: LocalizedNames
+  description: string
+  chapter: number
+  order: number
+  /** Public image URL. Existing map artwork can be reused without coupling it to stage logic. */
+  background: string
+  waves: GameplayStageWave[]
 }
 
 export interface BattleRulesV1 {
@@ -329,6 +383,8 @@ export function newGameplayEffect(type: GameplayEffectType = 'damage'): Gameplay
 export function newGameplayAbility(index = 1): GameplayAbility {
   return {
     id: 'ability_' + index,
+    name: '',
+    description: '',
     icon: '',
     trigger: 'whileOnField',
     conditions: [],
@@ -347,7 +403,44 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
     normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5 },
     normalSupport: { target: 'singleAlly', effects: [] },
-    skill: { icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    skill: { name: '', description: '', icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
+  }
+}
+
+export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEnemy {
+  return {
+    schemaVersion: 1,
+    id,
+    assetVariantId,
+    role: '未分類',
+    names: emptyNames(),
+    description: '',
+    stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
+    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5, effects: [] },
+    abilities: [],
+  }
+}
+
+export function newGameplaySkill(): GameplaySkill {
+  return {
+    name: '',
+    description: '',
+    icon: '',
+    target: { side: 'enemy', count: 1, selector: 'random' },
+    effects: [newGameplayEffect('damage')],
+  }
+}
+
+export function newGameplayStage(id: string): GameplayStage {
+  return {
+    schemaVersion: 1,
+    id,
+    names: emptyNames(),
+    description: '',
+    chapter: 1,
+    order: 1,
+    background: '/maps/map1_full.jpg',
+    waves: [{ id: 'wave_1', name: '', enemies: [] }],
   }
 }
