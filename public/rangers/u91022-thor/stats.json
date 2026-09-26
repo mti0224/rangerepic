@@ -1,0 +1,212 @@
+{
+  "id": "u91022-thor",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-26T12:25:41.871Z"
+  },
+  "name": {
+    "en": "u91022-thor",
+    "th": null,
+    "zh": null,
+    "jp": null
+  },
+  "grade": 5,
+  "tier": "base8",
+  "maxLevel": 120,
+  "unitType": "",
+  "category": "STR",
+  "element": "water",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "water",
+    "category": "str",
+    "role": "tank"
+  },
+  "stats": {
+    "atk": {
+      "initial": 66928,
+      "perLevel": 4183,
+      "perLevelAfterMax": 4183
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 7401870,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 7802250,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 632482,
+      "perLevel": 39526,
+      "perLevelAfterMax": 39526
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 60,
+    "attackRange": 130,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "movingSpeed": 85,
+    "critChance": 0,
+    "critRatio": 1,
+    "avoid": 0.5,
+    "skillAvoid": 0.8,
+    "skillResistance": 0.8,
+    "antiAvoid": 1,
+    "antiSkillAvoid": 1
+  },
+  "cost": {
+    "productionSpeed": 6,
+    "summonEnergy": 1000,
+    "maxLeonardPoint": 10
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk91022_thor",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/skill_icon_sk1143_hachikuji.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1143_hachikuji.png",
+      "probability": 0.800000011920929,
+      "cooldownSec": 10,
+      "range": 200,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": null,
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab051_anti_ice",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/",
+      "groupBuff": false
+    },
+    {
+      "code": "ab053_passres_fir",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/ab211_passres_icon.png",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u91022-thor",
+    "unitNameCode": "u91022-thor_nm",
+    "grade": 5,
+    "unitType": "",
+    "productionSpeed": 6,
+    "summonEnergy": 1000,
+    "unitCategoryType": "STR",
+    "attackRange": 130,
+    "attackDelay": 60,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u91022-thor_desc",
+    "initialAttack": 66928,
+    "specialAttack": 0,
+    "defence": 7401870,
+    "specialDefence": 7802250,
+    "initialHp": 632482,
+    "movingSpeed": 85,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 1,
+    "antiSkillAvoidProb": 1,
+    "attackIncreaseAmount": 4183,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 39526,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 120,
+    "iconSkillCode": "sk91022_thor",
+    "skillCode": "sk91022_thor",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "",
+    "skillCode3": "",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0,
+    "criticalRatio": 1,
+    "avoidProbability": 0.5,
+    "skillAvoidProbability": 0.8,
+    "skillResistance": 0.8,
+    "attackSpeedType": "FAST",
+    "moveSpeedType": "NORMAL",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 0,
+    "extractionCrystal2Gain": 0,
+    "extractionCrystal3Gain": 0,
+    "iconAbilityCode": "ab051_anti_ice",
+    "abilityCode": "ab051_anti_ice",
+    "abilityCategoryCode": "",
+    "iconAbilityCode2": "ab053_passres_fir",
+    "abilityCode2": "ab053_passres_fir",
+    "abilityCategoryCode2": "",
+    "elementOpen": "2",
+    "unitElement": "water",
+    "maxLeonardPoint": 10,
+    "hpIncreaseAmountMax": 39526,
+    "attackIncreaseAmountMax": 4183,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
