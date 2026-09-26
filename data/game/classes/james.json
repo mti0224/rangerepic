@@ -21,7 +21,8 @@
     "target": "single",
     "hits": 2,
     "animation": "attack",
-    "skillGaugeGain": 5
+    "skillGaugeGain": 5,
+    "description": "對1名敵人造成攻擊力100%的傷害"
   },
   "normalSupport": {
     "target": "singleAlly",
@@ -32,7 +33,8 @@
         "value": 15,
         "duration": 1
       }
-    ]
+    ],
+    "description": "使1名Ranger獲得最大體力15%的護盾"
   },
   "skill": {
     "name": "正義雷射光",
