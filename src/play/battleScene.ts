@@ -649,7 +649,21 @@ export class BattleScene {
   }
 
   chooseTarget(uid: string): void {
-    if (this.phase !== 'input' || !this.pendingActor || !this.pendingAction) return
+    if (this.phase !== 'input' || !this.pendingActor) return
+
+    // Gameplay V1: while no action has been chosen yet, clicking any ally that
+    // has not acted in the current side phase switches the active Ranger.
+    if (!this.pendingAction && this.battle.usesGameplayPhases) {
+      const next = this.battle.unit(uid)
+      if (next && next.team === 0 && this.battle.canChooseGameplayActor(next)) {
+        this.pendingActor = next
+        this.pendingCaster = null
+        this.onChange?.()
+      }
+      return
+    }
+
+    if (!this.pendingAction) return
     const caster = this.pendingCaster
     const target = this.battle.selectableTargets(caster ?? this.pendingActor, this.pendingAction).find(u => u.uid === uid)
     if (!target) return
