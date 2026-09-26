@@ -353,15 +353,18 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   useEffect(() => {
     if (!stageDef || stageComplete || advanceLock.current || !scene.battle.over || scene.battle.winner !== 0) return
     advanceLock.current = true
-    if (waveIndex + 1 < stageDef.waves.length) {
-      carryRef.current = {
-        hp: new Map(scene.battle.units.filter(u => u.team === 0).map(u => [u.uid, u.hp])),
-        gauge: scene.battle.gameplayGauge[0],
-      }
-      setWaveIndex(i => i + 1)
-    } else {
-      setStageComplete(true)
+    const carry = {
+      hp: new Map(scene.battle.units.filter(u => u.team === 0).map(u => [u.uid, u.hp])),
+      gauge: scene.battle.gameplayGauge[0],
     }
+    scene.beginWaveExit(() => {
+      if (waveIndex + 1 < stageDef.waves.length) {
+        carryRef.current = carry
+        setWaveIndex(i => i + 1)
+      } else {
+        setStageComplete(true)
+      }
+    })
   }, [revision, scene, stageDef, stageComplete, waveIndex])
 
   useEffect(() => { scene.speed = speed }, [scene, speed])
