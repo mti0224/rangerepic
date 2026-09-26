@@ -677,7 +677,8 @@ export class BattleHud {
     this.drawInfo(ctx, u)
     ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
     this.drawStatuses(ctx, u)
-    this.drawCostBar(ctx, b.energy[0])
+    if (u.gameplayClass) this.drawGameplayGauge(ctx, u)
+    else this.drawCostBar(ctx, b.energy[0])
 
     // กล่องรายละเอียด: ชี้เมาส์ที่ปุ่มท่า
     const hovered = this.hover ? this.hitAt(this.hover.x, this.hover.y) : null
@@ -741,12 +742,22 @@ export class BattleHud {
 
   private actionName(u: Unit, a: ActionName): string {
     if (a === 'attack') return t('attack')
+    if (u.gameplayClass) {
+      const lang = getLang()
+      if (a === 'skill1') return lang === 'zh' ? '技能' : lang === 'th' ? 'สกิล' : 'Skill'
+      return lang === 'zh' ? '普通輔助' : lang === 'th' ? 'ช่วยเหลือปกติ' : 'Normal Support'
+    }
     const info = gameSkill(this.s.infoOf(u), a)
     return (getLang() === 'zh' ? properNameZhTw(info?.code ?? '') : null) ?? localName(info?.name) ?? (a === 'skill1' ? t('skill1') : t('skill2'))
   }
 
   private actionIcon(u: Unit, a: ActionName): HTMLImageElement | null {
     if (a === 'attack') return null
+    if (u.gameplayClass && a === 'skill1') {
+      const icon = u.gameplayClass.skill.icon
+      return icon ? this.image(icon) : null
+    }
+    if (u.gameplayClass) return null
     const icon = gameSkill(this.s.infoOf(u), a)?.icon
     return icon ? this.image(`/rangers/${u.rangerId}/${icon}`) : null
   }
@@ -807,10 +818,21 @@ export class BattleHud {
     outlined(ctx, fit(ctx, this.actionName(u, a), tw), tx, y + 20, C.text, 3)
     ctx.font = F(10)
     outlined(ctx, fit(ctx, areaShort(skill.area), tw), tx, y + 37, C.dim, 3)
-    const cost = b.costOf(u, a)
-    const short = cost > b.energy[u.team]
-    iconText(ctx, uiImage(UI_SRC.mineral), a === 'attack' ? '+1' : String(cost), tx, y + 57, 13, 15,
-      a === 'attack' ? C.energy : short ? C.debuff : C.gold, 'left', 3, a === 'attack' ? 'Cost ' : 'Cost ')
+    if (u.gameplayClass) {
+      const max = b.gameplayGaugeMax(u)
+      const value = a === 'attack'
+        ? '+' + u.gameplayClass.normalAttack.skillGaugeGain
+        : a === 'skill1'
+          ? `${Math.round(u.skillGauge)}/${max}`
+          : '—'
+      const label = a === 'attack' ? 'Gauge ' : a === 'skill1' ? 'Gauge ' : ''
+      outlined(ctx, label + value, tx, y + 57, a === 'skill1' && !b.canUse(u, a) ? C.debuff : C.energy, 3)
+    } else {
+      const cost = b.costOf(u, a)
+      const short = cost > b.energy[u.team]
+      iconText(ctx, uiImage(UI_SRC.mineral), a === 'attack' ? '+1' : String(cost), tx, y + 57, 13, 15,
+        a === 'attack' ? C.energy : short ? C.debuff : C.gold, 'left', 3, 'Cost ')
+    }
     ctx.restore()
 
     this.boxes.push({ x, y, w, h, hit: { kind: 'action', action: a } })
@@ -840,6 +862,32 @@ export class BattleHud {
       ctx.textAlign = 'center'
       x += w + 4
     }
+  }
+
+  private drawGameplayGauge(ctx: CanvasRenderingContext2D, u: Unit): void {
+    const { x, y, w, h } = COST_BAR
+    const max = this.s.battle.gameplayGaugeMax(u)
+    const gauge = Math.max(0, Math.min(max, u.skillGauge))
+    para(ctx, x, y, w, h, -8)
+    ctx.fillStyle = C.panel
+    ctx.fill()
+    ctx.lineWidth = 1.5
+    ctx.strokeStyle = C.goldDim
+    ctx.stroke()
+
+    const barX = x + 106, barY = y + 4, barW = w - 118, barH = h - 8
+    ctx.fillStyle = C.empty
+    ctx.fillRect(barX, barY, barW, barH)
+    if (gauge > 0) {
+      const g = ctx.createLinearGradient(barX, 0, barX + barW, 0)
+      g.addColorStop(0, '#bbf7d0')
+      g.addColorStop(1, C.energy)
+      ctx.fillStyle = g
+      ctx.fillRect(barX, barY, barW * gauge / max, barH)
+    }
+    ctx.font = F(11)
+    ctx.textAlign = 'left'
+    outlined(ctx, `技能量 ${Math.round(gauge)}/${max}`, x + 7, y + 14, C.energy, 3)
   }
 
   private drawCostBar(ctx: CanvasRenderingContext2D, energy: number): void {
