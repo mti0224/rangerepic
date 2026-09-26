@@ -124,6 +124,10 @@ export interface Status {
   srcElement?: Element
   /** เปลี่ยนธาตุ: ธาตุใหม่ของตัวที่ติดสถานะ */
   element?: Element
+  /** Original RangerEpic Gameplay V1 effect semantics, retained across the legacy renderer bridge. */
+  gameplayType?: GameplayEffectType
+  gameplayValue?: number
+  gameplaySourceUid?: string
 }
 
 export interface Unit {
@@ -537,9 +541,51 @@ export class Battle {
     return this.usesGameplayPhases && u.alive && u.team === this.gameplayPhase && !this.gameplayActed.has(u.uid)
   }
 
+  private tickGameplayHot(team: Team): void {
+    for (const u of this.units) {
+      if (!u.alive || u.team !== team) continue
+      for (const s of u.statuses) {
+        if (s.type !== 'regen' || s.gameplayType !== 'heal') continue
+        this.healUnit(u, s.shieldHp ?? u.maxHp * s.pct / 100)
+      }
+    }
+  }
+
+  private tickGameplayDot(u: Unit, s: Status): void {
+    if (!u.alive || !s.gameplayType) return
+    const rules = u.gameplayRules
+    const value = s.gameplayValue ?? s.pct
+    let damage = 0
+    let ignoreShield = false
+
+    if (s.gameplayType === 'damageOverTime') {
+      damage = (s.srcAtk ?? 0) * value / 100 * this.takenMult(u, false)
+    } else if (s.gameplayType === 'poison') {
+      const reduction = clamp(this.gameplayAbilityValue(u, 'poisonDamageReduction'), 0, 100)
+      damage = u.hp * value / 100 * (1 - reduction / 100)
+      ignoreShield = rules?.shieldAbsorbsPoison === false
+    } else if (s.gameplayType === 'deadlyPoison') {
+      const reduction = clamp(this.gameplayAbilityValue(u, 'deadlyPoisonDamageReduction'), 0, 100)
+      damage = u.maxHp * value / 100 * (1 - reduction / 100)
+      ignoreShield = rules?.shieldAbsorbsDeadlyPoison === false
+    } else {
+      return
+    }
+
+    let amount = Math.max(0, Math.round(damage))
+    if ((s.gameplayType === 'poison' || s.gameplayType === 'deadlyPoison') && rules?.poisonCanKill === false) {
+      amount = Math.min(amount, Math.max(0, u.hp - 1))
+    }
+    if (amount <= 0) return
+    this.takeDamage(u, amount, emptyOutcome(u.uid, u.hp), ignoreShield)
+  }
+
   private finishGameplayRound(): void {
-    // Gameplay V1 durations decrement only at Round End. The round in which an
-    // effect was applied is already its first round, so duration=1 expires here.
+    // Gameplay V1 damage-over-time resolves at Round End before durations tick down.
+    for (const u of this.units) {
+      for (const s of [...u.statuses]) this.tickGameplayDot(u, s)
+    }
+    // The round in which an effect was applied counts as its first round.
     for (const u of this.units) {
       for (const s of u.statuses) s.turns--
       u.statuses = u.statuses.filter(s => s.turns > 0 && !(s.type === 'shield' && (s.shieldHp ?? 0) <= 0))
@@ -549,8 +595,11 @@ export class Battle {
   }
 
   private advanceGameplayPhase(): void {
+    const endingTeam = this.gameplayPhase
+    this.tickGameplayHot(endingTeam)
+
     const secondTeam = (1 - this.gameplayFirstTeam) as Team
-    if (this.gameplayPhase === this.gameplayFirstTeam) {
+    if (endingTeam === this.gameplayFirstTeam) {
       this.gameplayPhase = secondTeam
       return
     }
@@ -577,7 +626,7 @@ export class Battle {
       case 'enemyAliveCount':
         return numberCompare(this.units.filter(x => x.team !== u.team && x.alive).length, expected)
       case 'round':
-        return numberCompare(this.turn, expected)
+        return numberCompare(this.usesGameplayPhases ? this.gameplayRound : this.turn, expected)
       case 'hasShield': {
         const actual = this.has(u, 'shield') ? 1 : 0
         return numberCompare(actual, Number.isFinite(expected) ? expected : 1)
@@ -1062,9 +1111,26 @@ export class Battle {
 
   // ── ผลของท่า ──
 
-  private addStatus(target: Unit, type: StatusType, pct: number, turns: number, shieldHp?: number, src?: Unit): void {
+  private addStatus(
+    target: Unit,
+    type: StatusType,
+    pct: number,
+    turns: number,
+    shieldHp?: number,
+    src?: Unit,
+    effect?: SkillEffect,
+  ): void {
     target.statuses = target.statuses.filter(s => s.type !== type)
-    const st: Status = { type, pct, turns: Math.max(1, turns), shieldHp, appliedTurn: this.turn }
+    const st: Status = {
+      type,
+      pct,
+      turns: Math.max(1, turns),
+      shieldHp,
+      appliedTurn: this.turn,
+      gameplayType: effect?.gameplayType as GameplayEffectType | undefined,
+      gameplayValue: effect?.gameplayValue,
+      gameplaySourceUid: src?.uid,
+    }
     if (src && isDot(type)) { st.srcAtk = this.effAtk(src); st.srcElement = src.element }
     target.statuses.push(st)
   }
@@ -1138,7 +1204,7 @@ export class Battle {
   /** ฐานของฮีล/โล่ตามสเกลที่เลือก: เลือดเป้า (ปกติ) · เลือดผู้ร่าย · ATK ผู้ร่าย */
   healBase(caster: Unit, target: Unit, e: SkillEffect): number {
     const pct = (e.pct ?? 0) / 100
-    const power = (traitOf(caster.role).supportPower ?? 1) * (1 + this.passive(caster, 'healUp') / 100)
+    const power = caster.gameplayClass ? 1 : (traitOf(caster.role).supportPower ?? 1) * (1 + this.passive(caster, 'healUp') / 100)
     const base = e.scale === 'casterHp' ? caster.maxHp : e.scale === 'casterAtk' ? this.effAtk(caster) : target.maxHp
     return base * pct * power
   }
@@ -1234,8 +1300,8 @@ export class Battle {
 
     if (skill.kind === 'attack') {
       const breaks = skill.effects.some(e => e.type === 'breakInvincible')
-      const traitSteal = (traitOf(actor.role).lifesteal ?? 0) + this.passive(actor, 'lifesteal') / 100
-      const controlChance = AREA_CONTROL_CHANCE[skill.area] ?? 1
+      const traitSteal = actor.gameplayClass ? 0 : (traitOf(actor.role).lifesteal ?? 0) + this.passive(actor, 'lifesteal') / 100
+      const controlChance = actor.gameplayClass ? 1 : (AREA_CONTROL_CHANCE[skill.area] ?? 1)
       let dealt = 0
       for (const t of targets) {
         const o = emptyOutcome(t.uid, t.hp)
@@ -1268,12 +1334,19 @@ export class Battle {
             dealt += r.damage
             if (traitSteal > 0) addHeal(actor, r.damage * traitSteal)
           } else if (e.type === 'trueDamage') {
-            // ความเสียหายจริง: ลงเลือดตรงๆ ข้ามโล่
-            const d = this.trueHit(actor, t, e.pct ?? 100)
-            o.damage += d; o.trueDamage += d
-            this.takeDamage(t, d, o, true)
-            dealt += d
-            if (traitSteal > 0) addHeal(actor, d * traitSteal)
+            if (actor.gameplayClass && e.gameplayType === 'fixedDamage') {
+              const d = Math.max(0, Math.round(e.gameplayValue ?? e.amount ?? 0))
+              o.damage += d
+              this.takeDamage(t, d, o)
+              dealt += d
+            } else {
+              // Legacy true damage: bypasses shield.
+              const d = this.trueHit(actor, t, e.pct ?? 100)
+              o.damage += d; o.trueDamage += d
+              this.takeDamage(t, d, o, true)
+              dealt += d
+              if (traitSteal > 0) addHeal(actor, d * traitSteal)
+            }
           }
         }
         if (!t.alive) continue
@@ -1287,7 +1360,11 @@ export class Battle {
             energyGained += this.energy[actor.team] - before
           } else if (e.type === 'dispelBuffs') {
             const before = t.statuses.length
-            t.statuses = t.statuses.filter(s => isDebuff(s.type))
+            if (actor.gameplayClass && e.gameplayType === 'removeShield') {
+              t.statuses = t.statuses.filter(s => s.type !== 'shield')
+            } else {
+              t.statuses = t.statuses.filter(s => isDebuff(s.type))
+            }
             o.dispelled += before - t.statuses.length
           } else if (STATUS_EFFECTS.has(e.type)) {
             const type = e.type as StatusType
@@ -1295,7 +1372,7 @@ export class Battle {
             else if (this.rand() * 100 < this.resistChance(t)) o.resisted.push(type)
             else if (CONTROL_TYPES.has(type) && this.rand() >= controlChance) o.resisted.push(type)
             else {
-              this.addStatus(t, type, e.pct ?? 0, e.turns ?? 1, undefined, actor)
+              this.addStatus(t, type, e.pct ?? 0, e.turns ?? 1, undefined, actor, e)
               if (type === 'elementShift') { const st = t.statuses.find(x => x.type === 'elementShift'); if (st) st.element = e.element }
               o.applied.push(type)
             }
@@ -1329,14 +1406,36 @@ export class Battle {
             // โดน "ขัดขวางการล้างผลด้านลบ" อยู่ → ล้างไม่ออก
             if (!this.has(t, 'sealCleanse')) {
               const before = t.statuses.length
-              t.statuses = t.statuses.filter(s => !isDebuff(s.type))
+              if (actor.gameplayClass) {
+                switch (e.gameplayType) {
+                  case 'cleanseDamageOverTime':
+                    t.statuses = t.statuses.filter(s => s.gameplayType !== 'damageOverTime')
+                    break
+                  case 'cleansePoison':
+                    t.statuses = t.statuses.filter(s => s.gameplayType !== 'poison' && s.gameplayType !== 'deadlyPoison')
+                    break
+                  case 'removeTaunt':
+                    t.statuses = t.statuses.filter(s => s.type !== 'taunt')
+                    break
+                  case 'removeStun':
+                    t.statuses = t.statuses.filter(s => s.type !== 'stun')
+                    break
+                  case 'removeSilence':
+                    t.statuses = t.statuses.filter(s => s.type !== 'silence')
+                    break
+                  default:
+                    t.statuses = t.statuses.filter(s => !isDebuff(s.type))
+                }
+              } else {
+                t.statuses = t.statuses.filter(s => !isDebuff(s.type))
+              }
               o.cleansed += before - t.statuses.length
             }
           } else if (e.type === 'shield') {
-            this.addStatus(t, 'shield', e.pct ?? 0, e.turns ?? 1, Math.round(this.healBase(actor, t, e)))
+            this.addStatus(t, 'shield', e.pct ?? 0, e.turns ?? 1, Math.round(this.healBase(actor, t, e)), actor, e)
             o.applied.push('shield')
           } else if (STATUS_EFFECTS.has(e.type)) {
-            this.addStatus(t, e.type as StatusType, e.pct ?? 0, e.turns ?? 1)
+            this.addStatus(t, e.type as StatusType, e.pct ?? 0, e.turns ?? 1, undefined, actor, e)
             // ฟื้นฟูต่อเนื่อง: ล็อกจำนวนเลือดต่อเทิร์นตามสเกลที่เลือก ณ ตอนใส่
             if (e.type === 'regen') {
               const st = t.statuses.find(x => x.type === 'regen')
