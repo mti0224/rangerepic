@@ -572,11 +572,11 @@ export class Battle {
     if (!u.alive || !s.gameplayType) return
     const rules = u.gameplayRules
     const value = s.gameplayValue ?? s.pct
+    const source = s.gameplaySourceUid ? this.unit(s.gameplaySourceUid) : undefined
     let damage = 0
     let ignoreShield = false
 
     if (s.gameplayType === 'damageOverTime') {
-      const source = s.gameplaySourceUid ? this.unit(s.gameplaySourceUid) : undefined
       damage = (source ? this.effAtk(source) : (s.srcAtk ?? 0)) * value / 100 * this.takenMult(u, false)
     } else if (s.gameplayType === 'poison') {
       const reduction = clamp(this.gameplayAbilityValue(u, 'poisonDamageReduction'), 0, 100)
@@ -595,7 +595,7 @@ export class Battle {
       amount = Math.min(amount, Math.max(0, u.hp - 1))
     }
     if (amount <= 0) return
-    this.takeDamage(u, amount, emptyOutcome(u.uid, u.hp), ignoreShield)
+    this.takeDamage(u, amount, emptyOutcome(u.uid, u.hp), ignoreShield, source)
   }
 
   private finishGameplayRound(): void {
@@ -1206,6 +1206,8 @@ export class Battle {
     c.energy = [this.energy[0], this.energy[1]]
     c.gameplayGauge = [this.gameplayGauge[0], this.gameplayGauge[1]]
     c.gameplayActed = new Set(this.gameplayActed)
+    c.abilityEventStack = new Set()
+    c.abilityEventDepth = 0
     c.timeUpResult = this.timeUpResult ? { ...this.timeUpResult, pct: [...this.timeUpResult.pct] as [number, number] } : null
     c.aiLevel = [this.aiLevel[0], this.aiLevel[1]]
     c.rand = rng(seed)
