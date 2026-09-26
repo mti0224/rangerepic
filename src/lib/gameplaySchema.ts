@@ -36,6 +36,8 @@ export type NormalAttackTarget = 'single' | 'all' | 'primaryPlusRandom'
 export interface NormalAttackDef {
   target: NormalAttackTarget
   hits: number
+  /** Optional player-facing plain-language description. */
+  description?: string
   /** Visual action to play. Defaults to attack. */
   animation?: GameplayAnimationSlot
   /** One normal-attack action adds this once, regardless of hit count. Player classes only. */
@@ -382,7 +384,7 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     role: '未分類',
     names: emptyNames(),
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
-    normalAttack: { target: 'single', hits: 1, animation: 'attack', skillGaugeGain: 5 },
+    normalAttack: { target: 'single', hits: 1, description: '', animation: 'attack', skillGaugeGain: 5 },
     normalSupport: { target: 'singleAlly', description: '', animation: 'skill2', effects: [] },
     skill: { name: '', description: '', icon: '', animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],

@@ -108,6 +108,32 @@ const setup = (id, cls, lane = 0) => ({
 const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_class' })) =>
   new B.Battle([[setup('left', leftClass)], [setup('right', rightClass)]], 123)
 
+// Authored animation slots must remap the raw Ranger visual actions per class.
+{
+  const cls = baseClass({
+    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5, animation: 'skill2' },
+    normalSupport: { target: 'singleAlly', animation: 'attack', effects: [] },
+    skill: { animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'manual' }, effects: [{ type: 'damage', value: 150, hits: 1 }] },
+  })
+  const raw = {
+    name: 'Raw',
+    stats: { hp: 1, atk: 1, def: 1, spd: 1, crit: 0, critDmg: 100, evade: 0, hit: 100, skillEvade: 0, skillHit: 100, skillRes: 0 },
+    actions: {
+      attack: { marker: 'attack' },
+      skill1: { marker: 'skill1' },
+      skill2: { marker: 'skill2' },
+    },
+    skills: {},
+    passives: [],
+  }
+  const adapted = A.adaptRangerConfigForGameplay(raw, cls)
+  check('Gameplay animation choices remap raw visual action slots', [
+    adapted.actions.attack.marker,
+    adapted.actions.skill1.marker,
+    adapted.actions.skill2.marker,
+  ], ['skill2', 'skill1', 'attack'])
+}
+
 // Shared skill gauge + Player Phase / Enemy Phase.
 {
   const cls = baseClass()

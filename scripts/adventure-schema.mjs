@@ -91,6 +91,7 @@ export function validateEnemy(data, expectedId) {
   else {
     if (!['single','all','primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
     if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be >= 1')
+    if (attack.description != null && typeof attack.description !== 'string') errors.push('normalAttack.description must be a string')
     if (attack.animation != null && !['attack','skill1','skill2'].includes(attack.animation)) errors.push('normalAttack.animation is invalid')
     if (attack.skillGaugeGain != null && (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100)) errors.push('normalAttack.skillGaugeGain must be 0..100')
     if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')

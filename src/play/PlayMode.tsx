@@ -136,8 +136,11 @@ export default function PlayMode() {
       for (const [i, id] of ids.entries()) {
         const assetItem = assetItems.find(a => a.id === id)
         if (!assetItem) throw new Error(`找不到圖資：${id}`)
-        const existing = data.find(d => d.item.id === id)?.config
-        const raw = existing ?? migrateRangerConfig(await loadRangerConfig(id) ?? (() => { throw new Error(`無法載入圖資設定：${id}`) })())
+        // Keep the battle kit on the original asset config. Gameplay animation
+        // mapping is class-specific and is applied per UnitView in BattleScene.
+        // Reusing an already-adapted roster config here would make classes that share
+        // one assetVariantId inherit another class's visual action mapping.
+        const raw = migrateRangerConfig(await loadRangerConfig(id) ?? (() => { throw new Error(`無法載入圖資設定：${id}`) })())
         const assets = await loadRangerAssets(id, assetItem.bullets)
         const config = withDefaultGround(raw, assets.geometry.autoStand)
         map.set(id, { assets, config, info: null })
@@ -353,15 +356,18 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   useEffect(() => {
     if (!stageDef || stageComplete || advanceLock.current || !scene.battle.over || scene.battle.winner !== 0) return
     advanceLock.current = true
-    if (waveIndex + 1 < stageDef.waves.length) {
-      carryRef.current = {
-        hp: new Map(scene.battle.units.filter(u => u.team === 0).map(u => [u.uid, u.hp])),
-        gauge: scene.battle.gameplayGauge[0],
-      }
-      setWaveIndex(i => i + 1)
-    } else {
-      setStageComplete(true)
+    const carry = {
+      hp: new Map(scene.battle.units.filter(u => u.team === 0).map(u => [u.uid, u.hp])),
+      gauge: scene.battle.gameplayGauge[0],
     }
+    scene.beginWaveExit(() => {
+      if (waveIndex + 1 < stageDef.waves.length) {
+        carryRef.current = carry
+        setWaveIndex(i => i + 1)
+      } else {
+        setStageComplete(true)
+      }
+    })
   }, [revision, scene, stageDef, stageComplete, waveIndex])
 
   useEffect(() => { scene.speed = speed }, [scene, speed])
@@ -676,6 +682,7 @@ function UnitDetailModal({ unit, scene, lang, onClose }: {
   const th = lang === 'th'
   const label = (z: string, e: string, t = e) => zh ? z : th ? t : e
   const stats = cls?.stats
+  const attackDescription = cls?.normalAttack.description?.trim() ?? ''
   const supportDescription = cls?.normalSupport.description?.trim() ?? ''
   const energyMoveDescription = cls && cls.skillEnabled !== false ? cls.skill.description?.trim() ?? '' : ''
   const abilityDescriptions = cls?.abilities.map(ability => ability.description?.trim() ?? '').filter(Boolean) ?? []
@@ -701,7 +708,8 @@ function UnitDetailModal({ unit, scene, lang, onClose }: {
       </div>
 
       <div className="ep-detail-sections">
-        {supportDescription && <article><h3>{label('輔助招式', 'Support Move', 'ท่าช่วยเหลือ')}</h3><p>{supportDescription}</p></article>}
+        {attackDescription && <article><h3>{label('普通攻擊', 'Normal Attack', 'โจมตีปกติ')}</h3><p>{attackDescription}</p></article>}
+        {supportDescription && <article><h3>{label('普通輔助', 'Normal Support', 'ช่วยเหลือปกติ')}</h3><p>{supportDescription}</p></article>}
         {energyMoveDescription && <article><h3>{label('能量石招式', 'Energy Move', 'ท่าพลังงาน')}</h3><p>{energyMoveDescription}</p></article>}
         {abilityDescriptions.length > 0 && <article><h3>{label('能力', 'Abilities', 'ความสามารถ')}</h3>{abilityDescriptions.map((description, i) => <p key={i}>{description}</p>)}</article>}
         {statuses.length > 0 && <article className="ep-detail-status"><h3>{label('狀態', 'Status', 'สถานะ')}</h3><div>{statuses.map((status, i) => <span key={`${status.type}:${i}`}>{statusLabel(status.type)}{status.pct ? ` ${status.pct}%` : ''}{status.shieldHp ? ` ${Math.round(status.shieldHp)}` : ''}{status.turns ? ` · ${status.turns}R` : ''}</span>)}</div></article>}
