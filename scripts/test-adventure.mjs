@@ -14,8 +14,8 @@ async function docs(dir) {
 
 const enemies = await docs(enemiesDir)
 const stages = await docs(stagesDir)
-assert.ok(enemies.length > 0, 'expected at least one enemy fixture')
-assert.ok(stages.length > 0, 'expected at least one stage fixture')
+assert.ok(enemies.length > 0, 'expected at least one enemy')
+assert.ok(stages.length > 0, 'expected at least one stage')
 
 for (const enemy of enemies) {
   assert.deepEqual(validateEnemy(enemy, enemy.id), [], 'invalid enemy ' + enemy.id)
@@ -33,14 +33,45 @@ for (const stage of stages) {
   }
 }
 
-const sample = enemies.find(enemy => enemy.id === 'training_croc')
-assert.ok(sample, 'training_croc fixture missing')
-assert.equal(sample.skill, null, 'enemy skill must be optional')
-assert.equal(sample.normalAttack.effects?.[0]?.type, 'attackDown', 'enemy normal attack extra effects must be preserved')
+// Feature coverage uses synthetic fixtures so admin-authored content may change freely.
+const syntheticEnemy = {
+  schemaVersion: 1,
+  id: 'test_enemy',
+  names: { zh: '測試敵人', en: '', th: '', jp: '' },
+  description: '',
+  assetVariantId: 'u91003-bomby',
+  stats: { hp: 100, attack: 10, critRate: 0, critDamage: 3, hitRate: 100 },
+  normalAttack: {
+    target: 'single',
+    hits: 1,
+    skillGaugeGain: 5,
+    effects: [{ type: 'attackDown', value: 10, duration: 1 }],
+  },
+  skill: null,
+  abilities: [],
+}
+assert.deepEqual(validateEnemy(syntheticEnemy, syntheticEnemy.id), [])
+assert.equal(syntheticEnemy.skill, null, 'enemy skill must be optional')
+assert.equal(
+  syntheticEnemy.normalAttack.effects[0].type,
+  'attackDown',
+  'enemy normal attack extra effects must be supported',
+)
 
-const multi = stages.find(stage => stage.id === 'training_1')
-assert.equal(multi?.waves.length, 2, 'training stage must exercise multi-wave data')
-assert.equal(multi?.waves[0].enemies.length, 1)
-assert.equal(multi?.waves[1].enemies.length, 2)
+const syntheticStage = {
+  schemaVersion: 1,
+  id: 'test_stage',
+  chapter: 1,
+  order: 1,
+  names: { zh: '測試關卡', en: '', th: '', jp: '' },
+  description: '',
+  mapImage: '/maps/map1_full.jpg',
+  waves: [
+    { id: 'wave_1', name: '第一波', enemies: [{ enemyId: 'test_enemy', slot: 'front-0' }] },
+    { id: 'wave_2', name: '第二波', enemies: [{ enemyId: 'test_enemy', slot: 'front-1' }] },
+  ],
+}
+assert.deepEqual(validateStage(syntheticStage, syntheticStage.id), [])
+assert.equal(syntheticStage.waves.length, 2, 'multi-wave stages must be supported')
 
 console.log('Adventure data tests passed:', enemies.length, 'enemies,', stages.length, 'stages')
