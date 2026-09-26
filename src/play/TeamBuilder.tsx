@@ -14,6 +14,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import type { GameInfo, RangerListItem } from '@/lib/rangerApi'
+import type { GameplayCharacter, GameplayClass } from '@/lib/gameplaySchema'
 import type { RangerConfig, Row, Stats } from '@/lib/rangerConfig'
 import { ELEMENTS, type Category, type Element, type Role } from '@/lib/rangerClass'
 import { fitsSlot } from '@/lib/formation'
@@ -51,9 +52,25 @@ type SlotRef = { team: Team; key: SlotKey }
 /** พื้นหลังการ์ดตามธาตุ (public/ui/rg_bg_<ธาตุ>.png) */
 const elementBg = (el: Element | null) => (el ? { backgroundImage: `url(/ui/rg_bg_${el}.png)` } : undefined)
 
-export interface RangerData { item: RangerListItem; config: RangerConfig | null; info: GameInfo | null }
+export interface RangerData {
+  /** Formation / save identity. Gameplay classes use classId; legacy rows keep Ranger asset id. */
+  playId: string
+  item: RangerListItem
+  config: RangerConfig | null
+  info: GameInfo | null
+  gameplayClass?: GameplayClass | null
+  gameplayCharacter?: GameplayCharacter | null
+}
 
-export const nameOf = (d: RangerData) => (getLang() === 'zh' ? properNameZhTw(d.item.id) : null) ?? localName(d.info?.name) ?? d.item.name
+export const nameOf = (d: RangerData) => {
+  const cls = d.gameplayClass
+  if (cls) {
+    const lang = getLang()
+    const localized = lang === 'zh' ? cls.names.zh : lang === 'th' ? cls.names.th : cls.names.en
+    return localized || cls.names.zh || cls.names.en || cls.names.th || cls.names.jp || d.item.name
+  }
+  return (getLang() === 'zh' ? properNameZhTw(d.item.id) : null) ?? localName(d.info?.name) ?? d.item.name
+}
 
 export default function TeamBuilder({ data, formation, setFormation, onStart, busy, message }: {
   data: RangerData[]
@@ -65,7 +82,7 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
 }) {
   const lang = useLang()   // รีเรนเดอร์เมื่อเปลี่ยนภาษา
   const owned = useCollection()
-  const byId = useMemo(() => new Map(data.map(d => [d.item.id, d])), [data])
+  const byId = useMemo(() => new Map(data.map(d => [d.playId, d])), [data])
   /** เรนเจอร์ที่เปิดแผงข้อมูลอยู่ */
   const [selected, setSelected] = useState<string | null>(null)
   /** ช่องที่เลือกอยู่ (ขึ้นปุ่มลบ/เปลี่ยน) */
@@ -112,9 +129,9 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
     setFormation(f => {
       const next: Formation = [{ ...f[0] }, { ...f[1] }]
       next[team] = emptyTeam()
-      front.forEach((d, i) => { next[team][`front-${i}` as SlotKey] = d.item.id })
-      back.forEach((d, i) => { next[team][`back-${i}` as SlotKey] = d.item.id })
-      sup.forEach((d, i) => { next[team][RESERVE_KEYS[i]] = d.item.id })
+      front.forEach((d, i) => { next[team][`front-${i}` as SlotKey] = d.playId })
+      back.forEach((d, i) => { next[team][`back-${i}` as SlotKey] = d.playId })
+      sup.forEach((d, i) => { next[team][RESERVE_KEYS[i]] = d.playId })
       return next
     })
     setSlotSel(null)
@@ -191,7 +208,7 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
             </div>
             {isSel && (
               <div className="tb-slot-actions">
-                <button className="info" title={ui('info')} onClick={e => { e.stopPropagation(); setSelected(d.item.id) }}>
+                <button className="info" title={ui('info')} onClick={e => { e.stopPropagation(); setSelected(d.playId) }}>
                   <IconInfo size={13} />{ui('info')}
                 </button>
                 <button className="danger" title={ui('remove')} onClick={e => { e.stopPropagation(); place(team, k, null); setSlotSel(null) }}>
@@ -259,8 +276,8 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
           data={data}
           lang={lang}
           selected={selected}
-          badge={d => { const t = teamOf(d.item.id); return t.length ? (t.includes(0) ? ui('inMine') : ui('inEnemy')) : null }}
-          onPick={d => { setSelected(d.item.id); setSlotSel(null) }}
+          badge={d => { const t = teamOf(d.playId); return t.length ? (t.includes(0) ? ui('inMine') : ui('inEnemy')) : null }}
+          onPick={d => { setSelected(d.playId); setSlotSel(null) }}
         />
       </section>
 
@@ -277,8 +294,8 @@ export default function TeamBuilder({ data, formation, setFormation, onStart, bu
             lang={lang}
             selected={null}
             preferRow={rowOfKey(picker.key) ?? undefined}
-            badge={d => (formation[picker.team][picker.key] === d.item.id ? ui('current') : teamOf(d.item.id).includes(picker.team) ? (picker.team === 0 ? ui('inMine') : ui('inEnemy')) : null)}
-            onPick={d => { place(picker.team, picker.key, d.item.id); setPicker(null); setSlotSel({ team: picker.team, key: picker.key }) }}
+            badge={d => (formation[picker.team][picker.key] === d.playId ? ui('current') : teamOf(d.playId).includes(picker.team) ? (picker.team === 0 ? ui('inMine') : ui('inEnemy')) : null)}
+            onPick={d => { place(picker.team, picker.key, d.playId); setPicker(null); setSlotSel({ team: picker.team, key: picker.key }) }}
             autoFocus
           />
         </Modal>
@@ -313,7 +330,7 @@ function RangerBrowser({ data, lang, selected, badge, onPick, preferRow, autoFoc
   const list = useMemo(() => {
     const q = query.trim().toLowerCase()
     const out = data.filter(d =>
-      (!q || nameOf(d).toLowerCase().includes(q) || d.item.name.toLowerCase().includes(q) || (d.info?.name.en ?? '').toLowerCase().includes(q) || d.item.id.includes(q))
+      (!q || nameOf(d).toLowerCase().includes(q) || d.item.name.toLowerCase().includes(q) || (d.info?.name.en ?? '').toLowerCase().includes(q) || d.item.id.includes(q) || d.playId.includes(q))
       && (!elFilter || d.item.element === elFilter)
       && (!roleFilter || d.item.role === roleFilter)
       && (!catFilter || d.item.category === catFilter))
@@ -373,16 +390,16 @@ function RangerBrowser({ data, lang, selected, badge, onPick, preferRow, autoFoc
       <div className="tb-cards">
         {list.map(d => (
           <button
-            key={d.item.id}
-            className={'tb-card' + (selected === d.item.id ? ' sel' : '')}
+            key={d.playId}
+            className={'tb-card' + (selected === d.playId ? ' sel' : '')}
             draggable
-            onDragStart={e => e.dataTransfer.setData('text/ranger', d.item.id)}
+            onDragStart={e => e.dataTransfer.setData('text/ranger', d.playId)}
             onClick={() => onPick(d)}
           >
             <CardArt d={d} badge={badge(d)} />
             <MetaLine d={d} />
             <b title={nameOf(d)}>{nameOf(d)}</b>
-            <small>{d.item.role ? roleName(d.item.role) : '—'}</small>
+            <small>{d.gameplayClass?.role || (d.item.role ? roleName(d.item.role) : '—')}</small>
           </button>
         ))}
         {!list.length && <p className="tb-none">{data.length ? ui('noMatch') : ui('noRangers')}</p>}
