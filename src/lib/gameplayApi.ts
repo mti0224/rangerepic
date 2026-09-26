@@ -41,3 +41,36 @@ export const deleteGameplayClass = async (id: string): Promise<void> => {
 export const saveGameplayRules = async (data: BattleRulesV1): Promise<void> => {
   await request('/api/gameplay/rules', { method: 'POST', body: JSON.stringify(data) })
 }
+
+export type GameplayIconKind = 'skill' | 'ability'
+export interface GameplayIconItem {
+  name: string
+  url: string
+  source: 'library' | 'upload'
+}
+
+export const listGameplayIcons = async (kind: GameplayIconKind): Promise<GameplayIconItem[]> =>
+  (await request<{ icons: GameplayIconItem[] }>('/api/gameplay/icons/' + kind)).icons
+
+const fileToDataUrl = (file: File): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.onload = () => resolve(String(reader.result || ''))
+  reader.onerror = () => reject(reader.error || new Error('讀取檔案失敗'))
+  reader.readAsDataURL(file)
+})
+
+export async function uploadGameplayIcon(kind: GameplayIconKind, file: File): Promise<GameplayIconItem> {
+  const data = await fileToDataUrl(file)
+  return (await request<{ icon: GameplayIconItem }>('/api/gameplay/icon-upload', {
+    method: 'POST',
+    body: JSON.stringify({ kind, fileName: file.name, data }),
+  })).icon
+}
+
+export async function importAbilityIconZip(file: File): Promise<{ count: number; icons: GameplayIconItem[] }> {
+  const data = await fileToDataUrl(file)
+  return request('/api/gameplay/ability-icon-zip', {
+    method: 'POST',
+    body: JSON.stringify({ fileName: file.name, data }),
+  })
+}
