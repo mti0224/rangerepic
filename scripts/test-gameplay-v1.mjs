@@ -327,6 +327,152 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('selfDied ability can hit enemies after owner dies', [d.alive, a.hp], [false, 960])
 }
 
+// Round Start fires at the beginning of Round 1.
+{
+  const cls = baseClass({
+    abilities: [{
+      id: 'round-start-buff',
+      trigger: 'roundStart',
+      conditions: [{ type: 'round', operator: '=', value: 1 }],
+      effects: [{ type: 'attackUp', value: 15, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(cls)
+  check('roundStart fires for Round 1 during battle initialization', [b.gameplayRound, b.effAtk(b.units[0])], [1, 115])
+}
+
+// Round End effects are created after the old round countdown and survive into the next round.
+{
+  const cls = baseClass({
+    abilities: [{
+      id: 'round-end-buff',
+      trigger: 'roundEnd',
+      conditions: [{ type: 'round', operator: '=', value: 1 }],
+      effects: [{ type: 'attackUp', value: 20, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(cls)
+  const a = b.nextActor()
+  b.endTurn(a)
+  const e = b.nextActor()
+  b.endTurn(e)
+  b.nextActor() // finish Round 1 and enter Round 2
+  const me = b.units[0]
+  check('Round End duration=1 effect survives into following round', [b.gameplayRound, b.effAtk(me), me.statuses.find(s => s.gameplayType === 'attackUp')?.turns], [2, 120, 1])
+
+  b.endTurn(me)
+  const enemy = b.nextActor()
+  b.endTurn(enemy)
+  b.nextActor() // finish Round 2 and enter Round 3
+  check('Round End effect expires after its following round when condition no longer matches', [b.gameplayRound, b.effAtk(me)], [3, 100])
+}
+
+// everyNRounds fires only at the configured completed-round interval.
+{
+  const cls = baseClass({
+    abilities: [{
+      id: 'every-two-rounds',
+      trigger: 'everyNRounds',
+      triggerValue: 2,
+      conditions: [],
+      effects: [{ type: 'fixedDamage', value: 30, hits: 1, abilityTarget: 'allEnemies' }],
+    }],
+  })
+  const b = oneVsOne(cls)
+  const enemy = b.units[1]
+
+  let a = b.nextActor(); b.endTurn(a)
+  let e = b.nextActor(); b.endTurn(e)
+  b.nextActor()
+  check('everyNRounds does not fire after Round 1 when N=2', enemy.hp, 1000)
+
+  b.endTurn(b.units[0])
+  e = b.nextActor(); b.endTurn(e)
+  b.nextActor()
+  check('everyNRounds fires after Round 2 when N=2', enemy.hp, 970)
+}
+
+// beforeDamaged sees the incoming damage and may alter the target before HP is deducted.
+{
+  const attackerClass = baseClass({ id: 'before-attacker' })
+  const defenderClass = baseClass({
+    id: 'before-defender',
+    abilities: [{
+      id: 'pre-hit-heal',
+      trigger: 'beforeDamaged',
+      conditions: [{ type: 'receivedDamage', operator: '>=', value: 100 }],
+      effects: [{ type: 'heal', value: 20, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(attackerClass, defenderClass)
+  const [a, d] = b.units
+  d.hp = 500
+  b.resolveAction(a, 'attack', d)
+  check('beforeDamaged ability resolves before HP deduction', d.hp, 600)
+}
+
+// hpChanged can react after damage; recursion guard prevents self-trigger loops from a healing response.
+{
+  const attackerClass = baseClass({ id: 'hp-attacker' })
+  const defenderClass = baseClass({
+    id: 'hp-defender',
+    abilities: [{
+      id: 'low-hp-heal',
+      trigger: 'hpChanged',
+      conditions: [{ type: 'selfHpPercent', operator: '<=', value: 80 }],
+      effects: [{ type: 'heal', value: 10, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(attackerClass, defenderClass)
+  const [a, d] = b.units
+  d.hp = 850
+  b.resolveAction(a, 'attack', d)
+  check('hpChanged ability can heal once without recursive loop', d.hp, 850)
+}
+
+// allyDied and enemyDied are dispatched from the viewpoint of each living ability owner.
+{
+  const killerClass = baseClass({
+    id: 'killer',
+    stats: { hp: 1000, attack: 2000, critRate: 0, critDamage: 3, hitRate: 100 },
+    abilities: [{
+      id: 'enemy-down-buff',
+      trigger: 'enemyDied',
+      conditions: [],
+      effects: [{ type: 'attackUp', value: 25, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const allyWatcher = baseClass({
+    id: 'ally-watcher',
+    abilities: [{
+      id: 'ally-down-buff',
+      trigger: 'allyDied',
+      conditions: [],
+      effects: [{ type: 'attackUp', value: 30, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const victimClass = baseClass({ id: 'victim' })
+  const enemyMateClass = baseClass({ id: 'enemy-mate' })
+  const b = new B.Battle([
+    [setup('killer', killerClass, 0), setup('watcher', allyWatcher, 1)],
+    [setup('victim', victimClass, 0), setup('enemy-mate', enemyMateClass, 1)],
+  ], 321)
+  const killer = b.units.find(u => u.rangerId === 'killer')
+  const victim = b.units.find(u => u.rangerId === 'victim')
+  const watcher = b.units.find(u => u.rangerId === 'watcher')
+
+  // First kill an enemy: killer's enemyDied passive should trigger.
+  b.resolveAction(killer, 'attack', victim)
+  check('enemyDied triggers for a living unit when the opposing unit dies', b.effAtk(killer), 250)
+
+  // Then directly defeat the watcher's ally to exercise allyDied from the surviving watcher's perspective.
+  const enemyMate = b.units.find(u => u.rangerId === 'enemy-mate')
+  const killerHp = killer.hp
+  enemyMate.atk = 5000
+  b.resolveAction(enemyMate, 'attack', killer)
+  check('allyDied triggers for a surviving teammate', [killer.alive, b.effAtk(watcher), killerHp > killer.hp], [false, 130, true])
+}
+
 for (const file of tempFiles) await rm(file, { force: true })
 
 console.log(`\nGameplay V1: ${pass} passed, ${fail} failed`)
