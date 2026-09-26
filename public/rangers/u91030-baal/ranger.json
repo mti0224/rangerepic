@@ -39,7 +39,7 @@
       "positioning": "auto",
       "moveSpeedOverride": null,
       "approach": {
-        "enabled": false,
+        "enabled": true,
         "stopOffset": {
           "x": -140,
           "y": 0
