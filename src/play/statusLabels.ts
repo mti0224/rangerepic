@@ -13,7 +13,7 @@ export const STATUS_LABEL: Record<StatusType, string> = {
   poison: 'POISON', burn: 'BURN', bleed: 'BLEED',
   atkUp: 'ATK▲', regen: 'REGEN', shield: 'SHIELD', barrier: 'BARRIER', evadeUp: 'EVA▲', skillEvadeUp: 'S.EVA▲',
   skillResUp: 'RES▲', speedUp: 'SPD▲', critDmgUp: 'C.DMG▲', critUp: 'CRIT▲', hitUp: 'HIT▲', skillHitUp: 'S.HIT▲',
-  toughUp: 'TOUGH▲', skillDmgResUp: 'S.RES▲', taunt: 'TAUNT',
+  toughUp: 'TOUGH▲', skillDmgResUp: 'S.RES▲', reflect: 'REFLECT', taunt: 'TAUNT',
 }
 
 export const isDebuffLabel = (t: StatusType): boolean => isDebuff(t)
