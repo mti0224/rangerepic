@@ -109,8 +109,13 @@ export const SUPPORT_SKILL_EFFECT_TYPES = [
   'cleansePoison',
 ] as const satisfies readonly GameplayEffectType[]
 
+export const ABILITY_EFFECT_TARGETS = ['self', 'allAllies', 'allEnemies', 'attacker'] as const
+export type AbilityEffectTarget = typeof ABILITY_EFFECT_TARGETS[number]
+
 export interface GameplayEffect {
   type: GameplayEffectType
+  /** Ability-only target scope. Omitted values are treated as "self" for backward compatibility. */
+  abilityTarget?: AbilityEffectTarget
   /** Percentage or fixed value according to effect type. */
   value?: number
   /** duration=1 heal is immediate; duration>1 heal is HoT. */
@@ -322,7 +327,13 @@ export function newGameplayEffect(type: GameplayEffectType = 'damage'): Gameplay
 }
 
 export function newGameplayAbility(index = 1): GameplayAbility {
-  return { id: 'ability_' + index, icon: '', trigger: 'whileOnField', conditions: [], effects: [newGameplayEffect('attackUp')] }
+  return {
+    id: 'ability_' + index,
+    icon: '',
+    trigger: 'whileOnField',
+    conditions: [],
+    effects: [{ ...newGameplayEffect('attackUp'), abilityTarget: 'self' }],
+  }
 }
 
 export function newGameplayClass(id: string, characterId: string, assetVariantId: string): GameplayClass {
