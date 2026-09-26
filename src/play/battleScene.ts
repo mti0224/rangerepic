@@ -31,6 +31,7 @@ import { isDebuffLabel } from './statusLabels'
 import { getLang, localName, statusLabel, t, turnsShort } from './i18n'
 import { properNameZhTw } from './zhNames'
 import { imageReady, portraitCenter } from '@/lib/portrait'
+import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
 
 export { STATUS_LABEL } from './statusLabels'
 
@@ -373,8 +374,15 @@ export class BattleScene {
     // ตำแหน่งยืนตามจำนวนตัวในแถว (วางตัวเดียว → อยู่กลางแถว ฯลฯ)
     const slots = opts.layout === 'fixed' ? new Map<string, Vec2>() : formationSlots(battle.units)
     for (const unit of battle.units) {
-      const kit = kits.get(unit.assetVariantId)
-      if (!kit) continue
+      const baseKit = kits.get(unit.assetVariantId)
+      if (!baseKit) continue
+      // Gameplay actions are semantic (normal attack / normal support / Energy Move),
+      // while Ranger assets expose visual slots (attack / skill1 / skill2).
+      // Adapt the visual config per combat unit so the animation slot selected in Admin
+      // is what the battle scene actually plays.
+      const kit: RangerKit = unit.gameplayClass
+        ? { ...baseKit, config: adaptRangerConfigForGameplay(baseKit.config, unit.gameplayClass) }
+        : baseKit
       const player = new SamPlayer(kit.assets.sam)
       player.playClip(kit.config.clips.idle, { loop: true })
       this.views.push({
@@ -396,8 +404,11 @@ export class BattleScene {
       })
     }
     for (const unit of [...battle.reserves[0], ...battle.reserves[1]]) {
-      const kit = kits.get(unit.assetVariantId)
-      if (!kit) continue
+      const baseKit = kits.get(unit.assetVariantId)
+      if (!baseKit) continue
+      const kit: RangerKit = unit.gameplayClass
+        ? { ...baseKit, config: adaptRangerConfigForGameplay(baseKit.config, unit.gameplayClass) }
+        : baseKit
       const player = new SamPlayer(kit.assets.sam)
       player.playClip(kit.config.clips.idle, { loop: true })
       this.reserveViews.push({
