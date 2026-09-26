@@ -48,7 +48,7 @@ export type AttackEffectType =
 export type BuffEffectType =
   | 'atkUp' | 'heal' | 'regen' | 'shield' | 'barrier' | 'evadeUp' | 'skillEvadeUp' | 'skillResUp'
   | 'speedUp' | 'actionAdvance' | 'critDmgUp' | 'critUp' | 'hitUp' | 'skillHitUp' | 'cleanse' | 'energyGain'
-  | 'toughUp' | 'skillDmgResUp' | 'taunt'
+  | 'toughUp' | 'skillDmgResUp' | 'reflect' | 'taunt'
 export type EffectType = AttackEffectType | BuffEffectType
 
 export type ParamKey = 'pct' | 'turns' | 'amount' | 'pierce'
@@ -131,6 +131,7 @@ export const EFFECTS: Record<EffectType, EffectDef> = {
   cleanse:      { kind: 'buff', label: '解除減益', params: {} },
   toughUp:      { kind: 'buff', label: '提升減傷', params: { pct: pct('%', 20, 60), turns: turns(2) }, note: '與易傷相反，可作為提高 DEF 的替代設計' },
   skillDmgResUp: { kind: 'buff', label: '提升技能傷害抗性', params: { pct: pct('%', 20, 60), turns: turns(2) } },
+  reflect:      { kind: 'buff', label: '反射傷害', params: { pct: pct('%', 30, 100), turns: turns(2) }, note: '依實際受到的 HP 傷害反射；不爆擊、不再次觸發反射' },
   taunt:        { kind: 'buff', label: '嘲諷（敵方一般攻擊必須以此角色為目標）', params: { turns: turns(2) }, note: '只影響敵方一般攻擊；若同時有多名角色嘲諷，敵方只能從嘲諷角色中選擇目標' },
   energyGain:   { kind: 'both', label: '增加隊伍 Cost', params: { amount: { label: 'Cost', min: 1, max: 5, step: 1, default: 1 } } },
 }
