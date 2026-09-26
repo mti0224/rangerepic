@@ -212,6 +212,8 @@ export interface GameplayClass {
   stats: GameplayStats
   normalAttack: NormalAttackDef
   normalSupport: NormalSupportDef
+  /** Optional runtime gate used by enemy adapters. Player classes default to enabled. */
+  skillEnabled?: boolean
   skill: GameplaySkill
   abilities: GameplayAbility[]
 }
