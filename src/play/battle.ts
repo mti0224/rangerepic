@@ -761,6 +761,16 @@ export class Battle {
   selectableTargets(actor: Unit, action: ActionName): Unit[] {
     const enemies = this.units.filter(u => u.alive && u.team !== actor.team)
     const allies = this.units.filter(u => u.alive && u.team === actor.team)
+
+    // Gameplay V1 has no legacy front-row blocking. The chosen unit is only the
+    // operation anchor; all/random/ordered target expansion happens separately.
+    if (actor.gameplayClass) {
+      if (action === 'skill2') return allies
+      if (action === 'skill1') return actor.gameplayClass.skill.target.side === 'ally' ? allies : enemies
+      const taunting = enemies.filter(u => this.has(u, 'taunt'))
+      return taunting.length ? taunting : enemies
+    }
+
     const front = enemies.filter(u => u.row === 'front')
     // ยั่วยุ: ตีธรรมดาต้องใส่ตัวที่ยั่วยุเท่านั้น (สกิลไม่เกี่ยว)
     if (action === 'attack') {
@@ -786,8 +796,62 @@ export class Battle {
     return this.selectableTargets(attacker, 'attack')
   }
 
+  private gameplayAffectedUnits(actor: Unit, action: ActionName, chosen: Unit, randomize: boolean): Unit[] | null {
+    const cls = actor.gameplayClass
+    if (!cls) return null
+    const enemies = this.units.filter(u => u.alive && u.team !== actor.team)
+    const allies = this.units.filter(u => u.alive && u.team === actor.team)
+
+    if (action === 'attack') {
+      if (cls.normalAttack.target === 'all') return enemies
+      if (cls.normalAttack.target !== 'primaryPlusRandom') return chosen.alive ? [chosen] : []
+      const extras = enemies.filter(u => u !== chosen)
+      if (randomize) {
+        for (let i = extras.length - 1; i > 0; i--) {
+          const j = Math.floor(this.rand() * (i + 1))
+          ;[extras[i], extras[j]] = [extras[j], extras[i]]
+        }
+      }
+      return [chosen, ...extras.slice(0, Math.max(0, cls.normalAttack.extraTargets ?? 0))].filter(u => u.alive)
+    }
+
+    if (action === 'skill2') {
+      return cls.normalSupport.target === 'allAllies' ? allies : (chosen.alive ? [chosen] : [])
+    }
+
+    const rule = cls.skill.target
+    const pool = rule.side === 'ally' ? allies : enemies
+    if (rule.count === 'all') return pool
+    const count = Math.max(1, Math.min(pool.length, Math.round(rule.count)))
+    if (rule.selector === 'manual') {
+      return [chosen, ...pool.filter(u => u !== chosen)].filter(u => u.alive).slice(0, count)
+    }
+    if (rule.selector === 'random') {
+      const rows = [...pool]
+      if (randomize) {
+        for (let i = rows.length - 1; i > 0; i--) {
+          const j = Math.floor(this.rand() * (i + 1))
+          ;[rows[i], rows[j]] = [rows[j], rows[i]]
+        }
+      }
+      return rows.slice(0, count)
+    }
+    const rows = [...pool].sort((a, b) => {
+      switch (rule.selector) {
+        case 'lowestHp': return a.hp - b.hp
+        case 'highestHp': return b.hp - a.hp
+        case 'lowestAttack': return this.effAtk(a) - this.effAtk(b)
+        case 'highestAttack': return this.effAtk(b) - this.effAtk(a)
+        default: return 0
+      }
+    })
+    return rows.slice(0, count)
+  }
+
   /** ทุกตัวที่โดนผล เมื่อเลือกเป้า chosen */
   affectedUnits(actor: Unit, action: ActionName, chosen: Unit): Unit[] {
+    const gameplay = this.gameplayAffectedUnits(actor, action, chosen, false)
+    if (gameplay) return gameplay
     const enemies = this.units.filter(u => u.alive && u.team !== actor.team)
     const allies = this.units.filter(u => u.alive && u.team === actor.team)
     switch (this.skillOf(actor, action).area) {
@@ -820,6 +884,7 @@ export class Battle {
     c.reserves = [this.reserves[0].map(r => ({ ...r, statuses: [] })), this.reserves[1].map(r => ({ ...r, statuses: [] }))]
     c.reserveCd = { ...this.reserveCd }
     c.energy = [this.energy[0], this.energy[1]]
+    c.gameplayGauge = [this.gameplayGauge[0], this.gameplayGauge[1]]
     c.timeUpResult = this.timeUpResult ? { ...this.timeUpResult, pct: [...this.timeUpResult.pct] as [number, number] } : null
     c.aiLevel = [this.aiLevel[0], this.aiLevel[1]]
     c.rand = rng(seed)
@@ -847,7 +912,7 @@ export class Battle {
    */
   roleDamageMult(attacker: Unit, target: Unit, normal: boolean): number {
     // Gameplay V1 role is a label only and must not grant legacy hidden combat traits.
-    if (attacker.gameplayClass && target.gameplayClass) return 1
+    if (attacker.gameplayClass) return 1
     const a = traitOf(attacker.role)
     let m = attacker.gameplayClass ? 1 : (normal ? a.normalDamage ?? 1 : a.skillDamage ?? 1)
     // ไฟเตอร์: ยิ่งเลือดตัวเองน้อยยิ่งแรง
@@ -860,6 +925,13 @@ export class Battle {
 
   /** ดาเมจเฉลี่ยที่คาดว่าจะเข้า (ไม่สุ่ม ไม่รวมหลบ) — ให้ AI ใช้ประเมิน */
   expectedDamage(attacker: Unit, target: Unit, pct: number, normal = false, base?: number): number {
+    if (attacker.gameplayClass) {
+      // Only normal attacks can crit in Gameplay V1; skill damage does not crit.
+      const critExp = normal
+        ? 1 + (this.effCrit(attacker) / 100) * (this.effCritDmg(attacker) / 100 - 1)
+        : 1
+      return Math.max(0, (base ?? this.effAtk(attacker)) * (pct / 100) * critExp * this.takenMult(target, !normal))
+    }
     const critExp = 1 + (this.effCrit(attacker) / 100) * (this.effCritDmg(attacker) / 100 - 1)
     const defFactor = 1 - target.def / (target.def + DEF_K)
     const raw = (base ?? this.effAtk(attacker)) * (pct / 100) * defFactor * elementMultiplier(this.effElement(attacker), this.effElement(target)) * critExp * this.damageMult
@@ -948,7 +1020,7 @@ export class Battle {
 
   /** ดาเมจล้วน (ไม่เช็คหลบ/บาเรีย) — คืนดาเมจ คริ ธาตุ */
   private rollDamage(attacker: Unit, target: Unit, pct: number, normal = false, base?: number): { damage: number; crit: boolean; elementMult: number } {
-    const crit = this.rand() * 100 < this.effCrit(attacker)
+    const crit = (!attacker.gameplayClass || normal) && this.rand() * 100 < this.effCrit(attacker)
     if (attacker.gameplayClass) {
       // Gameplay V1 intentionally has no DEF, SPD, elements, role traits, random
       // damage variance, legacy global damage scale, or legacy hit cap.
@@ -1078,7 +1150,7 @@ export class Battle {
       const fix = this.autoTarget(actor, action)
       if (fix) chosen = fix
     }
-    const targets = this.affectedUnits(actor, action, chosen)
+    const targets = this.gameplayAffectedUnits(actor, action, chosen, true) ?? this.affectedUnits(actor, action, chosen)
     const outcomes: Outcome[] = []
     let energyGained = 0
     const healed = new Map<string, number>()
@@ -1099,7 +1171,8 @@ export class Battle {
         const o = emptyOutcome(t.uid, t.hp)
         outcomes.push(o)
         if (!t.alive) continue
-        if (this.rand() * 100 < this.evadeChance(actor, t, normal)) { o.evaded = true; continue }
+        // Multi-hit normal attacks roll hit independently for each Hit below.
+        if (!(actor.gameplayClass && normal) && this.rand() * 100 < this.evadeChance(actor, t, normal)) { o.evaded = true; continue }
         if (this.has(t, 'barrier')) {
           // เร่งเทิร์นทำงานแม้โดนบาเรียกัน (ไว้เผาบาเรีย/บัฟให้หมดก่อนกำหนด) — ดาเมจยังโดนกันตามปกติ
           if (!breaks) {
@@ -1112,6 +1185,11 @@ export class Battle {
         }
         for (const e of skill.effects) {
           if (e.type === 'damage' || e.type === 'damageHp') {
+            // Gameplay V1 normal attack: every Hit independently rolls accuracy.
+            if (actor.gameplayClass && normal && this.rand() * 100 >= this.effHit(actor)) {
+              o.evaded = true
+              continue
+            }
             // damageHp = ฐานเป็น HP สูงสุดของผู้ร่ายแทน ATK
             const base = e.type === 'damageHp' ? actor.maxHp : undefined
             const r = this.rollDamage(actor, t, e.pct ?? 100, normal, base)
