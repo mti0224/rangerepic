@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "id": "james",
+  "characterId": "brown",
+  "assetVariantId": "u1138h-james",
+  "role": "未分類",
+  "names": {
+    "zh": "終極紫衣詹姆士",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "stats": {
+    "hp": 800,
+    "attack": 65,
+    "critRate": 0,
+    "critDamage": 3,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 2,
+    "animation": "attack",
+    "skillGaugeGain": 5
+  },
+  "normalSupport": {
+    "target": "singleAlly",
+    "animation": "skill1",
+    "effects": [
+      {
+        "type": "shield",
+        "value": 15,
+        "duration": 1
+      }
+    ]
+  },
+  "skill": {
+    "name": "正義雷射光",
+    "description": "用雷射光對所有敵軍造成70%的傷害並暈眩3回合",
+    "icon": "/gameplay-icons/skill/custom/skill_icon_hsk1138_james-e98ff34451.png",
+    "animation": "skill1",
+    "target": {
+      "side": "enemy",
+      "count": "all",
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "value": 70,
+        "hits": 1
+      },
+      {
+        "type": "stun",
+        "duration": 3
+      }
+    ]
+  },
+  "abilities": [
+    {
+      "id": "ability_1",
+      "name": "紫光之力",
+      "description": "這隻角色免疫暈眩",
+      "icon": "/gameplay-icons/ability/builtin/ab230_barrier_icon.png",
+      "trigger": "whileOnField",
+      "conditions": [
+        {
+          "type": "hasEffect",
+          "value": "stun"
+        }
+      ],
+      "effects": [
+        {
+          "type": "removeStun",
+          "abilityTarget": "self"
+        }
+      ]
+    }
+  ]
+}
