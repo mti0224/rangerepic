@@ -76,6 +76,7 @@ export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEn
     },
     normalSupport: {
       target: 'singleAlly',
+      description: '',
       animation: 'skill2',
       effects: [],
     },
