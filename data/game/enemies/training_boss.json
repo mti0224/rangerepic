@@ -11,8 +11,8 @@
   "assetVariantId": "u91030-baal",
   "stats": {
     "hp": 1000,
-    "attack": 200,
-    "critRate": 0,
+    "attack": 100,
+    "critRate": 20,
     "critDamage": 3,
     "hitRate": 100
   },
@@ -21,7 +21,8 @@
     "hits": 1,
     "skillGaugeGain": 0,
     "effects": [],
-    "animation": "attack"
+    "animation": "attack",
+    "description": "對全體Ranger造成攻擊力100%的範圍傷害"
   },
   "skill": {
     "name": "鬼面",
@@ -50,15 +51,15 @@
     {
       "id": "ability_1",
       "name": "同歸於盡",
-      "description": "死神會把擊殺他的Ranger同歸於盡",
+      "description": "死神會讓擊殺他的Ranger跟著同歸於盡",
       "icon": "",
       "trigger": "selfDied",
       "conditions": [],
       "effects": [
         {
-          "type": "deadlyPoison",
-          "value": 100,
-          "duration": 1,
+          "type": "fixedDamage",
+          "value": 999999,
+          "hits": 1,
           "abilityTarget": "attacker"
         }
       ]
