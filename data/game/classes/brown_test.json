@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "brown_test",
+  "characterId": "brown",
+  "assetVariantId": "u1134h-brown",
+  "role": "未分類",
+  "names": {
+    "zh": "終極黑衣熊大",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "stats": {
+    "hp": 1000,
+    "attack": 100,
+    "critRate": 0,
+    "critDamage": 3,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 1,
+    "skillGaugeGain": 5
+  },
+  "normalSupport": {
+    "target": "singleAlly",
+    "effects": [
+      {
+        "type": "attackUp",
+        "value": 30,
+        "duration": 2
+      }
+    ]
+  },
+  "skill": {
+    "icon": "",
+    "target": {
+      "side": "enemy",
+      "count": 1,
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "value": 150,
+        "hits": 1
+      },
+      {
+        "type": "attackDown",
+        "value": 20,
+        "duration": 1
+      }
+    ]
+  },
+  "abilities": [
+    {
+      "id": "ability_1",
+      "icon": "/gameplay-icons/ability/builtin/ab231_bloodlust_icon.png",
+      "trigger": "whileOnField",
+      "conditions": [
+        {
+          "type": "selfHpPercent",
+          "operator": "<=",
+          "value": 50
+        }
+      ],
+      "effects": [
+        {
+          "type": "attackUp",
+          "value": 40,
+          "duration": 1
+        }
+      ]
+    }
+  ]
+}
