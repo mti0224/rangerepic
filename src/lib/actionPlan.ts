@@ -43,7 +43,11 @@ export function bodyPointsOf(assets: RangerAssets, cfg: RangerConfig): { stand: 
 export function resolveMove(
   assets: RangerAssets, cfg: RangerConfig, name: ActionName,
 ): { meta: MoveData; synthetic: boolean } | null {
-  const kind = KIND_OF[name]
+  // Gameplay may map a semantic action (for example Normal Support = skill2)
+  // to another raw animation slot. Body animation and projectile metadata must
+  // use the same source slot or bullets from an unrelated attack can leak in.
+  const visualName = cfg.actions[name].visualSource ?? name
+  const kind = KIND_OF[visualName]
   const fromGame = assets.gameData?.moves[kind]
   if (fromGame) {
     // ความเร็วที่ตั้งเองใช้ได้เฉพาะท่าที่บินอยู่แล้ว — ห้ามทำให้ท่าไม่บินกลายเป็นบิน
