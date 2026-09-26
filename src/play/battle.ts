@@ -658,6 +658,7 @@ export class Battle {
         return numberCompare(actual, Number.isFinite(expected) ? expected : 1)
       }
       case 'hasStatus':
+      case 'hasEffect':
         return typeof condition.value === 'string'
           && u.statuses.some(s => s.gameplayType === condition.value || s.type === condition.value)
       case 'statusType':
@@ -715,6 +716,7 @@ export class Battle {
         return source.alive && !!subject && subject !== source && subject.team === source.team
       case 'enemyDied':
         return source.alive && !!subject && subject.team !== source.team
+      case 'damaged':
       case 'beforeDamaged':
       case 'afterDamaged':
       case 'statusApplied':
@@ -1065,7 +1067,11 @@ export class Battle {
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
     if (u.gameplayClass) {
-      if (action === 'skill1') return u.gameplayClass.skillEnabled !== false && !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
+      if (action === 'skill1') {
+        if (u.gameplayClass.skillEnabled === false || this.has(u, 'silence')) return false
+        if (u.gameplayClass.usesSkillGauge === false) return true
+        return this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
+      }
       // skill2 is the class's normal support action, not the gauge Skill.
       return true
     }
@@ -1269,6 +1275,23 @@ export class Battle {
 
   /** เลือกท่า + เป้าอัตโนมัติของเทิร์นนี้ */
   planAuto(u: Unit): Plan | null {
+    // Enemy Gameplay classes do not use the team skill gauge. Instead, each action
+    // independently rolls the authored skill activation rate. Failing the roll does
+    // not disable the normal attack; support remains another optional fallback.
+    if (u.gameplayClass?.usesSkillGauge === false) {
+      const rate = clamp(u.gameplayClass.skillActivationRate ?? 0, 0, 100)
+      let action: ActionName = 'attack'
+      if (this.canUse(u, 'skill1') && this.rand() * 100 < rate) {
+        action = 'skill1'
+      } else if (u.gameplayClass.normalSupport.effects.length > 0 && this.canUse(u, 'skill2') && this.rand() < 0.5) {
+        action = 'skill2'
+      }
+      const list = this.selectableTargets(u, action)
+      if (!list.length) return null
+      const ally = this.targetsAllies(u, action)
+      const target = list.reduce((a, b) => ((ally ? b.hp / b.maxHp < a.hp / a.maxHp : b.hp < a.hp) ? b : a))
+      return { action, target }
+    }
     if (this.aiLevel[u.team] === 'smart') {
       const c = this.ai.choose(u)
       return c ? { action: c.action, target: c.target, caster: c.caster } : null
@@ -1296,6 +1319,7 @@ export class Battle {
   /** จ่าย/ได้พลังงานตอนเริ่มท่า */
   commitAction(u: Unit, action: ActionName): void {
     if (u.gameplayClass) {
+      if (u.gameplayClass.usesSkillGauge === false) return
       if (action === 'attack') {
         // Gauge is shared by the team. Continuous gauge modifiers from any living
         // ally are combined; negative values reduce gain, positive values increase it.
@@ -1434,6 +1458,7 @@ export class Battle {
 
     if (target.gameplayClass && actualDamage > 0) {
       const event = { subject: target, attacker, damage: actualDamage, hpBefore, hpAfter: target.hp }
+      this.dispatchGameplayAbilityEvent('damaged', event)
       this.dispatchGameplayAbilityEvent('afterDamaged', event)
       this.dispatchGameplayAbilityEvent('hpChanged', event)
     }
