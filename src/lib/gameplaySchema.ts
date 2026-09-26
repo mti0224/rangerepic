@@ -76,6 +76,39 @@ export const EFFECT_TYPES = [
 ] as const
 export type GameplayEffectType = typeof EFFECT_TYPES[number]
 
+/** Effects exposed when a skill targets enemies. */
+export const ATTACK_SKILL_EFFECT_TYPES = [
+  'damage',
+  'damageOverTime',
+  'poison',
+  'deadlyPoison',
+  'attackDown',
+  'critRateDown',
+  'critDamageDown',
+  'hitRateDown',
+  'vulnerable',
+  'stun',
+  'silence',
+  'healingDown',
+  'removeShield',
+  'dispelBuffs',
+] as const satisfies readonly GameplayEffectType[]
+
+/** Effects exposed for normal support and skills that target allies. */
+export const SUPPORT_SKILL_EFFECT_TYPES = [
+  'shield',
+  'heal',
+  'attackUp',
+  'critRateUp',
+  'critDamageUp',
+  'reflect',
+  'taunt',
+  'damageReduction',
+  'cleanseDebuffs',
+  'cleanseDamageOverTime',
+  'cleansePoison',
+] as const satisfies readonly GameplayEffectType[]
+
 export interface GameplayEffect {
   type: GameplayEffectType
   /** Percentage or fixed value according to effect type. */
@@ -99,6 +132,8 @@ export interface SkillTargetRule {
   selector: TargetSelector
 }
 export interface GameplaySkill {
+  /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
+  icon?: string
   target: SkillTargetRule
   effects: GameplayEffect[]
 }
@@ -142,6 +177,8 @@ export interface AbilityCondition {
 
 export interface GameplayAbility {
   id: string
+  /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
+  icon?: string
   trigger: AbilityTrigger
   /** Used by triggers such as everyNRounds. */
   triggerValue?: number
@@ -285,7 +322,7 @@ export function newGameplayEffect(type: GameplayEffectType = 'damage'): Gameplay
 }
 
 export function newGameplayAbility(index = 1): GameplayAbility {
-  return { id: 'ability_' + index, trigger: 'whileOnField', conditions: [], effects: [newGameplayEffect('attackUp')] }
+  return { id: 'ability_' + index, icon: '', trigger: 'whileOnField', conditions: [], effects: [newGameplayEffect('attackUp')] }
 }
 
 export function newGameplayClass(id: string, characterId: string, assetVariantId: string): GameplayClass {
@@ -299,7 +336,7 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
     normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5 },
     normalSupport: { target: 'singleAlly', effects: [] },
-    skill: { target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    skill: { icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
   }
 }

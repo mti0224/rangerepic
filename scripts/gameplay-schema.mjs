@@ -41,6 +41,37 @@ export const EFFECT_TYPES = [
   'removeSilence',
 ]
 
+export const ATTACK_SKILL_EFFECT_TYPES = [
+  'damage',
+  'damageOverTime',
+  'poison',
+  'deadlyPoison',
+  'attackDown',
+  'critRateDown',
+  'critDamageDown',
+  'hitRateDown',
+  'vulnerable',
+  'stun',
+  'silence',
+  'healingDown',
+  'removeShield',
+  'dispelBuffs',
+]
+
+export const SUPPORT_SKILL_EFFECT_TYPES = [
+  'shield',
+  'heal',
+  'attackUp',
+  'critRateUp',
+  'critDamageUp',
+  'reflect',
+  'taunt',
+  'damageReduction',
+  'cleanseDebuffs',
+  'cleanseDamageOverTime',
+  'cleansePoison',
+]
+
 export const ABILITY_TRIGGERS = [
   'whileOnField',
   'battleStart',
@@ -106,6 +137,10 @@ function validateNames(names, errors, prefix = 'names') {
   if (![names.zh, names.en, names.th, names.jp].some(v => asText(v))) errors.push(prefix + ' needs at least one non-empty name')
 }
 
+function validateIcon(icon, errors, prefix) {
+  if (icon != null && typeof icon !== 'string') errors.push(prefix + ' must be a string')
+}
+
 function validateEffect(effect, errors, prefix) {
   if (!effect || typeof effect !== 'object' || Array.isArray(effect)) {
     errors.push(prefix + ' must be an object')
@@ -117,12 +152,18 @@ function validateEffect(effect, errors, prefix) {
   if (effect.hits != null && (!asInt(effect.hits) || effect.hits < 1)) errors.push(prefix + '.hits must be an integer >= 1')
 }
 
-function validateEffects(effects, errors, prefix) {
+function validateEffects(effects, errors, prefix, allowed = EFFECT_TYPES) {
   if (!Array.isArray(effects)) {
     errors.push(prefix + ' must be an array')
     return
   }
-  effects.forEach((effect, i) => validateEffect(effect, errors, prefix + '[' + i + ']'))
+  effects.forEach((effect, i) => {
+    const p = prefix + '[' + i + ']'
+    validateEffect(effect, errors, p)
+    if (effect && typeof effect === 'object' && EFFECT_TYPES.includes(effect.type) && !allowed.includes(effect.type)) {
+      errors.push(p + '.type is not allowed in this context')
+    }
+  })
 }
 
 function validateTarget(target, errors, prefix) {
@@ -144,6 +185,7 @@ function validateAbility(ability, errors, prefix) {
     return
   }
   if (!asText(ability.id) || !GAMEPLAY_ID_RE.test(ability.id)) errors.push(prefix + '.id is invalid')
+  validateIcon(ability.icon, errors, prefix + '.icon')
   if (!ABILITY_TRIGGERS.includes(ability.trigger)) errors.push(prefix + '.trigger is invalid')
   if (ability.triggerValue != null && !asNum(ability.triggerValue)) errors.push(prefix + '.triggerValue must be a number')
   if (!Array.isArray(ability.conditions)) errors.push(prefix + '.conditions must be an array')
@@ -205,14 +247,16 @@ export function validateClass(data, expectedId) {
   if (!support || typeof support !== 'object' || Array.isArray(support)) errors.push('normalSupport must be an object')
   else {
     if (!['singleAlly', 'allAllies'].includes(support.target)) errors.push('normalSupport.target is invalid')
-    validateEffects(support.effects, errors, 'normalSupport.effects')
+    validateEffects(support.effects, errors, 'normalSupport.effects', SUPPORT_SKILL_EFFECT_TYPES)
   }
 
   const skill = data.skill
   if (!skill || typeof skill !== 'object' || Array.isArray(skill)) errors.push('skill must be an object')
   else {
+    validateIcon(skill.icon, errors, 'skill.icon')
     validateTarget(skill.target, errors, 'skill.target')
-    validateEffects(skill.effects, errors, 'skill.effects')
+    const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
+    validateEffects(skill.effects, errors, 'skill.effects', allowedSkillEffects)
   }
 
   if (!Array.isArray(data.abilities)) errors.push('abilities must be an array')

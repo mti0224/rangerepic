@@ -22,6 +22,7 @@ const GAME_DIR = path.join(ROOT, 'data', 'game')
 const CHARACTERS_DIR = path.join(GAME_DIR, 'characters')
 const CLASSES_DIR = path.join(GAME_DIR, 'classes')
 const RULES_FILE = path.join(GAME_DIR, 'rules.json')
+const GAMEPLAY_ICON_DIR = path.join(ROOT, 'public', 'gameplay-icons')
 const ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
 const COOKIE_NAME = 'rangerepic_admin'
 const SESSION_TTL_SEC = Math.max(900, Number(process.env.SESSION_TTL_SEC || 43200))
@@ -312,6 +313,51 @@ async function saveGameplayDoc(dir, id, data) {
   return file
 }
 
+async function listGameplayIconDir(kind, source) {
+  const dir = source === 'builtin'
+    ? path.join(GAMEPLAY_ICON_DIR, kind, 'builtin')
+    : path.join(GAMEPLAY_ICON_DIR, kind, 'custom')
+  const files = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
+  return files
+    .filter(item => item.isFile() && /\.(png|jpe?g|webp)$/i.test(item.name))
+    .map(item => ({
+      kind,
+      name: item.name,
+      url: '/gameplay-icons/' + kind + '/' + source + '/' + encodeURIComponent(item.name),
+      source,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+async function listGameplayIcons() {
+  const [skillCustom, abilityBuiltin, abilityCustom] = await Promise.all([
+    listGameplayIconDir('skill', 'custom'),
+    listGameplayIconDir('ability', 'builtin'),
+    listGameplayIconDir('ability', 'custom'),
+  ])
+  return { skill: skillCustom, ability: [...abilityBuiltin, ...abilityCustom] }
+}
+
+async function saveGameplayIcon(kind, name, dataUrl) {
+  if (!['skill', 'ability'].includes(kind)) throw new Error('bad icon kind')
+  const match = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl)
+  if (!match) throw new Error('only PNG, JPEG and WebP icons are supported')
+  const buffer = Buffer.from(match[2], 'base64')
+  if (!buffer.length || buffer.length > 1024 * 1024) throw new Error('icon must be between 1 byte and 1 MB')
+  const ext = match[1] === 'jpeg' ? 'jpg' : match[1]
+  const base = path.basename(name || kind, path.extname(name || '')).replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 64) || kind
+  const hash = crypto.createHash('sha1').update(buffer).digest('hex').slice(0, 10)
+  const fileName = base + '-' + hash + '.' + ext
+  const dir = path.join(GAMEPLAY_ICON_DIR, kind, 'custom')
+  await fs.mkdir(dir, { recursive: true })
+  const file = path.join(dir, fileName)
+  await fs.writeFile(file, buffer)
+  return {
+    icon: { kind, name: fileName, url: '/gameplay-icons/' + kind + '/custom/' + encodeURIComponent(fileName), source: 'custom' },
+    relativePath: path.relative(ROOT, file).split(path.sep).join('/'),
+  }
+}
+
 async function git(args, extraEnv = {}) {
   return execFileAsync('git', args, {
     cwd: ROOT,
@@ -367,6 +413,16 @@ async function handleApi(req, res, url) {
     return sendJson(res, 200, { rangers: await listRangerItems() })
   }
   if (seg[0] === 'gameplay') {
+    if (req.method === 'GET' && seg[1] === 'icons' && !seg[2]) {
+      return sendJson(res, 200, await listGameplayIcons())
+    }
+    if (req.method === 'POST' && seg[1] === 'icon' && (seg[2] === 'skill' || seg[2] === 'ability')) {
+      const data = JSON.parse(await readBody(req))
+      if (!data?.name || !data?.dataUrl) return sendJson(res, 400, { error: 'name and dataUrl are required' })
+      const saved = await saveGameplayIcon(seg[2], data.name, data.dataUrl)
+      const sync = await persistSafe([saved.relativePath], 'admin: upload ' + seg[2] + ' icon ' + saved.icon.name)
+      return sendJson(res, 200, { ok: true, icon: saved.icon, git: sync })
+    }
     if (req.method === 'GET' && seg[1] === 'characters' && !seg[2]) {
       return sendJson(res, 200, { characters: await listGameplayDocs(CHARACTERS_DIR) })
     }
@@ -586,7 +642,7 @@ const server = http.createServer(async (req, res) => {
       return await handleApi(req, res, url)
     }
 
-    if (url.pathname.startsWith('/rangers/')) {
+    if (url.pathname.startsWith('/rangers/') || url.pathname.startsWith('/gameplay-icons/')) {
       const live = safeJoin(path.join(ROOT, 'public'), url.pathname)
       if (live && await serveFile(res, live, false)) return
     }

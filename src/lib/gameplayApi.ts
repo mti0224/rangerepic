@@ -1,5 +1,20 @@
 import type { BattleRulesV1, GameplayCharacter, GameplayClass } from './gameplaySchema'
 
+export type GameplayIconKind = 'skill' | 'ability'
+export type GameplayIconSource = 'builtin' | 'custom'
+
+export interface GameplayIconAsset {
+  kind: GameplayIconKind
+  name: string
+  url: string
+  source: GameplayIconSource
+}
+
+export interface GameplayIconLibrary {
+  skill: GameplayIconAsset[]
+  ability: GameplayIconAsset[]
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
@@ -40,4 +55,28 @@ export const deleteGameplayClass = async (id: string): Promise<void> => {
 
 export const saveGameplayRules = async (data: BattleRulesV1): Promise<void> => {
   await request('/api/gameplay/rules', { method: 'POST', body: JSON.stringify(data) })
+}
+
+
+export const listGameplayIcons = async (): Promise<GameplayIconLibrary> =>
+  await request<GameplayIconLibrary>('/api/gameplay/icons')
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = () => reject(reader.error ?? new Error('無法讀取圖示檔案'))
+    reader.onload = () => typeof reader.result === 'string'
+      ? resolve(reader.result)
+      : reject(new Error('無法讀取圖示檔案'))
+    reader.readAsDataURL(file)
+  })
+}
+
+export const uploadGameplayIcon = async (kind: GameplayIconKind, file: File): Promise<GameplayIconAsset> => {
+  const dataUrl = await fileToDataUrl(file)
+  const result = await request<{ icon: GameplayIconAsset }>('/api/gameplay/icon/' + kind, {
+    method: 'POST',
+    body: JSON.stringify({ name: file.name, dataUrl }),
+  })
+  return result.icon
 }
