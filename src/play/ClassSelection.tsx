@@ -80,11 +80,17 @@ export function ClassDetails({ row }: { row: RangerData }) {
     <section><h3>基礎數值</h3><dl className="ep-stats">{stats.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></section>
     <section><h3>普通攻擊</h3><p>{targets[c.normalAttack.target]}{c.normalAttack.target === 'primaryPlusRandom' ? `（額外 ${c.normalAttack.extraTargets ?? 0} 名）` : ''}・{c.normalAttack.hits} Hit</p><p>每 Hit 造成 {c.stats.attack.toLocaleString()} 基礎傷害，每次行動技能條 +{c.normalAttack.skillGaugeGain}%。</p></section>
     <section><h3>普通輔助</h3><p>{targets[c.normalSupport.target]}</p><Effects effects={c.normalSupport.effects} /></section>
-    <section><h3>{c.skill.icon && <img className="ep-effect-icon" src={c.skill.icon} alt="" />}技能</h3><p>{c.skill.target.side === 'enemy' ? '敵方' : '我方'} {c.skill.target.count === 'all' ? '全體' : `${c.skill.target.count} 名`}・{selectors[c.skill.target.selector]}</p><Effects effects={c.skill.effects} /></section>
+    <section>
+      <h3>{c.skill.icon && <img className="ep-effect-icon" src={c.skill.icon} alt="" />}{c.skill.name?.trim() || '技能'}</h3>
+      {c.skill.description?.trim()
+        ? <p className="ep-authored-copy">{c.skill.description}</p>
+        : <><p>{c.skill.target.side === 'enemy' ? '敵方' : '我方'} {c.skill.target.count === 'all' ? '全體' : `${c.skill.target.count} 名`}・{selectors[c.skill.target.selector]}</p><Effects effects={c.skill.effects} /></>}
+    </section>
     <section><h3>能力</h3>{c.abilities.length ? c.abilities.map((a, i) => <div className="ep-ability" key={a.id}>
-      <h4>{a.icon && <img className="ep-effect-icon" src={a.icon} alt="" />}能力 {i + 1}・{TRIGGER_LABEL_ZH[a.trigger].replace('N', String(a.triggerValue ?? 1))}</h4>
-      {a.conditions.map((condition, j) => <p key={j}>{CONDITION_LABEL_ZH[condition.type]} {condition.operator ?? ''} {typeof condition.value === 'string' && condition.value in EFFECT_LABEL_ZH ? EFFECT_LABEL_ZH[condition.value as keyof typeof EFFECT_LABEL_ZH] : String(condition.value)}</p>)}
-      <Effects effects={a.effects} ability />
+      <h4>{a.icon && <img className="ep-effect-icon" src={a.icon} alt="" />}{a.name?.trim() || `能力 ${i + 1}`}</h4>
+      {a.description?.trim()
+        ? <p className="ep-authored-copy">{a.description}</p>
+        : <><p>{TRIGGER_LABEL_ZH[a.trigger].replace('N', String(a.triggerValue ?? 1))}</p>{a.conditions.map((condition, j) => <p key={j}>{CONDITION_LABEL_ZH[condition.type]} {condition.operator ?? ''} {typeof condition.value === 'string' && condition.value in EFFECT_LABEL_ZH ? EFFECT_LABEL_ZH[condition.value as keyof typeof EFFECT_LABEL_ZH] : String(condition.value)}</p>)}<Effects effects={a.effects} ability /></>}
     </div>) : <p>無</p>}</section>
   </div>
 }
