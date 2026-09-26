@@ -52,6 +52,8 @@ import { statsWithPosition } from '@/lib/formation'
 import { passiveSum, type PassiveDef } from '@/lib/passives'
 import { BattleAI } from './ai'
 import { playableIdentityOfRanger, type AssetVariantId, type CharacterId, type ClassId } from '@/lib/characterModel'
+import type { AbilityCondition, BattleRulesV1, GameplayClass, GameplayEffectType } from '@/lib/gameplaySchema'
+import { gameplayNormalAttackSkill } from '@/lib/gameplayAdapter'
 
 /** smart = ให้คะแนนทุกทางเลือก · basic = แบบเดิม (สุ่มท่า ตีตัวเลือดน้อยสุด) · random = สุ่มล้วน */
 export type AiLevel = 'smart' | 'basic' | 'random'
@@ -64,6 +66,9 @@ export interface UnitSetup {
   characterId?: CharacterId
   classId?: ClassId
   assetVariantId?: AssetVariantId
+  /** RangerEpic Gameplay V1 combat definition. When present, it is authoritative over legacy combat stats. */
+  gameplayClass?: GameplayClass
+  gameplayRules?: BattleRulesV1
   row: Row
   /** ช่องในแถว: แถวหน้า 0–1, แถวหลัง 0–2 */
   lane: number
@@ -128,6 +133,10 @@ export interface Unit {
   characterId: CharacterId
   classId: ClassId
   assetVariantId: AssetVariantId
+  gameplayClass?: GameplayClass
+  gameplayRules?: BattleRulesV1
+  /** Individual RangerEpic skill gauge (0..gameplayRules.skillGaugeMax). */
+  skillGauge: number
   /** เลเวลฮีโร่ (แสดงผลอย่างเดียว) */
   level: number
   team: Team
@@ -333,7 +342,8 @@ export class Battle {
     teams.forEach((list, t) => {
       list.forEach((u, i) => {
         // โบนัสตามตำแหน่งที่วาง (แถวหน้าถึก / แถวหลังตีแรง) — ดู lib/formation.ts
-        const s = statsWithPosition(u.stats, u.row, u.lane)
+        // Gameplay V1 has no hidden row stat bonuses; the class JSON is authoritative.
+        const s = u.gameplayClass ? u.stats : statsWithPosition(u.stats, u.row, u.lane)
         // SPD เท่ากันจะเสมอกันตลอด — บวกเศษเล็กน้อยให้ลำดับแน่นอน สลับกันเล่นทีละทีม
         const spd = Math.max(1, s.spd) + (5 - i) * 0.01 + (t === 0 ? 0.001 : 0)
         this.units.push(this.makeUnit(u, t as Team, s, spd, `${t}-${u.row}-${u.lane}`))
@@ -360,6 +370,9 @@ export class Battle {
       characterId: u.characterId ?? legacy.characterId,
       classId: u.classId ?? legacy.classId,
       assetVariantId: u.assetVariantId ?? legacy.assetVariantId,
+      gameplayClass: u.gameplayClass,
+      gameplayRules: u.gameplayRules,
+      skillGauge: 0,
       level: u.level ?? 1,
       team: t as Team,
       row: u.row,
@@ -436,7 +449,7 @@ export class Battle {
   /** พลังงานเริ่มเกมของทีม = ค่าเริ่ม + โบนัสตำแหน่ง (ซัพพอร์ต) */
   private startEnergy(): void {
     for (const t of [0, 1] as Team[]) {
-      const bonus = Math.max(0, ...this.units.filter(u => u.team === t).map(u => traitOf(u.role).energyBonus ?? 0))
+      const bonus = Math.max(0, ...this.units.filter(u => u.team === t).map(u => u.gameplayClass ? 0 : (traitOf(u.role).energyBonus ?? 0)))
       this.energy[t] = Math.min(ENERGY_MAX, ENERGY_START + bonus)
     }
   }
@@ -495,17 +508,75 @@ export class Battle {
   }
   /** พาสซีฟประจำตัวชนิดนี้รวมกี่ % */
   passive(u: Unit, type: Parameters<typeof passiveSum>[1]): number { return passiveSum(u.passives, type) }
+
+  isGameplayUnit(u: Unit): boolean { return !!u.gameplayClass }
+
+  gameplayGaugeMax(u: Unit): number {
+    return Math.max(1, u.gameplayRules?.skillGaugeMax ?? 100)
+  }
+
+  private conditionMatches(u: Unit, condition: AbilityCondition): boolean {
+    const numberCompare = (actual: number, expected: number): boolean => {
+      switch (condition.operator ?? '=') {
+        case '<': return actual < expected
+        case '<=': return actual <= expected
+        case '=': return actual === expected
+        case '>=': return actual >= expected
+        case '>': return actual > expected
+      }
+    }
+    const expected = typeof condition.value === 'number' ? condition.value : Number(condition.value)
+    switch (condition.type) {
+      case 'selfHpPercent':
+        return numberCompare(u.maxHp > 0 ? u.hp / u.maxHp * 100 : 0, expected)
+      case 'allyAliveCount':
+        return numberCompare(this.units.filter(x => x.team === u.team && x.alive).length, expected)
+      case 'enemyAliveCount':
+        return numberCompare(this.units.filter(x => x.team !== u.team && x.alive).length, expected)
+      case 'round':
+        return numberCompare(this.turn, expected)
+      case 'hasShield': {
+        const actual = this.has(u, 'shield') ? 1 : 0
+        return numberCompare(actual, Number.isFinite(expected) ? expected : 1)
+      }
+      case 'hasStatus':
+      case 'statusType':
+        return typeof condition.value === 'string' && u.statuses.some(s => s.type === condition.value)
+      // Event-scoped conditions require the full V2 event runtime and must not be guessed here.
+      case 'receivedDamage':
+      default:
+        return false
+    }
+  }
+
+  /**
+   * Constant effects from Gameplay V1 "whileOnField" abilities.
+   * Event-triggered abilities are handled by the dedicated V2 runtime; this bridge
+   * intentionally evaluates only continuously-active abilities.
+   */
+  gameplayAbilityValue(u: Unit, effectType: GameplayEffectType): number {
+    const cls = u.gameplayClass
+    if (!cls) return 0
+    let total = 0
+    for (const ability of cls.abilities) {
+      if (ability.trigger !== 'whileOnField') continue
+      if (!ability.conditions.every(condition => this.conditionMatches(u, condition))) continue
+      for (const effect of ability.effects) if (effect.type === effectType) total += effect.value ?? 0
+    }
+    return total
+  }
   /** ธาตุที่ใช้คิดตัวคูณ (โดนเปลี่ยนธาตุอยู่ = ใช้ธาตุใหม่) */
   effElement(u: Unit): Element | undefined {
     return u.statuses.find(s => s.type === 'elementShift')?.element ?? u.element
   }
   effAtk(u: Unit): number {
-    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(MIN_ATK_RATIO, 1 + (this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100)
+    const gameplayUp = this.gameplayAbilityValue(u, 'attackUp')
+    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(MIN_ATK_RATIO, 1 + (gameplayUp + this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100)
   }
   effSpd(u: Unit): number { return u.spd * (1 + this.passive(u, 'speedUp') / 100) * Math.max(MIN_SPD_RATIO, 1 + (this.pctOf(u, 'speedUp') - this.pctOf(u, 'speedDown')) / 100) }
-  effCrit(u: Unit): number { return clamp(u.crit + this.passive(u, 'critUp') + this.pctOf(u, 'critUp') - this.pctOf(u, 'critDown'), 0, CAPS.crit) }
+  effCrit(u: Unit): number { return clamp(u.crit + this.passive(u, 'critUp') + this.gameplayAbilityValue(u, 'critRateUp') + this.pctOf(u, 'critUp') - this.pctOf(u, 'critDown'), 0, CAPS.crit) }
   /** คริดาเมจ (%) — ลดได้ต่ำสุด 100 (คริแล้วไม่เบากว่าตีปกติ) */
-  effCritDmg(u: Unit): number { return Math.max(100, u.critDmg + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown')) }
+  effCritDmg(u: Unit): number { return Math.max(100, u.critDmg + this.gameplayAbilityValue(u, 'critDamageUp') + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown')) }
   /** ฟื้นเลือดได้ไหม (โดนห้ามฟื้นฟู = ไม่ได้ทุกแบบ) */
   canHeal(u: Unit): boolean { return u.alive && this.healFactor(u) > 0 }
   effEvade(u: Unit): number { return u.evade + this.pctOf(u, 'evadeUp') - this.pctOf(u, 'evadeDown') }
@@ -522,7 +593,8 @@ export class Battle {
   takenMult(target: Unit, isSkill: boolean): number {
     const amp = Math.max(0.1, 1 + (this.pctOf(target, 'vulnerable') - this.pctOf(target, 'toughUp') - this.passive(target, 'tough')) / 100)
     const res = isSkill ? 1 - clamp(this.effSkillDmgRes(target), 0, CAPS.skillDmgRes) / 100 : 1
-    return amp * res
+    const gameplayReduction = 1 - clamp(this.gameplayAbilityValue(target, 'damageReduction'), 0, 100) / 100
+    return amp * res * gameplayReduction
   }
   /** ฟื้นเลือดได้กี่ส่วน (โดนลดการฟื้นฟู 100% = 0) */
   healFactor(u: Unit): number {
@@ -533,12 +605,15 @@ export class Battle {
 
   /** โอกาสหลบจริง (%) หลังหักความแม่นยำและติดเพดาน */
   evadeChance(attacker: Unit, target: Unit, normal: boolean): number {
+    // Gameplay V1 hitRate is a direct hit probability and has no Evade stat.
+    if (attacker.gameplayClass) return clamp(100 - this.effHit(attacker), 0, 100)
     return normal
       ? clamp(this.effEvade(target) - this.effHit(attacker), 0, CAPS.evade)
       : clamp(this.effSkillEvade(target) - this.effSkillHit(attacker), 0, CAPS.skillEvade)
   }
   resistChance(target: Unit): number {
-    return clamp(this.effSkillRes(target), 0, CAPS.skillRes)
+    // Gameplay V1 has no hidden Skill Resistance.
+    return target.gameplayClass ? 0 : clamp(this.effSkillRes(target), 0, CAPS.skillRes)
   }
 
   // ── เทิร์น ──
@@ -657,16 +732,23 @@ export class Battle {
   }
 
   skillOf(u: Unit, action: ActionName): SkillDef {
+    if (action === 'attack' && u.gameplayClass) return gameplayNormalAttackSkill(u.gameplayClass)
     if (action === 'attack') return this.canStrikeAnyone(u) ? { ...NORMAL_ATTACK, area: 'single_any' } : NORMAL_ATTACK
     return u.skills[action]
   }
 
   costOf(u: Unit, action: ActionName): number {
+    if (u.gameplayClass) return 0
     return action === 'attack' ? 0 : Math.max(0, u.skills[action].cost)
   }
 
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
+    if (u.gameplayClass) {
+      if (action === 'skill1') return !this.has(u, 'silence') && u.skillGauge >= this.gameplayGaugeMax(u)
+      // skill2 is the class's normal support action, not the gauge Skill.
+      return true
+    }
     return !this.has(u, 'silence') && this.energy[u.team] >= this.costOf(u, action)
   }
 
@@ -763,14 +845,16 @@ export class Battle {
    *   ผู้รับ: แทงค์รับดาเมจลดลง
    */
   roleDamageMult(attacker: Unit, target: Unit, normal: boolean): number {
+    // Gameplay V1 role is a label only and must not grant legacy hidden combat traits.
+    if (attacker.gameplayClass && target.gameplayClass) return 1
     const a = traitOf(attacker.role)
-    let m = normal ? a.normalDamage ?? 1 : a.skillDamage ?? 1
+    let m = attacker.gameplayClass ? 1 : (normal ? a.normalDamage ?? 1 : a.skillDamage ?? 1)
     // ไฟเตอร์: ยิ่งเลือดตัวเองน้อยยิ่งแรง
     if (a.desperation) m *= 1 + a.desperation * (1 - attacker.hp / Math.max(1, attacker.maxHp))
     // นักยิง: ตีเป้าที่ยังเลือดเกินครึ่งแรงขึ้น (ล่าตัวถึก)
     if (a.bigTargetDamage && target.hp >= target.maxHp / 2) m *= 1 + a.bigTargetDamage
     if (target.hp < target.maxHp / 2) m *= (a.executeDamage ?? 1) * (1 + this.passive(attacker, 'execute') / 100)
-    return m * (traitOf(target.role).damageTaken ?? 1)
+    return m * (target.gameplayClass ? 1 : (traitOf(target.role).damageTaken ?? 1))
   }
 
   /** ดาเมจเฉลี่ยที่คาดว่าจะเข้า (ไม่สุ่ม ไม่รวมหลบ) — ให้ AI ใช้ประเมิน */
@@ -810,6 +894,19 @@ export class Battle {
 
   /** จ่าย/ได้พลังงานตอนเริ่มท่า */
   commitAction(u: Unit, action: ActionName): void {
+    if (u.gameplayClass) {
+      if (action === 'attack') {
+        const modifier = 1 + this.gameplayAbilityValue(u, 'skillGaugeGainModifier') / 100
+        u.skillGauge = clamp(
+          u.skillGauge + u.gameplayClass.normalAttack.skillGaugeGain * modifier,
+          0,
+          this.gameplayGaugeMax(u),
+        )
+      } else if (action === 'skill1') {
+        u.skillGauge = 0
+      }
+      return
+    }
     const t = u.team
     const gain = action === 'attack' ? ATTACK_ENERGY_GAIN : 0
     this.energy[t] = clamp(this.energy[t] - this.costOf(u, action) + gain, 0, ENERGY_MAX)
@@ -846,6 +943,14 @@ export class Battle {
   /** ดาเมจล้วน (ไม่เช็คหลบ/บาเรีย) — คืนดาเมจ คริ ธาตุ */
   private rollDamage(attacker: Unit, target: Unit, pct: number, normal = false, base?: number): { damage: number; crit: boolean; elementMult: number } {
     const crit = this.rand() * 100 < this.effCrit(attacker)
+    if (attacker.gameplayClass) {
+      // Gameplay V1 intentionally has no DEF, SPD, elements, role traits, random
+      // damage variance, legacy global damage scale, or legacy hit cap.
+      const raw = (base ?? this.effAtk(attacker)) * (pct / 100)
+        * (crit ? this.effCritDmg(attacker) / 100 : 1)
+        * this.takenMult(target, !normal)
+      return { damage: Math.max(1, Math.round(raw)), crit, elementMult: 1 }
+    }
     const variance = 0.85 + this.rand() * 0.3
     const defFactor = 1 - target.def / (target.def + DEF_K)
     const elementMult = elementMultiplier(this.effElement(attacker), this.effElement(target))
@@ -943,11 +1048,15 @@ export class Battle {
 
   /** ความเสียหายจริง 1 ครั้ง: ATK × % × ความแรงเกม — ไม่หัก DEF ไม่คริ ไม่สุ่ม ไม่มีธาตุ/ตำแหน่ง (ติดเพดานต่อครั้ง) */
   trueHit(attacker: Unit, target: Unit, pct: number): number {
+    if (attacker.gameplayClass) return Math.max(1, Math.round(this.effAtk(attacker) * (pct / 100) * this.takenMult(target, true)))
     return Math.max(1, Math.round(this.capDamage(this.effAtk(attacker) * (pct / 100) * this.damageMult * this.takenMult(target, true), target)))
   }
 
   /** ดาเมจ 1 ครั้งแบบค่ากลาง: ไม่คริ ไม่สุ่ม (ติดเพดานต่อครั้งเหมือนของจริง) */
   private previewHit(attacker: Unit, target: Unit, pct: number, normal: boolean, base?: number): number {
+    if (attacker.gameplayClass) {
+      return Math.max(1, Math.round((base ?? this.effAtk(attacker)) * (pct / 100) * this.takenMult(target, !normal)))
+    }
     const defFactor = 1 - target.def / (target.def + DEF_K)
     const raw = (base ?? this.effAtk(attacker)) * (pct / 100) * defFactor * elementMultiplier(this.effElement(attacker), this.effElement(target))
       * this.damageMult * this.roleDamageMult(attacker, target, normal) * this.takenMult(target, !normal)
