@@ -503,7 +503,7 @@ export class BattleScene {
       v.dodgeWalking = false
       v.reacting = false
       v.facingBack = false
-      v.player.playClip(this.walkClip(v), { speed: 1, loop: true })
+      v.player.playClip(this.walkClip(v), { speed: this.speed, loop: true })
     }
     this.onChange?.()
     return true
@@ -512,6 +512,9 @@ export class BattleScene {
   private stepWaveExit(dt: number): void {
     const state = this.waveExit
     if (!state) return
+    // Let the defeated enemy finish its knockback/soul animation first.
+    // This avoids having the winning party leave while the final KO is still playing.
+    if (this.views.some(v => v.unit.team === 1 && !v.unit.alive && v.dying !== null && !v.gone)) return
     state.t += dt
     let allGone = true
     const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
