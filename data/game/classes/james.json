@@ -22,7 +22,7 @@
     "hits": 2,
     "animation": "attack",
     "skillGaugeGain": 5,
-    "description": "對1名敵人造成攻擊力100%的傷害"
+    "description": "對1名敵人造成2次攻擊力100%的傷害"
   },
   "normalSupport": {
     "target": "singleAlly",
