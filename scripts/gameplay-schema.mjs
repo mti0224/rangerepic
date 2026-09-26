@@ -115,8 +115,8 @@ export const DEFAULT_BATTLE_RULES = {
   statFloor: 0,
   playerActsFirst: true,
   freeOrderWithinPhase: true,
-  durationDecrementsAt: 'roundEnd',
-  dotTicksAt: 'roundEnd',
+  durationDecrementsAt: 'sidePhaseEnd',
+  dotTicksAt: 'sidePhaseEnd',
   hotTicksAt: 'sidePhaseEnd',
   reflectCanCrit: false,
   reflectTriggersReflect: false,
@@ -287,8 +287,8 @@ export function validateBattleRules(data) {
   for (const key of ['playerActsFirst', 'freeOrderWithinPhase', 'reflectCanCrit', 'reflectTriggersReflect', 'poisonCanKill', 'shieldAbsorbsPoison', 'shieldAbsorbsDeadlyPoison']) {
     if (typeof data[key] !== 'boolean') errors.push(key + ' must be boolean')
   }
-  if (data.durationDecrementsAt !== 'roundEnd') errors.push('durationDecrementsAt must be roundEnd')
-  if (data.dotTicksAt !== 'roundEnd') errors.push('dotTicksAt must be roundEnd')
+  if (data.durationDecrementsAt !== 'sidePhaseEnd') errors.push('durationDecrementsAt must be sidePhaseEnd')
+  if (data.dotTicksAt !== 'sidePhaseEnd') errors.push('dotTicksAt must be sidePhaseEnd')
   if (data.hotTicksAt !== 'sidePhaseEnd') errors.push('hotTicksAt must be sidePhaseEnd')
   return errors
 }

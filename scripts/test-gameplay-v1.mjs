@@ -47,8 +47,8 @@ const rules = {
   statFloor: 0,
   playerActsFirst: true,
   freeOrderWithinPhase: true,
-  durationDecrementsAt: 'roundEnd',
-  dotTicksAt: 'roundEnd',
+  durationDecrementsAt: 'sidePhaseEnd',
+  dotTicksAt: 'sidePhaseEnd',
   hotTicksAt: 'sidePhaseEnd',
   reflectCanCrit: false,
   reflectTriggersReflect: false,
@@ -210,11 +210,12 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   b.resolveAction(a, 'skill2', a)
   check('duration>1 heal does not heal immediately', a.hp, 500)
   b.endTurn(a)
-  b.nextActor() // leaving Player Phase => HoT tick
+  b.nextActor() // leaving Player Phase => HoT tick + own-side duration countdown
   check('HoT heals at Player Phase End', a.hp, 700)
+  check('Player-side duration decrements when Player Phase ends', a.statuses.find(s => s.gameplayType === 'heal')?.turns, 1)
 }
 
-// DoT ticks at Round End before duration decrement.
+// DoT ticks when the affected side's phase ends, before that side's duration countdown.
 {
   const cls = baseClass({
     skill: {
@@ -228,9 +229,28 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   b.endTurn(a)
   const enemyActor = b.nextActor()
   b.endTurn(enemyActor)
-  b.nextActor() // leaving Enemy Phase => Round End
-  check('Attack-based DoT ticks at Round End (Attack 100 x 10% = 10)', t.hp, 990)
-  check('duration=1 DoT expires after its Round End tick', t.statuses.some(s => s.gameplayType === 'damageOverTime'), false)
+  b.nextActor() // leaving Enemy Phase => affected Enemy side resolves its phase effects
+  check('Attack-based DoT ticks at affected Enemy Phase End (Attack 100 x 10% = 10)', t.hp, 990)
+  check('duration=1 DoT expires after its affected-side Phase End tick', t.statuses.some(s => s.gameplayType === 'damageOverTime'), false)
+}
+
+// A status on the player side resolves when Player Phase ends, not when the applier's side ends.
+{
+  const playerClass = baseClass({ id: 'phase-player' })
+  const enemyClass = baseClass({
+    id: 'phase-enemy',
+    skill: {
+      target: { side: 'enemy', count: 1, selector: 'manual' },
+      effects: [{ type: 'poison', value: 10, duration: 1 }],
+    },
+  })
+  const b = oneVsOne(playerClass, enemyClass)
+  const [player, enemy] = b.units
+  b.resolveAction(enemy, 'skill1', player)
+  check('Player keeps poison before its own phase finishes', [player.hp, player.statuses.find(s => s.gameplayType === 'poison')?.turns], [1000, 1])
+  b.endTurn(player)
+  b.nextActor() // Player Phase End
+  check('Player poison ticks and expires at Player Phase End', [player.hp, player.statuses.some(s => s.gameplayType === 'poison')], [900, false])
 }
 
 // Poison and deadly poison may coexist.
@@ -367,7 +387,7 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('roundStart fires for Round 1 during battle initialization', [b.gameplayRound, Math.round(b.effAtk(b.units[0]))], [1, 115])
 }
 
-// Round End effects are created after the old round countdown and survive into the next round.
+// Round End effects are created after the second side's Phase End countdown and survive into the next round until their owner's next Phase End.
 {
   const cls = baseClass({
     abilities: [{
@@ -388,6 +408,7 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
 
   b.endTurn(me)
   const enemy = b.nextActor()
+  check('Round End duration=1 effect expires when its owner finishes the next Player Phase', b.effAtk(me), 100)
   b.endTurn(enemy)
   b.nextActor() // finish Round 2 and enter Round 3
   check('Round End effect expires after its following round when condition no longer matches', [b.gameplayRound, b.effAtk(me)], [3, 100])

@@ -187,7 +187,7 @@ export const SUMMON_KEYS = [['A', 'S'], ['D', 'F']] as const
 const FOE_SUP = { size: 38, gap: 6, top: 92, right: 1016 }
 const COST_BAR = { x: 266, y: 698, w: 358, h: 18 }
 /** Gameplay shared energy stone: exact 64×71 artwork from the supplied 000–100 sequence. */
-const ENERGY_STONE = { x: 550, y: 615, w: 64, h: 71 }
+const ENERGY_STONE = { x: (1280 - 64) / 2, y: 615, w: 64, h: 71 }
 const ENERGY_CHARGE_PULSE_MS = 280
 const ENERGY_READY_FLASH_MS = 620
 /** กดปุ่มสลับซ้ำภายในเวลานี้ (ms) = ดับเบิลคลิก → ไม่นับครั้งที่สอง */
@@ -691,6 +691,13 @@ export class BattleHud {
     const b = this.s.battle
     const input = this.s.phase === 'input' && this.s.pendingActor?.uid === u.uid
 
+    // Gameplay battle HUD intentionally keeps the entire bottom area clean:
+    // only the centered shared energy stone remains.
+    if (u.gameplayClass) {
+      this.drawGameplayGauge(ctx, u)
+      return
+    }
+
     this.drawPortrait(ctx, u, PORTRAIT, input)
     const P = PORTRAIT
     this.boxes.push({ ...P, hit: { kind: 'block' } })
@@ -705,11 +712,9 @@ export class BattleHud {
     this.boxes.push({ ...PANEL, hit: { kind: 'block' } })
 
     this.drawInfo(ctx, u)
-    if (u.gameplayClass) this.drawGameplayGestureGuide(ctx, input)
-    else ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
+    ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
     this.drawStatuses(ctx, u)
-    if (u.gameplayClass) this.drawGameplayGauge(ctx, u)
-    else this.drawCostBar(ctx, b.energy[0])
+    this.drawCostBar(ctx, b.energy[0])
 
     // กล่องรายละเอียด: ชี้เมาส์ที่ปุ่มท่า
     const hovered = this.hover ? this.hitAt(this.hover.x, this.hover.y) : null
@@ -769,28 +774,6 @@ export class BattleHud {
     // โล่ขาวเห็นเป็นแถบขาวในหลอดแล้ว — ไม่ต้องเขียนตัวเลข +โล่ต่อท้าย
     const hpText = `${fmt(u.hp)}/${fmt(u.maxHp)}`
     iconText(ctx, uiImage(UI_SRC.hp), hpText, bx, y + 61, 10, 13, C.text, 'left', 3, 'HP ')
-  }
-
-  private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, input: boolean): void {
-    const x = BTN.x, y = BTN.y, w = ENERGY_STONE.x - BTN.x - 12, h = BTN.h
-    roundRect(ctx, x, y, w, h, 8)
-    ctx.fillStyle = C.inset
-    ctx.fill()
-    ctx.lineWidth = input ? 1.8 : 1
-    ctx.strokeStyle = input ? withAlpha(C.ally, 0.8) : 'rgba(255,255,255,0.18)'
-    ctx.stroke()
-
-    const lang = getLang()
-    const title = lang === 'zh' ? '拖曳操作' : lang === 'th' ? 'ลากเพื่อสั่งการ' : 'Drag controls'
-    const attack = lang === 'zh' ? '拖到敵人：普通攻擊' : lang === 'th' ? 'ลากไปศัตรู: โจมตีปกติ' : 'Drag to enemy: Normal Attack'
-    const support = lang === 'zh' ? '拖到友軍／點自己：普通輔助' : lang === 'th' ? 'ลากไปเพื่อน/แตะตัวเอง: ช่วยเหลือ' : 'Drag to ally / tap self: Normal Support'
-    ctx.textAlign = 'left'
-    ctx.font = F(12)
-    outlined(ctx, title, x + 10, y + 17, C.gold, 3)
-    ctx.font = F(10)
-    outlined(ctx, fit(ctx, attack, w - 20), x + 10, y + 36, C.text, 3)
-    outlined(ctx, fit(ctx, support, w - 20), x + 10, y + 53, C.dim, 3)
-    this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
   }
 
   private actionName(u: Unit, a: ActionName): string {
@@ -983,14 +966,7 @@ export class BattleHud {
     }
     ctx.restore()
 
-    const lang = getLang()
-    ctx.font = F(10)
-    ctx.textAlign = 'center'
-    outlined(ctx, `${pct}%`, x + w / 2, y + h + 13, ready ? C.gold : C.text, 3)
     if (ready) {
-      const drag = lang === 'zh' ? '拖曳至角色' : lang === 'th' ? 'ลากไปที่ตัวละคร' : 'Drag to Ranger'
-      ctx.font = F(9)
-      outlined(ctx, drag, x + w / 2, y - 4, C.gold, 3)
       this.boxes.push({ x: x - HIT_PAD, y: y - HIT_PAD, w: w + HIT_PAD * 2, h: h + HIT_PAD * 2, hit: { kind: 'skillGauge' } })
     } else {
       this.boxes.push({ x: x - HIT_PAD, y: y - HIT_PAD, w: w + HIT_PAD * 2, h: h + HIT_PAD * 2, hit: { kind: 'block' } })

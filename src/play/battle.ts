@@ -598,20 +598,30 @@ export class Battle {
     this.takeDamage(u, amount, emptyOutcome(u.uid, u.hp), ignoreShield, source)
   }
 
+  /**
+   * Resolve effects owned by the side whose action phase just ended.
+   * Periodic healing/damage happens first, then every remaining status on that
+   * side loses one turn. This makes duration belong to the affected side's
+   * completed phases instead of the global Round boundary.
+   */
+  private finishGameplayPhase(team: Team): void {
+    this.tickGameplayHot(team)
+
+    for (const u of this.units) {
+      if (u.team !== team) continue
+      for (const st of [...u.statuses]) this.tickGameplayDot(u, st)
+    }
+
+    for (const u of this.units) {
+      if (u.team !== team) continue
+      for (const st of u.statuses) st.turns--
+      u.statuses = u.statuses.filter(st => st.turns > 0 && !(st.type === 'shield' && (st.shieldHp ?? 0) <= 0))
+    }
+  }
+
   private finishGameplayRound(): void {
-    // Gameplay V1 damage-over-time resolves at Round End before duration countdown.
-    for (const u of this.units) {
-      for (const s of [...u.statuses]) this.tickGameplayDot(u, s)
-    }
-
-    // Existing effects count the round that just finished and then tick down.
-    // Round-End triggered effects are applied after this countdown so duration=1
-    // remains active through the following round instead of expiring immediately.
-    for (const u of this.units) {
-      for (const s of u.statuses) s.turns--
-      u.statuses = u.statuses.filter(s => s.turns > 0 && !(s.type === 'shield' && (s.shieldHp ?? 0) <= 0))
-    }
-
+    // Round triggers remain full-round events. Phase-owned duration/DOT/HoT
+    // processing has already happened in finishGameplayPhase().
     this.dispatchGameplayAbilityEvent('roundEnd', {})
     this.dispatchGameplayAbilityEvent('everyNRounds', {})
 
@@ -622,7 +632,8 @@ export class Battle {
 
   private advanceGameplayPhase(): void {
     const endingTeam = this.gameplayPhase
-    this.tickGameplayHot(endingTeam)
+    this.finishGameplayPhase(endingTeam)
+    if (this.over) return
 
     const secondTeam = (1 - this.gameplayFirstTeam) as Team
     if (endingTeam === this.gameplayFirstTeam) {
@@ -1022,7 +1033,7 @@ export class Battle {
     return Math.max(1, Math.round(this.capDamage(raw, target)))
   }
 
-  /** End one active unit's action. Gameplay V1 marks it acted; durations wait for Round End. */
+  /** End one active unit's action. Gameplay V1 marks it acted; side-owned effects resolve when that side's phase ends. */
   endTurn(u: Unit): void {
     if (this.usesGameplayPhases) {
       this.gameplayActed.add(u.uid)

@@ -662,7 +662,7 @@ function RulesForm({ value, onChange, onSave, changed }: { value: BattleRulesV1;
           <Check label="反射可爆擊（規格目前應關閉）" checked={value.reflectCanCrit} onChange={v => b('reflectCanCrit', v)} />
           <Check label="反射再次觸發反射（規格目前應關閉）" checked={value.reflectTriggersReflect} onChange={v => b('reflectTriggersReflect', v)} />
         </div>
-        <p className="gp-spec-line">Duration：Round End 扣除 · DOT/中毒/劇毒：Round End · 持續回復：所屬方 Phase End</p>
+        <p className="gp-spec-line">Duration：所屬方 Phase End 扣除 · DOT/中毒/劇毒：所屬方 Phase End · 持續回復：所屬方 Phase End</p>
       </Section>
     </div>
   )
