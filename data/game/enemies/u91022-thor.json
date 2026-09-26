@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "u91022-thor",
+  "names": {
+    "zh": "索爾（測試）",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "assetVariantId": "u91022-thor",
+  "stats": {
+    "hp": 1000,
+    "attack": 30,
+    "critRate": 0,
+    "critDamage": 3,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 2,
+    "animation": "attack",
+    "skillGaugeGain": 0,
+    "effects": []
+  },
+  "normalSupport": {
+    "target": "singleAlly",
+    "animation": "skill2",
+    "effects": []
+  },
+  "skill": {
+    "name": "雷神之鎚",
+    "description": "用雷電之鎚，使隨機2名暈眩3回合",
+    "icon": "",
+    "animation": "skill1",
+    "target": {
+      "side": "enemy",
+      "count": 1,
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "stun",
+        "duration": 4
+      }
+    ]
+  },
+  "skillActivationRate": 30,
+  "abilities": [
+    {
+      "id": "ability_1",
+      "name": "力量限制",
+      "description": "索爾不喜歡其他人對他使用暴力，因此他受到超過100點的傷害時，會產生持續5回合的200點護盾",
+      "icon": "",
+      "trigger": "whileOnField",
+      "conditions": [
+        {
+          "type": "receivedDamage",
+          "operator": ">",
+          "value": 100
+        }
+      ],
+      "effects": [
+        {
+          "type": "shield",
+          "value": 500,
+          "duration": 5,
+          "abilityTarget": "self"
+        }
+      ]
+    }
+  ]
+}
