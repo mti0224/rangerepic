@@ -82,6 +82,7 @@ export const ABILITY_TRIGGERS = [
   'selfDied',
   'allyDied',
   'enemyDied',
+  'damaged',
   'beforeDamaged',
   'afterDamaged',
   'statusApplied',
@@ -96,6 +97,7 @@ export const CONDITION_TYPES = [
   'receivedDamage',
   'statusType',
   'hasStatus',
+  'hasEffect',
   'hasShield',
 ]
 
