@@ -31,7 +31,8 @@
         "value": 30,
         "duration": 2
       }
-    ]
+    ],
+    "description": "使1名Ranger的攻擊力增加30%，效果持續2回合"
   },
   "skill": {
     "icon": "/gameplay-icons/skill/custom/skill_icon_sk1134_brown-13198686a3.png",
