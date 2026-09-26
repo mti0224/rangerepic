@@ -22,7 +22,7 @@ import { enemyAsCombatClass, type GameplayEnemy, type GameplayStage } from '@/li
 import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
 import { ENERGY_STONE_FULL } from './energyStone'
 import StageSelection from './StageSelection'
-import { recordStage } from './collection'
+import { recordStageStars } from './stageProgress'
 import { starsForSurvivors } from './stageResult'
 import './player.css'
 
@@ -369,7 +369,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
         setWaveIndex(i => i + 1)
       } else {
         const stars = starsForSurvivors([...carry.hp.values()].filter(hp => hp > 0).length)
-        recordStage(stageDef.id, stars)
+        recordStageStars(stageDef.id, stars)
         setClearStars(stars)
         setStageComplete(true)
       }
