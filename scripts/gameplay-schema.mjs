@@ -4,6 +4,7 @@
 
 export const GAMEPLAY_SCHEMA_VERSION = 1
 export const GAMEPLAY_ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
+export const GAMEPLAY_ANIMATIONS = ['attack', 'skill1', 'skill2']
 
 export const EFFECT_TYPES = [
   'damage',
@@ -82,11 +83,11 @@ export const ABILITY_TRIGGERS = [
   'selfDied',
   'allyDied',
   'enemyDied',
-  'beforeDamaged',
-  'afterDamaged',
+  'damaged',
   'statusApplied',
   'hpChanged',
 ]
+export const LEGACY_ABILITY_TRIGGERS = ['beforeDamaged', 'afterDamaged']
 
 export const CONDITION_TYPES = [
   'round',
@@ -94,10 +95,10 @@ export const CONDITION_TYPES = [
   'enemyAliveCount',
   'selfHpPercent',
   'receivedDamage',
-  'statusType',
   'hasStatus',
   'hasShield',
 ]
+export const LEGACY_CONDITION_TYPES = ['statusType']
 
 export const CONDITION_OPERATORS = ['<', '<=', '=', '>=', '>']
 
@@ -188,7 +189,7 @@ function validateAbility(ability, errors, prefix) {
   }
   if (!asText(ability.id) || !GAMEPLAY_ID_RE.test(ability.id)) errors.push(prefix + '.id is invalid')
   validateIcon(ability.icon, errors, prefix + '.icon')
-  if (!ABILITY_TRIGGERS.includes(ability.trigger)) errors.push(prefix + '.trigger is invalid')
+  if (![...ABILITY_TRIGGERS, ...LEGACY_ABILITY_TRIGGERS].includes(ability.trigger)) errors.push(prefix + '.trigger is invalid')
   if (ability.triggerValue != null && !asNum(ability.triggerValue)) errors.push(prefix + '.triggerValue must be a number')
   if (!Array.isArray(ability.conditions)) errors.push(prefix + '.conditions must be an array')
   else ability.conditions.forEach((condition, i) => {
@@ -197,7 +198,7 @@ function validateAbility(ability, errors, prefix) {
       errors.push(p + ' must be an object')
       return
     }
-    if (!CONDITION_TYPES.includes(condition.type)) errors.push(p + '.type is invalid')
+    if (![...CONDITION_TYPES, ...LEGACY_CONDITION_TYPES].includes(condition.type)) errors.push(p + '.type is invalid')
     if (condition.operator != null && !CONDITION_OPERATORS.includes(condition.operator)) errors.push(p + '.operator is invalid')
     if (condition.value == null || (!asNum(condition.value) && typeof condition.value !== 'string')) errors.push(p + '.value must be a number or string')
   })
@@ -241,6 +242,7 @@ export function validateClass(data, expectedId) {
   else {
     if (!['single', 'all', 'primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
     if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be an integer >= 1')
+    if (attack.animation != null && !GAMEPLAY_ANIMATIONS.includes(attack.animation)) errors.push('normalAttack.animation is invalid')
     if (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100) errors.push('normalAttack.skillGaugeGain must be 0..100')
     if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
   }
@@ -249,6 +251,7 @@ export function validateClass(data, expectedId) {
   if (!support || typeof support !== 'object' || Array.isArray(support)) errors.push('normalSupport must be an object')
   else {
     if (!['singleAlly', 'allAllies'].includes(support.target)) errors.push('normalSupport.target is invalid')
+    if (support.animation != null && !GAMEPLAY_ANIMATIONS.includes(support.animation)) errors.push('normalSupport.animation is invalid')
     validateEffects(support.effects, errors, 'normalSupport.effects', SUPPORT_SKILL_EFFECT_TYPES)
   }
 
@@ -256,6 +259,7 @@ export function validateClass(data, expectedId) {
   if (!skill || typeof skill !== 'object' || Array.isArray(skill)) errors.push('skill must be an object')
   else {
     validateIcon(skill.icon, errors, 'skill.icon')
+    if (skill.animation != null && !GAMEPLAY_ANIMATIONS.includes(skill.animation)) errors.push('skill.animation is invalid')
     validateTarget(skill.target, errors, 'skill.target')
     const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
     validateEffects(skill.effects, errors, 'skill.effects', allowedSkillEffects)
