@@ -241,6 +241,7 @@ export function validateClass(data, expectedId) {
   else {
     if (!['single', 'all', 'primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
     if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be an integer >= 1')
+    if (attack.animation != null && !['attack','skill1','skill2'].includes(attack.animation)) errors.push('normalAttack.animation is invalid')
     if (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100) errors.push('normalAttack.skillGaugeGain must be 0..100')
     if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
   }
@@ -249,6 +250,7 @@ export function validateClass(data, expectedId) {
   if (!support || typeof support !== 'object' || Array.isArray(support)) errors.push('normalSupport must be an object')
   else {
     if (!['singleAlly', 'allAllies'].includes(support.target)) errors.push('normalSupport.target is invalid')
+    if (support.animation != null && !['attack','skill1','skill2'].includes(support.animation)) errors.push('normalSupport.animation is invalid')
     validateEffects(support.effects, errors, 'normalSupport.effects', SUPPORT_SKILL_EFFECT_TYPES)
   }
 
@@ -256,6 +258,7 @@ export function validateClass(data, expectedId) {
   if (!skill || typeof skill !== 'object' || Array.isArray(skill)) errors.push('skill must be an object')
   else {
     validateIcon(skill.icon, errors, 'skill.icon')
+    if (skill.animation != null && !['attack','skill1','skill2'].includes(skill.animation)) errors.push('skill.animation is invalid')
     validateTarget(skill.target, errors, 'skill.target')
     const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
     validateEffects(skill.effects, errors, 'skill.effects', allowedSkillEffects)
