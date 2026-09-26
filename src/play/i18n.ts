@@ -139,6 +139,7 @@ const STATUS: Record<StatusType, L4> = {
   elementShift: ['ELEMENT', 'เปลี่ยนธาตุ', '屬性變更', '属性変化'],
   toughUp: ['TOUGH▲', 'ทนทาน▲', '堅韌▲', '耐久▲'],
   skillDmgResUp: ['S.DMG RES▲', 'ต้านดาเมจสกิล▲', '技傷抗▲', '技ダメ耐性▲'],
+  reflect: ['REFLECT', 'สะท้อน', '反射', '反射'],
   taunt: ['TAUNT', 'ยั่วยุ', '嘲諷', '挑発'],
 }
 /** ชื่อสั้นของสถานะ (ป้ายลอย · ใต้หลอดเลือด · ชิป) */
@@ -220,6 +221,7 @@ const EFFECT_NAME: Record<SkillEffect['type'], L4> = {
   selfVulnerable: ['Self vulnerable', 'ตัวเองเปราะบาง', '自身脆弱', '自身被ダメ増'],
   toughUp: ['Tough up', 'ทนทาน', '堅韌提升', '耐久アップ'],
   skillDmgResUp: ['Skill DMG Res up', 'ต้านดาเมจสกิล', '技能傷害抗性提升', '技ダメ耐性アップ'],
+  reflect: ['Reflect', 'สะท้อนดาเมจ', '反射', '反射'],
   taunt: ['Taunt', 'ยั่วยุ', '嘲諷', '挑発'],
   atkUp: ['ATK up', 'เพิ่ม ATK', '攻擊提升', '攻撃アップ'],
   heal: ['Heal', 'ฟื้นฟู', '治療', '回復'],
@@ -276,6 +278,7 @@ const EFFECT_TEXT: Partial<Record<SkillEffect['type'], L4>> = {
   vulnerable: ['Vulnerable: target takes +{pct}% damage{tt}', 'เปราะบาง: เป้ารับดาเมจ +{pct}%{tt}', '脆弱：目標受到傷害 +{pct}%{tt}', '脆弱：対象の被ダメージ +{pct}%{tt}'],
   toughUp: ['Tough: takes −{pct}% damage{tt}', 'ทนทาน: รับดาเมจ −{pct}%{tt}', '堅韌：受到傷害 −{pct}%{tt}', '耐久：被ダメージ −{pct}%{tt}'],
   skillDmgResUp: ['Skill damage resistance +{pct}%{tt}', 'ต้านดาเมจสกิล +{pct}%{tt}', '技能傷害抗性 +{pct}%{tt}', '技ダメージ耐性 +{pct}%{tt}'],
+  reflect: ['Reflect {pct}% of damage taken{tt}', 'สะท้อนดาเมจที่ได้รับ {pct}%{tt}', '反射受到傷害的 {pct}%{tt}', '受けたダメージの{pct}%を反射{tt}'],
   healBlock: ['Healing reduced {pct100}%{tt}', 'ลดการฟื้นฟู {pct100}%{tt}', '治療效果降低 {pct100}%{tt}', '回復量 {pct100}% ダウン{tt}'],
   turnBurn: ["Burn {turns} turn(s) off the target's statuses (DoT ticks now)", 'เร่งเทิร์นของเป้า {turns} เทิร์น (ดาเมจต่อเนื่องทำงานทันที)', '目標狀態加速 {turns} 回合（持續傷害立即生效）', '対象の状態を{turns}ターン進める（継続ダメージが即発動）'],
   sealCleanse: ['Cleanse sealed{tt}', 'ขัดขวางการล้างผลด้านลบ{tt}', '無法淨化負面狀態{tt}', '状態異常を解除できない{tt}'],
