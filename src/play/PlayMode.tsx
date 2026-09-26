@@ -305,7 +305,11 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
     if (stageDef && carryRef.current) {
       for (const unit of battle.units.filter(u => u.team === 0)) {
         const hp = carryRef.current.hp.get(unit.uid)
-        if (hp != null) unit.hp = Math.max(1, Math.min(unit.maxHp, hp))
+        if (hp != null) {
+          const carriedHp = Math.max(0, Math.min(unit.maxHp, hp))
+          unit.hp = carriedHp
+          unit.alive = carriedHp > 0
+        }
       }
       battle.gameplayGauge[0] = carryRef.current.gauge
     }
@@ -324,7 +328,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
     advanceLock.current = true
     if (waveIndex + 1 < stageDef.waves.length) {
       carryRef.current = {
-        hp: new Map(scene.battle.units.filter(u => u.team === 0 && u.alive).map(u => [u.uid, u.hp])),
+        hp: new Map(scene.battle.units.filter(u => u.team === 0).map(u => [u.uid, u.hp])),
         gauge: scene.battle.gameplayGauge[0],
       }
       setWaveIndex(i => i + 1)
