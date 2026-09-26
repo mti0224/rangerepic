@@ -33,7 +33,7 @@
     ]
   },
   "skill": {
-    "icon": "",
+    "icon": "/gameplay-icons/skill/custom/skill_icon_sk1134_brown-13198686a3.png",
     "target": {
       "side": "enemy",
       "count": 1,
@@ -47,10 +47,12 @@
       },
       {
         "type": "attackDown",
-        "value": 20,
-        "duration": 1
+        "value": 30,
+        "duration": 3
       }
-    ]
+    ],
+    "name": "火焰拳",
+    "description": "用充滿火焰的拳頭，對隨機1名敵人造成攻擊力150%的範圍傷害，並使其3回合內攻擊力降低30%"
   },
   "abilities": [
     {
@@ -70,7 +72,9 @@
           "value": 40,
           "duration": 1
         }
-      ]
+      ],
+      "name": "越戰越勇",
+      "description": "體力剩餘50%以下時，黑衣熊大的攻擊力會提升40%"
     }
   ]
 }
