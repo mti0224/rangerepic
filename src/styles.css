@@ -413,3 +413,36 @@ img.stars { display: block; height: auto; pointer-events: none; }
   .gp-icon-upload span { justify-content: center; }
   .gp-rule-flags { grid-template-columns: 1fr; }
 }
+
+/* ── Enemy / Stage visual authoring ───────────────────────── */
+.encounter-editor .gp-sidebar { min-width: 0; }
+.gp-inline-actions { display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.enc-stage-bg {
+  min-height: 180px; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px;
+  background-position: center; background-size: cover; background-repeat: no-repeat;
+}
+.enc-waves { display: flex; flex-direction: column; gap: 14px; margin: 10px 0 14px; }
+.enc-wave { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #101722; }
+.enc-wave > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.enc-wave > header > div { display: flex; align-items: center; gap: 8px; }
+.enc-wave > header input { min-width: 220px; }
+.enc-wave > header button { padding: 5px 9px; }
+.enc-formation { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: var(--panel-2); overflow-x: auto; }
+.enc-row { display: grid; grid-template-columns: 56px repeat(3, minmax(130px, 1fr)); gap: 9px; align-items: center; }
+.enc-row.front { grid-template-columns: 56px repeat(2, minmax(150px, 1fr)); padding-inline: 9%; }
+.enc-row-label { color: var(--dim); font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+.enc-slot {
+  min-width: 0; display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 6px 8px; align-items: center;
+  padding: 8px; border: 1px dashed var(--line); border-radius: 10px; background: rgba(255,255,255,.02);
+}
+.enc-slot.filled { border-style: solid; border-color: #476383; background: rgba(59,130,246,.08); }
+.enc-slot img, .enc-slot-empty {
+  grid-row: 1 / span 2; width: 54px; height: 54px; border-radius: 8px; object-fit: contain; background: #0b1018;
+}
+.enc-slot-empty { display: grid; place-items: center; color: var(--dim); font-size: 22px; }
+.enc-slot select { min-width: 0; width: 100%; }
+.enc-slot small { color: var(--dim); font-size: 9px; }
+@media (max-width: 900px) {
+  .enc-wave > header { align-items: flex-start; flex-direction: column; }
+  .enc-row, .enc-row.front { min-width: 650px; padding-inline: 0; }
+}
