@@ -108,7 +108,7 @@
       "release": "s2_attack",
       "releaseFrame": 44,
       "castSpeedCap": null,
-      "positioning": "auto",
+      "positioning": "manual",
       "moveSpeedOverride": null,
       "approach": {
         "enabled": false,
@@ -120,12 +120,12 @@
         "returnHome": true
       },
       "muzzle": {
-        "x": 0,
+        "x": 480,
         "y": 0
       },
       "impactOffset": {
-        "x": 0,
-        "y": 0
+        "x": -1.9,
+        "y": -57.9
       },
       "finishSplit": false,
       "finishOffset": {
