@@ -253,8 +253,8 @@ export interface BattleRulesV1 {
   statFloor: number
   playerActsFirst: boolean
   freeOrderWithinPhase: boolean
-  durationDecrementsAt: 'roundEnd'
-  dotTicksAt: 'roundEnd'
+  durationDecrementsAt: 'sidePhaseEnd'
+  dotTicksAt: 'sidePhaseEnd'
   hotTicksAt: 'sidePhaseEnd'
   reflectCanCrit: boolean
   reflectTriggersReflect: boolean
@@ -275,8 +275,8 @@ export const DEFAULT_BATTLE_RULES: BattleRulesV1 = {
   statFloor: 0,
   playerActsFirst: true,
   freeOrderWithinPhase: true,
-  durationDecrementsAt: 'roundEnd',
-  dotTicksAt: 'roundEnd',
+  durationDecrementsAt: 'sidePhaseEnd',
+  dotTicksAt: 'sidePhaseEnd',
   hotTicksAt: 'sidePhaseEnd',
   reflectCanCrit: false,
   reflectTriggersReflect: false,
