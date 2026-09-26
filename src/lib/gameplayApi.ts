@@ -1,4 +1,4 @@
-import type { BattleRulesV1, GameplayCharacter, GameplayClass } from './gameplaySchema'
+import type { BattleRulesV1, GameplayCharacter, GameplayClass, GameplayEnemy, GameplayStage } from './gameplaySchema'
 
 export type GameplayIconKind = 'skill' | 'ability'
 export type GameplayIconSource = 'builtin' | 'custom'
@@ -18,14 +18,20 @@ export interface GameplayIconLibrary {
 export interface GameplayCatalog {
   characters: GameplayCharacter[]
   classes: GameplayClass[]
+  enemies: GameplayEnemy[]
+  stages: GameplayStage[]
   rules: BattleRulesV1
 }
 
 function checkedCatalog(value: GameplayCatalog): GameplayCatalog {
   if (!Array.isArray(value.characters) || !Array.isArray(value.classes) || value.rules?.schemaVersion !== 1) {
-    throw new Error('角色職業目錄格式錯誤')
+    throw new Error('Gameplay 目錄格式錯誤')
   }
-  return value
+  return {
+    ...value,
+    enemies: Array.isArray(value.enemies) ? value.enemies : [],
+    stages: Array.isArray(value.stages) ? value.stages : [],
+  }
 }
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
@@ -47,6 +53,12 @@ export const listGameplayCharacters = async (): Promise<GameplayCharacter[]> =>
 export const listGameplayClasses = async (): Promise<GameplayClass[]> =>
   (await request<{ classes: GameplayClass[] }>('/api/gameplay/classes')).classes
 
+export const listGameplayEnemies = async (): Promise<GameplayEnemy[]> =>
+  (await request<{ enemies: GameplayEnemy[] }>('/api/gameplay/enemies')).enemies
+
+export const listGameplayStages = async (): Promise<GameplayStage[]> =>
+  (await request<{ stages: GameplayStage[] }>('/api/gameplay/stages')).stages
+
 export const loadGameplayRules = async (): Promise<BattleRulesV1> =>
   (await request<{ rules: BattleRulesV1 }>('/api/gameplay/rules')).rules
 
@@ -59,12 +71,14 @@ export const loadGameplayRules = async (): Promise<BattleRulesV1> =>
  */
 export async function loadGameplayCatalog(): Promise<GameplayCatalog> {
   try {
-    const [characters, classes, rules] = await Promise.all([
+    const [characters, classes, enemies, stages, rules] = await Promise.all([
       listGameplayCharacters(),
       listGameplayClasses(),
+      listGameplayEnemies(),
+      listGameplayStages(),
       loadGameplayRules(),
     ])
-    return checkedCatalog({ characters, classes, rules })
+    return checkedCatalog({ characters, classes, enemies, stages, rules })
   } catch {
     // Relative path works for both /rangerepic/team on GitHub Pages and local /team.
     // Keep an absolute fallback for hosts mounted at the domain root.
@@ -100,6 +114,22 @@ export const saveGameplayClass = async (data: GameplayClass): Promise<void> => {
 
 export const deleteGameplayClass = async (id: string): Promise<void> => {
   await request('/api/gameplay/class/' + encodeURIComponent(id), { method: 'DELETE' })
+}
+
+export const saveGameplayEnemy = async (data: GameplayEnemy): Promise<void> => {
+  await request('/api/gameplay/enemy/' + encodeURIComponent(data.id), { method: 'POST', body: JSON.stringify(data) })
+}
+
+export const deleteGameplayEnemy = async (id: string): Promise<void> => {
+  await request('/api/gameplay/enemy/' + encodeURIComponent(id), { method: 'DELETE' })
+}
+
+export const saveGameplayStage = async (data: GameplayStage): Promise<void> => {
+  await request('/api/gameplay/stage/' + encodeURIComponent(data.id), { method: 'POST', body: JSON.stringify(data) })
+}
+
+export const deleteGameplayStage = async (id: string): Promise<void> => {
+  await request('/api/gameplay/stage/' + encodeURIComponent(id), { method: 'DELETE' })
 }
 
 export const saveGameplayRules = async (data: BattleRulesV1): Promise<void> => {
