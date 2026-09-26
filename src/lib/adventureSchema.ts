@@ -107,3 +107,30 @@ export const enemyAbilityTemplate = () => newGameplayAbility(1)
 export function normalAttackExtraEffects(enemy: GameplayEnemy): GameplayEffect[] {
   return enemy.normalAttack.effects ?? []
 }
+
+
+import type { GameplayClass } from './gameplaySchema'
+
+/** Runtime adapter: enemies reuse the same battle engine without becoming player Classes. */
+export function enemyAsCombatClass(enemy: GameplayEnemy): GameplayClass {
+  return {
+    schemaVersion: 1,
+    id: 'enemy:' + enemy.id,
+    characterId: 'enemy:' + enemy.id,
+    assetVariantId: enemy.assetVariantId,
+    role: 'enemy',
+    names: enemy.names,
+    stats: enemy.stats,
+    normalAttack: enemy.normalAttack,
+    normalSupport: { target: 'singleAlly', effects: [] },
+    skillEnabled: !!enemy.skill,
+    skill: enemy.skill ?? {
+      name: '',
+      description: '',
+      icon: '',
+      target: { side: 'enemy', count: 1, selector: 'random' },
+      effects: [newGameplayEffect('damage')],
+    },
+    abilities: enemy.abilities,
+  }
+}
