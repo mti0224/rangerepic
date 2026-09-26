@@ -8,6 +8,7 @@ import { promisify } from 'node:util'
 import { fetchRanger } from '../scripts/fetch-ranger.mjs'
 import { fetchLericoData } from '../scripts/fetch-lerico.mjs'
 import { DEFAULT_BATTLE_RULES, GAMEPLAY_ID_RE, validateBattleRules, validateCharacter, validateClass } from '../scripts/gameplay-schema.mjs'
+import { importAbilityIconZip, listGameplayIcons, saveUploadedIcon } from '../scripts/gameplay-icons.mjs'
 
 const execFileAsync = promisify(execFile)
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -16,6 +17,7 @@ process.chdir(ROOT)
 const PORT = Number(process.env.PORT || 4174)
 const HOST = process.env.HOST || '127.0.0.1'
 const DIST_DIR = path.resolve(ROOT, process.env.ADMIN_DIST_DIR || 'dist')
+const PUBLIC_DIR = path.join(ROOT, 'public')
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
 const DELETED_DIR = path.join(ROOT, 'data', 'deleted-rangers')
 const GAME_DIR = path.join(ROOT, 'data', 'game')
@@ -376,6 +378,21 @@ async function handleApi(req, res, url) {
     if (req.method === 'GET' && seg[1] === 'rules') {
       return sendJson(res, 200, { rules: await readJson(RULES_FILE, DEFAULT_BATTLE_RULES) })
     }
+    if (req.method === 'GET' && seg[1] === 'icons' && ['skill', 'ability'].includes(seg[2])) {
+      return sendJson(res, 200, { icons: await listGameplayIcons(PUBLIC_DIR, seg[2]) })
+    }
+    if (req.method === 'POST' && seg[1] === 'icon-upload') {
+      const body = JSON.parse(await readBody(req, 4 * 1024 * 1024))
+      const saved = await saveUploadedIcon(PUBLIC_DIR, String(body?.kind || ''), body?.fileName, body?.data)
+      const sync = await persistSafe([saved.relativePath], 'admin: upload ' + body.kind + ' icon')
+      return sendJson(res, 200, { icon: saved.icon, git: sync })
+    }
+    if (req.method === 'POST' && seg[1] === 'ability-icon-zip') {
+      const body = JSON.parse(await readBody(req, 6 * 1024 * 1024))
+      const imported = await importAbilityIconZip(PUBLIC_DIR, body?.data)
+      const sync = await persistSafe([imported.relativePath], 'admin: import ability icon library')
+      return sendJson(res, 200, { count: imported.count, icons: imported.icons, git: sync })
+    }
 
     if (seg[1] === 'character' && seg[2]) {
       const id = seg[2]
@@ -586,8 +603,8 @@ const server = http.createServer(async (req, res) => {
       return await handleApi(req, res, url)
     }
 
-    if (url.pathname.startsWith('/rangers/')) {
-      const live = safeJoin(path.join(ROOT, 'public'), url.pathname)
+    if (url.pathname.startsWith('/rangers/') || url.pathname.startsWith('/gameplay-icons/')) {
+      const live = safeJoin(PUBLIC_DIR, url.pathname)
       if (live && await serveFile(res, live, false)) return
     }
 

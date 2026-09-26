@@ -6,8 +6,10 @@ import { fileURLToPath } from 'node:url'
 import { fetchRanger } from './scripts/fetch-ranger.mjs'
 import { fetchLericoData } from './scripts/fetch-lerico.mjs'
 import { DEFAULT_BATTLE_RULES, GAMEPLAY_ID_RE, validateBattleRules, validateCharacter, validateClass } from './scripts/gameplay-schema.mjs'
+import { importAbilityIconZip, listGameplayIcons, saveUploadedIcon } from './scripts/gameplay-icons.mjs'
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
+const PUBLIC_DIR = path.join(ROOT, 'public')
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
 /** ชื่อตัวละครจากข้อมูลเกม (stats.json): ไทยก่อน ไม่มีค่อยใช้อังกฤษ */
 const gameNameOf = (stats: { name?: { th?: string | null; en?: string | null; zh?: string | null } } | null): string | null =>
@@ -104,6 +106,19 @@ function rangerApi(): Plugin {
             }
             if (req.method === 'GET' && seg[1] === 'rules') {
               return send(200, { rules: await readJson(RULES_FILE, DEFAULT_BATTLE_RULES) })
+            }
+            if (req.method === 'GET' && seg[1] === 'icons' && ['skill', 'ability'].includes(seg[2] ?? '')) {
+              return send(200, { icons: await listGameplayIcons(PUBLIC_DIR, seg[2]) })
+            }
+            if (req.method === 'POST' && seg[1] === 'icon-upload') {
+              const body = JSON.parse(await readBody(req)) as { kind?: string; fileName?: string; data?: string }
+              const saved = await saveUploadedIcon(PUBLIC_DIR, String(body.kind || ''), body.fileName, body.data)
+              return send(200, { icon: saved.icon })
+            }
+            if (req.method === 'POST' && seg[1] === 'ability-icon-zip') {
+              const body = JSON.parse(await readBody(req)) as { data?: string }
+              const imported = await importAbilityIconZip(PUBLIC_DIR, body.data)
+              return send(200, { count: imported.count, icons: imported.icons })
             }
 
             if (seg[1] === 'character' && seg[2]) {
