@@ -40,6 +40,9 @@ jobs:
       - name: Test player roster and save migration
         run: npm run test:player-roster
 
+      - name: Test enemy and multi-wave stage data
+        run: npm run test:adventure
+
       - name: Build admin editor
         run: npm run build:admin
 
