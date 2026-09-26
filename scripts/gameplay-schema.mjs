@@ -1,7 +1,6 @@
 // RangerEpic Gameplay Schema v1
 // Shared by the production admin server and Vite dev API.
-// The battle engine does not consume this schema yet; it is the authoring contract
-// for the new Character -> Class -> Asset Variant architecture.
+// Shared authoring/runtime contract for the Character -> Class -> Asset Variant architecture.
 
 export const GAMEPLAY_SCHEMA_VERSION = 1
 export const GAMEPLAY_ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
@@ -71,6 +70,8 @@ export const SUPPORT_SKILL_EFFECT_TYPES = [
   'cleanseDamageOverTime',
   'cleansePoison',
 ]
+
+export const ABILITY_EFFECT_TARGETS = ['self', 'allAllies', 'allEnemies', 'attacker']
 
 export const ABILITY_TRIGGERS = [
   'whileOnField',
@@ -150,6 +151,7 @@ function validateEffect(effect, errors, prefix) {
   if (effect.value != null && !asNum(effect.value)) errors.push(prefix + '.value must be a number')
   if (effect.duration != null && (!asInt(effect.duration) || effect.duration < 1)) errors.push(prefix + '.duration must be an integer >= 1')
   if (effect.hits != null && (!asInt(effect.hits) || effect.hits < 1)) errors.push(prefix + '.hits must be an integer >= 1')
+  if (effect.abilityTarget != null && !ABILITY_EFFECT_TARGETS.includes(effect.abilityTarget)) errors.push(prefix + '.abilityTarget is invalid')
 }
 
 function validateEffects(effects, errors, prefix, allowed = EFFECT_TYPES) {
