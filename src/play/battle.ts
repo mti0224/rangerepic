@@ -1124,11 +1124,13 @@ export class Battle {
     if (!cls) return null
     const enemies = this.units.filter(u => u.alive && u.team !== actor.team)
     const allies = this.units.filter(u => u.alive && u.team === actor.team)
+    const taunting = enemies.filter(u => this.has(u, 'taunt'))
+    const attackPool = taunting.length ? taunting : enemies
 
     if (action === 'attack') {
-      if (cls.normalAttack.target === 'all') return enemies
-      if (cls.normalAttack.target !== 'primaryPlusRandom') return chosen.alive ? [chosen] : []
-      const extras = enemies.filter(u => u !== chosen)
+      if (cls.normalAttack.target === 'all') return attackPool
+      if (cls.normalAttack.target !== 'primaryPlusRandom') return chosen.alive && attackPool.includes(chosen) ? [chosen] : []
+      const extras = attackPool.filter(u => u !== chosen)
       if (randomize) {
         for (let i = extras.length - 1; i > 0; i--) {
           const j = Math.floor(this.rand() * (i + 1))
@@ -1143,7 +1145,7 @@ export class Battle {
     }
 
     const rule = cls.skill.target
-    const pool = rule.side === 'ally' ? allies : enemies
+    const pool = rule.side === 'ally' ? allies : attackPool
     if (rule.count === 'all') return pool
     const count = Math.max(1, Math.min(pool.length, Math.round(rule.count)))
     if (rule.selector === 'manual') {
