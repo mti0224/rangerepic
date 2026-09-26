@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "training_4",
+  "chapter": 1,
+  "order": 1,
+  "names": {
+    "zh": "多波次訓練4",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "mapImage": "/maps/map1_full.jpg",
+  "waves": [
+    {
+      "id": "wave_1",
+      "name": "Wave 1",
+      "enemies": [
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-0"
+        }
+      ]
+    },
+    {
+      "id": "wave_2",
+      "name": "Wave 2",
+      "enemies": [
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-0"
+        }
+      ]
+    },
+    {
+      "id": "wave_3",
+      "name": "Wave 3",
+      "enemies": [
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-0"
+        }
+      ]
+    }
+  ]
+}
