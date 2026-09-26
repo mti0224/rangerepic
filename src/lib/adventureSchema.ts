@@ -26,8 +26,12 @@ export interface GameplayEnemy {
   stats: GameplayStats
   /** Enemies always have a normal attack. Extra effects are optional. */
   normalAttack: NormalAttackDef
-  /** Enemies may have no gauge skill. */
+  /** Optional non-gauge support action. */
+  normalSupport: import('./gameplaySchema').NormalSupportDef
+  /** Enemies may have no active skill. */
   skill?: GameplaySkill | null
+  /** Independent chance (0..100) to use the active skill on an enemy action. */
+  skillActivationRate: number
   abilities: GameplayAbility[]
 }
 
@@ -65,10 +69,13 @@ export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEn
     normalAttack: {
       target: 'single',
       hits: 1,
-      skillGaugeGain: 5,
+      skillGaugeGain: 0,
+      animation: 'attack',
       effects: [],
     },
+    normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
     skill: null,
+    skillActivationRate: 25,
     abilities: [],
   }
 }
@@ -78,6 +85,7 @@ export function newEnemySkill(): GameplaySkill {
     name: '',
     description: '',
     icon: '',
+    animation: 'skill1',
     target: { side: 'enemy', count: 1, selector: 'random' },
     effects: [newGameplayEffect('damage')],
   }
@@ -120,13 +128,16 @@ export function enemyAsCombatClass(enemy: GameplayEnemy): GameplayClass {
     role: 'enemy',
     names: enemy.names,
     stats: enemy.stats,
-    normalAttack: enemy.normalAttack,
-    normalSupport: { target: 'singleAlly', effects: [] },
+    normalAttack: { ...enemy.normalAttack, skillGaugeGain: 0 },
+    normalSupport: enemy.normalSupport ?? { target: 'singleAlly', animation: 'skill2', effects: [] },
     skillEnabled: !!enemy.skill,
+    usesSkillGauge: false,
+    skillActivationRate: Math.max(0, Math.min(100, enemy.skillActivationRate ?? 25)),
     skill: enemy.skill ?? {
       name: '',
       description: '',
       icon: '',
+      animation: 'skill1',
       target: { side: 'enemy', count: 1, selector: 'random' },
       effects: [newGameplayEffect('damage')],
     },
