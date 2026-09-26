@@ -676,6 +676,7 @@ function UnitDetailModal({ unit, scene, lang, onClose }: {
   const th = lang === 'th'
   const label = (z: string, e: string, t = e) => zh ? z : th ? t : e
   const stats = cls?.stats
+  const attackDescription = cls?.normalAttack.description?.trim() ?? ''
   const supportDescription = cls?.normalSupport.description?.trim() ?? ''
   const energyMoveDescription = cls && cls.skillEnabled !== false ? cls.skill.description?.trim() ?? '' : ''
   const abilityDescriptions = cls?.abilities.map(ability => ability.description?.trim() ?? '').filter(Boolean) ?? []
@@ -701,7 +702,8 @@ function UnitDetailModal({ unit, scene, lang, onClose }: {
       </div>
 
       <div className="ep-detail-sections">
-        {supportDescription && <article><h3>{label('輔助招式', 'Support Move', 'ท่าช่วยเหลือ')}</h3><p>{supportDescription}</p></article>}
+        {attackDescription && <article><h3>{label('普通攻擊', 'Normal Attack', 'โจมตีปกติ')}</h3><p>{attackDescription}</p></article>}
+        {supportDescription && <article><h3>{label('普通輔助', 'Normal Support', 'ช่วยเหลือปกติ')}</h3><p>{supportDescription}</p></article>}
         {energyMoveDescription && <article><h3>{label('能量石招式', 'Energy Move', 'ท่าพลังงาน')}</h3><p>{energyMoveDescription}</p></article>}
         {abilityDescriptions.length > 0 && <article><h3>{label('能力', 'Abilities', 'ความสามารถ')}</h3>{abilityDescriptions.map((description, i) => <p key={i}>{description}</p>)}</article>}
         {statuses.length > 0 && <article className="ep-detail-status"><h3>{label('狀態', 'Status', 'สถานะ')}</h3><div>{statuses.map((status, i) => <span key={`${status.type}:${i}`}>{statusLabel(status.type)}{status.pct ? ` ${status.pct}%` : ''}{status.shieldHp ? ` ${Math.round(status.shieldHp)}` : ''}{status.turns ? ` · ${status.turns}R` : ''}</span>)}</div></article>}
