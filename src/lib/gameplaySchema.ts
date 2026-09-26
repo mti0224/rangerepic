@@ -133,6 +133,8 @@ export interface GameplayEffect {
 
 export interface NormalSupportDef {
   target: NormalSupportTarget
+  /** Optional player-facing plain-language description. */
+  description?: string
   /** Visual action to play. Defaults to skill2. */
   animation?: GameplayAnimationSlot
   effects: GameplayEffect[]
@@ -381,7 +383,7 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     names: emptyNames(),
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
     normalAttack: { target: 'single', hits: 1, animation: 'attack', skillGaugeGain: 5 },
-    normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
+    normalSupport: { target: 'singleAlly', description: '', animation: 'skill2', effects: [] },
     skill: { name: '', description: '', icon: '', animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
   }
