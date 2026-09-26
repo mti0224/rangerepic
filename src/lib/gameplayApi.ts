@@ -15,6 +15,12 @@ export interface GameplayIconLibrary {
   ability: GameplayIconAsset[]
 }
 
+export interface GameplayCatalog {
+  characters: GameplayCharacter[]
+  classes: GameplayClass[]
+  rules: BattleRulesV1
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
@@ -36,6 +42,41 @@ export const listGameplayClasses = async (): Promise<GameplayClass[]> =>
 
 export const loadGameplayRules = async (): Promise<BattleRulesV1> =>
   (await request<{ rules: BattleRulesV1 }>('/api/gameplay/rules')).rules
+
+
+/**
+ * Player-side gameplay catalog loader.
+ *
+ * - Dev/admin: reads the live /api/gameplay endpoints.
+ * - Static player build (GitHub Pages): falls back to gameplay/index.json emitted by Vite.
+ */
+export async function loadGameplayCatalog(): Promise<GameplayCatalog> {
+  try {
+    const [characters, classes, rules] = await Promise.all([
+      listGameplayCharacters(),
+      listGameplayClasses(),
+      loadGameplayRules(),
+    ])
+    return { characters, classes, rules }
+  } catch {
+    const base = import.meta.env.BASE_URL || '/'
+    const candidates = [
+      base.replace(/\/$/, '') + '/gameplay/index.json',
+      '/gameplay/index.json',
+    ]
+    let lastError: unknown = null
+    for (const url of [...new Set(candidates)]) {
+      try {
+        const res = await fetch(url)
+        if (!res.ok) throw new Error('HTTP ' + res.status)
+        return await res.json() as GameplayCatalog
+      } catch (error) {
+        lastError = error
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error('無法載入 Gameplay Data')
+  }
+}
 
 export const saveGameplayCharacter = async (data: GameplayCharacter): Promise<void> => {
   await request('/api/gameplay/character/' + encodeURIComponent(data.id), { method: 'POST', body: JSON.stringify(data) })
