@@ -322,6 +322,10 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           ? '敵方目標只顯示攻擊技能效果；倍率傷害使用 Attack × N%，不會爆擊。'
           : '我方目標只顯示輔助技能效果。切換作用對象後，下拉選單會跟著切換效果分類。'}
       >
+        <div className="gp-grid two">
+          <Field label="玩家看到的技能名稱"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} placeholder="留白時顯示「技能」" /></Field>
+          <Field label="玩家看到的白話敘述"><textarea value={value.skill.description ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, description: e.target.value } })} placeholder="留白時才會自動列出下方機械效果" /></Field>
+        </div>
         <IconPicker
           kind="skill"
           value={value.skill.icon ?? ''}
@@ -351,7 +355,7 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
   )
 }
 
-function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (v: SkillTargetRule) => void }) {
+export function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (v: SkillTargetRule) => void }) {
   const selectors = value.side === 'enemy'
     ? [['random', '隨機'], ['lowestHp', '體力低至高'], ['highestHp', '體力高至低']] as const
     : [['random', '隨機'], ['lowestHp', '體力低至高'], ['highestHp', '體力高至低'], ['lowestAttack', '攻擊力低至高'], ['highestAttack', '攻擊力高至低']] as const
@@ -380,7 +384,7 @@ function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (
   )
 }
 
-function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false }: {
+export function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false }: {
   value: GameplayEffect[]
   onChange: (v: GameplayEffect[]) => void
   allowedTypes?: readonly GameplayEffectType[]
@@ -454,7 +458,7 @@ function effectValueLabel(type: GameplayEffectType): string {
   return '數值 %'
 }
 
-function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, onDelete }: {
+export function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, onDelete }: {
   value: GameplayAbility
   index: number
   iconLibrary: GameplayIconLibrary
@@ -464,7 +468,11 @@ function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, on
 }) {
   return (
     <div className="gp-ability">
-      <div className="gp-ability-head"><b>能力 {index + 1}</b><button className="danger" onClick={onDelete}>刪除</button></div>
+      <div className="gp-ability-head"><b>{value.name?.trim() || `能力 ${index + 1}`}</b><button className="danger" onClick={onDelete}>刪除</button></div>
+      <div className="gp-grid two">
+        <Field label="玩家看到的能力名稱"><input value={value.name ?? ''} onChange={e => onChange({ ...value, name: e.target.value })} placeholder={`能力 ${index + 1}`} /></Field>
+        <Field label="玩家看到的白話敘述"><textarea value={value.description ?? ''} onChange={e => onChange({ ...value, description: e.target.value })} placeholder="留白時才會自動顯示觸發條件與效果" /></Field>
+      </div>
       <IconPicker
         kind="ability"
         value={value.icon ?? ''}
@@ -492,7 +500,7 @@ function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, on
   )
 }
 
-function IconPicker({ kind, value, options, onChange, onUploaded }: {
+export function IconPicker({ kind, value, options, onChange, onUploaded }: {
   kind: GameplayIconKind
   value: string
   options: GameplayIconAsset[]
