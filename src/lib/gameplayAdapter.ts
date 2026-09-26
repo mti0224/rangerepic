@@ -32,6 +32,7 @@ const mappedEffect = (effect: GameplayEffect): SkillEffect | null => {
     case 'attackUp': return tagged({ type: 'atkUp', pct: value, turns })
     case 'critRateUp': return tagged({ type: 'critUp', pct: value, turns })
     case 'critDamageUp': return tagged({ type: 'critDmgUp', pct: value, turns })
+    case 'reflect': return tagged({ type: 'reflect', pct: value, turns })
     case 'taunt': return tagged({ type: 'taunt', pct: value, turns })
     case 'damageReduction': return tagged({ type: 'toughUp', pct: value, turns })
     case 'cleanseDebuffs':
