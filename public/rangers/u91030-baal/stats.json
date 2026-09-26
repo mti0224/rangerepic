@@ -1,0 +1,235 @@
+{
+  "id": "u91030-baal",
+  "source": {
+    "lerico": "https://rangers.lerico.net",
+    "fetchedAt": "2026-09-26T09:25:28.696Z"
+  },
+  "name": {
+    "en": "u91030-baal",
+    "th": null,
+    "zh": null,
+    "jp": null
+  },
+  "grade": 5,
+  "tier": "base8",
+  "maxLevel": 120,
+  "unitType": "",
+  "category": "AGI",
+  "element": "dark",
+  "elementOpen": "2",
+  "suggest": {
+    "element": "dark",
+    "category": "agi",
+    "role": "shooter"
+  },
+  "stats": {
+    "atk": {
+      "initial": 85697,
+      "perLevel": 5356,
+      "perLevelAfterMax": 5356
+    },
+    "matk": {
+      "initial": 0,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "def": {
+      "initial": 4250870,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "mdef": {
+      "initial": 100000,
+      "perLevel": 0,
+      "perLevelAfterMax": 0
+    },
+    "hp": {
+      "initial": 746093,
+      "perLevel": 46626,
+      "perLevelAfterMax": 46626
+    }
+  },
+  "combat": {
+    "attackDelayFrames": 52,
+    "attackRange": 190,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "movingSpeed": 111,
+    "critChance": 0.3,
+    "critRatio": 3,
+    "avoid": 0.5,
+    "skillAvoid": 0.8,
+    "skillResistance": 0.8,
+    "antiAvoid": 1,
+    "antiSkillAvoid": 1
+  },
+  "cost": {
+    "productionSpeed": 6,
+    "summonEnergy": 1000,
+    "maxLeonardPoint": 10
+  },
+  "skills": {
+    "skill1": {
+      "slot": "skill1",
+      "code": "sk91030_baal",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/skill_icon_sk1143_hachikuji.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_sk1143_hachikuji.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 10,
+      "range": 250,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "skill2": null,
+    "skill3": {
+      "slot": "skill3",
+      "code": "hsk91030_baal",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/skill_icon_hsk1143_hachikuji.png",
+      "iconUrl": "https://rangers.lerico.net/res/skill_icon/skill_icon_hsk1143_hachikuji.png",
+      "probability": 0.30000001192092896,
+      "cooldownSec": 10,
+      "range": 350,
+      "basis": {
+        "type": "front"
+      }
+    },
+    "passive": null
+  },
+  "abilities": [
+    {
+      "code": "ab051_anti_ice",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/",
+      "groupBuff": false
+    },
+    {
+      "code": "ab102_mask_a",
+      "name": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "desc": {
+        "en": null,
+        "th": null,
+        "zh": null,
+        "jp": null
+      },
+      "icon": "icons/",
+      "groupBuff": false
+    }
+  ],
+  "raw": {
+    "unitCode": "u91030-baal",
+    "unitNameCode": "u91030-baal_nm",
+    "grade": 5,
+    "unitType": "",
+    "productionSpeed": 6,
+    "summonEnergy": 1000,
+    "unitCategoryType": "AGI",
+    "attackRange": 190,
+    "attackDelay": 52,
+    "attackSpeed": 0,
+    "unitDescriptionCode": "u91030-baal_desc",
+    "initialAttack": 85697,
+    "specialAttack": 0,
+    "defence": 4250870,
+    "specialDefence": 100000,
+    "initialHp": 746093,
+    "movingSpeed": 111,
+    "unitSpecialAbilityType": null,
+    "antiAvoidProb": 1,
+    "antiSkillAvoidProb": 1,
+    "attackIncreaseAmount": 5356,
+    "specialAttackDelta": 0,
+    "generalDefenceDelta": 0,
+    "specialDefenceDelta": 0,
+    "hpIncreaseAmount": 46626,
+    "energyReinforcementRate": 0,
+    "attackScope": 1,
+    "projectileAttackScope": 0,
+    "maxLevel": 120,
+    "iconSkillCode": "sk91030_baal",
+    "skillCode": "sk91030_baal",
+    "iconSkillCode2": "",
+    "skillCode2": "",
+    "iconSkillCode3": "hsk91030_baal",
+    "skillCode3": "hsk91030_baal",
+    "passiveSkillCode": "",
+    "created": null,
+    "modified": null,
+    "criticalProbability": 0.3,
+    "criticalRatio": 3,
+    "avoidProbability": 0.5,
+    "skillAvoidProbability": 0.8,
+    "skillResistance": 0.8,
+    "attackSpeedType": "VERYFAST",
+    "moveSpeedType": "FAST",
+    "guardianResourceCode": "",
+    "isTranscendentUnit": 0,
+    "isHyperUnit": 0,
+    "isAdventUnit": 0,
+    "extractionCrystal1Gain": 0,
+    "extractionCrystal2Gain": 0,
+    "extractionCrystal3Gain": 0,
+    "iconAbilityCode": "ab051_anti_ice",
+    "abilityCode": "ab051_anti_ice",
+    "abilityCategoryCode": "",
+    "iconAbilityCode2": "ab102_mask_a",
+    "abilityCode2": "ab102_mask_a",
+    "abilityCategoryCode2": "",
+    "elementOpen": "2",
+    "unitElement": "dark",
+    "maxLeonardPoint": 10,
+    "hpIncreaseAmountMax": 46626,
+    "attackIncreaseAmountMax": 5356,
+    "specialAttackDeltaMax": 0,
+    "generalDefenceDeltaMax": 0,
+    "specialDefenceDeltaMax": 0,
+    "droppedInStage": [
+      ""
+    ],
+    "droppedInSpecialStage": [
+      ""
+    ]
+  }
+}
