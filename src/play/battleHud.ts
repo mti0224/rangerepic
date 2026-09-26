@@ -776,28 +776,6 @@ export class BattleHud {
     iconText(ctx, uiImage(UI_SRC.hp), hpText, bx, y + 61, 10, 13, C.text, 'left', 3, 'HP ')
   }
 
-  private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, input: boolean): void {
-    const x = BTN.x, y = BTN.y, w = ENERGY_STONE.x - BTN.x - 12, h = BTN.h
-    roundRect(ctx, x, y, w, h, 8)
-    ctx.fillStyle = C.inset
-    ctx.fill()
-    ctx.lineWidth = input ? 1.8 : 1
-    ctx.strokeStyle = input ? withAlpha(C.ally, 0.8) : 'rgba(255,255,255,0.18)'
-    ctx.stroke()
-
-    const lang = getLang()
-    const title = lang === 'zh' ? '拖曳操作' : lang === 'th' ? 'ลากเพื่อสั่งการ' : 'Drag controls'
-    const attack = lang === 'zh' ? '拖到敵人：普通攻擊' : lang === 'th' ? 'ลากไปศัตรู: โจมตีปกติ' : 'Drag to enemy: Normal Attack'
-    const support = lang === 'zh' ? '拖到友軍／點自己：普通輔助' : lang === 'th' ? 'ลากไปเพื่อน/แตะตัวเอง: ช่วยเหลือ' : 'Drag to ally / tap self: Normal Support'
-    ctx.textAlign = 'left'
-    ctx.font = F(12)
-    outlined(ctx, title, x + 10, y + 17, C.gold, 3)
-    ctx.font = F(10)
-    outlined(ctx, fit(ctx, attack, w - 20), x + 10, y + 36, C.text, 3)
-    outlined(ctx, fit(ctx, support, w - 20), x + 10, y + 53, C.dim, 3)
-    this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
-  }
-
   private actionName(u: Unit, a: ActionName): string {
     if (a === 'attack') return t('attack')
     if (u.gameplayClass) {
