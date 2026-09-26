@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
 import {
-  ABILITY_TRIGGERS, ATTACK_SKILL_EFFECT_TYPES, CONDITION_LABEL_ZH, CONDITION_OPERATORS, CONDITION_TYPES,
+  ABILITY_EFFECT_TARGETS, ABILITY_TRIGGERS, ATTACK_SKILL_EFFECT_TYPES, CONDITION_LABEL_ZH, CONDITION_OPERATORS, CONDITION_TYPES,
   EFFECT_LABEL_ZH, EFFECT_TYPES, SUPPORT_SKILL_EFFECT_TYPES, TRIGGER_LABEL_ZH,
   newGameplayAbility, newGameplayCharacter, newGameplayClass, newGameplayEffect,
   type AbilityCondition, type BattleRulesV1, type GameplayAbility, type GameplayCharacter, type GameplayClass,
@@ -380,10 +380,11 @@ function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (
   )
 }
 
-function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES }: {
+function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false }: {
   value: GameplayEffect[]
   onChange: (v: GameplayEffect[]) => void
   allowedTypes?: readonly GameplayEffectType[]
+  abilityMode?: boolean
 }) {
   const invalidCount = value.filter(effect => !allowedTypes.includes(effect.type)).length
   const defaultType = allowedTypes[0] ?? 'damage'
@@ -393,7 +394,7 @@ function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES }: {
         <p className="gp-effect-warning">目前有 {invalidCount} 個效果不屬於此技能分類，請從下拉選單改成目前允許的效果。</p>
       )}
       {value.map((effect, i) => (
-        <EffectEditor key={i} value={effect} allowedTypes={allowedTypes} onChange={next => {
+        <EffectEditor key={i} value={effect} allowedTypes={allowedTypes} abilityMode={abilityMode} onChange={next => {
           const rows = [...value]; rows[i] = next; onChange(rows)
         }} onDelete={() => onChange(value.filter((_, j) => j !== i))} />
       ))}
@@ -405,13 +406,17 @@ function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES }: {
 const NO_VALUE = new Set<GameplayEffectType>(['stun','silence','removeShield','dispelBuffs','taunt','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','removeTaunt','removeStun','removeSilence'])
 const NO_DURATION = new Set<GameplayEffectType>(['damage','removeShield','dispelBuffs','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','fixedDamage','removeTaunt','removeStun','removeSilence'])
 
-function EffectEditor({ value, allowedTypes, onChange, onDelete }: {
+function EffectEditor({ value, allowedTypes, abilityMode, onChange, onDelete }: {
   value: GameplayEffect
   allowedTypes: readonly GameplayEffectType[]
+  abilityMode: boolean
   onChange: (v: GameplayEffect) => void
   onDelete: () => void
 }) {
-  const changeType = (type: GameplayEffectType) => onChange(newGameplayEffect(type))
+  const changeType = (type: GameplayEffectType) => {
+    const next = newGameplayEffect(type)
+    onChange(abilityMode ? { ...next, abilityTarget: value.abilityTarget ?? 'self' } : next)
+  }
   const currentIsAllowed = allowedTypes.includes(value.type)
   return (
     <div className="gp-effect">
@@ -419,6 +424,20 @@ function EffectEditor({ value, allowedTypes, onChange, onDelete }: {
         {!currentIsAllowed && <option value={value.type}>⚠ {EFFECT_LABEL_ZH[value.type]}（不屬於目前分類）</option>}
         {allowedTypes.map(t => <option key={t} value={t}>{EFFECT_LABEL_ZH[t]}</option>)}
       </select>
+      {abilityMode && (
+        <select
+          className="gp-effect-target"
+          value={value.abilityTarget ?? 'self'}
+          onChange={e => onChange({ ...value, abilityTarget: e.target.value as GameplayEffect['abilityTarget'] })}
+          title="能力效果作用對象"
+        >
+          {ABILITY_EFFECT_TARGETS.map(target => (
+            <option key={target} value={target}>
+              {target === 'self' ? '自身' : target === 'allAllies' ? '我方全體' : target === 'allEnemies' ? '敵方全體' : '攻擊者'}
+            </option>
+          ))}
+        </select>
+      )}
       {!NO_VALUE.has(value.type) && <Num label={effectValueLabel(value.type)} value={value.value ?? 0} onChange={v => onChange({ ...value, value: v })} compact />}
       {!NO_DURATION.has(value.type) && <Num label="持續 Round" value={value.duration ?? 1} min={1} step={1} onChange={v => onChange({ ...value, duration: Math.max(1, Math.round(v)) })} compact />}
       {(value.type === 'damage' || value.type === 'fixedDamage') && <Num label="Hits" value={value.hits ?? 1} min={1} step={1} onChange={v => onChange({ ...value, hits: Math.max(1, Math.round(v)) })} compact />}
@@ -468,7 +487,7 @@ function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, on
       }} onDelete={() => onChange({ ...value, conditions: value.conditions.filter((_, j) => j !== i) })} />)}
       <button onClick={() => onChange({ ...value, conditions: [...value.conditions, { type: 'selfHpPercent', operator: '<=', value: 50 }] })}>＋ Condition</button>
       <h4>Effects</h4>
-      <EffectList value={value.effects} onChange={effects => onChange({ ...value, effects })} />
+      <EffectList value={value.effects} abilityMode onChange={effects => onChange({ ...value, effects })} />
     </div>
   )
 }
