@@ -1,0 +1,84 @@
+{
+  "id": "u91005-nut",
+  "source": "warmycat",
+  "render": {
+    "shadowCenter": {
+      "x": 0,
+      "y": 0
+    },
+    "faceCenter": {
+      "x": 0.5,
+      "y": 0.5
+    }
+  },
+  "attackRangePt": 150,
+  "moves": {
+    "normal": {
+      "animationPart": "bul",
+      "start": {
+        "x": 60,
+        "y": 70
+      },
+      "moveSpeed": 10,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "LINEAR",
+        "enabled": true,
+        "rotation": "FIXED",
+        "loopNormal": true
+      },
+      "hitPointRate": 100
+    },
+    "skill1": {
+      "animationPart": "bul2",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "DIRECT",
+        "enabled": false,
+        "rotation": "BODY_ANIMATION",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    },
+    "skill2": {
+      "animationPart": "bul3",
+      "start": {
+        "x": 0,
+        "y": 0
+      },
+      "moveSpeed": 0,
+      "angle": {
+        "start": 0,
+        "end": 0
+      },
+      "motion": {
+        "type": "NONE",
+        "enabled": false,
+        "rotation": "NONE",
+        "loopNormal": false
+      },
+      "hitPointRate": 100
+    }
+  },
+  "skills": {
+    "skill1": {
+      "basis": null,
+      "area": null
+    },
+    "skill2": {
+      "basis": null,
+      "area": null
+    }
+  }
+}
