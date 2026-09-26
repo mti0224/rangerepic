@@ -37,6 +37,9 @@ jobs:
       - name: Test Gameplay V1 rules
         run: npm run test:gameplay-v1
 
+      - name: Test player roster and save migration
+        run: npm run test:player-roster
+
       - name: Build admin editor
         run: npm run build:admin
 

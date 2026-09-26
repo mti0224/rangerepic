@@ -719,7 +719,7 @@ export class BattleHud {
     outlined(ctx, fit(ctx, this.s.nameOf(u), w - 12), x + 6, y + 17, C.text, 3)
 
     // ไอคอนธาตุ · ไอคอนชนิด · ตำแหน่ง (ยังโหลดรูปไม่เสร็จ → จุดสีแทน)
-    const el = u.element
+    const el = u.gameplayClass ? undefined : u.element
     let tx = x + 5
     const eIcon = elementIcon(el)
     if (eIcon) { ctx.drawImage(eIcon, tx, y + 21, 17, 17); tx += 19 }
@@ -730,12 +730,12 @@ export class BattleHud {
       ctx.fill()
       tx += 14
     }
-    const cIcon = categoryIcon(u.category)
+    const cIcon = u.gameplayClass ? null : categoryIcon(u.category)
     if (cIcon) { ctx.drawImage(cIcon, tx, y + 21, 17, 17); tx += 20 }
     ctx.font = F(11)
     // มีไอคอนธาตุแล้ว → เขียนแค่ตำแหน่ง (ไม่มีรูป → เขียนชื่อธาตุด้วย)
     const elName = el && !eIcon ? elementName(el) : ''
-    outlined(ctx, fit(ctx, [elName, roleName(u.role)].filter(Boolean).join(' · '), w - (tx - x) - 6), tx, y + 34, C.dim, 3)
+    outlined(ctx, fit(ctx, [elName, u.gameplayClass?.role ?? roleName(u.role)].filter(Boolean).join(' · '), w - (tx - x) - 6), tx, y + 34, C.dim, 3)
 
     // HP
     const bx = x + 6, by = y + 42, bw = w - 12
@@ -1230,11 +1230,11 @@ export class BattleHud {
     ctx.font = F(14)
     outlined(ctx, fit(ctx, this.s.nameOf(u), x + w - pad - tx), tx, yy + 17, C.text, 3)
     let ix = tx
-    const eIcon = elementIcon(u.element), cIcon = categoryIcon(u.category)
+    const eIcon = u.gameplayClass ? null : elementIcon(u.element), cIcon = u.gameplayClass ? null : categoryIcon(u.category)
     if (eIcon) { ctx.drawImage(eIcon, ix, yy + 24, 17, 17); ix += 19 }
     if (cIcon) { ctx.drawImage(cIcon, ix, yy + 24, 17, 17); ix += 20 }
     ctx.font = F(11)
-    const sub = [u.element ? elementName(u.element) : '', roleName(u.role), ally ? t('ally') : t('enemy')].filter(Boolean).join(' · ')
+    const sub = [!u.gameplayClass && u.element ? elementName(u.element) : '', u.gameplayClass?.role ?? roleName(u.role), ally ? t('ally') : t('enemy')].filter(Boolean).join(' · ')
     outlined(ctx, fit(ctx, sub, x + w - pad - ix), ix, yy + 37, C.dim, 3)
     yy += 44 + 6
 
@@ -1305,8 +1305,13 @@ export class BattleHud {
     }
     const col = (w - pad * 2) / 4
     stat('ATK', b.effAtk(u), u.atk, x + pad)
-    stat('DEF', u.def, u.def, x + pad + col)
-    stat('SPD', b.effSpd(u), u.spd, x + pad + col * 2)
+    if (u.gameplayClass) {
+      stat('HIT', b.effHit(u), u.hit, x + pad + col, '%')
+      stat('CRIT DMG', b.effCritDmg(u), u.critDmg, x + pad + col * 2, '%')
+    } else {
+      stat('DEF', u.def, u.def, x + pad + col)
+      stat('SPD', b.effSpd(u), u.spd, x + pad + col * 2)
+    }
     stat('CRIT', b.effCrit(u), u.crit, x + pad + col * 3, '%')
     yy += 34
 
@@ -1521,6 +1526,7 @@ export class BattleHud {
 
   /** รูปดาว (ระดับ + Evolution) กว้าง w ชิดขอบล่างที่ bottom · ไม่มีข้อมูลระดับ/รูปยังไม่โหลด = ไม่วาด */
   private drawStars(ctx: CanvasRenderingContext2D, u: Unit, x: number, bottom: number, w: number): void {
+    if (u.gameplayClass) return
     const src = starImageUrl(this.s.infoOf(u)?.grade, evolutionOf(u.rangerId))
     const img = src ? uiImage(src) : null
     if (!img) return
