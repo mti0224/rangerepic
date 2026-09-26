@@ -1065,7 +1065,7 @@ export class Battle {
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
     if (u.gameplayClass) {
-      if (action === 'skill1') return !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
+      if (action === 'skill1') return u.gameplayClass.skillEnabled !== false && !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
       // skill2 is the class's normal support action, not the gauge Skill.
       return true
     }

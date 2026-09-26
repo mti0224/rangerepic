@@ -36,6 +36,8 @@ export interface NormalAttackDef {
   /** One normal-attack action adds this once, regardless of hit count. */
   skillGaugeGain: number
   extraTargets?: number
+  /** Optional extra effects applied after the normal attack damage. Primarily used by enemies. */
+  effects?: GameplayEffect[]
 }
 
 export type NormalSupportTarget = 'singleAlly' | 'allAllies'
@@ -137,6 +139,10 @@ export interface SkillTargetRule {
   selector: TargetSelector
 }
 export interface GameplaySkill {
+  /** Optional player-facing title. */
+  name?: string
+  /** Optional plain-language description. When set, UI prefers it over generated effect text. */
+  description?: string
   /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
   icon?: string
   target: SkillTargetRule
@@ -182,6 +188,10 @@ export interface AbilityCondition {
 
 export interface GameplayAbility {
   id: string
+  /** Optional player-facing title. */
+  name?: string
+  /** Optional plain-language description. When set, UI prefers it over generated effect text. */
+  description?: string
   /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
   icon?: string
   trigger: AbilityTrigger
@@ -202,6 +212,8 @@ export interface GameplayClass {
   stats: GameplayStats
   normalAttack: NormalAttackDef
   normalSupport: NormalSupportDef
+  /** Optional runtime gate used by enemy adapters. Player classes default to enabled. */
+  skillEnabled?: boolean
   skill: GameplaySkill
   abilities: GameplayAbility[]
 }
@@ -329,6 +341,8 @@ export function newGameplayEffect(type: GameplayEffectType = 'damage'): Gameplay
 export function newGameplayAbility(index = 1): GameplayAbility {
   return {
     id: 'ability_' + index,
+    name: '',
+    description: '',
     icon: '',
     trigger: 'whileOnField',
     conditions: [],
@@ -347,7 +361,7 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
     normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5 },
     normalSupport: { target: 'singleAlly', effects: [] },
-    skill: { icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    skill: { name: '', description: '', icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
   }
 }

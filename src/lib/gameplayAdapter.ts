@@ -80,10 +80,13 @@ export const gameplayNormalAttackSkill = (cls: GameplayClass): SkillDef => {
     kind: 'attack',
     cost: 0,
     area,
-    effects: Array.from(
-      { length: Math.max(1, Math.round(cls.normalAttack.hits || 1)) },
-      () => ({ type: 'damage' as const, pct: 100 }),
-    ),
+    effects: [
+      ...Array.from(
+        { length: Math.max(1, Math.round(cls.normalAttack.hits || 1)) },
+        () => ({ type: 'damage' as const, pct: 100 }),
+      ),
+      ...mappedEffects(cls.normalAttack.effects ?? []),
+    ],
   }
 }
 

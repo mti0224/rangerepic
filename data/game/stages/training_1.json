@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "training_1",
+  "chapter": 1,
+  "order": 1,
+  "names": {
+    "zh": "多波次訓練",
+    "en": "Wave Training",
+    "th": "",
+    "jp": ""
+  },
+  "description": "測試兩個波次：先擊倒一名敵人，再迎戰兩名敵人。",
+  "mapImage": "/maps/map1_full.jpg",
+  "waves": [
+    {
+      "id": "wave_1",
+      "name": "第一波",
+      "enemies": [
+        { "enemyId": "training_croc", "slot": "front-0" }
+      ]
+    },
+    {
+      "id": "wave_2",
+      "name": "第二波",
+      "enemies": [
+        { "enemyId": "training_croc", "slot": "front-0" },
+        { "enemyId": "training_croc", "slot": "front-1" }
+      ]
+    }
+  ]
+}

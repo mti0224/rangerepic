@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "training_croc",
+  "names": {
+    "zh": "訓練鱷魚",
+    "en": "Training Croc",
+    "th": "",
+    "jp": ""
+  },
+  "description": "用於測試新關卡與多波次系統的敵人。",
+  "assetVariantId": "u1090h-boss",
+  "stats": {
+    "hp": 650,
+    "attack": 70,
+    "critRate": 5,
+    "critDamage": 3,
+    "hitRate": 90
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 1,
+    "skillGaugeGain": 5,
+    "effects": [
+      {
+        "type": "attackDown",
+        "value": 10,
+        "duration": 1
+      }
+    ]
+  },
+  "skill": null,
+  "abilities": []
+}

@@ -48,7 +48,7 @@ function rewrite(text) {
 
   // The play UI uses pathname-based routes. GitHub Pages project sites live
   // under /rangerepic/, so keep those routes inside the repository base path.
-  for (const route of ['/lobby', '/team', '/characters']) {
+  for (const route of ['/lobby', '/stages', '/team', '/characters']) {
     text = prefixQuotedPath(text, route, `${baseNoSlash}${route}`)
   }
 
