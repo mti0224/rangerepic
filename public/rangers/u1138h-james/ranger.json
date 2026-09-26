@@ -36,7 +36,7 @@
       "release": "attack",
       "releaseFrame": 31,
       "castSpeedCap": null,
-      "positioning": "auto",
+      "positioning": "manual",
       "moveSpeedOverride": null,
       "approach": {
         "enabled": false,
@@ -48,17 +48,17 @@
         "returnHome": true
       },
       "muzzle": {
-        "x": 0,
-        "y": 0
+        "x": 74,
+        "y": -71
       },
       "impactOffset": {
-        "x": 0,
-        "y": 0
+        "x": -28.7,
+        "y": -71
       },
       "finishSplit": false,
       "finishOffset": {
-        "x": 0,
-        "y": 0
+        "x": -28.7,
+        "y": -71
       },
       "projectile": {
         "asset": "bul",
@@ -68,7 +68,8 @@
         "speed": 3685,
         "rotate": "none",
         "fitFlight": false
-      }
+      },
+      "aimTilt": false
     },
     "skill1": {
       "castPre": null,
