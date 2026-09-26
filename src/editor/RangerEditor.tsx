@@ -165,6 +165,8 @@ export default function RangerEditor() {
 
   // ── สร้าง player ใหม่เมื่อเปลี่ยนคลิป/ความเร็ว (ไม่ผูกกับการลากจุด) ──
   const action = ACTION_NAMES.includes(tab as ActionName) ? (tab as ActionName) : null
+  // Combat values/skills are authored in GameplayEditor now. Keep legacy asset UI code gated off for compatibility.
+  const showLegacyCombatEditor: boolean = false
   const actionCfg = action && config ? config.actions[action] : null
   const clipKey = action
     ? `${actionCfg?.castPre ?? ''}|${actionCfg?.cast ?? ''}|${actionCfg?.release ?? ''}|${actionCfg?.castSpeedCap ?? ''}`
@@ -717,7 +719,7 @@ export default function RangerEditor() {
                   .reduce((n, c) => n + (c ? assets.sam.animations[c]?.length ?? 0 : 0), 0)
                 return (
                   <>
-                    {false && action !== 'attack' && (
+                    {showLegacyCombatEditor && action && config && action !== 'attack' && (
                       <>
                         <h3 style={{ marginTop: 0 }}>{e('hSkillCombat')}</h3>
                         <SkillEditor
