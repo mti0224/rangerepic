@@ -116,10 +116,21 @@ export function adaptRangerConfigForGameplay(base: RangerConfig, cls: GameplayCl
   }
 
   const displayName = cls.names.zh || cls.names.en || cls.names.th || cls.names.jp || base.name
+  const attackAnimation = cls.normalAttack.animation ?? 'attack'
+  const supportAnimation = cls.normalSupport.animation ?? 'skill2'
+  const skillAnimation = cls.skill.animation ?? 'skill1'
   return {
     ...base,
     name: displayName,
     stats,
+    // Combat actions stay attack/skill1/skill2 internally, but each slot can reuse
+    // any of the three authored visual action configurations from the asset editor.
+    actions: {
+      ...base.actions,
+      attack: { ...base.actions[attackAnimation] },
+      skill1: { ...base.actions[skillAnimation] },
+      skill2: { ...base.actions[supportAnimation] },
+    },
     skills: {
       skill1: gameplaySkillToLegacy(cls.skill),
       skill2: gameplayNormalSupportToLegacy(cls.normalSupport),
