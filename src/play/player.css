@@ -134,14 +134,14 @@
 .ep-stage-wave>b{font-size:12px;min-width:56px;color:#f7c84b}
 .ep-stage-wave>div{display:flex;gap:4px;flex-wrap:wrap}
 .ep-stage-wave img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#ffffff0b}
-.ep-wave-hud{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:8;display:flex;gap:10px;align-items:center;padding:8px 14px;border-radius:999px;background:#0b101be6;border:1px solid #ffffff2e;box-shadow:0 8px 28px #0007;pointer-events:none}
+.ep-wave-hud{position:absolute;left:50%;top:82px;transform:translateX(-50%);z-index:8;display:flex;gap:10px;align-items:center;padding:8px 14px;border-radius:999px;background:#0b101be6;border:1px solid #ffffff2e;box-shadow:0 8px 28px #0007;pointer-events:none}
 .ep-wave-hud b{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#dbe3ef}.ep-wave-hud span{color:#f7c84b;font-weight:900;letter-spacing:.04em}
 .ep-stage-clear{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:#060911b8;backdrop-filter:blur(6px)}
 .ep-stage-clear>div{min-width:min(420px,calc(100vw - 40px));padding:30px;text-align:center;border-radius:22px;background:#111a29;border:1px solid #ffffff24;box-shadow:0 24px 80px #0008}
 .ep-stage-clear span{font-weight:900;letter-spacing:.16em;color:#f7c84b}.ep-stage-clear h2{font-size:34px;margin:8px 0}.ep-stage-clear button{margin:6px}
 .ep-authored-description{white-space:pre-wrap;line-height:1.65;color:#dbe3ef}
 .ep-team-boards:has(.side-0:only-child){grid-template-columns:minmax(0,900px);justify-content:center}
-@media(max-width:700px){.ep-stage-grid{grid-template-columns:1fr}.ep-stage-map{padding:12px}.ep-wave-hud{top:8px;font-size:11px}.ep-wave-hud b{max-width:150px}}
+@media(max-width:700px){.ep-stage-grid{grid-template-columns:1fr}.ep-stage-map{padding:12px}.ep-wave-hud{top:72px;font-size:11px}.ep-wave-hud b{max-width:150px}}
 
 
 /* Battle gestures: keep the Ranger sprite in place and draw only the aiming tether, matching the authored spec. */
