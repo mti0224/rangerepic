@@ -94,6 +94,8 @@ export interface UnitSetup {
   passives?: PassiveDef[]
   /** เลเวลฮีโร่ — ไว้แสดงใต้หลอดเลือดเท่านั้น (ค่าพลังใน stats คิดเลเวลมาแล้ว) · ไม่ระบุ = 1 */
   level?: number
+  /** Multi-wave stages may carry the surviving HP into the next wave. */
+  startHp?: number
 }
 
 /** ผลที่ค้างอยู่บนตัว (มีเทิร์น) */
@@ -405,7 +407,7 @@ export class Battle {
       team: t as Team,
       row: u.row,
       lane: u.lane,
-      hp: s.hp,
+      hp: Math.max(0, Math.min(s.hp, u.startHp ?? s.hp)),
       maxHp: s.hp,
       atk: s.atk,
       def: s.def,
@@ -427,7 +429,7 @@ export class Battle {
       stunGuard: 0,
       av: AV_BASE / spd,
       spdNow: spd,
-      alive: true,
+      alive: (u.startHp ?? s.hp) > 0,
     }
   }
 
