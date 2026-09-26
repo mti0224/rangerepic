@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { fetchRanger } from './scripts/fetch-ranger.mjs'
 import { fetchLericoData } from './scripts/fetch-lerico.mjs'
+import { DEFAULT_BATTLE_RULES, GAMEPLAY_ID_RE, validateBattleRules, validateCharacter, validateClass } from './scripts/gameplay-schema.mjs'
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
@@ -13,6 +14,10 @@ const gameNameOf = (stats: { name?: { th?: string | null; en?: string | null; zh
   stats?.name?.th?.trim() || stats?.name?.en?.trim() || null
 /** ถังขยะของเรนเจอร์ที่ลบจาก editor — ย้ายโฟลเดอร์มาไว้ที่นี่ (กู้คืนได้ด้วยการย้ายกลับ) ไม่ลบถาวร */
 const DELETED_DIR = path.join(ROOT, 'data', 'deleted-rangers')
+const GAME_DIR = path.join(ROOT, 'data', 'game')
+const CHARACTERS_DIR = path.join(GAME_DIR, 'characters')
+const CLASSES_DIR = path.join(GAME_DIR, 'classes')
+const RULES_FILE = path.join(GAME_DIR, 'rules.json')
 const ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
 
 /**
@@ -37,6 +42,28 @@ async function listRangerItems(withGameNames = false) {
       : undefined
     return { id: d.name, configured: !!data, approved: data?.approved === true, grade: typeof stats?.grade === 'number' ? stats.grade : null, name: data?.name && data.name !== d.name ? data.name : gameNameOf(stats) ?? d.name, gameNames, bullets, role: data?.role ?? null, element: data?.element ?? null, category: data?.category ?? null }
   }))
+}
+
+const readJson = async <T = unknown>(file: string, fallback: T | null = null): Promise<T | null> =>
+  fs.readFile(file, 'utf8').then(v => JSON.parse(v) as T).catch(() => fallback)
+
+async function listGameplayDocs<T>(dir: string): Promise<T[]> {
+  await fs.mkdir(dir, { recursive: true })
+  const files = (await fs.readdir(dir, { withFileTypes: true }))
+    .filter(d => d.isFile() && d.name.endsWith('.json'))
+    .map(d => d.name)
+    .sort()
+  const out: T[] = []
+  for (const file of files) {
+    const data = await readJson<T>(path.join(dir, file))
+    if (data) out.push(data)
+  }
+  return out
+}
+
+async function saveGameplayDoc(dir: string, id: string, data: unknown): Promise<void> {
+  await fs.mkdir(dir, { recursive: true })
+  await fs.writeFile(path.join(dir, id + '.json'), JSON.stringify(data, null, 2) + '\n', 'utf8')
 }
 
 const readBody = async (req: import('node:http').IncomingMessage): Promise<string> => {
@@ -67,6 +94,72 @@ function rangerApi(): Plugin {
             const list = await listRangerItems(true)
             return send(200, { rangers: list })
           }
+          // RangerEpic Gameplay Data API — 與正式 admin server 保持相同格式
+          if (seg[0] === 'gameplay') {
+            if (req.method === 'GET' && seg[1] === 'characters' && !seg[2]) {
+              return send(200, { characters: await listGameplayDocs(CHARACTERS_DIR) })
+            }
+            if (req.method === 'GET' && seg[1] === 'classes' && !seg[2]) {
+              return send(200, { classes: await listGameplayDocs(CLASSES_DIR) })
+            }
+            if (req.method === 'GET' && seg[1] === 'rules') {
+              return send(200, { rules: await readJson(RULES_FILE, DEFAULT_BATTLE_RULES) })
+            }
+
+            if (seg[1] === 'character' && seg[2]) {
+              const id = seg[2]
+              if (!GAMEPLAY_ID_RE.test(id)) return send(400, { error: 'bad gameplay id' })
+              const file = path.join(CHARACTERS_DIR, id + '.json')
+              if (req.method === 'GET') return send(200, { character: await readJson(file) })
+              if (req.method === 'POST') {
+                const data: unknown = JSON.parse(await readBody(req))
+                const errors = validateCharacter(data, id)
+                if (errors.length) return send(400, { error: 'invalid character', errors })
+                await saveGameplayDoc(CHARACTERS_DIR, id, data)
+                return send(200, { ok: true, character: data })
+              }
+              if (req.method === 'DELETE') {
+                const classes = await listGameplayDocs<{ characterId?: string }>(CLASSES_DIR)
+                if (classes.some(c => c.characterId === id)) return send(409, { error: 'character is used by a class' })
+                const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+                if (!exists) return send(404, { error: 'not found' })
+                await fs.unlink(file)
+                return send(200, { ok: true })
+              }
+            }
+
+            if (seg[1] === 'class' && seg[2]) {
+              const id = seg[2]
+              if (!GAMEPLAY_ID_RE.test(id)) return send(400, { error: 'bad gameplay id' })
+              const file = path.join(CLASSES_DIR, id + '.json')
+              if (req.method === 'GET') return send(200, { class: await readJson(file) })
+              if (req.method === 'POST') {
+                const data = JSON.parse(await readBody(req)) as { characterId?: string; assetVariantId?: string }
+                const errors = validateClass(data, id)
+                if (errors.length) return send(400, { error: 'invalid class', errors })
+                if (!data.characterId || !await readJson(path.join(CHARACTERS_DIR, data.characterId + '.json'))) return send(400, { error: 'unknown characterId' })
+                if (!data.assetVariantId || !await fs.stat(path.join(RANGERS_DIR, data.assetVariantId)).then(s => s.isDirectory()).catch(() => false)) return send(400, { error: 'unknown assetVariantId' })
+                await saveGameplayDoc(CLASSES_DIR, id, data)
+                return send(200, { ok: true, class: data })
+              }
+              if (req.method === 'DELETE') {
+                const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+                if (!exists) return send(404, { error: 'not found' })
+                await fs.unlink(file)
+                return send(200, { ok: true })
+              }
+            }
+
+            if (req.method === 'POST' && seg[1] === 'rules') {
+              const data: unknown = JSON.parse(await readBody(req))
+              const errors = validateBattleRules(data)
+              if (errors.length) return send(400, { error: 'invalid rules', errors })
+              await fs.mkdir(GAME_DIR, { recursive: true })
+              await fs.writeFile(RULES_FILE, JSON.stringify(data, null, 2) + '\n', 'utf8')
+              return send(200, { ok: true, rules: data })
+            }
+          }
+
 
           // GET /api/ranger/<id> → ranger.json ของตัวนั้น
           if (req.method === 'GET' && seg[0] === 'ranger' && seg[1]) {
