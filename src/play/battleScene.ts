@@ -652,18 +652,34 @@ export class BattleScene {
     return distinct === 1 ? this.battle.autoTarget(actor, action) ?? list[0] : null
   }
 
+  /** Select an unacted player Ranger during Gameplay V1 and clear any old action selection. */
+  selectPlayerActor(uid: string): boolean {
+    if (this.phase !== 'input' || !this.battle.usesGameplayPhases) return false
+    const next = this.battle.unit(uid)
+    if (!next || next.team !== 0 || !this.battle.canChooseGameplayActor(next)) return false
+    this.pendingActor = next
+    this.pendingAction = null
+    this.pendingCaster = null
+    this.panelUid = next.uid
+    this.onChange?.()
+    return true
+  }
+
+  /** Cancel an armed target selection without consuming the Ranger's action. */
+  cancelPendingAction(): void {
+    if (this.phase !== 'input') return
+    this.pendingAction = null
+    this.pendingCaster = null
+    this.onChange?.()
+  }
+
   chooseTarget(uid: string): void {
     if (this.phase !== 'input' || !this.pendingActor) return
 
     // Gameplay V1: while no action has been chosen yet, clicking any ally that
     // has not acted in the current side phase switches the active Ranger.
     if (!this.pendingAction && this.battle.usesGameplayPhases) {
-      const next = this.battle.unit(uid)
-      if (next && next.team === 0 && this.battle.canChooseGameplayActor(next)) {
-        this.pendingActor = next
-        this.pendingCaster = null
-        this.onChange?.()
-      }
+      this.selectPlayerActor(uid)
       return
     }
 
