@@ -22,6 +22,8 @@ import { enemyAsCombatClass, type GameplayEnemy, type GameplayStage } from '@/li
 import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
 import { ENERGY_STONE_FULL } from './energyStone'
 import StageSelection from './StageSelection'
+import { recordStageStars } from './stageProgress'
+import { starsForSurvivors } from './stageResult'
 import './player.css'
 
 type Page = 'lobby' | 'stages' | 'setup' | 'characters'
@@ -246,6 +248,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   const rerender = useCallback(() => force(n => n + 1), [])
   const [waveIndex, setWaveIndex] = useState(0)
   const [stageComplete, setStageComplete] = useState(false)
+  const [clearStars, setClearStars] = useState(0)
   const carryRef = useRef<{ hp: Map<string, number>; gauge: number } | null>(null)
   const advanceLock = useRef(false)
   // เริ่มเกม: AUTO ปิด · ความเร็ว x1 (ผู้เล่นเลือกเปิดเอง)
@@ -365,6 +368,9 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
         carryRef.current = carry
         setWaveIndex(i => i + 1)
       } else {
+        const stars = starsForSurvivors([...carry.hp.values()].filter(hp => hp > 0).length)
+        recordStageStars(stageDef.id, stars)
+        setClearStars(stars)
         setStageComplete(true)
       }
     })
@@ -638,7 +644,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
       {dragLine && <svg className={'ep-drag-guide' + (dragLine.mode === 'skill' ? ' energy' : '')} aria-hidden="true"><line x1={dragLine.x1} y1={dragLine.y1} x2={dragLine.x2} y2={dragLine.y2} />{dragLine.mode === 'unit' && <circle cx={dragLine.x2} cy={dragLine.y2} r="12" />}</svg>}
       {dragLine?.mode === 'skill' && <img className="ep-drag-energy-stone" src={ENERGY_STONE_FULL} style={{ left: dragLine.x2, top: dragLine.y2 }} alt="" aria-hidden="true" />}
       {detailUid && <UnitDetailModal unit={scene.battle.unit(detailUid) ?? null} scene={scene} lang={lang} onClose={() => setDetailUid(null)} />}
-      {stageComplete && <div className="ep-stage-clear"><div><span>STAGE CLEAR</span><h2>{stageDef?.names.zh || stageDef?.names.en || stageDef?.id}</h2><p>所有波次已通過。</p><button className="ep-primary" onClick={onBack}>返回編組</button><button onClick={onRestart}>再次挑戰</button></div></div>}
+      {stageComplete && <div className="ep-stage-clear"><div><span>STAGE CLEAR</span><h2>{stageDef?.names.zh || stageDef?.names.en || stageDef?.id}</h2><div className="ep-stage-stars" aria-label={`${clearStars} 顆星`}>{[0, 1, 2].map(i => <b key={i} className={i < clearStars ? 'earned' : ''}>★</b>)}</div><p>依存活 Ranger 數量獲得 {clearStars} 顆星。</p><button className="ep-primary" onClick={onBack}>返回編組</button><button onClick={onRestart}>再次挑戰</button></div></div>}
       <RotateHint />
       {needFs && (
         <button className="fs-gate" onClick={() => enterGameFullscreen()}>

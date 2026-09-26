@@ -36,6 +36,8 @@ export function groupPlayerCharacters(data: RangerData[]) {
 }
 
 export const SLOT_KEYS = ['front-0', 'front-1', 'back-0', 'back-1', 'back-2'] as const
+/** Battle parties may occupy any formation slots, but can field at most 3 Rangers. */
+export const MAX_BATTLE_RANGERS = 3
 export type SlotKey = typeof SLOT_KEYS[number]
 export type TeamSlots = Record<SlotKey, string | null>
 export type Formation = [TeamSlots, TeamSlots]
@@ -47,12 +49,15 @@ export function cleanFormation(value: unknown, data: RangerData[]): Formation {
   return [0, 1].map(side => {
     const team = emptyTeam()
     const seen = new Set<string>()
+    let count = 0
     for (const key of SLOT_KEYS) {
+      if (count >= MAX_BATTLE_RANGERS) break
       const old = source[side]?.[key]
       const row = data.find(d => d.playId === old) ?? data.find(d => d.item.id === old)
       if (!row || seen.has(row.gameplayCharacter.id)) continue
       team[key] = row.playId
       seen.add(row.gameplayCharacter.id)
+      count++
     }
     return team
   }) as Formation
@@ -67,6 +72,8 @@ export function placeClass(formation: Formation, data: RangerData[], side: 0 | 1
     const existing = data.find(d => d.playId === next[side][key])
     if (existing?.gameplayCharacter.id === row.gameplayCharacter.id) next[side][key] = null
   }
+  const occupied = SLOT_KEYS.filter(key => next[side][key]).length
+  if (!next[side][slot] && occupied >= MAX_BATTLE_RANGERS) return formation
   next[side][slot] = row.playId
   return next
 }

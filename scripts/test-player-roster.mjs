@@ -7,7 +7,7 @@ import path from 'node:path'
 const output = path.resolve('node_modules/.tmp-player-roster.mjs')
 try {
   await build({ entryPoints: ['src/play/playerRoster.ts'], bundle: true, format: 'esm', platform: 'node', outfile: output, logLevel: 'silent' })
-  const { buildPlayerRoster, groupPlayerCharacters, cleanFormation, placeClass, emptyTeam } = await import(pathToFileURL(output))
+  const { buildPlayerRoster, groupPlayerCharacters, cleanFormation, placeClass, emptyTeam, SLOT_KEYS, MAX_BATTLE_RANGERS } = await import(pathToFileURL(output))
   const read = async file => JSON.parse(await readFile(file, 'utf8'))
   const brown = await read('data/game/characters/brown.json')
   const cony = await read('data/game/characters/cony.json')
@@ -35,7 +35,23 @@ try {
   assert.equal(moved[0]['front-0'], null, 'switching class and slot moves the character')
   assert.equal(moved[0]['back-1'], alt.id)
   assert.equal(moved[1]['back-0'], cls.id, 'other side unchanged')
+  const distinct = Array.from({ length: 4 }, (_, i) => ({
+    ...rows[0],
+    playId: `party_${i}`,
+    item: { ...rows[0].item, id: `asset_${i}` },
+    gameplayCharacter: { ...rows[0].gameplayCharacter, id: `character_${i}` },
+  }))
+  const capped = cleanFormation([{
+    'front-0': 'party_0', 'front-1': 'party_1', 'back-0': 'party_2', 'back-1': 'party_3', 'back-2': null,
+  }, emptyTeam()], distinct)
+  assert.equal(SLOT_KEYS.filter(k => capped[0][k]).length, MAX_BATTLE_RANGERS, 'saved formations are capped at three Rangers')
+  assert.equal(capped[0]['back-1'], null, 'fourth saved Ranger is removed by migration')
+  const blocked = placeClass(capped, distinct, 0, 'back-2', 'party_3')
+  assert.deepEqual(blocked, capped, 'adding a fourth Ranger to an empty slot is blocked')
+  const replaced = placeClass(capped, distinct, 0, 'front-0', 'party_3')
+  assert.equal(SLOT_KEYS.filter(k => replaced[0][k]).length, MAX_BATTLE_RANGERS, 'replacing a Ranger is allowed at the cap')
+  assert.equal(replaced[0]['front-0'], 'party_3')
   assert.deepEqual(cleanFormation(null, rows), [emptyTeam(), emptyTeam()])
   assert.deepEqual(cleanFormation(['bad', 123], rows), [emptyTeam(), emptyTeam()])
-  console.log('✓ Player roster: authored classes, grouping, shared assets, migration, duplicate prevention and empty catalogs')
+  console.log('✓ Player roster: authored classes, grouping, migration, duplicate prevention, three-Ranger cap and empty catalogs')
 } finally { await rm(output, { force: true }) }

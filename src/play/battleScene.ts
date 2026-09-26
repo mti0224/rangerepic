@@ -1067,7 +1067,13 @@ export class BattleScene {
 
   private spawn(r: ActionRun): void {
     r.spawned = true
-    const plan: ShotPlan = planAction(r.actor.kit.assets, r.actor.kit.config, r.action, this.targetPointsFor(r.actor, r.target))
+    // Gameplay Normal Support is a semantic support action. It may borrow the
+    // character's body animation from an offensive raw skill, but must never
+    // inherit that raw skill's bullet/projectile visual.
+    const gameplaySupport = !!r.actor.unit.gameplayClass && r.action === 'skill2'
+    const plan: ShotPlan = gameplaySupport
+      ? { type: 'melee', isBuff: true, hit: null }
+      : planAction(r.actor.kit.assets, r.actor.kit.config, r.action, this.targetPointsFor(r.actor, r.target))
     // ไม่มีจังหวะโดนตี (ประชิด หรือท่าบัฟ) → ลงผลตอนปล่อยเลย
     if (plan.type === 'melee' || !plan.hit) this.resolveRun(r)
     if (plan.type === 'melee') return
@@ -1310,6 +1316,14 @@ export class BattleScene {
     for (const v of this.views) this.stepIcons(v, dt * mul)
     if (!this.intro && !this.waveExit) this.stepDodges(dt * mul)
 
+    // Floating damage/status text must keep aging during intro/wave-clear transitions.
+    // Previously waveExit returned before this step, so a killing damage number could
+    // remain frozen on screen for the entire transition.
+    for (let i = this.popups.length - 1; i >= 0; i--) {
+      this.popups[i].life -= dt
+      if (this.popups[i].life <= 0) this.popups.splice(i, 1)
+    }
+
     if (this.intro) { this.stepIntro(dt * mul); return }
     if (this.waveExit) { this.stepWaveExit(dt * mul); return }
 
@@ -1352,10 +1366,6 @@ export class BattleScene {
       if (shotExpired(s.plan, T)) this.shots.splice(i, 1)
     }
 
-    for (let i = this.popups.length - 1; i >= 0; i--) {
-      this.popups[i].life -= dt
-      if (this.popups[i].life <= 0) this.popups.splice(i, 1)
-    }
   }
 
   private stepRun(dt: number): void {

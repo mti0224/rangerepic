@@ -25,6 +25,7 @@ const bundle = async (entry, name) => {
 
 const B = await bundle('src/play/battle.ts', 'gameplay-v1-battle')
 const A = await bundle('src/lib/gameplayAdapter.ts', 'gameplay-v1-adapter')
+const P = await bundle('src/lib/actionPlan.ts', 'gameplay-v1-action-plan')
 
 let pass = 0
 let fail = 0
@@ -132,6 +133,18 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
     adapted.actions.skill1.marker,
     adapted.actions.skill2.marker,
   ], ['skill2', 'skill1', 'attack'])
+  check('Gameplay remap remembers the raw visual source slots', [
+    adapted.actions.attack.visualSource,
+    adapted.actions.skill1.visualSource,
+    adapted.actions.skill2.visualSource,
+  ], ['skill2', 'skill1', 'attack'])
+  const move = animationPart => ({ animationPart })
+  const assets = { gameData: { moves: { normal: move('normal-bul'), skill1: move('skill1-bul'), skill2: move('skill2-bul') } } }
+  check('Projectile metadata follows the configured visual slot', [
+    P.resolveMove(assets, adapted, 'attack')?.meta.animationPart,
+    P.resolveMove(assets, adapted, 'skill1')?.meta.animationPart,
+    P.resolveMove(assets, adapted, 'skill2')?.meta.animationPart,
+  ], ['skill2-bul', 'skill1-bul', 'normal-bul'])
 }
 
 // Shared skill gauge + Player Phase / Enemy Phase.
