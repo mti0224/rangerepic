@@ -94,6 +94,11 @@ export const DEFAULT_APPROACH: ApproachConfig = {
 
 // ── หนึ่งแอ็กชัน (ตีธรรมดา / สกิล 1 / สกิล 2) ──
 export interface ActionConfig {
+  /**
+   * Gameplay semantic actions may borrow a different raw visual slot.
+   * When present, projectile/move metadata must come from this visual slot too.
+   */
+  visualSource?: ActionName
   /** ส่วนแรกของท่าแบบ 3 ส่วน (s_action_attack_1) — ท่าแบบคู่เป็น null */
   castPre: string | null
   cast: string | null                // คลิปช่วงร่าย (null = ไม่มีช่วงร่าย)
