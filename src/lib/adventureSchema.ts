@@ -70,6 +70,7 @@ export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEn
     normalAttack: {
       target: 'single',
       hits: 1,
+      description: '',
       animation: 'attack',
       skillGaugeGain: 0,
       effects: [],
