@@ -823,7 +823,7 @@ export class BattleHud {
       const value = a === 'attack'
         ? '+' + u.gameplayClass.normalAttack.skillGaugeGain
         : a === 'skill1'
-          ? `${Math.round(u.skillGauge)}/${max}`
+          ? `${Math.round(b.gameplayGaugeOf(u.team))}/${max}`
           : '—'
       const label = a === 'attack' ? 'Gauge ' : a === 'skill1' ? 'Gauge ' : ''
       outlined(ctx, label + value, tx, y + 57, a === 'skill1' && !b.canUse(u, a) ? C.debuff : C.energy, 3)
@@ -867,7 +867,7 @@ export class BattleHud {
   private drawGameplayGauge(ctx: CanvasRenderingContext2D, u: Unit): void {
     const { x, y, w, h } = COST_BAR
     const max = this.s.battle.gameplayGaugeMax(u)
-    const gauge = Math.max(0, Math.min(max, u.skillGauge))
+    const gauge = Math.max(0, Math.min(max, b.gameplayGaugeOf(u.team)))
     para(ctx, x, y, w, h, -8)
     ctx.fillStyle = C.panel
     ctx.fill()
