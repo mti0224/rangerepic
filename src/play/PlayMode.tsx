@@ -17,13 +17,17 @@ import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice,
 import { ui, useLang } from './uiText'
 import { loadGameplayCatalog } from '@/lib/gameplayApi'
 import { DEFAULT_BATTLE_RULES, type BattleRulesV1 } from '@/lib/gameplaySchema'
+import { loadAdventureCatalog } from '@/lib/adventureApi'
+import { enemyAsCombatClass, type GameplayEnemy, type GameplayStage } from '@/lib/adventureSchema'
+import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
+import StageSelection from './StageSelection'
 import './player.css'
 
-type Page = 'lobby' | 'setup' | 'characters'
-const PATH: Record<Page, string> = { lobby: '/lobby', setup: '/team', characters: '/characters' }
+type Page = 'lobby' | 'stages' | 'setup' | 'characters'
+const PATH: Record<Page, string> = { lobby: '/lobby', stages: '/stages', setup: '/team', characters: '/characters' }
 const pageFromPath = (): Page => {
   const path = location.pathname.replace(/\/+$/, '').toLowerCase()
-  return path.endsWith('/team') ? 'setup' : path.endsWith('/characters') ? 'characters' : 'lobby'
+  return path.endsWith('/stages') ? 'stages' : path.endsWith('/team') ? 'setup' : path.endsWith('/characters') ? 'characters' : 'lobby'
 }
 const FORMATION_KEY = 'lr:formation'
 const MAX_CANVAS_W = 2560
@@ -38,6 +42,10 @@ export default function PlayMode() {
   const lang = useLang()
   const [data, setData] = useState<RangerData[]>([])
   const [rules, setRules] = useState<BattleRulesV1>(DEFAULT_BATTLE_RULES)
+  const [enemies, setEnemies] = useState<GameplayEnemy[]>([])
+  const [stages, setStages] = useState<GameplayStage[]>([])
+  const [assetItems, setAssetItems] = useState<Awaited<ReturnType<typeof listRangers>>>([])
+  const [selectedStage, setSelectedStage] = useState<GameplayStage | null>(null)
   const [formation, setFormation] = useState<Formation>([emptyTeam(), emptyTeam()])
   const [stage, setStage] = useState<Page | 'loading' | 'battle'>(pageFromPath)
   const [ready, setReady] = useState(false)
@@ -65,7 +73,7 @@ export default function PlayMode() {
     setLoadError('')
     void (async () => {
       try {
-        const [assets, catalog] = await Promise.all([listRangers(), loadGameplayCatalog()])
+        const [assets, catalog, adventure] = await Promise.all([listRangers(), loadGameplayCatalog(), loadAdventureCatalog()])
         const approved = new Set(assets.filter(a => a.approved).map(a => a.id))
         const ids = [...new Set(catalog.classes.map(c => c.assetVariantId))].filter(id => approved.has(id))
         const configs = new Map(await Promise.all(ids.map(async id => {
@@ -77,6 +85,9 @@ export default function PlayMode() {
         if (cancelled) return
         setData(rows)
         setRules(catalog.rules)
+        setEnemies(adventure.enemies)
+        setStages(adventure.stages)
+        setAssetItems(assets)
         setFormation(cleanFormation(savedFormation(), rows))
         setReady(true)
       } catch (error) {
@@ -92,22 +103,31 @@ export default function PlayMode() {
 
   const start = async () => {
     const cleaned = cleanFormation(formation, data)
-    if (!cleaned.every(team => SLOT_KEYS.some(key => team[key]))) return
+    const playerReady = SLOT_KEYS.some(key => cleaned[0][key])
+    const practiceReady = cleaned.every(team => SLOT_KEYS.some(key => team[key]))
+    if (selectedStage ? !playerReady : !practiceReady) return
     setFormation(cleaned)
     setMessage('')
     setStage('loading')
     if (isTouchDevice()) enterGameFullscreen()
-    const ids = [...new Set(cleaned.flatMap(t => Object.values(t)).filter((x): x is string => !!x))]
+
+    const playerPlayIds = (selectedStage ? Object.values(cleaned[0]) : cleaned.flatMap(t => Object.values(t))).filter((x): x is string => !!x)
+    const playerAssetIds = playerPlayIds.map(id => data.find(d => d.playId === id)?.item.id).filter((x): x is string => !!x)
+    const stageAssetIds = selectedStage
+      ? selectedStage.waves.flatMap(w => w.enemies.map(row => enemies.find(e => e.id === row.enemyId)?.assetVariantId).filter((x): x is string => !!x))
+      : []
+    const ids = [...new Set([...playerAssetIds, ...stageAssetIds])]
     const map = new Map<string, RangerKit>()
     setProgress({ done: 0, total: ids.length })
     try {
       for (const [i, id] of ids.entries()) {
-        const row = data.find(d => d.playId === id)!
-        if (!map.has(row.item.id)) {
-          const assets = await loadRangerAssets(row.item.id, row.item.bullets)
-          const config = withDefaultGround(row.config, assets.geometry.autoStand)
-          map.set(row.item.id, { assets, config, info: null })
-        }
+        const assetItem = assetItems.find(a => a.id === id)
+        if (!assetItem) throw new Error(`找不到圖資：${id}`)
+        const existing = data.find(d => d.item.id === id)?.config
+        const raw = existing ?? migrateRangerConfig(await loadRangerConfig(id) ?? (() => { throw new Error(`無法載入圖資設定：${id}`) })())
+        const assets = await loadRangerAssets(id, assetItem.bullets)
+        const config = withDefaultGround(raw, assets.geometry.autoStand)
+        map.set(id, { assets, config, info: null })
         setProgress({ done: i + 1, total: ids.length })
       }
       setKits(map)
@@ -124,23 +144,24 @@ export default function PlayMode() {
     setKits(null)
     setStage('setup')
   }
-  if (stage === 'battle' && kits) return <BattleView formation={formation} kits={kits} seed={seed} data={data} rules={rules} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} />
+  if (stage === 'battle' && kits) return <BattleView key={`${seed}:${selectedStage?.id ?? 'practice'}`} formation={formation} kits={kits} seed={seed} data={data} rules={rules} stageDef={selectedStage} enemies={enemies} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} />
 
   return <div className="play-app ep-app">
     <header className="ep-header"><button className="ep-brand" onClick={() => { if (stage !== 'loading') setStage('lobby') }}>RANGER<span>EPIC</span><small>回合制冒險</small></button>
-      <nav aria-label="主選單">{([['lobby', '首頁'], ['characters', '角色與職業'], ['setup', '編組隊伍']] as const).map(([page, label]) => <button key={page} disabled={stage === 'loading'} aria-current={stage === page ? 'page' : undefined} onClick={() => { setNotice(''); setStage(page) }}>{label}</button>)}</nav><LangSwitch />
+      <nav aria-label="主選單">{([['lobby', '首頁'], ['stages', '關卡'], ['characters', '角色與職業'], ['setup', '自由編組']] as const).map(([page, label]) => <button key={page} disabled={stage === 'loading'} aria-current={stage === page ? 'page' : undefined} onClick={() => { setNotice(''); if (page === 'setup') setSelectedStage(null); setStage(page) }}>{label}</button>)}</nav><LangSwitch />
     </header>
     <InAppNotice />
     {notice && <p className="ep-notice" role="status">{notice}</p>}
     {loadError ? <div className="ep-load-state" role="alert"><h1>暫時無法載入角色</h1><p>{loadError}</p><button className="ep-primary" onClick={() => setAttempt(a => a + 1)}>重新載入</button></div>
       : !ready ? <div className="ep-load-state" role="status"><div className="pa-spinner" /><p>載入角色與職業…</p></div>
-      : stage === 'lobby' ? <Lobby data={data} onBattle={() => setStage('setup')} onCharacters={() => setStage('characters')} />
+      : stage === 'lobby' ? <Lobby data={data} onBattle={() => setStage('stages')} onCharacters={() => setStage('characters')} />
+      : stage === 'stages' ? <StageSelection stages={stages} enemies={enemies} onBack={() => setStage('lobby')} onSelect={picked => { setSelectedStage(picked); setStage('setup') }} />
       : stage === 'characters' ? <ClassSelection data={data} onBack={() => setStage('lobby')} onConfirm={row => {
         setFormation(f => cleanFormation(f.map(team => Object.fromEntries(Object.entries(team).map(([key, id]) => [key, data.find(d => d.playId === id)?.gameplayCharacter.id === row.gameplayCharacter.id ? row.playId : id]))), data))
         setNotice(`已選擇「${nameOf(row)}」。可在編組隊伍中加入此角色。`)
         setStage('setup')
       }} />
-      : <TeamBuilder data={data} formation={formation} setFormation={setFormation} onStart={() => void start()} busy={stage === 'loading'} message={message} />}
+      : <TeamBuilder data={data} formation={formation} setFormation={setFormation} onStart={() => void start()} busy={stage === 'loading'} message={message} playerOnly={!!selectedStage} stageName={selectedStage?.names.zh || selectedStage?.names.en || selectedStage?.id || ''} />}
     {stage === 'loading' && <div className="pa-overlay"><div className="pa-load-card" role="status"><p>載入戰鬥 {progress.done}/{progress.total}</p><div className="pa-bar"><i style={{ width: `${progress.total ? progress.done / progress.total * 100 : 0}%` }} /></div></div></div>}
   </div>
 }
@@ -192,18 +213,24 @@ function LangSwitch() {
 
 // ────────────────────────────────────────────────────────────
 
-function BattleView({ formation, kits, seed, data, rules, onBack, onRestart }: {
+function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onBack, onRestart }: {
   formation: Formation
   kits: Map<string, RangerKit>
   seed: number
   data: RangerData[]
   rules: BattleRulesV1
+  stageDef: GameplayStage | null
+  enemies: GameplayEnemy[]
   onBack: () => void
   onRestart: () => void
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [, force] = useState(0)
+  const [revision, force] = useState(0)
   const rerender = useCallback(() => force(n => n + 1), [])
+  const [waveIndex, setWaveIndex] = useState(0)
+  const [stageComplete, setStageComplete] = useState(false)
+  const carryRef = useRef<{ hp: Map<string, number>; gauge: number } | null>(null)
+  const advanceLock = useRef(false)
   // เริ่มเกม: AUTO ปิด · ความเร็ว x1 (ผู้เล่นเลือกเปิดเอง)
   const [speed, setSpeed] = useState(1)
   const [auto, setAuto] = useState(false)
@@ -243,13 +270,68 @@ function BattleView({ formation, kits, seed, data, rules, onBack, onRestart }: {
       const [row, lane] = k.split('-') as [Row, string]
       return setupOf(playId, row, Number(lane))
     })
-    return new BattleScene(new Battle([setups(0), setups(1)], seed), kits, thumbs, rerender)
-  }, [formation, kits, thumbs, seed, rerender, data, rules])
+    const enemyById = new Map(enemies.map(e => [e.id, e]))
+    const waveSetups = (): UnitSetup[] => {
+      if (!stageDef) return setups(1)
+      const wave = stageDef.waves[waveIndex]
+      if (!wave) return []
+      return wave.enemies.flatMap(entry => {
+        const enemy = enemyById.get(entry.enemyId)
+        const kit = enemy ? kits.get(enemy.assetVariantId) : undefined
+        if (!enemy || !kit) return []
+        const cls = enemyAsCombatClass(enemy)
+        const adapted = adaptRangerConfigForGameplay(kit.config, cls)
+        const [row, lane] = entry.slot.split('-') as [Row, string]
+        return [{
+          rangerId: enemy.assetVariantId,
+          characterId: cls.characterId,
+          classId: cls.id,
+          assetVariantId: enemy.assetVariantId,
+          gameplayClass: cls,
+          gameplayRules: rules,
+          row,
+          lane: Number(lane),
+          element: adapted.element,
+          category: adapted.category,
+          role: adapted.role,
+          skills: adapted.skills,
+          stats: adapted.stats,
+          passives: [],
+          level: 1,
+        }]
+      })
+    }
+    const battle = new Battle([setups(0), waveSetups()], seed + waveIndex)
+    if (stageDef && carryRef.current) {
+      for (const unit of battle.units.filter(u => u.team === 0)) {
+        const hp = carryRef.current.hp.get(unit.uid)
+        if (hp != null) unit.hp = Math.max(1, Math.min(unit.maxHp, hp))
+      }
+      battle.gameplayGauge[0] = carryRef.current.gauge
+    }
+    return new BattleScene(battle, kits, thumbs, rerender)
+  }, [formation, kits, thumbs, seed, rerender, data, rules, stageDef, enemies, waveIndex])
 
   // เปิดให้เครื่องมือตรวจภาพเรียก scene ได้ (เช่นสั่งเดินเฟรมแล้วดัมพ์ภาพ) — ใช้ตอนพัฒนา
   useEffect(() => {
     (window as unknown as { __scene?: BattleScene }).__scene = scene
   }, [scene])
+
+  useEffect(() => { advanceLock.current = false }, [scene])
+
+  useEffect(() => {
+    if (!stageDef || stageComplete || advanceLock.current || !scene.battle.over || scene.battle.winner !== 0) return
+    advanceLock.current = true
+    if (waveIndex + 1 < stageDef.waves.length) {
+      carryRef.current = {
+        hp: new Map(scene.battle.units.filter(u => u.team === 0 && u.alive).map(u => [u.uid, u.hp])),
+        gauge: scene.battle.gameplayGauge[0],
+      }
+      setWaveIndex(i => i + 1)
+    } else {
+      setStageComplete(true)
+    }
+  }, [revision, scene, stageDef, stageComplete, waveIndex])
 
   useEffect(() => { scene.speed = speed }, [scene, speed])
   useEffect(() => { scene.auto = auto }, [scene, auto])
@@ -420,6 +502,8 @@ function BattleView({ formation, kits, seed, data, rules, onBack, onRestart }: {
           <i className="cr-ring cr-ring2" />
         </span>
       ))}
+      {stageDef && <div className="ep-wave-hud"><b>{stageDef.names.zh || stageDef.names.en || stageDef.id}</b><span>Wave {Math.min(waveIndex + 1, stageDef.waves.length)} / {stageDef.waves.length}</span></div>}
+      {stageComplete && <div className="ep-stage-clear"><div><span>STAGE CLEAR</span><h2>{stageDef?.names.zh || stageDef?.names.en || stageDef?.id}</h2><p>所有波次已通過。</p><button className="ep-primary" onClick={onBack}>返回編組</button><button onClick={onRestart}>再次挑戰</button></div></div>}
       <RotateHint />
       {needFs && (
         <button className="fs-gate" onClick={() => enterGameFullscreen()}>
