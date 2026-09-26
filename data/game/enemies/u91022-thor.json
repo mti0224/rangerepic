@@ -21,7 +21,8 @@
     "hits": 2,
     "animation": "attack",
     "skillGaugeGain": 0,
-    "effects": []
+    "effects": [],
+    "description": "對1名Ranger造成2次攻擊力100%的傷害"
   },
   "normalSupport": {
     "target": "singleAlly",
