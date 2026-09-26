@@ -329,14 +329,24 @@ function playRoutes(): Plugin {
   }
 }
 
-/** ตอน build: รายชื่อเรนเจอร์เป็นไฟล์นิ่ง (หน้าเล่นเปิดได้โดยไม่ต้องมี dev server) */
+/** ตอน build: สร้างดัชนีแบบไฟล์นิ่งให้หน้าเล่นใช้ได้โดยไม่ต้องมี Admin API */
 function rangerIndex(): Plugin {
   return {
     name: 'ranger-index',
     apply: 'build',
     async generateBundle() {
-      const rangers = await listRangerItems()
+      const [rangers, characters, classes, rules] = await Promise.all([
+        listRangerItems(),
+        listGameplayDocs(CHARACTERS_DIR),
+        listGameplayDocs(CLASSES_DIR),
+        readJson(RULES_FILE, DEFAULT_BATTLE_RULES),
+      ])
       this.emitFile({ type: 'asset', fileName: 'rangers/index.json', source: JSON.stringify({ rangers }) })
+      this.emitFile({
+        type: 'asset',
+        fileName: 'gameplay/index.json',
+        source: JSON.stringify({ characters, classes, rules: rules ?? DEFAULT_BATTLE_RULES }),
+      })
     },
   }
 }
