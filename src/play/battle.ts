@@ -53,7 +53,7 @@ import { passiveSum, type PassiveDef } from '@/lib/passives'
 import { BattleAI } from './ai'
 import { playableIdentityOfRanger, type AssetVariantId, type CharacterId, type ClassId } from '@/lib/characterModel'
 import type {
-  AbilityCondition, AbilityTrigger, BattleRulesV1, GameplayClass, GameplayEffect, GameplayEffectType,
+  AbilityCondition, AbilityTrigger, BattleRulesV1, GameplayCombatant, GameplayEffect, GameplayEffectType,
 } from '@/lib/gameplaySchema'
 import { gameplayEffectToLegacy, gameplayNormalAttackSkill } from '@/lib/gameplayAdapter'
 
@@ -78,7 +78,7 @@ export interface UnitSetup {
   classId?: ClassId
   assetVariantId?: AssetVariantId
   /** RangerEpic Gameplay V1 combat definition. When present, it is authoritative over legacy combat stats. */
-  gameplayClass?: GameplayClass
+  gameplayClass?: GameplayCombatant
   gameplayRules?: BattleRulesV1
   row: Row
   /** ช่องในแถว: แถวหน้า 0–1, แถวหลัง 0–2 */
@@ -148,7 +148,7 @@ export interface Unit {
   characterId: CharacterId
   classId: ClassId
   assetVariantId: AssetVariantId
-  gameplayClass?: GameplayClass
+  gameplayClass?: GameplayCombatant
   gameplayRules?: BattleRulesV1
   /** เลเวลฮีโร่ (แสดงผลอย่างเดียว) */
   level: number
@@ -1065,9 +1065,9 @@ export class Battle {
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
     if (u.gameplayClass) {
-      if (action === 'skill1') return !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
-      // skill2 is the class's normal support action, not the gauge Skill.
-      return true
+      if (action === 'skill1') return !!u.gameplayClass.skill && !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
+      // Player classes expose normal support as skill2. Enemies do not unless that action exists in their definition.
+      return 'normalSupport' in u.gameplayClass
     }
     return !this.has(u, 'silence') && this.energy[u.team] >= this.costOf(u, action)
   }
@@ -1084,13 +1084,14 @@ export class Battle {
     // Gameplay V1 has no legacy front-row blocking. The chosen unit is only the
     // operation anchor; all/random/ordered target expansion happens separately.
     if (actor.gameplayClass) {
-      if (action === 'skill2') return allies
-      const isEnemySkill = action === 'skill1' && actor.gameplayClass.skill.target.side === 'enemy'
+      if (action === 'skill2') return 'normalSupport' in actor.gameplayClass ? allies : []
+      const skill = actor.gameplayClass.skill
+      const isEnemySkill = action === 'skill1' && skill?.target.side === 'enemy'
       if (action === 'attack' || isEnemySkill) {
         const taunting = enemies.filter(u => this.has(u, 'taunt'))
         if (taunting.length) return taunting
       }
-      if (action === 'skill1') return actor.gameplayClass.skill.target.side === 'ally' ? allies : enemies
+      if (action === 'skill1') return skill ? (skill.target.side === 'ally' ? allies : enemies) : []
       return enemies
     }
 
@@ -1141,9 +1142,11 @@ export class Battle {
     }
 
     if (action === 'skill2') {
+      if (!('normalSupport' in cls)) return []
       return cls.normalSupport.target === 'allAllies' ? allies : (chosen.alive ? [chosen] : [])
     }
 
+    if (!cls.skill) return []
     const rule = cls.skill.target
     const pool = rule.side === 'ally' ? allies : attackPool
     if (rule.count === 'all') return pool
