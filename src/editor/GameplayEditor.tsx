@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
 import {
   ABILITY_EFFECT_TARGETS, ABILITY_TRIGGERS, ATTACK_SKILL_EFFECT_TYPES, CONDITION_LABEL_ZH, CONDITION_OPERATORS, CONDITION_TYPES,
-  EFFECT_LABEL_ZH, EFFECT_TYPES, SUPPORT_SKILL_EFFECT_TYPES, TRIGGER_LABEL_ZH,
+  EFFECT_LABEL_ZH, EFFECT_TYPES, GAMEPLAY_ANIMATIONS, SUPPORT_SKILL_EFFECT_TYPES, TRIGGER_LABEL_ZH,
   newGameplayAbility, newGameplayCharacter, newGameplayClass, newGameplayEffect,
   type AbilityCondition, type BattleRulesV1, type GameplayAbility, type GameplayCharacter, type GameplayClass,
-  type GameplayEffect, type GameplayEffectType, type SkillTargetRule,
+  type GameplayAnimation, type GameplayEffect, type GameplayEffectType, type SkillTargetRule,
 } from '@/lib/gameplaySchema'
 import {
   deleteGameplayCharacter, deleteGameplayClass, listGameplayCharacters, listGameplayClasses, listGameplayIcons,
@@ -17,6 +17,38 @@ type View = 'characters' | 'classes' | 'rules'
 
 const clone = <T,>(v: T): T => structuredClone(v)
 const idOk = (s: string) => /^[a-z0-9][a-z0-9_-]*$/i.test(s)
+
+const ANIMATION_LABEL_ZH: Record<GameplayAnimation, string> = {
+  attack: '普通攻擊動畫',
+  skill1: '技能 1 動畫',
+  skill2: '技能 2 動畫',
+}
+
+const HOLDABLE_EFFECT_TYPES = EFFECT_TYPES.filter(type => ![
+  'damage', 'fixedDamage', 'removeShield', 'dispelBuffs',
+  'cleanseDebuffs', 'cleanseDamageOverTime', 'cleansePoison',
+  'removeTaunt', 'removeStun', 'removeSilence',
+].includes(type)) as GameplayEffectType[]
+
+function normalizeAbilityDraft(value: GameplayAbility): GameplayAbility {
+  const trigger = value.trigger === 'beforeDamaged' || value.trigger === 'afterDamaged' ? 'damaged' : value.trigger
+  const conditions = value.conditions.map(condition =>
+    condition.type === ('statusType' as AbilityCondition['type'])
+      ? { ...condition, type: 'hasStatus' as const }
+      : condition
+  )
+  return { ...value, trigger, conditions }
+}
+
+function normalizeClassDraft(value: GameplayClass): GameplayClass {
+  return {
+    ...value,
+    normalAttack: { ...value.normalAttack, animation: value.normalAttack.animation ?? 'attack' },
+    normalSupport: { ...value.normalSupport, animation: value.normalSupport.animation ?? 'skill2' },
+    skill: { ...value.skill, animation: value.skill.animation ?? 'skill1' },
+    abilities: value.abilities.map(normalizeAbilityDraft),
+  }
+}
 
 export default function GameplayEditor() {
   const [view, setView] = useState<View>('classes')
@@ -69,7 +101,7 @@ export default function GameplayEditor() {
 
   useEffect(() => {
     const row = classes.find(x => x.id === selectedClass) ?? null
-    setClassDraft(row ? clone(row) : null)
+    setClassDraft(row ? normalizeClassDraft(clone(row)) : null)
   }, [selectedClass, classes])
 
   const classCount = useMemo(() => {
@@ -288,7 +320,7 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
       </Section>
 
       <Section title="普通攻擊" note="每一 Hit 都使用完整 Attack；每 Hit 個別判定命中與爆擊。技能條增加量以整次普通攻擊計算一次。">
-        <div className="gp-grid four">
+        <div className="gp-grid five">
           <Field label="目標">
             <select value={value.normalAttack.target} onChange={e => onChange({ ...value, normalAttack: { ...value.normalAttack, target: e.target.value as GameplayClass['normalAttack']['target'] } })}>
               <option value="single">一名敵人</option>
@@ -297,18 +329,22 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
             </select>
           </Field>
           <Num label="Hit 數" value={value.normalAttack.hits} min={1} step={1} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, hits: Math.max(1, Math.round(v)) } })} />
+          <AnimationPicker value={value.normalAttack.animation ?? 'attack'} onChange={animation => onChange({ ...value, normalAttack: { ...value.normalAttack, animation } })} />
           <Num label="技能條增加 %" value={value.normalAttack.skillGaugeGain} min={0} max={100} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, skillGaugeGain: v } })} />
           {value.normalAttack.target === 'primaryPlusRandom' && <Num label="額外隨機目標 N" value={value.normalAttack.extraTargets ?? 1} min={1} step={1} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, extraTargets: Math.max(1, Math.round(v)) } })} />}
         </div>
       </Section>
 
       <Section title="普通輔助" note="普通輔助不增加技能條，也不受命中率影響。">
-        <Field label="目標">
-          <select value={value.normalSupport.target} onChange={e => onChange({ ...value, normalSupport: { ...value.normalSupport, target: e.target.value as GameplayClass['normalSupport']['target'] } })}>
-            <option value="singleAlly">一名友軍（可自己）</option>
-            <option value="allAllies">全體友軍</option>
-          </select>
-        </Field>
+        <div className="gp-grid two">
+          <Field label="目標">
+            <select value={value.normalSupport.target} onChange={e => onChange({ ...value, normalSupport: { ...value.normalSupport, target: e.target.value as GameplayClass['normalSupport']['target'] } })}>
+              <option value="singleAlly">一名友軍（可自己）</option>
+              <option value="allAllies">全體友軍</option>
+            </select>
+          </Field>
+          <AnimationPicker value={value.normalSupport.animation ?? 'skill2'} onChange={animation => onChange({ ...value, normalSupport: { ...value.normalSupport, animation } })} />
+        </div>
         <EffectList
           value={value.normalSupport.effects}
           allowedTypes={SUPPORT_SKILL_EFFECT_TYPES}
@@ -322,8 +358,9 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           ? '敵方目標只顯示攻擊技能效果；倍率傷害使用 Attack × N%，不會爆擊。'
           : '我方目標只顯示輔助技能效果。切換作用對象後，下拉選單會跟著切換效果分類。'}
       >
-        <div className="gp-grid two">
+        <div className="gp-grid three">
           <Field label="技能名稱（玩家顯示）"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} /></Field>
+          <AnimationPicker value={value.skill.animation ?? 'skill1'} onChange={animation => onChange({ ...value, skill: { ...value.skill, animation } })} />
           <Field label="技能圖示">
             <IconPicker
               kind="skill"
@@ -388,6 +425,16 @@ function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (
   )
 }
 
+function AnimationPicker({ value, onChange }: { value: GameplayAnimation; onChange: (v: GameplayAnimation) => void }) {
+  return (
+    <Field label="選擇動畫">
+      <select value={value} onChange={e => onChange(e.target.value as GameplayAnimation)}>
+        {GAMEPLAY_ANIMATIONS.map(animation => <option key={animation} value={animation}>{ANIMATION_LABEL_ZH[animation]}</option>)}
+      </select>
+    </Field>
+  )
+}
+
 function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false }: {
   value: GameplayEffect[]
   onChange: (v: GameplayEffect[]) => void
@@ -398,6 +445,11 @@ function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode 
   const defaultType = allowedTypes[0] ?? 'damage'
   return (
     <div className="gp-effects">
+      {abilityMode && (
+        <div className="gp-effect-head" aria-hidden="true">
+          <span>效果</span><span>對象</span><span>數值</span><span>持續回合數</span><span />
+        </div>
+      )}
       {invalidCount > 0 && (
         <p className="gp-effect-warning">目前有 {invalidCount} 個效果不屬於此技能分類，請從下拉選單改成目前允許的效果。</p>
       )}
@@ -447,7 +499,7 @@ function EffectEditor({ value, allowedTypes, abilityMode, onChange, onDelete }: 
         </select>
       )}
       {!NO_VALUE.has(value.type) && <Num label={effectValueLabel(value.type)} value={value.value ?? 0} onChange={v => onChange({ ...value, value: v })} compact />}
-      {!NO_DURATION.has(value.type) && <Num label="持續 Round" value={value.duration ?? 1} min={1} step={1} onChange={v => onChange({ ...value, duration: Math.max(1, Math.round(v)) })} compact />}
+      {!NO_DURATION.has(value.type) && <Num label="持續回合數" value={value.duration ?? 1} min={1} step={1} onChange={v => onChange({ ...value, duration: Math.max(1, Math.round(v)) })} compact />}
       {(value.type === 'damage' || value.type === 'fixedDamage') && <Num label="Hits" value={value.hits ?? 1} min={1} step={1} onChange={v => onChange({ ...value, hits: Math.max(1, Math.round(v)) })} compact />}
       <button className="danger gp-x" onClick={onDelete}>×</button>
     </div>
@@ -491,7 +543,7 @@ function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, on
             {ABILITY_TRIGGERS.map(t => <option key={t} value={t}>{TRIGGER_LABEL_ZH[t]}</option>)}
           </select>
         </Field>
-        {value.trigger === 'everyNRounds' && <Num label="每 N Round" value={value.triggerValue ?? 1} min={1} step={1} onChange={v => onChange({ ...value, triggerValue: Math.max(1, Math.round(v)) })} />}
+        {value.trigger === 'everyNRounds' && <Num label="每 N 回合" value={value.triggerValue ?? 1} min={1} step={1} onChange={v => onChange({ ...value, triggerValue: Math.max(1, Math.round(v)) })} />}
       </div>
       <h4>Conditions</h4>
       {value.conditions.map((c, i) => <ConditionEditor key={i} value={c} onChange={next => {
@@ -591,18 +643,31 @@ function IconPicker({ kind, value, options, onChange, onUploaded }: {
 }
 
 function ConditionEditor({ value, onChange, onDelete }: { value: AbilityCondition; onChange: (v: AbilityCondition) => void; onDelete: () => void }) {
+  const type = value.type === ('statusType' as AbilityCondition['type']) ? 'hasStatus' : value.type
+  const changeType = (next: AbilityCondition['type']) => {
+    if (next === 'hasStatus') return onChange({ type: next, value: 'stun' })
+    if (next === 'hasShield') return onChange({ type: next, value: 1 })
+    onChange({ type: next, operator: '<=', value: next === 'selfHpPercent' ? 50 : 1 })
+  }
   return (
-    <div className="gp-condition">
-      <select value={value.type} onChange={e => onChange({ ...value, type: e.target.value as AbilityCondition['type'] })}>
+    <div className={'gp-condition ' + (type === 'hasShield' ? 'no-value' : type === 'hasStatus' ? 'status-value' : '')}>
+      <select value={type} onChange={e => changeType(e.target.value as AbilityCondition['type'])}>
         {CONDITION_TYPES.map(t => <option key={t} value={t}>{CONDITION_LABEL_ZH[t]}</option>)}
       </select>
-      <select value={value.operator ?? '='} onChange={e => onChange({ ...value, operator: e.target.value as AbilityCondition['operator'] })}>
-        {CONDITION_OPERATORS.map(o => <option key={o}>{o}</option>)}
-      </select>
-      <input value={String(value.value)} onChange={e => {
-        const n = Number(e.target.value)
-        onChange({ ...value, value: e.target.value !== '' && Number.isFinite(n) ? n : e.target.value })
-      }} />
+      {type === 'hasStatus' ? (
+        <select className="gp-condition-status" value={String(value.value)} onChange={e => onChange({ type: 'hasStatus', value: e.target.value })}>
+          {HOLDABLE_EFFECT_TYPES.map(effect => <option key={effect} value={effect}>{EFFECT_LABEL_ZH[effect]}</option>)}
+        </select>
+      ) : type === 'hasShield' ? (
+        <span className="gp-condition-static">有護盾時成立</span>
+      ) : (
+        <>
+          <select value={value.operator ?? '='} onChange={e => onChange({ ...value, type, operator: e.target.value as AbilityCondition['operator'] })}>
+            {CONDITION_OPERATORS.map(o => <option key={o}>{o}</option>)}
+          </select>
+          <input type="number" value={Number(value.value) || 0} onChange={e => onChange({ ...value, type, value: Number(e.target.value) })} />
+        </>
+      )}
       <button className="danger gp-x" onClick={onDelete}>×</button>
     </div>
   )
