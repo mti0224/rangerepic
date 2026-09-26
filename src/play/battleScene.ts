@@ -194,6 +194,10 @@ const INTRO_START_SEC = 1
 /** START: ย่อจากใหญ่เข้ามา แล้วจางออกช่วงท้าย */
 const INTRO_START_POP = 0.18
 const INTRO_START_FADE = 0.3
+/** Wave clear: short pause, then surviving player Rangers walk forward off-screen before the next wave appears. */
+const WAVE_EXIT_WAIT_SEC = 0.22
+const WAVE_EXIT_SPEED = 520
+const WAVE_EXIT_STAGGER_SEC = 0.07
 // ตาย: เล่นท่ากระเด็น → ตัวหายไป → วิญญาณ (eff_die / eff_die_enemy) ลอยขึ้นแล้วจางหาย
 const DEATH_KNOCK_SEC = 0.6   // ท่ากระเด็น
 const SOUL_SEC = 1.4          // วิญญาณลอยจนหาย
@@ -295,6 +299,7 @@ export type Phase = 'intro' | 'thinking' | 'input' | 'acting' | 'ended'
 
 /** สถานะของทรานซิชั่นเปิดฉาก · startAt = วินาทีที่ทุกตัวเข้าที่แล้ว (null = ยังเดินอยู่) */
 interface IntroState { t: number; startAt: number | null }
+interface WaveExitState { t: number; onComplete: () => void }
 
 /** สีตัวเลขที่มีความเสียหายจริง (ไม่สนโล่) */
 const TRUE_DAMAGE_COLOR = '#f0abfc'
@@ -337,6 +342,8 @@ export class BattleScene {
   private background: HTMLImageElement | null = null
   /** เปิดฉากอยู่ (null = เล่นจบแล้ว/ไม่ได้เปิดใช้) */
   private intro: IntroState | null = null
+  /** Wave-clear exit animation for surviving player Rangers. */
+  private waveExit: WaveExitState | null = null
   /** UI บนจอรบ (battleHud.ts) — คลิกแล้วหน้าเล่นเป็นคนสั่งต่อ */
   readonly hud: BattleHud
   /** เวลาที่เหลือ (วินาทีของนาฬิกาเกม — x2/x4 เดินเร็วตาม CLOCK_RATE) */
@@ -471,6 +478,55 @@ export class BattleScene {
       this.phase = 'thinking'
       this.onChange?.()
     }
+  }
+
+
+  /**
+   * Stage wave clear transition. Surviving player Rangers leave the battlefield
+   * before React swaps to the next wave, so the scene never hard-cuts immediately.
+   */
+  beginWaveExit(onComplete: () => void): boolean {
+    if (this.waveExit) return false
+    const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
+    if (!survivors.length) {
+      onComplete()
+      return true
+    }
+    this.hud.customResult = true
+    this.pendingActor = null
+    this.pendingAction = null
+    this.pendingCaster = null
+    this.phase = 'acting'
+    this.waveExit = { t: 0, onComplete }
+    for (const v of survivors) {
+      v.dodging = false
+      v.dodgeWalking = false
+      v.reacting = false
+      v.facingBack = false
+      v.player.playClip(this.walkClip(v), { speed: 1, loop: true })
+    }
+    this.onChange?.()
+    return true
+  }
+
+  private stepWaveExit(dt: number): void {
+    const state = this.waveExit
+    if (!state) return
+    state.t += dt
+    let allGone = true
+    const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
+    survivors.forEach((v, index) => {
+      const delay = WAVE_EXIT_WAIT_SEC + index * WAVE_EXIT_STAGGER_SEC
+      if (state.t < delay) { allGone = false; return }
+      v.pos.x += WAVE_EXIT_SPEED * dt
+      if (v.slot.x + v.pos.x < WORLD_W + INTRO_OFFSCREEN) allGone = false
+    })
+    if (!allGone) return
+    const done = state.onComplete
+    this.waveExit = null
+    this.phase = 'ended'
+    this.onChange?.()
+    done()
   }
 
   /**
@@ -1222,9 +1278,10 @@ export class BattleScene {
     }
 
     for (const v of this.views) this.stepIcons(v, dt * mul)
-    if (!this.intro) this.stepDodges(dt * mul)
+    if (!this.intro && !this.waveExit) this.stepDodges(dt * mul)
 
     if (this.intro) { this.stepIntro(dt * mul); return }
+    if (this.waveExit) { this.stepWaveExit(dt * mul); return }
 
     if (this.skip) {
       this.skip.left -= dt * mul
