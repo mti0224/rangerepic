@@ -745,6 +745,7 @@ const EFFECT_LABEL: Record<EffectType, L3> = {
   cleanse: ['ล้างผลด้านลบ', 'Cleanse debuffs', '淨化負面效果'],
   toughUp: ['เพิ่มความทนทาน (รับดาเมจลด)', 'Raise toughness (takes less damage)', '提升堅韌（受傷減少）'],
   skillDmgResUp: ['เพิ่มต้านความเสียหายสกิล', 'Raise skill damage resistance', '提升技能傷害抗性'],
+  reflect: ['สะท้อนความเสียหาย', 'Reflect damage', '反射傷害'],
   taunt: ['ยั่วยุ (ศัตรูต้องตีปกติใส่ตัวนี้)', 'Taunt (enemies must normal-attack this unit)', '嘲諷（敵人普攻必須打此單位）'],
   energyGain: ['เพิ่ม Cost พลังงานให้ทีม', 'Give the team Cost', '為隊伍增加能量'],
 }
@@ -829,6 +830,11 @@ const EFFECT_NOTE: Partial<Record<EffectType, L3>> = {
     'ตรงข้ามกับเปราะบาง — ใช้แทนการเพิ่ม DEF',
     'The opposite of Vulnerable — use it instead of raising DEF',
     '與「脆弱」相反 — 用來取代加防',
+  ],
+  reflect: [
+    'สะท้อนตามดาเมจ HP ที่ได้รับจริง · ไม่คริ · ไม่สะท้อนต่อเป็นลูกโซ่',
+    'Reflects a percentage of actual HP damage taken · cannot crit · cannot chain-reflect',
+    '依實際承受的 HP 傷害反射 · 不會爆擊 · 不會形成連鎖反射',
   ],
   taunt: [
     'มีผลกับการตีธรรมดาของศัตรู · หลายตัวยั่วยุพร้อมกัน = ศัตรูเลือกได้เฉพาะตัวที่ยั่วยุ',
