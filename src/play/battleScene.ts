@@ -1067,7 +1067,13 @@ export class BattleScene {
 
   private spawn(r: ActionRun): void {
     r.spawned = true
-    const plan: ShotPlan = planAction(r.actor.kit.assets, r.actor.kit.config, r.action, this.targetPointsFor(r.actor, r.target))
+    // Gameplay Normal Support is a semantic support action. It may borrow the
+    // character's body animation from an offensive raw skill, but must never
+    // inherit that raw skill's bullet/projectile visual.
+    const gameplaySupport = !!r.actor.unit.gameplayClass && r.action === 'skill2'
+    const plan: ShotPlan = gameplaySupport
+      ? { type: 'melee', isBuff: true, hit: null }
+      : planAction(r.actor.kit.assets, r.actor.kit.config, r.action, this.targetPointsFor(r.actor, r.target))
     // ไม่มีจังหวะโดนตี (ประชิด หรือท่าบัฟ) → ลงผลตอนปล่อยเลย
     if (plan.type === 'melee' || !plan.hit) this.resolveRun(r)
     if (plan.type === 'melee') return
