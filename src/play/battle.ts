@@ -135,8 +135,6 @@ export interface Unit {
   assetVariantId: AssetVariantId
   gameplayClass?: GameplayClass
   gameplayRules?: BattleRulesV1
-  /** Individual RangerEpic skill gauge (0..gameplayRules.skillGaugeMax). */
-  skillGauge: number
   /** เลเวลฮีโร่ (แสดงผลอย่างเดียว) */
   level: number
   team: Team
@@ -327,6 +325,8 @@ const emptyOutcome = (uid: string, hpBefore = 0): Outcome => ({
 export class Battle {
   units: Unit[]
   energy: [number, number] = [ENERGY_START, ENERGY_START]
+  /** RangerEpic Gameplay V1: each team shares one 0..100 skill gauge. */
+  gameplayGauge: [number, number] = [0, 0]
   turn = 0
   private rand: () => number
 
@@ -372,7 +372,6 @@ export class Battle {
       assetVariantId: u.assetVariantId ?? legacy.assetVariantId,
       gameplayClass: u.gameplayClass,
       gameplayRules: u.gameplayRules,
-      skillGauge: 0,
       level: u.level ?? 1,
       team: t as Team,
       row: u.row,
@@ -514,6 +513,8 @@ export class Battle {
   gameplayGaugeMax(u: Unit): number {
     return Math.max(1, u.gameplayRules?.skillGaugeMax ?? 100)
   }
+
+  gameplayGaugeOf(team: Team): number { return this.gameplayGauge[team] }
 
   private conditionMatches(u: Unit, condition: AbilityCondition): boolean {
     const numberCompare = (actual: number, expected: number): boolean => {
@@ -745,7 +746,7 @@ export class Battle {
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
     if (u.gameplayClass) {
-      if (action === 'skill1') return !this.has(u, 'silence') && u.skillGauge >= this.gameplayGaugeMax(u)
+      if (action === 'skill1') return !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
       // skill2 is the class's normal support action, not the gauge Skill.
       return true
     }
@@ -896,14 +897,19 @@ export class Battle {
   commitAction(u: Unit, action: ActionName): void {
     if (u.gameplayClass) {
       if (action === 'attack') {
-        const modifier = 1 + this.gameplayAbilityValue(u, 'skillGaugeGainModifier') / 100
-        u.skillGauge = clamp(
-          u.skillGauge + u.gameplayClass.normalAttack.skillGaugeGain * modifier,
+        // Gauge is shared by the team. Continuous gauge modifiers from any living
+        // ally are combined; negative values reduce gain, positive values increase it.
+        const teamModifier = this.units
+          .filter(ally => ally.team === u.team && ally.alive && !!ally.gameplayClass)
+          .reduce((sum, ally) => sum + this.gameplayAbilityValue(ally, 'skillGaugeGainModifier'), 0)
+        const gain = Math.max(0, u.gameplayClass.normalAttack.skillGaugeGain * (1 + teamModifier / 100))
+        this.gameplayGauge[u.team] = clamp(
+          this.gameplayGauge[u.team] + gain,
           0,
           this.gameplayGaugeMax(u),
         )
       } else if (action === 'skill1') {
-        u.skillGauge = 0
+        this.gameplayGauge[u.team] = 0
       }
       return
     }
