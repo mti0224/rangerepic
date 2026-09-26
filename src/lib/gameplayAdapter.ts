@@ -1,4 +1,4 @@
-import type { GameplayClass, GameplayEffect, GameplaySkill, NormalSupportDef } from './gameplaySchema'
+import type { GameplayCombatant, GameplayEffect, GameplaySkill, NormalSupportDef } from './gameplaySchema'
 import type { RangerConfig, Stats } from './rangerConfig'
 import type { SkillArea, SkillDef, SkillEffect } from './skills'
 
@@ -74,17 +74,14 @@ export const gameplayNormalSupportToLegacy = (support: NormalSupportDef): SkillD
   effects: mappedEffects(support.effects),
 })
 
-export const gameplayNormalAttackSkill = (cls: GameplayClass): SkillDef => {
-  const area: SkillArea = cls.normalAttack.target === 'all' ? 'all' : 'single_any'
-  return {
-    kind: 'attack',
-    cost: 0,
-    area,
-    effects: Array.from(
-      { length: Math.max(1, Math.round(cls.normalAttack.hits || 1)) },
-      () => ({ type: 'damage' as const, pct: 100 }),
-    ),
-  }
+export const gameplayNormalAttackSkill = (def: GameplayCombatant): SkillDef => {
+  const area: SkillArea = def.normalAttack.target === 'all' ? 'all' : 'single_any'
+  const baseHits = Array.from(
+    { length: Math.max(1, Math.round(def.normalAttack.hits || 1)) },
+    () => ({ type: 'damage' as const, pct: 100 }),
+  )
+  const attached = 'effects' in def.normalAttack ? mappedEffects(def.normalAttack.effects) : []
+  return { kind: 'attack', cost: 0, area, effects: [...baseHits, ...attached] }
 }
 
 /**
@@ -94,7 +91,7 @@ export const gameplayNormalAttackSkill = (cls: GameplayClass): SkillDef => {
  * only for animation clips, anchors and projectile timing until the visual battle
  * scene is fully migrated to the V2 runtime.
  */
-export function adaptRangerConfigForGameplay(base: RangerConfig, cls: GameplayClass): RangerConfig {
+export function adaptRangerConfigForGameplay(base: RangerConfig, cls: GameplayCombatant): RangerConfig {
   const stats: Stats = {
     ...base.stats,
     hp: Math.max(1, cls.stats.hp),
@@ -118,8 +115,8 @@ export function adaptRangerConfigForGameplay(base: RangerConfig, cls: GameplayCl
     name: displayName,
     stats,
     skills: {
-      skill1: gameplaySkillToLegacy(cls.skill),
-      skill2: gameplayNormalSupportToLegacy(cls.normalSupport),
+      skill1: cls.skill ? gameplaySkillToLegacy(cls.skill) : { kind: 'attack', cost: 0, area: 'single_any', effects: [] },
+      skill2: 'normalSupport' in cls ? gameplayNormalSupportToLegacy(cls.normalSupport) : { kind: 'buff', cost: 0, area: 'self', effects: [] },
     },
     passives: [],
   }
