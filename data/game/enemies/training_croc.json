@@ -19,8 +19,9 @@
   "normalAttack": {
     "target": "single",
     "hits": 1,
-    "skillGaugeGain": 5,
-    "effects": []
+    "skillGaugeGain": 0,
+    "effects": [],
+    "animation": "attack"
   },
   "skill": null,
   "abilities": [
@@ -46,5 +47,11 @@
         }
       ]
     }
-  ]
+  ],
+  "normalSupport": {
+    "target": "singleAlly",
+    "animation": "skill2",
+    "effects": []
+  },
+  "skillActivationRate": 20
 }
