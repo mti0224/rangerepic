@@ -44,10 +44,13 @@ const syntheticEnemy = {
   normalAttack: {
     target: 'single',
     hits: 1,
-    skillGaugeGain: 5,
+    animation: 'attack',
+    skillGaugeGain: 0,
     effects: [{ type: 'attackDown', value: 10, duration: 1 }],
   },
+  normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
   skill: null,
+  skillActivationRate: 20,
   abilities: [],
 }
 assert.deepEqual(validateEnemy(syntheticEnemy, syntheticEnemy.id), [])
