@@ -91,7 +91,7 @@ export type StatusType =
   | 'stun' | 'skillEvadeDown' | 'skillResDown' | 'evadeDown' | 'atkDown' | 'healBlock' | 'silence'
   | 'speedDown' | 'critDown' | 'critDmgDown' | 'hitDown' | 'skillHitDown' | 'vulnerable' | 'sealCleanse' | 'elementShift' | DotType
   | 'atkUp' | 'regen' | 'shield' | 'barrier' | 'evadeUp' | 'skillEvadeUp' | 'skillResUp'
-  | 'speedUp' | 'critDmgUp' | 'critUp' | 'hitUp' | 'skillHitUp' | 'toughUp' | 'skillDmgResUp' | 'taunt'
+  | 'speedUp' | 'critDmgUp' | 'critUp' | 'hitUp' | 'skillHitUp' | 'toughUp' | 'skillDmgResUp' | 'reflect' | 'taunt'
 
 export const DOT_TYPES: DotType[] = ['poison', 'burn', 'bleed']
 export const isDot = (t: StatusType): t is DotType => (DOT_TYPES as StatusType[]).includes(t)
@@ -104,7 +104,7 @@ export const isDebuff = (t: StatusType): boolean => DEBUFF_TYPES.includes(t)
 const STATUS_EFFECTS = new Set<EffectType>([
   ...DEBUFF_TYPES,
   'atkUp', 'regen', 'shield', 'barrier', 'evadeUp', 'skillEvadeUp', 'skillResUp', 'speedUp', 'critDmgUp', 'critUp', 'hitUp', 'skillHitUp',
-  'toughUp', 'skillDmgResUp', 'taunt',
+  'toughUp', 'skillDmgResUp', 'reflect', 'taunt',
 ])
 /** สถานะควบคุม — จากสกิลวงกว้างติดยากกว่า (AREA_CONTROL_CHANCE) */
 const CONTROL_TYPES = new Set<StatusType>(['stun', 'silence'])
@@ -890,9 +890,13 @@ export class Battle {
     // operation anchor; all/random/ordered target expansion happens separately.
     if (actor.gameplayClass) {
       if (action === 'skill2') return allies
+      const isEnemySkill = action === 'skill1' && actor.gameplayClass.skill.target.side === 'enemy'
+      if (action === 'attack' || isEnemySkill) {
+        const taunting = enemies.filter(u => this.has(u, 'taunt'))
+        if (taunting.length) return taunting
+      }
       if (action === 'skill1') return actor.gameplayClass.skill.target.side === 'ally' ? allies : enemies
-      const taunting = enemies.filter(u => this.has(u, 'taunt'))
-      return taunting.length ? taunting : enemies
+      return enemies
     }
 
     const front = enemies.filter(u => u.row === 'front')
@@ -1264,7 +1268,10 @@ export class Battle {
         for (const e of skill.effects) {
           if (e.type === 'damage') p.damage += this.previewHit(actor, t, e.pct ?? 100, normal)
           else if (e.type === 'damageHp') p.damage += this.previewHit(actor, t, e.pct ?? 100, normal, actor.maxHp)
-          else if (e.type === 'trueDamage') { const d = this.trueHit(actor, t, e.pct ?? 100); p.damage += d; p.trueDamage += d }
+          else if (e.type === 'trueDamage') {
+            if (actor.gameplayClass && e.gameplayType === 'fixedDamage') p.damage += Math.max(0, Math.round(e.gameplayValue ?? e.amount ?? 0))
+            else { const d = this.trueHit(actor, t, e.pct ?? 100); p.damage += d; p.trueDamage += d }
+          }
           else if (e.type === 'dispelBuffs') p.dispel = true
           else if (STATUS_EFFECTS.has(e.type)) p.statuses.push({ type: e.type as StatusType, pct: e.pct ?? 0, turns: e.turns ?? 1 })
         }
@@ -1370,6 +1377,18 @@ export class Battle {
             }
           }
         }
+        const receivedHpDamage = Math.max(0, o.hpBefore - t.hp)
+        const reflectPct = actor.gameplayClass
+          ? this.pctOf(t, 'reflect') + this.gameplayAbilityValue(t, 'reflect')
+          : 0
+        if (receivedHpDamage > 0 && reflectPct > 0 && actor.alive) {
+          const reflected = Math.max(0, Math.round(receivedHpDamage * reflectPct / 100))
+          if (reflected > 0) {
+            // Reflection never crits and never re-triggers reflection.
+            this.takeDamage(actor, reflected, emptyOutcome(actor.uid, actor.hp))
+          }
+        }
+
         if (!t.alive) continue
         for (const e of skill.effects) {
           if (e.type === 'turnBurn') {
