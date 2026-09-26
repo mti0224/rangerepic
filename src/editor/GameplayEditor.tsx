@@ -322,13 +322,21 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           ? '敵方目標只顯示攻擊技能效果；倍率傷害使用 Attack × N%，不會爆擊。'
           : '我方目標只顯示輔助技能效果。切換作用對象後，下拉選單會跟著切換效果分類。'}
       >
-        <IconPicker
-          kind="skill"
-          value={value.skill.icon ?? ''}
-          options={iconLibrary.skill}
-          onChange={icon => onChange({ ...value, skill: { ...value.skill, icon } })}
-          onUploaded={onIconUploaded}
-        />
+        <div className="gp-grid two">
+          <Field label="技能名稱（玩家顯示）"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} /></Field>
+          <Field label="技能圖示">
+            <IconPicker
+              kind="skill"
+              value={value.skill.icon ?? ''}
+              options={iconLibrary.skill}
+              onChange={icon => onChange({ ...value, skill: { ...value.skill, icon } })}
+              onUploaded={onIconUploaded}
+            />
+          </Field>
+        </div>
+        <Field label="技能白話敘述（留白時，玩家端才顯示下方系統效果）">
+          <textarea value={value.skill.description ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, description: e.target.value } })} />
+        </Field>
         <TargetEditor value={value.skill.target} onChange={target => onChange({ ...value, skill: { ...value.skill, target } })} />
         <EffectList
           value={value.skill.effects}
@@ -464,7 +472,11 @@ function AbilityEditor({ value, index, iconLibrary, onIconUploaded, onChange, on
 }) {
   return (
     <div className="gp-ability">
-      <div className="gp-ability-head"><b>能力 {index + 1}</b><button className="danger" onClick={onDelete}>刪除</button></div>
+      <div className="gp-ability-head"><b>{value.name || `能力 ${index + 1}`}</b><button className="danger" onClick={onDelete}>刪除</button></div>
+      <div className="gp-grid two">
+        <Field label="能力名稱（玩家顯示）"><input value={value.name ?? ''} onChange={e => onChange({ ...value, name: e.target.value })} /></Field>
+        <Field label="能力白話敘述（留白時，玩家端才顯示系統效果）"><textarea value={value.description ?? ''} onChange={e => onChange({ ...value, description: e.target.value })} /></Field>
+      </div>
       <IconPicker
         kind="ability"
         value={value.icon ?? ''}
