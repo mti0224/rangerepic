@@ -117,3 +117,28 @@
   .ep-team-footer { flex-direction: column; align-items: stretch; }
   .ep-page-heading h1 { font-size: 26px; }
 }
+
+
+/* Adventure stage selection / wave HUD */
+.ep-stage-page{padding:32px clamp(18px,4vw,54px) 56px;max-width:1500px;margin:0 auto}
+.ep-chapter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.ep-chapter-tabs button{padding:9px 15px;border-radius:999px}
+.ep-chapter-tabs .selected{background:#f7c84b;color:#1a1300;font-weight:800}
+.ep-stage-map{border-radius:26px;background-size:cover;background-position:center;padding:clamp(18px,3vw,34px);min-height:460px;box-shadow:inset 0 0 0 1px #ffffff18}
+.ep-stage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.ep-stage-card{position:relative;display:grid;gap:12px;padding:18px;border-radius:20px;background:#101725e8;border:1px solid #ffffff1e;backdrop-filter:blur(8px)}
+.ep-stage-number{position:absolute;right:14px;top:12px;font-size:38px;font-weight:900;color:#ffffff20}
+.ep-stage-copy small{color:#8fa0b9}.ep-stage-copy h2{margin:3px 0 4px}.ep-stage-copy p{margin:0;color:#b9c3d3;min-height:42px}
+.ep-stage-waves{display:grid;gap:8px}
+.ep-stage-wave{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:#070b12aa}
+.ep-stage-wave>b{font-size:12px;min-width:56px;color:#f7c84b}
+.ep-stage-wave>div{display:flex;gap:4px;flex-wrap:wrap}
+.ep-stage-wave img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#ffffff0b}
+.ep-wave-hud{position:absolute;left:18px;top:18px;z-index:8;display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:#0b101bd9;border:1px solid #ffffff24;pointer-events:none}
+.ep-wave-hud span{color:#f7c84b;font-weight:800}
+.ep-stage-clear{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:#060911b8;backdrop-filter:blur(6px)}
+.ep-stage-clear>div{min-width:min(420px,calc(100vw - 40px));padding:30px;text-align:center;border-radius:22px;background:#111a29;border:1px solid #ffffff24;box-shadow:0 24px 80px #0008}
+.ep-stage-clear span{font-weight:900;letter-spacing:.16em;color:#f7c84b}.ep-stage-clear h2{font-size:34px;margin:8px 0}.ep-stage-clear button{margin:6px}
+.ep-authored-description{white-space:pre-wrap;line-height:1.65;color:#dbe3ef}
+.ep-team-boards:has(.side-0:only-child){grid-template-columns:minmax(0,900px);justify-content:center}
+@media(max-width:700px){.ep-stage-grid{grid-template-columns:1fr}.ep-stage-map{padding:12px}.ep-wave-hud{left:8px;top:8px;font-size:12px}}
