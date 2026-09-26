@@ -3,6 +3,7 @@ import {
   newGameplayAbility,
   newGameplayEffect,
   type GameplayAbility,
+  type GameplayClass,
   type GameplayEffect,
   type GameplaySkill,
   type GameplayStats,
@@ -108,8 +109,6 @@ export function normalAttackExtraEffects(enemy: GameplayEnemy): GameplayEffect[]
   return enemy.normalAttack.effects ?? []
 }
 
-
-import type { GameplayClass } from './gameplaySchema'
 
 /** Runtime adapter: enemies reuse the same battle engine without becoming player Classes. */
 export function enemyAsCombatClass(enemy: GameplayEnemy): GameplayClass {
