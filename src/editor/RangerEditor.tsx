@@ -539,7 +539,7 @@ export default function RangerEditor() {
         {config && assets ? (
           <>
             <div className="tabs">
-              {(Object.keys(TAB_KEYS) as Tab[]).map(t => (
+              {(Object.keys(TAB_KEYS) as Tab[]).filter(t => t !== 'general').map(t => (
                 <button key={t} className={t === tab ? 'sel' : ''} onClick={() => setTab(t)}>
                   {e(TAB_KEYS[t])}
                 </button>
@@ -717,7 +717,7 @@ export default function RangerEditor() {
                   .reduce((n, c) => n + (c ? assets.sam.animations[c]?.length ?? 0 : 0), 0)
                 return (
                   <>
-                    {action !== 'attack' && (
+                    {false && action !== 'attack' && (
                       <>
                         <h3 style={{ marginTop: 0 }}>{e('hSkillCombat')}</h3>
                         <SkillEditor
