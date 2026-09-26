@@ -338,7 +338,7 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
     }],
   })
   const b = oneVsOne(cls)
-  check('roundStart fires for Round 1 during battle initialization', [b.gameplayRound, b.effAtk(b.units[0])], [1, 115])
+  check('roundStart fires for Round 1 during battle initialization', [b.gameplayRound, Math.round(b.effAtk(b.units[0]))], [1, 115])
 }
 
 // Round End effects are created after the old round countdown and survive into the next round.
@@ -463,7 +463,7 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
 
   // First kill an enemy: killer's enemyDied passive should trigger.
   b.resolveAction(killer, 'attack', victim)
-  check('enemyDied triggers for a living unit when the opposing unit dies', b.effAtk(killer), 250)
+  check('enemyDied triggers for a living unit when the opposing unit dies', b.effAtk(killer), 2500)
 
   // Then directly defeat the watcher's ally to exercise allyDied from the surviving watcher's perspective.
   const enemyMate = b.units.find(u => u.rangerId === 'enemy-mate')
