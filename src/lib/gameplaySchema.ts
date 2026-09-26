@@ -29,11 +29,16 @@ export interface GameplayStats {
   hitRate: number
 }
 
+export type GameplayAnimationSlot = 'attack' | 'skill1' | 'skill2'
+export const GAMEPLAY_ANIMATION_SLOTS: GameplayAnimationSlot[] = ['attack', 'skill1', 'skill2']
+
 export type NormalAttackTarget = 'single' | 'all' | 'primaryPlusRandom'
 export interface NormalAttackDef {
   target: NormalAttackTarget
   hits: number
-  /** One normal-attack action adds this once, regardless of hit count. */
+  /** Visual action to play. Defaults to attack. */
+  animation?: GameplayAnimationSlot
+  /** One normal-attack action adds this once, regardless of hit count. Player classes only. */
   skillGaugeGain: number
   extraTargets?: number
   /** Optional extra effects applied after the normal attack damage. Primarily used by enemies. */
@@ -128,6 +133,8 @@ export interface GameplayEffect {
 
 export interface NormalSupportDef {
   target: NormalSupportTarget
+  /** Visual action to play. Defaults to skill2. */
+  animation?: GameplayAnimationSlot
   effects: GameplayEffect[]
 }
 
@@ -145,6 +152,8 @@ export interface GameplaySkill {
   description?: string
   /** Public URL under /gameplay-icons/, or empty when no icon is assigned. */
   icon?: string
+  /** Visual action to play. Defaults to skill1. */
+  animation?: GameplayAnimationSlot
   target: SkillTargetRule
   effects: GameplayEffect[]
 }
@@ -158,12 +167,15 @@ export const ABILITY_TRIGGERS = [
   'selfDied',
   'allyDied',
   'enemyDied',
+  'damaged',
+  // Legacy authoring values retained for existing JSON; editors no longer create them.
   'beforeDamaged',
   'afterDamaged',
   'statusApplied',
   'hpChanged',
 ] as const
 export type AbilityTrigger = typeof ABILITY_TRIGGERS[number]
+export const AUTHORING_ABILITY_TRIGGERS = ABILITY_TRIGGERS.filter(t => t !== 'beforeDamaged' && t !== 'afterDamaged')
 
 export const CONDITION_TYPES = [
   'round',
@@ -171,11 +183,14 @@ export const CONDITION_TYPES = [
   'enemyAliveCount',
   'selfHpPercent',
   'receivedDamage',
+  // Legacy values kept for existing JSON; authoring uses hasEffect.
   'statusType',
   'hasStatus',
+  'hasEffect',
   'hasShield',
 ] as const
 export type AbilityConditionType = typeof CONDITION_TYPES[number]
+export const AUTHORING_CONDITION_TYPES = CONDITION_TYPES.filter(t => t !== 'statusType' && t !== 'hasStatus')
 
 export const CONDITION_OPERATORS = ['<', '<=', '=', '>=', '>'] as const
 export type ConditionOperator = typeof CONDITION_OPERATORS[number]
@@ -214,6 +229,10 @@ export interface GameplayClass {
   normalSupport: NormalSupportDef
   /** Optional runtime gate used by enemy adapters. Player classes default to enabled. */
   skillEnabled?: boolean
+  /** Enemies set this to false so their skill is probability-driven instead of gauge-driven. */
+  usesSkillGauge?: boolean
+  /** Enemy-only automatic skill chance, 0..100. */
+  skillActivationRate?: number
   skill: GameplaySkill
   abilities: GameplayAbility[]
 }
@@ -300,26 +319,28 @@ export const EFFECT_LABEL_ZH: Record<GameplayEffectType, string> = {
 export const TRIGGER_LABEL_ZH: Record<AbilityTrigger, string> = {
   whileOnField: '角色在場上時',
   battleStart: '戰鬥開始時',
-  roundStart: 'Round Start',
-  roundEnd: 'Round End',
-  everyNRounds: '每經過 N Round',
+  roundStart: '回合開始時',
+  roundEnd: '回合結束時',
+  everyNRounds: '每經過 N 回合時',
   selfDied: '自身死亡時',
   allyDied: '我方角色死亡時',
   enemyDied: '敵方角色死亡時',
-  beforeDamaged: '自身受到傷害前',
-  afterDamaged: '自身受到傷害後',
+  damaged: '自身受到傷害時',
+  beforeDamaged: '自身受到傷害時（舊）',
+  afterDamaged: '自身受到傷害時（舊）',
   statusApplied: '自身被套用狀態時',
   hpChanged: '自身體力變化時',
 }
 
 export const CONDITION_LABEL_ZH: Record<AbilityConditionType, string> = {
-  round: '目前 Round',
+  round: '目前回合數',
   allyAliveCount: '我方存活數',
   enemyAliveCount: '敵方存活數',
-  selfHpPercent: '自身體力 %',
-  receivedDamage: '本次受到傷害',
-  statusType: '狀態類型',
-  hasStatus: '持有指定狀態',
+  selfHpPercent: '自身體力的百分比',
+  receivedDamage: '本次受到的傷害量',
+  statusType: '狀態類型（舊）',
+  hasStatus: '持有指定狀態（舊）',
+  hasEffect: '持有特定狀態/效果時',
   hasShield: '自身持有護盾',
 }
 
@@ -359,9 +380,9 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     role: '未分類',
     names: emptyNames(),
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
-    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5 },
-    normalSupport: { target: 'singleAlly', effects: [] },
-    skill: { name: '', description: '', icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    normalAttack: { target: 'single', hits: 1, animation: 'attack', skillGaugeGain: 5 },
+    normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
+    skill: { name: '', description: '', icon: '', animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
   }
 }

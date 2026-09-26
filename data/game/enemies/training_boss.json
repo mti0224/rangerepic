@@ -19,8 +19,9 @@
   "normalAttack": {
     "target": "all",
     "hits": 1,
-    "skillGaugeGain": 5,
-    "effects": []
+    "skillGaugeGain": 0,
+    "effects": [],
+    "animation": "attack"
   },
   "skill": {
     "name": "鬼面",
@@ -42,7 +43,8 @@
         "value": 35,
         "duration": 3
       }
-    ]
+    ],
+    "animation": "skill1"
   },
   "abilities": [
     {
@@ -61,5 +63,11 @@
         }
       ]
     }
-  ]
+  ],
+  "normalSupport": {
+    "target": "singleAlly",
+    "animation": "skill2",
+    "effects": []
+  },
+  "skillActivationRate": 20
 }

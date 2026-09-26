@@ -116,10 +116,23 @@ export function adaptRangerConfigForGameplay(base: RangerConfig, cls: GameplayCl
   }
 
   const displayName = cls.names.zh || cls.names.en || cls.names.th || cls.names.jp || base.name
+  const actionFor = (slot: 'attack' | 'skill1' | 'skill2', fallback: 'attack' | 'skill1' | 'skill2') =>
+    base.actions[slot ?? fallback] ?? base.actions[fallback]
+
+  const attackAnim = cls.normalAttack.animation ?? 'attack'
+  const supportAnim = cls.normalSupport.animation ?? 'skill2'
+  const skillAnim = cls.skill.animation ?? 'skill1'
+
   return {
     ...base,
     name: displayName,
     stats,
+    actions: {
+      ...base.actions,
+      attack: actionFor(attackAnim, 'attack'),
+      skill1: actionFor(skillAnim, 'skill1'),
+      skill2: actionFor(supportAnim, 'skill2'),
+    },
     skills: {
       skill1: gameplaySkillToLegacy(cls.skill),
       skill2: gameplayNormalSupportToLegacy(cls.normalSupport),

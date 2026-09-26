@@ -9,6 +9,7 @@ import {
   type GameplayStats,
   type LocalizedNames,
   type NormalAttackDef,
+  type NormalSupportDef,
 } from './gameplaySchema'
 
 export const ADVENTURE_SCHEMA_VERSION = 1 as const
@@ -26,8 +27,12 @@ export interface GameplayEnemy {
   stats: GameplayStats
   /** Enemies always have a normal attack. Extra effects are optional. */
   normalAttack: NormalAttackDef
-  /** Enemies may have no gauge skill. */
+  /** Optional normal support action; it never uses a skill gauge. */
+  normalSupport: NormalSupportDef
+  /** Enemies may have no skill. */
   skill?: GameplaySkill | null
+  /** Chance (0..100) to choose the skill on an automatic enemy action. */
+  skillActivationRate: number
   abilities: GameplayAbility[]
 }
 
@@ -65,10 +70,17 @@ export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEn
     normalAttack: {
       target: 'single',
       hits: 1,
-      skillGaugeGain: 5,
+      animation: 'attack',
+      skillGaugeGain: 0,
+      effects: [],
+    },
+    normalSupport: {
+      target: 'singleAlly',
+      animation: 'skill2',
       effects: [],
     },
     skill: null,
+    skillActivationRate: 20,
     abilities: [],
   }
 }
@@ -78,6 +90,7 @@ export function newEnemySkill(): GameplaySkill {
     name: '',
     description: '',
     icon: '',
+    animation: 'skill1',
     target: { side: 'enemy', count: 1, selector: 'random' },
     effects: [newGameplayEffect('damage')],
   }
@@ -120,9 +133,11 @@ export function enemyAsCombatClass(enemy: GameplayEnemy): GameplayClass {
     role: 'enemy',
     names: enemy.names,
     stats: enemy.stats,
-    normalAttack: enemy.normalAttack,
-    normalSupport: { target: 'singleAlly', effects: [] },
+    normalAttack: { ...enemy.normalAttack, skillGaugeGain: 0 },
+    normalSupport: enemy.normalSupport ?? { target: 'singleAlly', animation: 'skill2', effects: [] },
     skillEnabled: !!enemy.skill,
+    usesSkillGauge: false,
+    skillActivationRate: enemy.skillActivationRate ?? 20,
     skill: enemy.skill ?? {
       name: '',
       description: '',

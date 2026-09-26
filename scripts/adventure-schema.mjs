@@ -1,4 +1,4 @@
-import { ABILITY_EFFECT_TARGETS, ABILITY_TRIGGERS, ATTACK_SKILL_EFFECT_TYPES, CONDITION_OPERATORS, CONDITION_TYPES, EFFECT_TYPES } from './gameplay-schema.mjs'
+import { ABILITY_EFFECT_TARGETS, ABILITY_TRIGGERS, ATTACK_SKILL_EFFECT_TYPES, SUPPORT_SKILL_EFFECT_TYPES, CONDITION_OPERATORS, CONDITION_TYPES, EFFECT_TYPES } from './gameplay-schema.mjs'
 
 export const ADVENTURE_SCHEMA_VERSION = 1
 export const ADVENTURE_ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
@@ -44,8 +44,9 @@ function validateSkill(skill, errors, prefix) {
   if (skill.name != null && typeof skill.name !== 'string') errors.push(prefix + '.name must be a string')
   if (skill.description != null && typeof skill.description !== 'string') errors.push(prefix + '.description must be a string')
   if (skill.icon != null && typeof skill.icon !== 'string') errors.push(prefix + '.icon must be a string')
+  if (skill.animation != null && !['attack','skill1','skill2'].includes(skill.animation)) errors.push(prefix + '.animation is invalid')
   validateTarget(skill.target, errors, prefix + '.target')
-  validateEffects(skill.effects, errors, prefix + '.effects', skill.target?.side === 'ally' ? EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES)
+  validateEffects(skill.effects, errors, prefix + '.effects', skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES)
 }
 
 function validateAbility(ability, errors, prefix) {
@@ -90,10 +91,19 @@ export function validateEnemy(data, expectedId) {
   else {
     if (!['single','all','primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
     if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be >= 1')
-    if (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100) errors.push('normalAttack.skillGaugeGain must be 0..100')
+    if (attack.animation != null && !['attack','skill1','skill2'].includes(attack.animation)) errors.push('normalAttack.animation is invalid')
+    if (attack.skillGaugeGain != null && (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100)) errors.push('normalAttack.skillGaugeGain must be 0..100')
     if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
     validateEffects(attack.effects ?? [], errors, 'normalAttack.effects', ATTACK_SKILL_EFFECT_TYPES.filter(t => t !== 'damage'))
   }
+  const support = data.normalSupport
+  if (!support || typeof support !== 'object') errors.push('normalSupport must be an object')
+  else {
+    if (!['singleAlly','allAllies'].includes(support.target)) errors.push('normalSupport.target is invalid')
+    if (support.animation != null && !['attack','skill1','skill2'].includes(support.animation)) errors.push('normalSupport.animation is invalid')
+    validateEffects(support.effects ?? [], errors, 'normalSupport.effects', SUPPORT_SKILL_EFFECT_TYPES)
+  }
+  if (!asNum(data.skillActivationRate) || data.skillActivationRate < 0 || data.skillActivationRate > 100) errors.push('skillActivationRate must be 0..100')
   if (data.skill != null) validateSkill(data.skill, errors, 'skill')
   if (!Array.isArray(data.abilities)) errors.push('abilities must be an array')
   else data.abilities.forEach((a, i) => validateAbility(a, errors, 'abilities[' + i + ']'))
