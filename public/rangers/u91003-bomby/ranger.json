@@ -171,5 +171,9 @@
       ]
     }
   },
-  "approved": true
+  "approved": true,
+  "face": {
+    "x": 48,
+    "y": 52
+  }
 }
