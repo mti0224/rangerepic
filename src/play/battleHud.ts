@@ -341,7 +341,7 @@ export class BattleHud {
       ctx.font = F(30)
       outlined(ctx, String(battle.gameplayRound), 20 + lw + 12, 45, C.text, 5)
       ctx.font = F(11)
-      outlined(ctx, phase, 20, 63, battle.gameplayPhase === 0 ? C.ally : C.foe, 3)
+      outlined(ctx, phase, 20, 63, battle.gameplayPhase === 0 ? C.ally : C.enemy, 3)
       return
     }
 
