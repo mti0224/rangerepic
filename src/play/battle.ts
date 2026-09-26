@@ -1120,7 +1120,9 @@ export class Battle {
     src?: Unit,
     effect?: SkillEffect,
   ): void {
-    target.statuses = target.statuses.filter(s => s.type !== type)
+    target.statuses = target.statuses.filter(s =>
+      effect?.gameplayType ? s.gameplayType !== effect.gameplayType : s.type !== type
+    )
     const st: Status = {
       type,
       pct,
