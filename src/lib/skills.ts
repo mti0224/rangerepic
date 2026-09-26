@@ -150,6 +150,10 @@ export interface SkillEffect {
   scale?: HealScale
   /** เปลี่ยนธาตุ: เปลี่ยนเป็นธาตุนี้ */
   element?: Element
+  /** Transitional RangerEpic Gameplay V1 metadata. Legacy skills leave these undefined. */
+  gameplayType?: string
+  gameplayValue?: number
+  gameplayDuration?: number
 }
 
 export interface SkillDef {
