@@ -16,15 +16,28 @@
       "id": "wave_1",
       "name": "第一波",
       "enemies": [
-        { "enemyId": "training_croc", "slot": "front-0" }
+        {
+          "enemyId": "training_croc",
+          "slot": "front-0"
+        }
       ]
     },
     {
       "id": "wave_2",
       "name": "第二波",
       "enemies": [
-        { "enemyId": "training_croc", "slot": "front-0" },
-        { "enemyId": "training_croc", "slot": "front-1" }
+        {
+          "enemyId": "training_croc",
+          "slot": "front-0"
+        },
+        {
+          "enemyId": "training_croc",
+          "slot": "front-1"
+        },
+        {
+          "enemyId": "training_boss",
+          "slot": "back-1"
+        }
       ]
     }
   ]
