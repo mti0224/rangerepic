@@ -21,7 +21,8 @@
     "hits": 1,
     "skillGaugeGain": 0,
     "effects": [],
-    "animation": "attack"
+    "animation": "attack",
+    "description": "對1名Ranger造成攻擊力100%的傷害"
   },
   "skill": null,
   "abilities": [
