@@ -50,7 +50,7 @@ const mappedEffects = (effects: GameplayEffect[]): SkillEffect[] =>
   effects.flatMap(effect => {
     const mapped = mappedEffect(effect)
     if (!mapped) return []
-    const hits = effect.type === 'damage' ? Math.max(1, Math.round(effect.hits ?? 1)) : 1
+    const hits = (effect.type === 'damage' || effect.type === 'fixedDamage') ? Math.max(1, Math.round(effect.hits ?? 1)) : 1
     return Array.from({ length: hits }, () => ({ ...mapped }))
   })
 
