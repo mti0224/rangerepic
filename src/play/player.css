@@ -147,7 +147,10 @@
 /* Battle gestures: keep the Ranger sprite in place and draw only the aiming tether, matching the authored spec. */
 .ep-drag-guide{position:fixed;inset:0;z-index:12;width:100vw;height:100vh;pointer-events:none;overflow:visible}
 .ep-drag-guide line{stroke:#f7c84b;stroke-width:5;stroke-linecap:round;stroke-dasharray:12 10;filter:drop-shadow(0 2px 4px #000c)}
+.ep-drag-guide.energy line{stroke:#ffe77b;stroke-width:3;stroke-dasharray:8 8;filter:drop-shadow(0 0 7px #ffc928cc)}
 .ep-drag-guide circle{fill:#f7c84b33;stroke:#f7c84b;stroke-width:3;filter:drop-shadow(0 2px 4px #000c)}
+.ep-drag-energy-stone{position:fixed;z-index:14;width:72px;height:auto;pointer-events:none;transform:translate(-50%,-50%);transform-origin:center;filter:drop-shadow(0 0 9px #ffd33ccc) drop-shadow(0 8px 8px #0008);animation:ep-energy-stone-drag .62s ease-in-out infinite alternate}
+@keyframes ep-energy-stone-drag{from{transform:translate(-50%,-50%) scale(.98) rotate(-2deg);filter:drop-shadow(0 0 7px #ffd33caa) drop-shadow(0 7px 7px #0008)}to{transform:translate(-50%,-50%) scale(1.08) rotate(2deg);filter:drop-shadow(0 0 16px #ffe66ddd) drop-shadow(0 9px 10px #0009)}}
 .ep-target-hint{position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:13;padding:8px 14px;border-radius:999px;background:#08111ee8;border:1px solid #f7c84b80;color:#fff3bd;font-weight:800;font-size:13px;pointer-events:none;box-shadow:0 8px 24px #0008;white-space:nowrap}
 
 /* Long-press unit details. */
