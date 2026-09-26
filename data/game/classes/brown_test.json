@@ -20,7 +20,8 @@
   "normalAttack": {
     "target": "single",
     "hits": 1,
-    "skillGaugeGain": 5
+    "skillGaugeGain": 5,
+    "description": "對1名敵人造成攻擊力100%的傷害"
   },
   "normalSupport": {
     "target": "singleAlly",
