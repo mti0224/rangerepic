@@ -370,7 +370,7 @@ function rangerApi(): Plugin {
  * (ไม่มีอันนี้ กด F5 ที่ /lobby แล้วจะ 404 ตอน dev)
  */
 function playRoutes(): Plugin {
-  const ROUTES = new Set(['/lobby', '/team', '/characters'])
+  const ROUTES = new Set(['/lobby', '/stages', '/team', '/characters'])
   return {
     name: 'play-routes',
     configureServer(server) {
