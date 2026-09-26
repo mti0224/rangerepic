@@ -696,7 +696,7 @@ export class BattleHud {
     this.boxes.push({ ...PANEL, hit: { kind: 'block' } })
 
     this.drawInfo(ctx, u)
-    if (u.gameplayClass) this.drawGameplayGestureGuide(ctx, u, input)
+    if (u.gameplayClass) this.drawGameplayGestureGuide(ctx, input)
     else ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
     this.drawStatuses(ctx, u)
     if (u.gameplayClass) this.drawGameplayGauge(ctx, u)
@@ -762,7 +762,7 @@ export class BattleHud {
     iconText(ctx, uiImage(UI_SRC.hp), hpText, bx, y + 61, 10, 13, C.text, 'left', 3, 'HP ')
   }
 
-  private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, u: Unit, input: boolean): void {
+  private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, input: boolean): void {
     const x = BTN.x, y = BTN.y, w = PANEL.x + PANEL.w - BTN.x - 8, h = BTN.h
     roundRect(ctx, x, y, w, h, 8)
     ctx.fillStyle = C.inset
