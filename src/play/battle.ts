@@ -52,13 +52,24 @@ import { statsWithPosition } from '@/lib/formation'
 import { passiveSum, type PassiveDef } from '@/lib/passives'
 import { BattleAI } from './ai'
 import { playableIdentityOfRanger, type AssetVariantId, type CharacterId, type ClassId } from '@/lib/characterModel'
-import type { AbilityCondition, BattleRulesV1, GameplayClass, GameplayEffectType } from '@/lib/gameplaySchema'
-import { gameplayNormalAttackSkill } from '@/lib/gameplayAdapter'
+import type {
+  AbilityCondition, AbilityTrigger, BattleRulesV1, GameplayClass, GameplayEffect, GameplayEffectType,
+} from '@/lib/gameplaySchema'
+import { gameplayEffectToLegacy, gameplayNormalAttackSkill } from '@/lib/gameplayAdapter'
 
 /** smart = ให้คะแนนทุกทางเลือก · basic = แบบเดิม (สุ่มท่า ตีตัวเลือดน้อยสุด) · random = สุ่มล้วน */
 export type AiLevel = 'smart' | 'basic' | 'random'
 
 export type Team = 0 | 1
+
+interface GameplayAbilityEvent {
+  subject?: Unit
+  attacker?: Unit
+  damage?: number
+  statusType?: string
+  hpBefore?: number
+  hpAfter?: number
+}
 
 export interface UnitSetup {
   /** 舊存檔／舊呼叫端相容欄位。新程式不要把它當成 Character id。 */
@@ -336,6 +347,8 @@ export class Battle {
   gameplayPhase: Team = 0
   private gameplayFirstTeam: Team = 0
   private gameplayActed = new Set<string>()
+  private abilityEventStack = new Set<string>()
+  private abilityEventDepth = 0
   turn = 0
   private rand: () => number
 
@@ -372,6 +385,10 @@ export class Battle {
     const gameplayRules = this.units.find(u => u.gameplayRules)?.gameplayRules
     this.gameplayFirstTeam = gameplayRules?.playerActsFirst === false ? 1 : 0
     this.gameplayPhase = this.gameplayFirstTeam
+    if (this.usesGameplayPhases) {
+      this.dispatchGameplayAbilityEvent('battleStart', {})
+      this.dispatchGameplayAbilityEvent('roundStart', {})
+    }
   }
 
   private makeUnit(u: UnitSetup, t: Team, s: Stats, spd: number, uid: string): Unit {
@@ -582,10 +599,14 @@ export class Battle {
   }
 
   private finishGameplayRound(): void {
-    // Gameplay V1 damage-over-time resolves at Round End before durations tick down.
+    // Gameplay V1 damage-over-time resolves at Round End before duration countdown.
     for (const u of this.units) {
       for (const s of [...u.statuses]) this.tickGameplayDot(u, s)
     }
+
+    this.dispatchGameplayAbilityEvent('roundEnd', {})
+    this.dispatchGameplayAbilityEvent('everyNRounds', {})
+
     // The round in which an effect was applied counts as its first round.
     for (const u of this.units) {
       for (const s of u.statuses) s.turns--
@@ -593,6 +614,7 @@ export class Battle {
     }
     this.gameplayRound++
     this.gameplayActed.clear()
+    if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
   }
 
   private advanceGameplayPhase(): void {
@@ -608,7 +630,7 @@ export class Battle {
     this.gameplayPhase = this.gameplayFirstTeam
   }
 
-  private conditionMatches(u: Unit, condition: AbilityCondition): boolean {
+  private conditionMatches(u: Unit, condition: AbilityCondition, event?: GameplayAbilityEvent): boolean {
     const numberCompare = (actual: number, expected: number): boolean => {
       switch (condition.operator ?? '=') {
         case '<': return actual < expected
@@ -633,10 +655,12 @@ export class Battle {
         return numberCompare(actual, Number.isFinite(expected) ? expected : 1)
       }
       case 'hasStatus':
+        return typeof condition.value === 'string'
+          && u.statuses.some(s => s.gameplayType === condition.value || s.type === condition.value)
       case 'statusType':
-        return typeof condition.value === 'string' && u.statuses.some(s => s.type === condition.value)
-      // Event-scoped conditions require the full V2 event runtime and must not be guessed here.
+        return typeof condition.value === 'string' && event?.statusType === condition.value
       case 'receivedDamage':
+        return Number.isFinite(expected) && numberCompare(event?.damage ?? 0, expected)
       default:
         return false
     }
@@ -671,6 +695,138 @@ export class Battle {
       }
     }
     return total
+  }
+
+
+  private abilityTriggerMatches(source: Unit, trigger: AbilityTrigger, event: GameplayAbilityEvent): boolean {
+    const subject = event.subject
+    switch (trigger) {
+      case 'battleStart':
+      case 'roundStart':
+      case 'roundEnd':
+      case 'everyNRounds':
+        return source.alive
+      case 'selfDied':
+        return subject === source
+      case 'allyDied':
+        return source.alive && !!subject && subject !== source && subject.team === source.team
+      case 'enemyDied':
+        return source.alive && !!subject && subject.team !== source.team
+      case 'beforeDamaged':
+      case 'afterDamaged':
+      case 'statusApplied':
+      case 'hpChanged':
+        return subject === source
+      case 'whileOnField':
+        return false
+    }
+  }
+
+  private abilityTargets(source: Unit, effect: GameplayEffect, event: GameplayAbilityEvent): Unit[] {
+    switch (effect.abilityTarget ?? 'self') {
+      case 'self': return source.alive ? [source] : []
+      case 'allAllies': return this.units.filter(u => u.alive && u.team === source.team)
+      case 'allEnemies': return this.units.filter(u => u.alive && u.team !== source.team)
+      case 'attacker': return event.attacker?.alive ? [event.attacker] : []
+      default: return []
+    }
+  }
+
+  private applyGameplayAbilityEffect(source: Unit, effect: GameplayEffect, event: GameplayAbilityEvent): void {
+    // These modifier types are continuous values and are handled by gameplayAbilityValue.
+    if (['skillGaugeGainModifier', 'poisonDamageReduction', 'deadlyPoisonDamageReduction'].includes(effect.type)) return
+
+    const mapped = gameplayEffectToLegacy(effect)
+    if (!mapped) return
+
+    for (const target of this.abilityTargets(source, effect, event)) {
+      if (!target.alive) continue
+
+      if (effect.type === 'damage') {
+        const amount = Math.max(0, Math.round(this.effAtk(source) * (effect.value ?? 0) / 100 * this.takenMult(target, true)))
+        if (amount > 0) this.takeDamage(target, amount, emptyOutcome(target.uid, target.hp), false, source)
+        continue
+      }
+      if (effect.type === 'fixedDamage') {
+        const hits = Math.max(1, Math.round(effect.hits ?? 1))
+        for (let i = 0; i < hits && target.alive; i++) {
+          const amount = Math.max(0, Math.round(effect.value ?? 0))
+          if (amount > 0) this.takeDamage(target, amount, emptyOutcome(target.uid, target.hp), false, source)
+        }
+        continue
+      }
+      if (effect.type === 'heal' && (effect.duration ?? 1) === 1) {
+        this.healUnit(target, target.maxHp * (effect.value ?? 0) / 100, source)
+        continue
+      }
+      if (mapped.type === 'dispelBuffs') {
+        if (effect.type === 'removeShield') target.statuses = target.statuses.filter(s => s.type !== 'shield')
+        else target.statuses = target.statuses.filter(s => isDebuff(s.type))
+        continue
+      }
+      if (mapped.type === 'cleanse') {
+        switch (effect.type) {
+          case 'cleanseDamageOverTime':
+            target.statuses = target.statuses.filter(s => s.gameplayType !== 'damageOverTime')
+            break
+          case 'cleansePoison':
+            target.statuses = target.statuses.filter(s => s.gameplayType !== 'poison' && s.gameplayType !== 'deadlyPoison')
+            break
+          case 'removeTaunt':
+            target.statuses = target.statuses.filter(s => s.type !== 'taunt')
+            break
+          case 'removeStun':
+            target.statuses = target.statuses.filter(s => s.type !== 'stun')
+            break
+          case 'removeSilence':
+            target.statuses = target.statuses.filter(s => s.type !== 'silence')
+            break
+          default:
+            target.statuses = target.statuses.filter(s => !isDebuff(s.type))
+        }
+        continue
+      }
+      if (mapped.type === 'shield') {
+        this.addStatus(
+          target, 'shield', mapped.pct ?? 0, mapped.turns ?? 1,
+          Math.round(target.maxHp * (effect.value ?? 0) / 100), source, mapped,
+        )
+        continue
+      }
+      if (STATUS_EFFECTS.has(mapped.type)) {
+        this.addStatus(target, mapped.type as StatusType, mapped.pct ?? 0, mapped.turns ?? 1, undefined, source, mapped)
+      }
+    }
+  }
+
+  private dispatchGameplayAbilityEvent(trigger: AbilityTrigger, event: GameplayAbilityEvent): void {
+    if (!this.usesGameplayPhases || this.abilityEventDepth >= 24) return
+    this.abilityEventDepth++
+    try {
+      for (const source of this.units) {
+        if (!source.gameplayClass || !this.abilityTriggerMatches(source, trigger, event)) continue
+        for (const ability of source.gameplayClass.abilities) {
+          if (ability.trigger !== trigger) continue
+          if (trigger === 'everyNRounds') {
+            const n = Math.max(1, Math.round(ability.triggerValue ?? 1))
+            if (this.gameplayRound % n !== 0) continue
+          }
+          if (!ability.conditions.every(condition => this.conditionMatches(source, condition, event))) continue
+          const subjectKey = event.subject?.uid ?? '-'
+          const attackerKey = event.attacker?.uid ?? '-'
+          const key = `${source.uid}:${ability.id}:${trigger}:${subjectKey}:${attackerKey}`
+          if (this.abilityEventStack.has(key)) continue
+          this.abilityEventStack.add(key)
+          try {
+            for (const effect of ability.effects) this.applyGameplayAbilityEffect(source, effect, event)
+          } finally {
+            this.abilityEventStack.delete(key)
+          }
+        }
+      }
+    } finally {
+      this.abilityEventDepth--
+    }
   }
   /** ธาตุที่ใช้คิดตัวคูณ (โดนเปลี่ยนธาตุอยู่ = ใช้ธาตุใหม่) */
   effElement(u: Unit): Element | undefined {
