@@ -29,6 +29,9 @@ import { STAGES } from '@/lib/stages'
 import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice, openInExternalBrowser, useFullscreen } from './screen'
 import { ui, useLang } from './uiText'
 import { playableIdentityOfRanger } from '@/lib/characterModel'
+import { loadGameplayCatalog } from '@/lib/gameplayApi'
+import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
+import { DEFAULT_BATTLE_RULES, type BattleRulesV1 } from '@/lib/gameplaySchema'
 
 const FORMATION_KEY = 'lr:formation'
 /** หน้าไหนอยู่ที่ URL ไหน (Netlify ส่งทุกเส้นทางมาที่หน้าเดียว → อ่านจาก pathname เอง) */
@@ -53,6 +56,7 @@ function loadFormation(): Formation {
 export default function PlayMode() {
   const lang = useLang()
   const [data, setData] = useState<RangerData[]>([])
+  const [gameplayRules, setGameplayRules] = useState<BattleRulesV1>(DEFAULT_BATTLE_RULES)
   const [ready, setReady] = useState(false)
   const [formation, setFormation] = useState<Formation>(loadFormation)
   const [stage, setStage] = useState<'lobby' | 'setup' | 'loading' | 'battle'>(stageFromPath)
@@ -96,16 +100,47 @@ export default function PlayMode() {
   useEffect(() => {
     void (async () => {
       try {
-        const list = (await listRangers()).filter(r => r.approved)
-        const rows = await Promise.all(list.map(async item => ({
+        const [list, catalog] = await Promise.all([
+          listRangers().then(rows => rows.filter(r => r.approved)),
+          loadGameplayCatalog().catch(() => ({ characters: [], classes: [], rules: DEFAULT_BATTLE_RULES })),
+        ])
+        setGameplayRules(catalog.rules)
+
+        const baseRows = await Promise.all(list.map(async item => ({
           item,
           config: await loadRangerConfig(item.id).then(c => (c ? migrateRangerConfig(c) : null)).catch(() => null),
           info: await loadGameInfo(item.id),
         })))
-        const ok = new Set(list.map(r => r.id))
+        const characterById = new Map(catalog.characters.map(ch => [ch.id, ch]))
+        const classesByAsset = new Map<string, typeof catalog.classes>()
+        for (const cls of catalog.classes) {
+          const rows = classesByAsset.get(cls.assetVariantId) ?? []
+          rows.push(cls)
+          classesByAsset.set(cls.assetVariantId, rows)
+        }
+
+        const rows: RangerData[] = baseRows.flatMap(row => {
+          const classes = classesByAsset.get(row.item.id) ?? []
+          if (!classes.length) return [{ ...row, playId: row.item.id }]
+          return classes.map(cls => ({
+            ...row,
+            playId: cls.id,
+            gameplayClass: cls,
+            gameplayCharacter: characterById.get(cls.characterId) ?? null,
+            config: row.config ? adaptRangerConfigForGameplay(row.config, cls) : null,
+          }))
+        })
+
+        const ok = new Set(rows.map(r => r.playId))
+        const assetToPlay = new Map<string, string>()
+        for (const row of rows) if (!assetToPlay.has(row.item.id)) assetToPlay.set(row.item.id, row.playId)
         setData(rows)
         setFormation(f => {
-          const clean = (t: TeamSlots) => Object.fromEntries(ALL_KEYS.map(k => [k, t[k] && ok.has(t[k]!) ? t[k] : null])) as TeamSlots
+          const clean = (t: TeamSlots) => Object.fromEntries(ALL_KEYS.map(k => {
+            const old = t[k]
+            const migrated = old && (ok.has(old) ? old : assetToPlay.get(old))
+            return [k, migrated ?? null]
+          })) as TeamSlots
           return [clean(f[0]), clean(f[1])]
         })
       } catch (e) {
@@ -122,16 +157,23 @@ export default function PlayMode() {
   // ── โหลดทุกตัวที่ลงสนาม ──
   const start = () => loadAndFight(formation, () => setStage('setup'))
 
+  const resolvePlayId = (id: string | null | undefined): string | null => {
+    if (!id) return null
+    return data.find(d => d.playId === id)?.playId ?? data.find(d => d.item.id === id)?.playId ?? null
+  }
+
   /** ด่านเนื้อเรื่อง: ทีมเรา = เซ็ตทีมที่เลือก · ศัตรู = ตามข้อมูลด่าน */
   const playStage = (stageId: string, teamId: string) => {
     const stage = stageById(stageId)
     const team = getCollection().teams.find(t => t.id === teamId)
     if (!stage || !team) return
-    const ok = new Set(data.map(d => d.item.id))
     const mine = emptyTeam()
-    for (const k of TEAM_KEYS) { const id = team.slots[k]; mine[k] = id && ok.has(id) ? id : null }
+    for (const k of TEAM_KEYS) mine[k] = resolvePlayId(team.slots[k])
     const foe = emptyTeam()
-    for (const en of stage.enemies) if (ok.has(en.id)) foe[en.slot] = en.id
+    for (const en of stage.enemies) {
+      const playId = resolvePlayId(en.id)
+      if (playId) foe[en.slot] = playId
+    }
     const f: Formation = [mine, foe]
     setStoryRun({ stage, teamId, formation: f })
     // ตัวละครบนแผนที่ยืนที่ด่านที่กำลังเล่น (มาจากปุ่ม "ไปด่านต่อไป" ก็ตาม)
@@ -163,15 +205,17 @@ export default function PlayMode() {
     setMessage('')
     const map = new Map<string, RangerKit>()
     try {
-      for (const [i, id] of ids.entries()) {
-        setProgress({ done: i, total: ids.length, id })
-        const d = data.find(r => r.item.id === id)
+      for (const [i, playId] of ids.entries()) {
+        const d = data.find(r => r.playId === playId)
+        const assetId = d?.item.id ?? playId
+        setProgress({ done: i, total: ids.length, id: assetId })
+        if (map.has(assetId)) continue
         const bullets = d?.item.bullets ?? []
-        const assets = await loadRangerAssets(id, bullets)
-        const saved = d?.config ?? await loadRangerConfig(id).then(c => (c ? migrateRangerConfig(c) : null))
-        const config = withDefaultGround(saved ?? defaultRangerConfig(id, assets.sam, bullets), assets.geometry.autoStand)
-        const info = d?.info ?? await loadGameInfo(id)
-        map.set(id, { assets, config, info })
+        const assets = await loadRangerAssets(assetId, bullets)
+        const saved = await loadRangerConfig(assetId).then(c => (c ? migrateRangerConfig(c) : null))
+        const config = withDefaultGround(saved ?? defaultRangerConfig(assetId, assets.sam, bullets), assets.geometry.autoStand)
+        const info = d?.info ?? await loadGameInfo(assetId)
+        map.set(assetId, { assets, config, info })
       }
       setProgress({ done: ids.length, total: ids.length, id: null })
       setKits(map)
@@ -211,6 +255,7 @@ export default function PlayMode() {
         story={storyRun?.stage ?? null}
         storyResult={storyResult}
         data={data}
+        rules={gameplayRules}
         onStoryEnd={r => { if (storyRun) finishStage(storyRun.stage, r) }}
         onNextStage={storyResult?.win && storyRun && STAGES[STAGES.indexOf(storyRun.stage) + 1] ? nextStage : null}
         onBack={backToSetup}
@@ -328,7 +373,7 @@ function LangSwitch() {
 
 // ────────────────────────────────────────────────────────────
 
-function BattleView({ formation, kits, seed, story, storyResult, data, onStoryEnd, onNextStage, onBack, onRestart }: {
+function BattleView({ formation, kits, seed, story, storyResult, data, rules, onStoryEnd, onNextStage, onBack, onRestart }: {
   formation: Formation
   kits: Map<string, RangerKit>
   seed: number
@@ -337,6 +382,7 @@ function BattleView({ formation, kits, seed, story, storyResult, data, onStoryEn
   /** ผลของด่านรอบนี้ (มาหลังขึ้นหน้าจอจบ) → หน้าจบด่าน */
   storyResult: StoryResult | null
   data: RangerData[]
+  rules: BattleRulesV1
   /** มี = ชนะและมีด่านถัดไป */
   onNextStage: (() => void) | null
   /** จบด่าน (เรียกครั้งเดียวต่อการดวลแต่ละรอบ รวมรอบที่กดเล่นใหม่) */
@@ -362,58 +408,60 @@ function BattleView({ formation, kits, seed, story, storyResult, data, onStoryEn
     // ทีมเรา (ฝั่งซ้าย) = ฮีโร่ในคลังของผู้เล่น → คิดเลเวล + อุปกรณ์ + โบนัสเซ็ต
     // ทีมศัตรู = ดวลฝึกซ้อม: ค่าตั้งต้น (Lv.1) · ด่านเนื้อเรื่อง: เลเวลตามด่าน (ตัวบอสเลือด × BOSS_HP_MUL)
     const col = getCollection()
-    const power = (team: Team, id: string, kit: RangerKit, key: string) => {
-      if (team === 0) return { stats: heroStats(col, id, kit.config), passives: heroPassives(col, id, kit.config.passives), level: heroLevel(col, id) }
-      const en = story?.enemies.find(e => e.slot === key && e.id === id)
-      if (!en) return { stats: kit.config.stats, passives: kit.config.passives, level: 1 }
-      const stats = effectiveStats(kit.config.stats, en.level, [], kit.config.element, true)
+    const byPlayId = new Map(data.map(d => [d.playId, d]))
+    const power = (team: Team, assetId: string, kit: RangerKit, key: string, d?: RangerData) => {
+      const combatConfig = d?.config ?? kit.config
+      // New Gameplay classes must not inherit legacy level/gear/passive stat bonuses.
+      if (d?.gameplayClass) return { stats: combatConfig.stats, passives: [], level: 1 }
+      if (team === 0) return { stats: heroStats(col, assetId, combatConfig), passives: heroPassives(col, assetId, combatConfig.passives), level: heroLevel(col, assetId) }
+      const en = story?.enemies.find(e => e.slot === key && e.id === assetId)
+      if (!en) return { stats: combatConfig.stats, passives: combatConfig.passives, level: 1 }
+      const stats = effectiveStats(combatConfig.stats, en.level, [], combatConfig.element, true)
       if (en.boss) stats.hp = Math.round(stats.hp * BOSS_HP_MUL)
-      return { stats, passives: kit.config.passives, level: en.level }
+      return { stats, passives: combatConfig.passives, level: en.level }
     }
-    const setups = (team: Team): UnitSetup[] => SLOT_KEYS.flatMap(k => {
-      const id = formation[team][k]
-      const kit = id ? kits.get(id) : undefined
-      if (!id || !kit) return []
-      const [row, lane] = k.split('-') as [Row, string]
-      const ident = playableIdentityOfRanger(id)
+    const setupOf = (team: Team, playId: string, key: string, row: Row, lane: number): UnitSetup[] => {
+      const d = byPlayId.get(playId)
+      const assetId = d?.item.id ?? playId
+      const kit = kits.get(assetId)
+      if (!kit) return []
+      const legacy = playableIdentityOfRanger(assetId)
+      const cls = d?.gameplayClass ?? null
+      const ident = cls
+        ? { characterId: cls.characterId, classId: cls.id, assetVariantId: cls.assetVariantId }
+        : legacy
+      const combatConfig = d?.config ?? kit.config
       return [{
-        rangerId: id,
+        rangerId: assetId,
         characterId: ident.characterId,
         classId: ident.classId,
         assetVariantId: ident.assetVariantId,
+        gameplayClass: cls ?? undefined,
+        gameplayRules: cls ? rules : undefined,
         row,
-        lane: Number(lane),
+        lane,
         element: kit.config.element,
         category: kit.config.category,
         role: kit.config.role,
-        skills: kit.config.skills,
-        ...power(team, id, kit, k),
+        skills: combatConfig.skills,
+        ...power(team, assetId, kit, key, d),
       }]
+    }
+    const setups = (team: Team): UnitSetup[] => SLOT_KEYS.flatMap(k => {
+      const playId = formation[team][k]
+      if (!playId) return []
+      const [row, lane] = k.split('-') as [Row, string]
+      return setupOf(team, playId, k, row, Number(lane))
     })
     // แถวพิเศษ (อัญเชิญ): ไม่ลงสนาม · ไม่มีโบนัสแถว (เลเวล/อุปกรณ์เป็นพลังของตัวเอง ยังนับ)
     const reserves = (team: Team): UnitSetup[] => RESERVE_KEYS.flatMap((k, i) => {
-      const id = formation[team][k]
-      const kit = id ? kits.get(id) : undefined
-      if (!id || !kit) return []
-      const ident = playableIdentityOfRanger(id)
-      return [{
-        rangerId: id,
-        characterId: ident.characterId,
-        classId: ident.classId,
-        assetVariantId: ident.assetVariantId,
-        row: 'back' as Row,
-        lane: i,
-        element: kit.config.element,
-        category: kit.config.category,
-        role: kit.config.role,
-        skills: kit.config.skills,
-        ...power(team, id, kit, k),
-      }]
+      const playId = formation[team][k]
+      return playId ? setupOf(team, playId, k, 'back', i) : []
     })
     const sc = new BattleScene(new Battle([setups(0), setups(1)], seed, [reserves(0), reserves(1)]), kits, thumbs, rerender)
     if (story) { sc.hud.backLabel = ui('backToMap'); sc.hud.customResult = true }
     return sc
-  }, [formation, kits, thumbs, seed, rerender, story])
+  }, [formation, kits, thumbs, seed, rerender, story, data, rules])
 
   // ด่านเนื้อเรื่อง: ขึ้นหน้าจอจบ → ส่งผล (ครั้งเดียวต่อฉาก · กดเล่นใหม่ = ฉากใหม่ ส่งผลใหม่)
   const reported = useRef<BattleScene | null>(null)
