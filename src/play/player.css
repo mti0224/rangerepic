@@ -151,8 +151,6 @@
 .ep-drag-guide circle{fill:#f7c84b33;stroke:#f7c84b;stroke-width:3;filter:drop-shadow(0 2px 4px #000c)}
 .ep-drag-energy-stone{position:fixed;z-index:14;width:72px;height:auto;pointer-events:none;transform:translate(-50%,-50%);transform-origin:center;filter:drop-shadow(0 0 9px #ffd33ccc) drop-shadow(0 8px 8px #0008);animation:ep-energy-stone-drag .62s ease-in-out infinite alternate}
 @keyframes ep-energy-stone-drag{from{transform:translate(-50%,-50%) scale(.98) rotate(-2deg);filter:drop-shadow(0 0 7px #ffd33caa) drop-shadow(0 7px 7px #0008)}to{transform:translate(-50%,-50%) scale(1.08) rotate(2deg);filter:drop-shadow(0 0 16px #ffe66ddd) drop-shadow(0 9px 10px #0009)}}
-.ep-target-hint{position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:13;padding:8px 14px;border-radius:999px;background:#08111ee8;border:1px solid #f7c84b80;color:#fff3bd;font-weight:800;font-size:13px;pointer-events:none;box-shadow:0 8px 24px #0008;white-space:nowrap}
-
 /* Long-press unit details. */
 .ep-unit-detail-backdrop{position:absolute;inset:0;z-index:60;display:grid;place-items:center;padding:28px;background:#03060dbc;backdrop-filter:blur(6px)}
 .ep-unit-detail{width:min(860px,calc(100vw - 40px));max-height:min(650px,calc(100vh - 40px));overflow:auto;border-radius:22px;border:1px solid #ffffff2e;background:linear-gradient(180deg,#152238f7,#09111ff7);box-shadow:0 28px 90px #000c;color:#edf4ff;padding:22px}
