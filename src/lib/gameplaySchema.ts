@@ -30,9 +30,13 @@ export interface GameplayStats {
 }
 
 export type NormalAttackTarget = 'single' | 'all' | 'primaryPlusRandom'
+export const GAMEPLAY_ANIMATIONS = ['attack', 'skill1', 'skill2'] as const
+export type GameplayAnimation = typeof GAMEPLAY_ANIMATIONS[number]
 export interface NormalAttackDef {
   target: NormalAttackTarget
   hits: number
+  /** Which visual action from the selected Ranger asset should play. */
+  animation?: GameplayAnimation
   /** One normal-attack action adds this once, regardless of hit count. */
   skillGaugeGain: number
   extraTargets?: number
@@ -128,6 +132,8 @@ export interface GameplayEffect {
 
 export interface NormalSupportDef {
   target: NormalSupportTarget
+  /** Which visual action from the selected Ranger asset should play. */
+  animation?: GameplayAnimation
   effects: GameplayEffect[]
 }
 
@@ -139,6 +145,8 @@ export interface SkillTargetRule {
   selector: TargetSelector
 }
 export interface GameplaySkill {
+  /** Which visual action from the selected Ranger asset should play. */
+  animation?: GameplayAnimation
   /** Optional player-facing title. */
   name?: string
   /** Optional plain-language description. When set, UI prefers it over generated effect text. */
@@ -158,12 +166,11 @@ export const ABILITY_TRIGGERS = [
   'selfDied',
   'allyDied',
   'enemyDied',
-  'beforeDamaged',
-  'afterDamaged',
+  'damaged',
   'statusApplied',
   'hpChanged',
 ] as const
-export type AbilityTrigger = typeof ABILITY_TRIGGERS[number]
+export type AbilityTrigger = typeof ABILITY_TRIGGERS[number] | 'beforeDamaged' | 'afterDamaged'
 
 export const CONDITION_TYPES = [
   'round',
@@ -171,7 +178,6 @@ export const CONDITION_TYPES = [
   'enemyAliveCount',
   'selfHpPercent',
   'receivedDamage',
-  'statusType',
   'hasStatus',
   'hasShield',
 ] as const
@@ -214,6 +220,10 @@ export interface GameplayClass {
   normalSupport: NormalSupportDef
   /** Optional runtime gate used by enemy adapters. Player classes default to enabled. */
   skillEnabled?: boolean
+  /** Player classes use the shared gauge. Enemy adapters set this to false. */
+  usesSkillGauge?: boolean
+  /** Enemy-only AI chance (0..100) to use skill1 on its action. */
+  skillActivationRate?: number
   skill: GameplaySkill
   abilities: GameplayAbility[]
 }
@@ -300,26 +310,26 @@ export const EFFECT_LABEL_ZH: Record<GameplayEffectType, string> = {
 export const TRIGGER_LABEL_ZH: Record<AbilityTrigger, string> = {
   whileOnField: '角色在場上時',
   battleStart: '戰鬥開始時',
-  roundStart: 'Round Start',
-  roundEnd: 'Round End',
-  everyNRounds: '每經過 N Round',
+  roundStart: '回合開始時',
+  roundEnd: '回合結束時',
+  everyNRounds: '每經過 N 回合時',
   selfDied: '自身死亡時',
   allyDied: '我方角色死亡時',
   enemyDied: '敵方角色死亡時',
-  beforeDamaged: '自身受到傷害前',
-  afterDamaged: '自身受到傷害後',
+  damaged: '自身受到傷害時',
+  beforeDamaged: '自身受到傷害時（舊資料）',
+  afterDamaged: '自身受到傷害時（舊資料）',
   statusApplied: '自身被套用狀態時',
   hpChanged: '自身體力變化時',
 }
 
 export const CONDITION_LABEL_ZH: Record<AbilityConditionType, string> = {
-  round: '目前 Round',
+  round: '目前回合數',
   allyAliveCount: '我方存活數',
   enemyAliveCount: '敵方存活數',
-  selfHpPercent: '自身體力 %',
-  receivedDamage: '本次受到傷害',
-  statusType: '狀態類型',
-  hasStatus: '持有指定狀態',
+  selfHpPercent: '自身體力的百分比',
+  receivedDamage: '本次受到的傷害量',
+  hasStatus: '持有特定狀態／效果時',
   hasShield: '自身持有護盾',
 }
 
@@ -359,9 +369,9 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     role: '未分類',
     names: emptyNames(),
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
-    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5 },
-    normalSupport: { target: 'singleAlly', effects: [] },
-    skill: { name: '', description: '', icon: '', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 5, animation: 'attack' },
+    normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
+    skill: { name: '', description: '', icon: '', animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
     abilities: [],
   }
 }
