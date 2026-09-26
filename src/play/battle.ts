@@ -559,7 +559,8 @@ export class Battle {
     let ignoreShield = false
 
     if (s.gameplayType === 'damageOverTime') {
-      damage = (s.srcAtk ?? 0) * value / 100 * this.takenMult(u, false)
+      const source = s.gameplaySourceUid ? this.unit(s.gameplaySourceUid) : undefined
+      damage = (source ? this.effAtk(source) : (s.srcAtk ?? 0)) * value / 100 * this.takenMult(u, false)
     } else if (s.gameplayType === 'poison') {
       const reduction = clamp(this.gameplayAbilityValue(u, 'poisonDamageReduction'), 0, 100)
       damage = u.hp * value / 100 * (1 - reduction / 100)
@@ -663,12 +664,16 @@ export class Battle {
   }
   effAtk(u: Unit): number {
     const gameplayUp = this.gameplayAbilityValue(u, 'attackUp')
-    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(MIN_ATK_RATIO, 1 + (gameplayUp + this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100)
+    const floor = u.gameplayClass ? 0 : MIN_ATK_RATIO
+    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(floor, 1 + (gameplayUp + this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100)
   }
   effSpd(u: Unit): number { return u.spd * (1 + this.passive(u, 'speedUp') / 100) * Math.max(MIN_SPD_RATIO, 1 + (this.pctOf(u, 'speedUp') - this.pctOf(u, 'speedDown')) / 100) }
   effCrit(u: Unit): number { return clamp(u.crit + this.passive(u, 'critUp') + this.gameplayAbilityValue(u, 'critRateUp') + this.pctOf(u, 'critUp') - this.pctOf(u, 'critDown'), 0, CAPS.crit) }
   /** คริดาเมจ (%) — ลดได้ต่ำสุด 100 (คริแล้วไม่เบากว่าตีปกติ) */
-  effCritDmg(u: Unit): number { return Math.max(100, u.critDmg + this.gameplayAbilityValue(u, 'critDamageUp') + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown')) }
+  effCritDmg(u: Unit): number {
+    const floor = u.gameplayClass ? 0 : 100
+    return Math.max(floor, u.critDmg + this.gameplayAbilityValue(u, 'critDamageUp') + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown'))
+  }
   /** ฟื้นเลือดได้ไหม (โดนห้ามฟื้นฟู = ไม่ได้ทุกแบบ) */
   canHeal(u: Unit): boolean { return u.alive && this.healFactor(u) > 0 }
   effEvade(u: Unit): number { return u.evade + this.pctOf(u, 'evadeUp') - this.pctOf(u, 'evadeDown') }
@@ -683,7 +688,8 @@ export class Battle {
    * (ลดได้ต่ำสุดเหลือ 10% — กันตีไม่เข้าเลย)
    */
   takenMult(target: Unit, isSkill: boolean): number {
-    const amp = Math.max(0.1, 1 + (this.pctOf(target, 'vulnerable') - this.pctOf(target, 'toughUp') - this.passive(target, 'tough')) / 100)
+    const ampFloor = target.gameplayClass ? 0 : 0.1
+    const amp = Math.max(ampFloor, 1 + (this.pctOf(target, 'vulnerable') - this.pctOf(target, 'toughUp') - this.passive(target, 'tough')) / 100)
     const res = isSkill ? 1 - clamp(this.effSkillDmgRes(target), 0, CAPS.skillDmgRes) / 100 : 1
     const gameplayReduction = 1 - clamp(this.gameplayAbilityValue(target, 'damageReduction'), 0, 100) / 100
     return amp * res * gameplayReduction
@@ -1120,9 +1126,18 @@ export class Battle {
     src?: Unit,
     effect?: SkillEffect,
   ): void {
-    target.statuses = target.statuses.filter(s =>
-      effect?.gameplayType ? s.gameplayType !== effect.gameplayType : s.type !== type
-    )
+    if (effect?.gameplayType) {
+      // Gameplay V1 keeps each layer independently. Taunt is the explicit exception:
+      // within one side only the most recently applied taunt remains.
+      if (effect.gameplayType === 'taunt') {
+        for (const ally of this.units.filter(u => u.team === target.team)) {
+          ally.statuses = ally.statuses.filter(s => s.gameplayType !== 'taunt')
+        }
+      }
+    } else {
+      // Legacy engine behavior remains replacement-by-status-type.
+      target.statuses = target.statuses.filter(s => s.type !== type)
+    }
     const st: Status = {
       type,
       pct,
@@ -1187,13 +1202,17 @@ export class Battle {
   /** ลงดาเมจ: โล่รับก่อน แล้วค่อย HP */
   private takeDamage(target: Unit, damage: number, o: Outcome, ignoreShield = false): void {
     let left = damage
-    const shield = ignoreShield ? undefined : target.statuses.find(s => s.type === 'shield')
-    if (shield && (shield.shieldHp ?? 0) > 0) {
-      const absorb = Math.min(shield.shieldHp!, left)
-      shield.shieldHp! -= absorb
-      left -= absorb
-      o.shieldAbsorbed += absorb
-      if (shield.shieldHp! <= 0) target.statuses = target.statuses.filter(s => s !== shield)
+    if (!ignoreShield) {
+      // Multiple Gameplay V1 shield layers can coexist; consume oldest layers first.
+      for (const shield of [...target.statuses].filter(s => s.type === 'shield')) {
+        if (left <= 0) break
+        if ((shield.shieldHp ?? 0) <= 0) continue
+        const absorb = Math.min(shield.shieldHp!, left)
+        shield.shieldHp! -= absorb
+        left -= absorb
+        o.shieldAbsorbed += absorb
+      }
+      target.statuses = target.statuses.filter(s => s.type !== 'shield' || (s.shieldHp ?? 0) > 0)
     }
     target.hp = Math.max(0, target.hp - left)
     if (target.hp === 0) {
@@ -1370,7 +1389,7 @@ export class Battle {
             o.dispelled += before - t.statuses.length
           } else if (STATUS_EFFECTS.has(e.type)) {
             const type = e.type as StatusType
-            if (type === 'stun' && (t.stunGuard > 0 || this.has(t, 'stun'))) o.resisted.push(type)
+            if (!actor.gameplayClass && type === 'stun' && (t.stunGuard > 0 || this.has(t, 'stun'))) o.resisted.push(type)
             else if (this.rand() * 100 < this.resistChance(t)) o.resisted.push(type)
             else if (CONTROL_TYPES.has(type) && this.rand() >= controlChance) o.resisted.push(type)
             else {
