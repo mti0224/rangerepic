@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { fetchRanger } from './scripts/fetch-ranger.mjs'
 import { fetchLericoData } from './scripts/fetch-lerico.mjs'
 import { DEFAULT_BATTLE_RULES, GAMEPLAY_ID_RE, validateBattleRules, validateCharacter, validateClass } from './scripts/gameplay-schema.mjs'
+import { validateEnemy, validateStage } from './scripts/adventure-schema.mjs'
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
@@ -18,6 +19,8 @@ const DELETED_DIR = path.join(ROOT, 'data', 'deleted-rangers')
 const GAME_DIR = path.join(ROOT, 'data', 'game')
 const CHARACTERS_DIR = path.join(GAME_DIR, 'characters')
 const CLASSES_DIR = path.join(GAME_DIR, 'classes')
+const ENEMIES_DIR = path.join(GAME_DIR, 'enemies')
+const STAGES_DIR = path.join(GAME_DIR, 'stages')
 const RULES_FILE = path.join(GAME_DIR, 'rules.json')
 const GAMEPLAY_ICON_DIR = path.join(ROOT, 'public', 'gameplay-icons')
 const ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
@@ -161,6 +164,12 @@ function rangerApi(): Plugin {
             if (req.method === 'GET' && seg[1] === 'rules') {
               return send(200, { rules: await readJson(RULES_FILE, DEFAULT_BATTLE_RULES) })
             }
+            if (req.method === 'GET' && seg[1] === 'enemies' && !seg[2]) {
+              return send(200, { enemies: await listGameplayDocs(ENEMIES_DIR) })
+            }
+            if (req.method === 'GET' && seg[1] === 'stages' && !seg[2]) {
+              return send(200, { stages: await listGameplayDocs(STAGES_DIR) })
+            }
 
             if (seg[1] === 'character' && seg[2]) {
               const id = seg[2]
@@ -197,6 +206,51 @@ function rangerApi(): Plugin {
                 if (!data.assetVariantId || !await fs.stat(path.join(RANGERS_DIR, data.assetVariantId)).then(s => s.isDirectory()).catch(() => false)) return send(400, { error: 'unknown assetVariantId' })
                 await saveGameplayDoc(CLASSES_DIR, id, data)
                 return send(200, { ok: true, class: data })
+              }
+              if (req.method === 'DELETE') {
+                const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+                if (!exists) return send(404, { error: 'not found' })
+                await fs.unlink(file)
+                return send(200, { ok: true })
+              }
+            }
+
+            if (seg[1] === 'enemy' && seg[2]) {
+              const id = seg[2]
+              if (!GAMEPLAY_ID_RE.test(id)) return send(400, { error: 'bad gameplay id' })
+              const file = path.join(ENEMIES_DIR, id + '.json')
+              if (req.method === 'GET') return send(200, { enemy: await readJson(file) })
+              if (req.method === 'POST') {
+                const data = JSON.parse(await readBody(req)) as any
+                const errors = validateEnemy(data, id)
+                if (errors.length) return send(400, { error: 'invalid enemy', errors })
+                if (!await fs.stat(path.join(RANGERS_DIR, data.assetVariantId)).then(s => s.isDirectory()).catch(() => false)) return send(400, { error: 'unknown assetVariantId' })
+                await saveGameplayDoc(ENEMIES_DIR, id, data)
+                return send(200, { ok: true, enemy: data })
+              }
+              if (req.method === 'DELETE') {
+                const stages = await listGameplayDocs<any>(STAGES_DIR)
+                if (stages.some(stage => stage.waves?.some((w: any) => w.enemies?.some((row: any) => row.enemyId === id)))) return send(409, { error: 'enemy is used by a stage' })
+                const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+                if (!exists) return send(404, { error: 'not found' })
+                await fs.unlink(file)
+                return send(200, { ok: true })
+              }
+            }
+
+            if (seg[1] === 'stage' && seg[2]) {
+              const id = seg[2]
+              if (!GAMEPLAY_ID_RE.test(id)) return send(400, { error: 'bad gameplay id' })
+              const file = path.join(STAGES_DIR, id + '.json')
+              if (req.method === 'GET') return send(200, { stage: await readJson(file) })
+              if (req.method === 'POST') {
+                const data = JSON.parse(await readBody(req)) as any
+                const errors = validateStage(data, id)
+                const enemyIds = new Set((await listGameplayDocs<any>(ENEMIES_DIR)).map(row => row.id))
+                for (const wave of data?.waves ?? []) for (const row of wave?.enemies ?? []) if (!enemyIds.has(row.enemyId)) errors.push('unknown enemyId: ' + row.enemyId)
+                if (errors.length) return send(400, { error: 'invalid stage', errors })
+                await saveGameplayDoc(STAGES_DIR, id, data)
+                return send(200, { ok: true, stage: data })
               }
               if (req.method === 'DELETE') {
                 const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
@@ -335,10 +389,12 @@ function rangerIndex(): Plugin {
     name: 'ranger-index',
     apply: 'build',
     async generateBundle() {
-      const [rangers, characters, classes, rules] = await Promise.all([
+      const [rangers, characters, classes, enemies, stages, rules] = await Promise.all([
         listRangerItems(),
         listGameplayDocs(CHARACTERS_DIR),
         listGameplayDocs(CLASSES_DIR),
+        listGameplayDocs(ENEMIES_DIR),
+        listGameplayDocs(STAGES_DIR),
         readJson(RULES_FILE, DEFAULT_BATTLE_RULES),
       ])
       this.emitFile({ type: 'asset', fileName: 'rangers/index.json', source: JSON.stringify({ rangers }) })
@@ -346,6 +402,11 @@ function rangerIndex(): Plugin {
         type: 'asset',
         fileName: 'gameplay/index.json',
         source: JSON.stringify({ characters, classes, rules: rules ?? DEFAULT_BATTLE_RULES }),
+      })
+      this.emitFile({
+        type: 'asset',
+        fileName: 'gameplay/adventure.json',
+        source: JSON.stringify({ enemies, stages }),
       })
     },
   }
