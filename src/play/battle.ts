@@ -327,6 +327,11 @@ export class Battle {
   energy: [number, number] = [ENERGY_START, ENERGY_START]
   /** RangerEpic Gameplay V1: each team shares one 0..100 skill gauge. */
   gameplayGauge: [number, number] = [0, 0]
+  /** Gameplay V1 round/phase state. Legacy-only battles keep using AV scheduling. */
+  gameplayRound = 1
+  gameplayPhase: Team = 0
+  private gameplayFirstTeam: Team = 0
+  private gameplayActed = new Set<string>()
   turn = 0
   private rand: () => number
 
@@ -360,6 +365,9 @@ export class Battle {
       })
     })
     this.startEnergy()
+    const gameplayRules = this.units.find(u => u.gameplayRules)?.gameplayRules
+    this.gameplayFirstTeam = gameplayRules?.playerActsFirst === false ? 1 : 0
+    this.gameplayPhase = this.gameplayFirstTeam
   }
 
   private makeUnit(u: UnitSetup, t: Team, s: Stats, spd: number, uid: string): Unit {
@@ -516,6 +524,40 @@ export class Battle {
 
   gameplayGaugeOf(team: Team): number { return this.gameplayGauge[team] }
 
+  get usesGameplayPhases(): boolean {
+    return this.units.some(u => !!u.gameplayClass)
+  }
+
+  gameplayActorChoices(team: Team = this.gameplayPhase): Unit[] {
+    if (!this.usesGameplayPhases) return []
+    return this.units.filter(u => u.alive && u.team === team && !this.gameplayActed.has(u.uid))
+  }
+
+  canChooseGameplayActor(u: Unit): boolean {
+    return this.usesGameplayPhases && u.alive && u.team === this.gameplayPhase && !this.gameplayActed.has(u.uid)
+  }
+
+  private finishGameplayRound(): void {
+    // Gameplay V1 durations decrement only at Round End. The round in which an
+    // effect was applied is already its first round, so duration=1 expires here.
+    for (const u of this.units) {
+      for (const s of u.statuses) s.turns--
+      u.statuses = u.statuses.filter(s => s.turns > 0 && !(s.type === 'shield' && (s.shieldHp ?? 0) <= 0))
+    }
+    this.gameplayRound++
+    this.gameplayActed.clear()
+  }
+
+  private advanceGameplayPhase(): void {
+    const secondTeam = (1 - this.gameplayFirstTeam) as Team
+    if (this.gameplayPhase === this.gameplayFirstTeam) {
+      this.gameplayPhase = secondTeam
+      return
+    }
+    this.finishGameplayRound()
+    this.gameplayPhase = this.gameplayFirstTeam
+  }
+
   private conditionMatches(u: Unit, condition: AbilityCondition): boolean {
     const numberCompare = (actual: number, expected: number): boolean => {
       switch (condition.operator ?? '=') {
@@ -619,9 +661,21 @@ export class Battle {
 
   // ── เทิร์น ──
 
-  /** ตัวที่จะได้เล่นต่อไป — เดินเวลาไปจนมีคน AV ถึง 0 */
+  /** ตัวที่จะได้เล่นต่อไป — Gameplay V1 uses side phases; legacy battles use AV. */
   nextActor(): Unit | null {
     if (this.over) return null
+    if (this.usesGameplayPhases) {
+      let choices = this.gameplayActorChoices()
+      // A phase can be empty because everyone is KO or already acted.
+      let guard = 0
+      while (!choices.length && !this.over && guard++ < 3) {
+        this.advanceGameplayPhase()
+        choices = this.gameplayActorChoices()
+      }
+      const actor = choices[0] ?? null
+      if (actor) this.turn++
+      return actor
+    }
     const alive = this.units.filter(u => u.alive)
     const actor = alive.reduce((a, b) => (b.av < a.av ? b : a))
     const dt = actor.av
@@ -648,6 +702,7 @@ export class Battle {
 
   /** ดึงเทิร์น: AV ลด pct% ของ 10000/Speed (ไม่ต่ำกว่า 0 = ได้เล่นต่อทันที) */
   advance(u: Unit, pct: number): void {
+    if (this.usesGameplayPhases) return
     u.av = Math.max(0, u.av - (pct / 100) * AV_BASE / this.effSpd(u))
   }
 
@@ -661,6 +716,13 @@ export class Battle {
    * ยิ่งช้า = เวลารอยิ่งมาก — HUD ใช้ระยะนี้วางช่องบนรางลำดับเทิร์น
    */
   previewSchedule(n: number): { unit: Unit; wait: number }[] {
+    if (this.usesGameplayPhases) {
+      const current = this.gameplayActorChoices()
+      const otherTeam = (1 - this.gameplayPhase) as Team
+      const other = this.units.filter(u => u.alive && u.team === otherTeam)
+      const ordered = [...current, ...other]
+      return ordered.slice(0, n).map((unit, i) => ({ unit, wait: i }))
+    }
     const sim = this.units.filter(u => u.alive).map(u => ({ u, av: u.av }))
     const out: { unit: Unit; wait: number }[] = []
     if (!sim.length) return out
@@ -678,6 +740,9 @@ export class Battle {
 
   /** ต้นเทิร์น: ดาเมจต่อเนื่อง → ฟื้นฟูต่อเนื่อง (ถ้าไม่โดนห้าม) · เช็คชะงัก */
   beginTurn(u: Unit): TurnStart {
+    if (this.usesGameplayPhases) {
+      return { stunned: u.alive && this.has(u, 'stun'), regen: 0, dots: [], dot: 0, killed: !u.alive }
+    }
     const dots: TurnStart['dots'] = []
     let dot = 0
     for (const s of u.statuses.filter(st => isDot(st.type))) {
@@ -705,8 +770,12 @@ export class Battle {
     return Math.max(1, Math.round(this.capDamage(raw, target)))
   }
 
-  /** จบเทิร์น: สถานะของตัวนี้ลดลง 1 เทิร์น (ที่เพิ่งได้ในเทิร์นนี้ไม่นับ) */
+  /** End one active unit's action. Gameplay V1 marks it acted; durations wait for Round End. */
   endTurn(u: Unit): void {
+    if (this.usesGameplayPhases) {
+      this.gameplayActed.add(u.uid)
+      return
+    }
     for (const r of this.reserves[u.team]) if ((this.reserveCd[r.uid] ?? 0) > 0) this.reserveCd[r.uid]--
     if (u.stunGuard > 0) u.stunGuard--
     const wasStunned = this.has(u, 'stun')
@@ -885,6 +954,7 @@ export class Battle {
     c.reserveCd = { ...this.reserveCd }
     c.energy = [this.energy[0], this.energy[1]]
     c.gameplayGauge = [this.gameplayGauge[0], this.gameplayGauge[1]]
+    c.gameplayActed = new Set(this.gameplayActed)
     c.timeUpResult = this.timeUpResult ? { ...this.timeUpResult, pct: [...this.timeUpResult.pct] as [number, number] } : null
     c.aiLevel = [this.aiLevel[0], this.aiLevel[1]]
     c.rand = rng(seed)
