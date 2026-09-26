@@ -642,19 +642,33 @@ export class Battle {
     }
   }
 
+  private abilityEffectTargets(source: Unit, target: Unit, effect: { abilityTarget?: string }, attacker?: Unit): boolean {
+    switch (effect.abilityTarget ?? 'self') {
+      case 'self': return target === source
+      case 'allAllies': return target.team === source.team
+      case 'allEnemies': return target.team !== source.team
+      case 'attacker': return !!attacker && target === attacker
+      default: return false
+    }
+  }
+
   /**
    * Constant effects from Gameplay V1 "whileOnField" abilities.
-   * Event-triggered abilities are handled by the dedicated V2 runtime; this bridge
-   * intentionally evaluates only continuously-active abilities.
+   * All living ability sources are evaluated so auras can affect allies/enemies.
    */
-  gameplayAbilityValue(u: Unit, effectType: GameplayEffectType): number {
-    const cls = u.gameplayClass
-    if (!cls) return 0
+  gameplayAbilityValue(target: Unit, effectType: GameplayEffectType): number {
+    if (!target.gameplayClass) return 0
     let total = 0
-    for (const ability of cls.abilities) {
-      if (ability.trigger !== 'whileOnField') continue
-      if (!ability.conditions.every(condition => this.conditionMatches(u, condition))) continue
-      for (const effect of ability.effects) if (effect.type === effectType) total += effect.value ?? 0
+    for (const source of this.units) {
+      if (!source.alive || !source.gameplayClass) continue
+      for (const ability of source.gameplayClass.abilities) {
+        if (ability.trigger !== 'whileOnField') continue
+        if (!ability.conditions.every(condition => this.conditionMatches(source, condition))) continue
+        for (const effect of ability.effects) {
+          if (effect.type !== effectType || !this.abilityEffectTargets(source, target, effect)) continue
+          total += effect.value ?? 0
+        }
+      }
     }
     return total
   }
@@ -664,21 +678,43 @@ export class Battle {
   }
   effAtk(u: Unit): number {
     const gameplayUp = this.gameplayAbilityValue(u, 'attackUp')
+    const gameplayDown = this.gameplayAbilityValue(u, 'attackDown')
     const floor = u.gameplayClass ? 0 : MIN_ATK_RATIO
-    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(floor, 1 + (gameplayUp + this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100)
+    return u.atk * (1 + this.passive(u, 'atkUp') / 100) * Math.max(
+      floor,
+      1 + (gameplayUp - gameplayDown + this.pctOf(u, 'atkUp') - this.pctOf(u, 'atkDown')) / 100,
+    )
   }
   effSpd(u: Unit): number { return u.spd * (1 + this.passive(u, 'speedUp') / 100) * Math.max(MIN_SPD_RATIO, 1 + (this.pctOf(u, 'speedUp') - this.pctOf(u, 'speedDown')) / 100) }
-  effCrit(u: Unit): number { return clamp(u.crit + this.passive(u, 'critUp') + this.gameplayAbilityValue(u, 'critRateUp') + this.pctOf(u, 'critUp') - this.pctOf(u, 'critDown'), 0, CAPS.crit) }
+  effCrit(u: Unit): number {
+    return clamp(
+      u.crit + this.passive(u, 'critUp')
+      + this.gameplayAbilityValue(u, 'critRateUp') - this.gameplayAbilityValue(u, 'critRateDown')
+      + this.pctOf(u, 'critUp') - this.pctOf(u, 'critDown'),
+      0,
+      CAPS.crit,
+    )
+  }
   /** คริดาเมจ (%) — ลดได้ต่ำสุด 100 (คริแล้วไม่เบากว่าตีปกติ) */
   effCritDmg(u: Unit): number {
     const floor = u.gameplayClass ? 0 : 100
-    return Math.max(floor, u.critDmg + this.gameplayAbilityValue(u, 'critDamageUp') + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown'))
+    return Math.max(
+      floor,
+      u.critDmg
+      + this.gameplayAbilityValue(u, 'critDamageUp') - this.gameplayAbilityValue(u, 'critDamageDown')
+      + this.pctOf(u, 'critDmgUp') - this.pctOf(u, 'critDmgDown'),
+    )
   }
   /** ฟื้นเลือดได้ไหม (โดนห้ามฟื้นฟู = ไม่ได้ทุกแบบ) */
   canHeal(u: Unit): boolean { return u.alive && this.healFactor(u) > 0 }
   effEvade(u: Unit): number { return u.evade + this.pctOf(u, 'evadeUp') - this.pctOf(u, 'evadeDown') }
   /** ความแม่นยำ (ตีปกติ) — ติดลบได้ (โดนลด → ศัตรูหลบได้ง่ายขึ้นแม้หลบน้อย) */
-  effHit(u: Unit): number { return u.hit + this.pctOf(u, 'hitUp') - this.pctOf(u, 'hitDown') }
+  effHit(u: Unit): number {
+    const value = u.hit
+      + this.pctOf(u, 'hitUp') - this.pctOf(u, 'hitDown')
+      - this.gameplayAbilityValue(u, 'hitRateDown')
+    return u.gameplayClass ? clamp(value, 0, 100) : value
+  }
   effSkillEvade(u: Unit): number { return u.skillEvade + this.pctOf(u, 'skillEvadeUp') - this.pctOf(u, 'skillEvadeDown') }
   effSkillHit(u: Unit): number { return u.skillHit + this.pctOf(u, 'skillHitUp') - this.pctOf(u, 'skillHitDown') }
   effSkillRes(u: Unit): number { return u.skillRes + this.pctOf(u, 'skillResUp') - this.pctOf(u, 'skillResDown') }
@@ -696,8 +732,8 @@ export class Battle {
   }
   /** ฟื้นเลือดได้กี่ส่วน (โดนลดการฟื้นฟู 100% = 0) */
   healFactor(u: Unit): number {
-    if (!this.has(u, 'healBlock')) return 1
-    const cut = this.pctOf(u, 'healBlock') || 100
+    const cut = this.pctOf(u, 'healBlock') + this.gameplayAbilityValue(u, 'healingDown')
+    if (cut <= 0) return 1
     return Math.max(0, 1 - cut / 100)
   }
 
@@ -1100,9 +1136,7 @@ export class Battle {
       if (action === 'attack') {
         // Gauge is shared by the team. Continuous gauge modifiers from any living
         // ally are combined; negative values reduce gain, positive values increase it.
-        const teamModifier = this.units
-          .filter(ally => ally.team === u.team && ally.alive && !!ally.gameplayClass)
-          .reduce((sum, ally) => sum + this.gameplayAbilityValue(ally, 'skillGaugeGainModifier'), 0)
+        const teamModifier = this.gameplayAbilityValue(u, 'skillGaugeGainModifier')
         const gain = Math.max(0, u.gameplayClass.normalAttack.skillGaugeGain * (1 + teamModifier / 100))
         this.gameplayGauge[u.team] = clamp(
           this.gameplayGauge[u.team] + gain,
