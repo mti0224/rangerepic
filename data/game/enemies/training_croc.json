@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "id": "training_croc",
   "names": {
-    "zh": "訓練鱷魚",
+    "zh": "炸彈",
     "en": "Training Croc",
     "th": "",
     "jp": ""
   },
   "description": "用於測試新關卡與多波次系統的敵人。",
-  "assetVariantId": "u1090h-boss",
+  "assetVariantId": "u91003-bomby",
   "stats": {
     "hp": 650,
     "attack": 70,
@@ -20,14 +20,31 @@
     "target": "single",
     "hits": 1,
     "skillGaugeGain": 5,
-    "effects": [
-      {
-        "type": "attackDown",
-        "value": 10,
-        "duration": 1
-      }
-    ]
+    "effects": []
   },
   "skill": null,
-  "abilities": []
+  "abilities": [
+    {
+      "id": "ability_1",
+      "name": "蹦蹦炸彈",
+      "description": "當體力低於50%時，攻擊力提升30%",
+      "icon": "",
+      "trigger": "whileOnField",
+      "conditions": [
+        {
+          "type": "selfHpPercent",
+          "operator": "<=",
+          "value": 50
+        }
+      ],
+      "effects": [
+        {
+          "type": "attackUp",
+          "value": 30,
+          "duration": 1,
+          "abilityTarget": "self"
+        }
+      ]
+    }
+  ]
 }
