@@ -203,7 +203,7 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   const enemyActor = b.nextActor()
   b.endTurn(enemyActor)
   b.nextActor() // leaving Enemy Phase => Round End
-  check('Attack-based DoT ticks at Round End', t.hp, 900)
+  check('Attack-based DoT ticks at Round End (Attack 100 x 10% = 10)', t.hp, 990)
   check('duration=1 DoT expires after its Round End tick', t.statuses.some(s => s.gameplayType === 'damageOverTime'), false)
 }
 
