@@ -1,0 +1,119 @@
+/* RangerEpic player pages; authored characters/classes are the only roster. */
+.ep-app { min-height: 100dvh; background: radial-gradient(ellipse at 80% 25%, #183d46 0, transparent 45%), #0b151d; color: #f5f1e7; font-family: 'Noto Sans TC', system-ui, sans-serif; }
+.ep-app button { font: inherit; cursor: pointer; }
+.ep-app button:focus-visible { outline: 3px solid #f7c667; outline-offset: 4px; }
+.ep-header { min-height: 88px; padding: 18px clamp(20px, 5vw, 80px); display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid #ffffff16; }
+.ep-app .ep-brand { padding: 0; background: none; border: 0; text-align: left; font-size: 22px; letter-spacing: 2px; font-weight: 900; color: #fff; }
+.ep-brand span { color: #edb955; }
+.ep-brand small { display: block; color: #98a6a8; font-size: 10px; letter-spacing: 4px; font-weight: 500; margin-top: 3px; }
+.ep-header nav { display: flex; gap: 24px; }
+.ep-header nav button { padding: 9px 0; border: 0; border-radius: 0; background: none; color: #a4b2b4; }
+.ep-header nav button[aria-current] { color: #f7c667; box-shadow: 0 2px #f7c667; }
+.ep-header .pa-lang { font-size: 11px; }
+.ep-home { max-width: 1380px; min-height: calc(100dvh - 90px); margin: auto; display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 30px; padding: 40px clamp(24px, 6vw, 90px); }
+.ep-eyebrow { color: #d9b873; font-size: 11px; font-weight: 700; letter-spacing: 3px; }
+.ep-home-copy h1 { font-size: clamp(35px, 4.6vw, 66px); letter-spacing: -2px; line-height: 1.35; margin: 24px 0; }
+.ep-home-copy h1 em { font-style: normal; color: #eac479; }
+.ep-home-copy p, .ep-page-heading p { color: #a6b4b7; line-height: 1.8; }
+.ep-home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0; }
+.ep-app .ep-primary { background: #edc070; color: #172329; padding: 14px 22px; border: 1px solid #edc070; border-radius: 6px; font-weight: 800; }
+.ep-app .ep-primary:hover:not(:disabled) { background: #ffdaa0; }
+.ep-app .ep-secondary { background: #ffffff06; border-color: #62716f; padding: 14px 22px; }
+.ep-roster-count { display: flex; gap: 35px; color: #85979b; margin-top: 40px; font-size: 12px; }
+.ep-roster-count strong { color: #f6ead1; font-size: 24px; margin-right: 6px; }
+.ep-home-hero { position: relative; height: min(540px, 68vh); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ep-orbit { position: absolute; width: min(34vw, 440px); aspect-ratio: 1; border: 1px solid #e7be662e; border-radius: 50%; background: radial-gradient(circle at 50% 70%, #e9c4731a, transparent 65%); }
+.ep-orbit::after { content: ''; position: absolute; inset: 20px; border: 1px dashed #e7be6617; border-radius: 50%; }
+.ep-hero-visual { position: relative; width: 100%; height: 320px; }
+.ep-hero-canvas { display: block; position: relative; width: 100%; height: 100%; }
+.ep-hero-fallback { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 80%; max-height: 80%; object-fit: contain; }
+.ep-home-hero .ep-hero-visual { height: 80%; }
+.ep-hero-caption { text-align: center; position: relative; margin-top: 24px; }
+.ep-hero-caption span { display: block; color: #9aabac; font-size: 9px; letter-spacing: 3px; margin-bottom: 10px; }
+.ep-hero-caption strong { font-size: 20px; font-weight: 600; }
+.ep-selection, .ep-team-page { max-width: 1500px; padding: 32px clamp(20px, 4vw, 64px) 48px; margin: auto; }
+.ep-page-heading { margin-bottom: 32px; }
+.ep-page-heading h1 { margin: 12px 0 8px; font-size: 32px; }
+.ep-page-heading p { margin: 0; }
+.ep-app .ep-back { display: block; margin-bottom: 25px; background: none; border: 0; padding: 0; color: #c3cccc; font-size: 13px; }
+.ep-character-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+.ep-app .ep-character-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; background: linear-gradient(145deg, #233f43, #14232d); border: 1px solid #536754; border-radius: 14px; text-align: left; }
+.ep-character-card strong { font-size: 23px; }
+.ep-character-card > span { font-size: 13px; color: #b9c6c6; }
+.ep-character-art { height: 180px; width: 100%; display: grid; place-items: center; background: radial-gradient(ellipse, #dbc67724, transparent 68%); }
+.ep-character-art img { max-width: 95%; max-height: 150px; object-fit: contain; image-rendering: auto; }
+.ep-character-card .ep-card-link { margin-top: 16px; color: #eccb8e; }
+.ep-class-layout { display: grid; grid-template-columns: minmax(170px, .8fr) minmax(240px, 1.15fr) minmax(310px, 1.5fr); gap: 24px; align-items: start; }
+.ep-class-list { display: grid; gap: 12px; }
+.ep-app .ep-class-option { display: flex; align-items: center; gap: 12px; background: #152832; border-color: #34464c; padding: 16px; text-align: left; border-radius: 8px; }
+.ep-app .ep-class-option.selected { background: #354033; border-color: #e3bd70; }
+.ep-class-option img { width: 42px; height: 56px; object-fit: contain; }
+.ep-class-option strong { display: block; line-height: 1.5; }
+.ep-class-option small { display: block; color: #a1b2b4; margin-top: 5px; }
+.ep-class-preview { position: sticky; top: 20px; text-align: center; background: radial-gradient(ellipse at 50% 35%, #e9c47310, transparent 65%); }
+.ep-class-preview h2 { font-size: 22px; margin: 16px 0 24px; }
+.ep-class-preview p { color: #9db0b2; }
+.ep-class-preview .ep-primary { width: 90%; }
+.ep-details { background: #14252e; padding: 4px 24px; border: 1px solid #34464c; border-radius: 12px; font-size: 13px; }
+.ep-details section { padding: 20px 0; border-bottom: 1px solid #ffffff12; }
+.ep-details section:last-child { border: 0; }
+.ep-details h3 { font-size: 14px; margin: 0 0 12px; color: #edc987; display: flex; gap: 8px; align-items: center; }
+.ep-details h4 { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.ep-details p { color: #b0c1c4; line-height: 1.7; margin: 6px 0; }
+.ep-stats { margin: 0; display: grid; gap: 9px; }
+.ep-stats div { display: flex; justify-content: space-between; }
+.ep-stats dt { color: #aabcc0; }
+.ep-stats dd { margin: 0; font-weight: 700; }
+.ep-effects { padding-left: 19px; margin: 8px 0 0; color: #d0dcdc; line-height: 1.8; }
+.ep-effect-icon { width: 26px; height: 26px; object-fit: contain; border-radius: 5px; }
+.ep-ability + .ep-ability { margin-top: 18px; padding-top: 12px; border-top: 1px solid #ffffff12; }
+.ep-team-boards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.ep-team-board { border: 1px solid #36525e; border-radius: 12px; background: #13232c; padding: 24px; }
+.ep-team-board.side-1 { border-color: #604f46; }
+.ep-team-board header { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
+.ep-team-board h2 { font-size: 19px; margin: 0; }
+.ep-team-board h2 small { font-size: 12px; color: #90a6ac; margin-left: 10px; }
+.ep-team-board header button { background: none; border: 0; font-size: 12px; color: #a6b8b9; }
+.ep-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ep-slot { position: relative; min-width: 0; }
+.ep-app .ep-slot-select { background: #0e1c24; border: 1px dashed #39505a; display: flex; width: 100%; min-height: 210px; flex-direction: column; align-items: center; padding: 14px 8px; gap: 10px; text-align: center; }
+.ep-slot-select small { color: #748f98; font-size: 10px; }
+.ep-slot-select img { height: 65px; max-width: 100%; object-fit: contain; }
+.ep-slot-select span { color: #a3b7bc; font-size: 11px; overflow-wrap: anywhere; }
+.ep-slot-select em { font-style: normal; color: #eccb8e; font-size: 10px; }
+.ep-plus { font-size: 34px; color: #71929c; margin-top: 26px; }
+.ep-app .filled .ep-slot-select { border: 1px solid #c1a26b; background: #25352e; }
+.ep-app .ep-slot-remove { position: absolute; top: 2px; right: 2px; padding: 0 7px; border: 0; background: none; color: #c2c8c5; font-size: 20px; }
+.ep-team-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 25px; }
+.ep-team-footer p { color: #a4b7bb; font-size: 13px; }
+.ep-empty, .ep-muted { color: #a4b7bb; }
+.ep-error { color: #ffb9a2; }
+.ep-notice { padding: 15px 5vw; margin: 0; background: #284435; color: #d4edcc; }
+.ep-load-state { padding: 80px 24px; text-align: center; }
+.ep-load-state .pa-spinner { margin: 0 auto 24px; }
+@media(max-width: 1000px) {
+  .ep-header { flex-wrap: wrap; gap: 16px; padding: 16px 24px; }
+  .ep-header nav { gap: 18px; font-size: 13px; }
+  .ep-header .pa-lang { margin-left: auto; }
+  .ep-class-layout { grid-template-columns: minmax(180px, 1fr) 1.5fr; }
+  .ep-class-list { grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .ep-team-board { padding: 16px; }
+  .ep-slots { gap: 8px; }
+}
+@media(max-width: 640px) {
+  .ep-header nav { order: 3; width: 100%; justify-content: space-between; }
+  .ep-brand small { display: none; }
+  .ep-home { grid-template-columns: 1fr; padding-top: 36px; gap: 8px; }
+  .ep-home-copy h1 { font-size: 38px; }
+  .ep-home-hero { height: 290px; grid-row: 2; }
+  .ep-orbit { width: 240px; }
+  .ep-home-actions { margin: 22px 0; }
+  .ep-roster-count { margin-top: 22px; }
+  .ep-class-layout { grid-template-columns: 1fr; }
+  .ep-class-list { grid-column: auto; }
+  .ep-class-preview { position: static; }
+  .ep-class-preview .ep-hero-visual { height: 240px; }
+  .ep-team-boards { grid-template-columns: 1fr; }
+  .ep-team-footer { flex-direction: column; align-items: stretch; }
+  .ep-page-heading h1 { font-size: 26px; }
+}

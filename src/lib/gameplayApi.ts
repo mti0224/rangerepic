@@ -21,6 +21,13 @@ export interface GameplayCatalog {
   rules: BattleRulesV1
 }
 
+function checkedCatalog(value: GameplayCatalog): GameplayCatalog {
+  if (!Array.isArray(value.characters) || !Array.isArray(value.classes) || value.rules?.schemaVersion !== 1) {
+    throw new Error('角色職業目錄格式錯誤')
+  }
+  return value
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
@@ -57,21 +64,20 @@ export async function loadGameplayCatalog(): Promise<GameplayCatalog> {
       listGameplayClasses(),
       loadGameplayRules(),
     ])
-    return { characters, classes, rules }
+    return checkedCatalog({ characters, classes, rules })
   } catch {
     // Relative path works for both /rangerepic/team on GitHub Pages and local /team.
     // Keep an absolute fallback for hosts mounted at the domain root.
     const candidates = [
-      'gameplay/index.json',
-      './gameplay/index.json',
       '/gameplay/index.json',
+      'gameplay/index.json',
     ]
     let lastError: unknown = null
     for (const url of [...new Set(candidates)]) {
       try {
-        const res = await fetch(url)
+        const res = await fetch(url, { cache: 'no-cache' })
         if (!res.ok) throw new Error('HTTP ' + res.status)
-        return await res.json() as GameplayCatalog
+        return checkedCatalog(await res.json() as GameplayCatalog)
       } catch (error) {
         lastError = error
       }

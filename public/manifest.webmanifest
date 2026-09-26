@@ -1,6 +1,6 @@
 {
-  "name": "LINE Rangers 競技場 — 5v5 回合制對戰",
-  "short_name": "Rangers 競技場",
+  "name": "RangerEpic — 回合制冒險",
+  "short_name": "RangerEpic",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",

@@ -540,10 +540,14 @@ export class BattleScene {
   }
 
   nameOf(u: Unit): string {
+    if (u.gameplayClass) {
+      const names = u.gameplayClass.names
+      return names[getLang()] || names.zh || names.en || names.th || names.jp || u.classId
+    }
     const kit = this.view(u.uid)?.kit
     return (getLang() === 'zh' ? properNameZhTw(u.assetVariantId) : null) ?? localName(kit?.info?.name) ?? kit?.config.name ?? u.assetVariantId
   }
-  infoOf(u: Unit): GameInfo | null { return this.view(u.uid)?.kit.info ?? null }
+  infoOf(u: Unit): GameInfo | null { return u.gameplayClass ? null : this.view(u.uid)?.kit.info ?? null }
   /** รูปเรนเจอร์ใน HUD = thumb.png + ตำแหน่งหน้า (แท็บ "รูปหน้า" ใน editor) · รูปยังไม่โหลด = null */
   faceOf(u: Unit): { img: HTMLImageElement; center: Vec2 } | null {
     const img = this.thumbs.get(u.assetVariantId)
@@ -876,7 +880,7 @@ export class BattleScene {
     const skill = info ? (action === 'skill1' ? info.skills.skill1 : info.skills.skill2 ?? info.skills.skill3) : null
     return {
       art,
-      title: cfg.title?.trim() || (getLang() === 'zh' ? properNameZhTw(skill?.code ?? '') : null) || localName(skill?.name) || (action === 'skill1' ? t('skill1') : t('skill2')),
+      title: v.unit.gameplayClass ? (action === 'skill1' ? '技能' : '普通輔助') : cfg.title?.trim() || (getLang() === 'zh' ? properNameZhTw(skill?.code ?? '') : null) || localName(skill?.name) || (action === 'skill1' ? t('skill1') : t('skill2')),
       element: v.unit.element,
       side: flip ? 'right' : 'left',
     }
