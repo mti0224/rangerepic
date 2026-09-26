@@ -473,6 +473,35 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('allyDied triggers for a surviving teammate', [killer.alive, b.effAtk(watcher), killerHp > killer.hp], [false, 130, true])
 }
 
+// Taunt constrains the real Gameplay target pool, not only the clickable UI targets.
+{
+  const attackerClass = baseClass({
+    id: 'taunt-attacker',
+    skill: {
+      target: { side: 'enemy', count: 'all', selector: 'random' },
+      effects: [{ type: 'damage', value: 100, hits: 1 }],
+    },
+  })
+  const defenderClass = baseClass({ id: 'taunt-defender' })
+  const b = new B.Battle([
+    [setup('attacker', attackerClass, 0)],
+    [setup('taunter', defenderClass, 0), setup('other', defenderClass, 1)],
+  ], 777)
+  const attacker = b.units.find(u => u.rangerId === 'attacker')
+  const taunter = b.units.find(u => u.rangerId === 'taunter')
+  const other = b.units.find(u => u.rangerId === 'other')
+  taunter.statuses.push({
+    type: 'taunt',
+    pct: 0,
+    turns: 2,
+    appliedTurn: 0,
+    gameplayType: 'taunt',
+    gameplayValue: 0,
+  })
+  b.resolveAction(attacker, 'skill1', taunter)
+  check('Taunt restricts all-target Gameplay attack resolution to the taunter', [taunter.hp, other.hp], [900, 1000])
+}
+
 for (const file of tempFiles) await rm(file, { force: true })
 
 console.log(`\nGameplay V1: ${pass} passed, ${fail} failed`)
