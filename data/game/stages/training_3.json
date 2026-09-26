@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "training_3",
+  "chapter": 1,
+  "order": 3,
+  "names": {
+    "zh": "多波次訓練3",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "mapImage": "/maps/map1_full.jpg",
+  "waves": [
+    {
+      "id": "wave_1",
+      "name": "Wave 1",
+      "enemies": [
+        {
+          "enemyId": "u91011-della",
+          "slot": "front-0"
+        },
+        {
+          "enemyId": "u91011-della",
+          "slot": "front-1"
+        },
+        {
+          "enemyId": "u91011-della",
+          "slot": "back-0"
+        },
+        {
+          "enemyId": "u91011-della",
+          "slot": "back-1"
+        },
+        {
+          "enemyId": "u91011-della",
+          "slot": "back-2"
+        }
+      ]
+    }
+  ]
+}
