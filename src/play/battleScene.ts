@@ -362,12 +362,12 @@ export class BattleScene {
      * timer: true = เปิดนับถอยหลัง + ตัดสินตอนหมดเวลา — ปิดไว้ก่อน (นาฬิกาเดินแม้ตอนผู้เล่นกำลังคิด)
      * layout: 'fixed' = ยืนช่องตายตัวตามเลน (เทสกฎจัดชั้นที่อิงความสูงช่องเดิม) · ปกติ = ผังตามจำนวนตัวในแถว
      */
-    opts: { intro?: boolean; timer?: boolean; layout?: 'count' | 'fixed' } = {},
+    opts: { intro?: boolean; timer?: boolean; layout?: 'count' | 'fixed'; background?: string } = {},
   ) {
     this.onChange = onChange
     this.timerOn = opts.timer === true
     this.hud = new BattleHud(this)
-    if (typeof Image !== 'undefined') { this.background = new Image(); this.background.src = BACKGROUND_URL }
+    if (typeof Image !== 'undefined') { this.background = new Image(); this.background.src = opts.background || BACKGROUND_URL }
     if (typeof document !== 'undefined') loadDeathEffects().then(fx => { this.deathFx = fx }).catch(() => {})
     if (typeof document !== 'undefined') loadStatusIcons().then(fx => { this.statusIcons = fx }).catch(() => {})
     // ตำแหน่งยืนตามจำนวนตัวในแถว (วางตัวเดียว → อยู่กลางแถว ฯลฯ)
