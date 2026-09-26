@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "training_boss",
+  "names": {
+    "zh": "死神",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "assetVariantId": "u91030-baal",
+  "stats": {
+    "hp": 1000,
+    "attack": 200,
+    "critRate": 0,
+    "critDamage": 3,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "all",
+    "hits": 1,
+    "skillGaugeGain": 5,
+    "effects": []
+  },
+  "skill": {
+    "name": "鬼面",
+    "description": "掀出可怕的鬼面，對全體Ranger造成10%的範圍傷害，並且接下來的3回合內攻擊力降低35%",
+    "icon": "",
+    "target": {
+      "side": "enemy",
+      "count": "all",
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "value": 10,
+        "hits": 1
+      },
+      {
+        "type": "attackDown",
+        "value": 35,
+        "duration": 3
+      }
+    ]
+  },
+  "abilities": [
+    {
+      "id": "ability_1",
+      "name": "同歸於盡",
+      "description": "死神會把擊殺他的Ranger同歸於盡",
+      "icon": "",
+      "trigger": "selfDied",
+      "conditions": [],
+      "effects": [
+        {
+          "type": "deadlyPoison",
+          "value": 100,
+          "duration": 1,
+          "abilityTarget": "attacker"
+        }
+      ]
+    }
+  ]
+}
