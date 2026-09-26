@@ -402,7 +402,8 @@ export class BattleScene {
         facingBack: false,
         hits: [],
         dying: null,
-        gone: false,
+        // A KO carried from a previous wave must stay visually absent in the new scene.
+        gone: !unit.alive,
         reacting: false,
         pose: 'idle',
         dodging: false,
@@ -421,7 +422,7 @@ export class BattleScene {
       this.reserveViews.push({
         unit, kit, slot: { x: 0, y: 0 }, facing: unit.team === 0 ? 1 : -1,
         stand: bodyPointsOf(kit.assets, kit.config).stand, player, pos: { x: 0, y: 0 },
-        facingBack: false, hits: [], dying: null, gone: false, reacting: false, pose: 'idle',
+        facingBack: false, hits: [], dying: null, gone: !unit.alive, reacting: false, pose: 'idle',
         dodging: false, dodgeWalking: false, icons: {}, alpha: 0,
       })
     }
@@ -434,7 +435,7 @@ export class BattleScene {
     this.phase = 'intro'
     this.intro = { t: 0, startAt: null }
     for (const team of [0, 1] as Team[]) {
-      const mates = this.views.filter(v => v.unit.team === team)
+      const mates = this.views.filter(v => v.unit.team === team && !v.gone)
       if (!mates.length) continue
       // ระยะออกตัวเท่ากันทั้งทีม (คงรูปขบวน) — ยึดตัวที่อยู่ลึกเข้ามากลางจอที่สุด ให้พ้นขอบจอแน่ๆ
       const deepest = Math.max(...mates.map(v => (team === 0 ? v.slot.x : WORLD_W - v.slot.x)))
@@ -514,7 +515,7 @@ export class BattleScene {
     if (!state) return
     // Let the defeated enemy finish its knockback/soul animation first.
     // This avoids having the winning party leave while the final KO is still playing.
-    if (this.views.some(v => v.unit.team === 1 && !v.unit.alive && v.dying !== null && !v.gone)) return
+    if (this.views.some(v => !v.unit.alive && v.dying !== null && !v.gone)) return
     state.t += dt
     const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
     if (!state.started && state.t >= WAVE_EXIT_WAIT_SEC) {
@@ -782,6 +783,9 @@ export class BattleScene {
 
   private beginTurn(): void {
     const actor = this.battle.nextActor()
+    // nextActor() may close a side phase, which can deal poison/DoT damage and kill
+    // units without producing an ActionResult. Reflect those deaths immediately.
+    this.syncDeaths()
     if (!actor) { this.phase = 'ended'; this.onChange?.(); return }
 
     const start = this.battle.beginTurn(actor)
@@ -1044,6 +1048,23 @@ export class BattleScene {
     v.player.playClip(clip, { speed: this.speed, onEnd: () => this.playIdle(v) })
   }
 
+  /** Start the KO presentation once, regardless of whether damage came from an attack, DoT, poison, reflect, or an ability event. */
+  private startDeath(v: UnitView): void {
+    if (v.unit.alive || v.gone || v.dying !== null) return
+    v.reacting = false
+    v.dodging = false
+    v.dodgeWalking = false
+    v.facingBack = false
+    v.dying = 0
+    const die = v.kit.config.clips.die ?? v.kit.config.clips.hitHeavy
+    if (die) v.player.playClip(die, { speed: this.speed })
+  }
+
+  /** Synchronize visual KO state after any battle-model mutation. */
+  private syncDeaths(): void {
+    for (const v of this.views) this.startDeath(v)
+  }
+
   private spawn(r: ActionRun): void {
     r.spawned = true
     const plan: ShotPlan = planAction(r.actor.kit.assets, r.actor.kit.config, r.action, this.targetPointsFor(r.actor, r.target))
@@ -1206,9 +1227,7 @@ export class BattleScene {
       for (const st of o.resisted) this.popup(v, t('resist') + ' ' + statusLabel(st), '#9ca3af', false)
 
       if (o.killed) {
-        v.dying = 0
-        const die = v.kit.config.clips.die ?? v.kit.config.clips.hitHeavy
-        if (die) v.player.playClip(die, { speed: this.speed })
+        this.startDeath(v)
       } else if (o.damage > 0) {
         // เลือดตกผ่านครึ่งหลอด (≥50% → <50%) → กระเด็น (knockback)
         // สกิล → ท่าโดนตี 1 รอบ · ตีธรรมดา → กะพริบแดงอย่างเดียว (วาดตอน render)
@@ -1227,6 +1246,8 @@ export class BattleScene {
       const stunPoseWrong = (v.pose === 'stun') !== this.battle.has(v.unit, 'stun')
       if (!o.killed && !v.reacting && v !== r.actor && stunPoseWrong) this.playIdle(v)
     }
+    // Some ability/reflect/periodic side effects can kill units outside res.outcomes.
+    this.syncDeaths()
     this.onChange?.()
   }
 
@@ -1259,6 +1280,8 @@ export class BattleScene {
   update(dtMs: number): void {
     // เปิดเมนูตั้งค่า = หยุดเกมไว้ระหว่างนั้น
     if (this.paused || this.hud.menuOpen) return
+    // Safety net for deaths caused outside a direct ActionResult.
+    this.syncDeaths()
     if (this.phase === 'ended' && !this.endCleared) this.clearOnEnd()
     // ความเร็วเปลี่ยน (จบเปิดฉาก → ความเร็วที่เลือก · จบเกม → x1 · กดปุ่มความเร็ว) → คลิปที่เล่นอยู่ (idle วน ฯลฯ) เปลี่ยนตามทันที
     const sp = this.speed
