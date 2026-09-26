@@ -252,6 +252,81 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('Fixed damage 77 x 2 deals exactly 154', t.hp, 846)
 }
 
+// battleStart ability events may create timed statuses.
+{
+  const cls = baseClass({
+    abilities: [{
+      id: 'opening-buff',
+      trigger: 'battleStart',
+      conditions: [],
+      effects: [{ type: 'attackUp', value: 20, duration: 2, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(cls)
+  const a = b.units[0]
+  check('battleStart ability applies a timed self buff', [a.statuses.filter(s => s.gameplayType === 'attackUp').length, b.effAtk(a)], [1, 120])
+}
+
+// afterDamaged can target the attacker without chaining forever.
+{
+  const attackerClass = baseClass({ id: 'event-attacker' })
+  const defenderClass = baseClass({
+    id: 'event-defender',
+    abilities: [{
+      id: 'thorns-event',
+      trigger: 'afterDamaged',
+      conditions: [{ type: 'receivedDamage', operator: '>=', value: 100 }],
+      effects: [{ type: 'fixedDamage', value: 25, hits: 1, abilityTarget: 'attacker' }],
+    }],
+  })
+  const b = oneVsOne(attackerClass, defenderClass)
+  const [a, d] = b.units
+  b.resolveAction(a, 'attack', d)
+  check('afterDamaged ability uses actual damage and attacker scope', [d.hp, a.hp], [900, 975])
+}
+
+// statusApplied receives the original Gameplay effect type.
+{
+  const attackerClass = baseClass({
+    id: 'status-attacker',
+    skill: {
+      target: { side: 'enemy', count: 1, selector: 'manual' },
+      effects: [{ type: 'attackDown', value: 30, duration: 2 }],
+    },
+  })
+  const defenderClass = baseClass({
+    id: 'status-defender',
+    abilities: [{
+      id: 'cleanse-on-atk-down',
+      trigger: 'statusApplied',
+      conditions: [{ type: 'statusType', operator: '=', value: 'attackDown' }],
+      effects: [{ type: 'cleanseDebuffs', abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(attackerClass, defenderClass)
+  const [a, d] = b.units
+  b.resolveAction(a, 'skill1', d)
+  check('statusApplied ability can react to Gameplay status type', d.statuses.some(s => s.gameplayType === 'attackDown'), false)
+}
+
+// selfDied may still affect living units through a non-self target scope.
+{
+  const attackerClass = baseClass({ id: 'death-attacker', stats: { hp: 1000, attack: 2000, critRate: 0, critDamage: 3, hitRate: 100 } })
+  const defenderClass = baseClass({
+    id: 'death-defender',
+    abilities: [{
+      id: 'death-burst',
+      trigger: 'selfDied',
+      conditions: [],
+      effects: [{ type: 'fixedDamage', value: 40, hits: 1, abilityTarget: 'allEnemies' }],
+    }],
+  })
+  const b = oneVsOne(attackerClass, defenderClass)
+  const [a, d] = b.units
+  b.resolveAction(a, 'attack', d)
+  check('selfDied ability can hit enemies after owner dies', [d.alive, a.hp], [false, 960])
+}
+
 for (const file of tempFiles) await rm(file, { force: true })
 
 console.log(`\nGameplay V1: ${pass} passed, ${fail} failed`)
