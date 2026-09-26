@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "training_2",
+  "chapter": 1,
+  "order": 2,
+  "names": {
+    "zh": "多波次訓練2",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "mapImage": "/maps/map1_full.jpg",
+  "waves": [
+    {
+      "id": "wave_1",
+      "name": "Wave 1",
+      "enemies": [
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-0"
+        },
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-1"
+        },
+        {
+          "enemyId": "u91005-nut",
+          "slot": "back-1"
+        }
+      ]
+    },
+    {
+      "id": "wave_2",
+      "name": "Wave 2",
+      "enemies": [
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-0"
+        },
+        {
+          "enemyId": "u91005-nut",
+          "slot": "front-1"
+        },
+        {
+          "enemyId": "u91011-della",
+          "slot": "back-1"
+        }
+      ]
+    },
+    {
+      "id": "wave_3",
+      "name": "Wave 3",
+      "enemies": [
+        {
+          "enemyId": "u91011-della",
+          "slot": "front-0"
+        },
+        {
+          "enemyId": "training_croc",
+          "slot": "front-1"
+        },
+        {
+          "enemyId": "u91022-thor",
+          "slot": "back-1"
+        }
+      ]
+    }
+  ]
+}
