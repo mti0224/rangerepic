@@ -299,7 +299,7 @@ export type Phase = 'intro' | 'thinking' | 'input' | 'acting' | 'ended'
 
 /** สถานะของทรานซิชั่นเปิดฉาก · startAt = วินาทีที่ทุกตัวเข้าที่แล้ว (null = ยังเดินอยู่) */
 interface IntroState { t: number; startAt: number | null }
-interface WaveExitState { t: number; onComplete: () => void }
+interface WaveExitState { t: number; started: boolean; onComplete: () => void }
 
 /** สีตัวเลขที่มีความเสียหายจริง (ไม่สนโล่) */
 const TRUE_DAMAGE_COLOR = '#f0abfc'
@@ -497,13 +497,13 @@ export class BattleScene {
     this.pendingAction = null
     this.pendingCaster = null
     this.phase = 'acting'
-    this.waveExit = { t: 0, onComplete }
+    this.waveExit = { t: 0, started: false, onComplete }
     for (const v of survivors) {
       v.dodging = false
       v.dodgeWalking = false
       v.reacting = false
       v.facingBack = false
-      v.player.playClip(this.walkClip(v), { speed: this.speed, loop: true })
+      this.playIdle(v)
     }
     this.onChange?.()
     return true
@@ -516,8 +516,12 @@ export class BattleScene {
     // This avoids having the winning party leave while the final KO is still playing.
     if (this.views.some(v => v.unit.team === 1 && !v.unit.alive && v.dying !== null && !v.gone)) return
     state.t += dt
-    let allGone = true
     const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
+    if (!state.started && state.t >= WAVE_EXIT_WAIT_SEC) {
+      state.started = true
+      for (const v of survivors) v.player.playClip(this.walkClip(v), { speed: this.speed, loop: true })
+    }
+    let allGone = true
     survivors.forEach((v, index) => {
       const delay = WAVE_EXIT_WAIT_SEC + index * WAVE_EXIT_STAGGER_SEC
       if (state.t < delay) { allGone = false; return }
