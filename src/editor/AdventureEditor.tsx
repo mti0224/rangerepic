@@ -135,6 +135,7 @@ function EnemyForm({ value, assets, onChange, onSave, onDelete }: { value: Gamep
         <Num label="Hit 數" value={value.normalAttack.hits} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,hits:Math.max(1,Math.round(v))}})} />
         {value.normalAttack.target==='primaryPlusRandom' && <Num label="額外目標 N" value={value.normalAttack.extraTargets??1} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,extraTargets:Math.max(1,Math.round(v))}})} />}
       </div>
+      <Field label="普通攻擊敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalAttack.description??''} onChange={e=>onChange({...value,normalAttack:{...value.normalAttack,description:e.target.value}})} /></Field>
       <h4>普通攻擊附加效果</h4>
       <EffectList value={value.normalAttack.effects??[]} allowed={ATTACK_SKILL_EFFECT_TYPES.filter(t=>t!=='damage')} onChange={effects=>onChange({...value,normalAttack:{...value.normalAttack,effects}})} />
     </Section>
@@ -145,7 +146,7 @@ function EnemyForm({ value, assets, onChange, onSave, onDelete }: { value: Gamep
           <option value="singleAlly">一名友軍（可自己）</option><option value="allAllies">全體友軍</option>
         </select></Field>
       </div>
-      <Field label="輔助招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalSupport?.description??''} onChange={e=>onChange({...value,normalSupport:{...(value.normalSupport??{target:'singleAlly',animation:'skill2',effects:[]}),description:e.target.value}})} /></Field>
+      <Field label="普通輔助敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalSupport?.description??''} onChange={e=>onChange({...value,normalSupport:{...(value.normalSupport??{target:'singleAlly',animation:'skill2',effects:[]}),description:e.target.value}})} /></Field>
       <EffectList value={value.normalSupport?.effects??[]} allowed={SUPPORT_SKILL_EFFECT_TYPES} onChange={effects=>onChange({...value,normalSupport:{...(value.normalSupport??{target:'singleAlly',animation:'skill2'}),effects}})} />
     </Section>
     <Section title="能量石招式（可選）" note="敵人不使用能量石 Gauge。每次行動時依發動率判定是否使用能量石招式；未發動時仍可普通攻擊或普通輔助。">
