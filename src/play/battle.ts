@@ -715,6 +715,7 @@ export class Battle {
         return source.alive && !!subject && subject !== source && subject.team === source.team
       case 'enemyDied':
         return source.alive && !!subject && subject.team !== source.team
+      case 'damaged':
       case 'beforeDamaged':
       case 'afterDamaged':
       case 'statusApplied':
@@ -1065,9 +1066,16 @@ export class Battle {
   canUse(u: Unit, action: ActionName): boolean {
     if (action === 'attack') return true
     if (u.gameplayClass) {
-      if (action === 'skill1') return u.gameplayClass.skillEnabled !== false && !this.has(u, 'silence') && this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
-      // skill2 is the class's normal support action, not the gauge Skill.
-      return true
+      if (action === 'skill1') {
+        if (u.gameplayClass.skillEnabled === false || this.has(u, 'silence')) return false
+        // Player classes use the shared gauge; enemies explicitly opt out and
+        // their AI controls skill usage via skillActivationRate instead.
+        if (u.gameplayClass.usesSkillGauge === false) return true
+        return this.gameplayGauge[u.team] >= this.gameplayGaugeMax(u)
+      }
+      // skill2 is the class's normal support action. Do not let AI waste a turn
+      // on an empty support definition.
+      return u.gameplayClass.normalSupport.effects.length > 0
     }
     return !this.has(u, 'silence') && this.energy[u.team] >= this.costOf(u, action)
   }
@@ -1269,9 +1277,38 @@ export class Battle {
 
   /** เลือกท่า + เป้าอัตโนมัติของเทิร์นนี้ */
   planAuto(u: Unit): Plan | null {
+    const enemyIndependentSkill = !!u.gameplayClass && u.team === 1 && u.gameplayClass.usesSkillGauge === false
+    if (enemyIndependentSkill) {
+      const rate = clamp(u.gameplayClass?.skillActivationRate ?? 0, 0, 100)
+      if (this.canUse(u, 'skill1') && this.rand() * 100 < rate) {
+        const target = this.autoTarget(u, 'skill1') ?? this.selectableTargets(u, 'skill1')[0]
+        if (target) return { action: 'skill1', target }
+      }
+
+      // When the skill roll does not proc, keep the normal attack/support
+      // decision independent from the existence of the active skill.
+      const wasEnabled = u.gameplayClass!.skillEnabled
+      u.gameplayClass!.skillEnabled = false
+      try {
+        if (this.aiLevel[u.team] === 'smart') {
+          const choice = this.ai.choose(u)
+          return choice ? { action: choice.action, target: choice.target, caster: choice.caster } : null
+        }
+        const usable = (['attack', 'skill2'] as ActionName[]).filter(a => this.canUse(u, a))
+        const action = usable[Math.floor(this.rand() * usable.length)] ?? 'attack'
+        const list = this.selectableTargets(u, action)
+        if (!list.length) return null
+        if (this.aiLevel[u.team] === 'random') return { action, target: list[Math.floor(this.rand() * list.length)] }
+        const ally = this.targetsAllies(u, action)
+        return { action, target: list.reduce((a, b) => ((ally ? b.hp / b.maxHp < a.hp / a.maxHp : b.hp < a.hp) ? b : a)) }
+      } finally {
+        u.gameplayClass!.skillEnabled = wasEnabled
+      }
+    }
+
     if (this.aiLevel[u.team] === 'smart') {
-      const c = this.ai.choose(u)
-      return c ? { action: c.action, target: c.target, caster: c.caster } : null
+      const choice = this.ai.choose(u)
+      return choice ? { action: choice.action, target: choice.target, caster: choice.caster } : null
     }
     const usable = (['attack', 'skill1', 'skill2'] as ActionName[]).filter(a => this.canUse(u, a))
     const action = usable[Math.floor(this.rand() * usable.length)]
@@ -1296,18 +1333,20 @@ export class Battle {
   /** จ่าย/ได้พลังงานตอนเริ่มท่า */
   commitAction(u: Unit, action: ActionName): void {
     if (u.gameplayClass) {
-      if (action === 'attack') {
-        // Gauge is shared by the team. Continuous gauge modifiers from any living
-        // ally are combined; negative values reduce gain, positive values increase it.
-        const teamModifier = this.gameplayAbilityValue(u, 'skillGaugeGainModifier')
-        const gain = Math.max(0, u.gameplayClass.normalAttack.skillGaugeGain * (1 + teamModifier / 100))
-        this.gameplayGauge[u.team] = clamp(
-          this.gameplayGauge[u.team] + gain,
-          0,
-          this.gameplayGaugeMax(u),
-        )
-      } else if (action === 'skill1') {
-        this.gameplayGauge[u.team] = 0
+      if (u.gameplayClass.usesSkillGauge !== false) {
+        if (action === 'attack') {
+          // Gauge is shared by the player team. Continuous gauge modifiers from
+          // living allies are combined; enemies never enter this branch.
+          const teamModifier = this.gameplayAbilityValue(u, 'skillGaugeGainModifier')
+          const gain = Math.max(0, (u.gameplayClass.normalAttack.skillGaugeGain ?? 0) * (1 + teamModifier / 100))
+          this.gameplayGauge[u.team] = clamp(
+            this.gameplayGauge[u.team] + gain,
+            0,
+            this.gameplayGaugeMax(u),
+          )
+        } else if (action === 'skill1') {
+          this.gameplayGauge[u.team] = 0
+        }
       }
       return
     }
@@ -1410,9 +1449,8 @@ export class Battle {
   /** ลงดาเมจ: โล่รับก่อน แล้วค่อย HP */
   private takeDamage(target: Unit, damage: number, o: Outcome, ignoreShield = false, attacker?: Unit): void {
     if (!target.alive || damage <= 0) return
-    if (target.gameplayClass) {
-      this.dispatchGameplayAbilityEvent('beforeDamaged', { subject: target, attacker, damage })
-    }
+    // Legacy beforeDamaged triggers are retained for old authored data only.
+    if (target.gameplayClass) this.dispatchGameplayAbilityEvent('beforeDamaged', { subject: target, attacker, damage })
 
     let left = damage
     if (!ignoreShield) {
@@ -1434,6 +1472,8 @@ export class Battle {
 
     if (target.gameplayClass && actualDamage > 0) {
       const event = { subject: target, attacker, damage: actualDamage, hpBefore, hpAfter: target.hp }
+      this.dispatchGameplayAbilityEvent('damaged', event)
+      // Legacy afterDamaged triggers are retained for old authored data.
       this.dispatchGameplayAbilityEvent('afterDamaged', event)
       this.dispatchGameplayAbilityEvent('hpChanged', event)
     }
