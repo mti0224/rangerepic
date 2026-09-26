@@ -788,7 +788,7 @@ export class BattleHud {
     if (a === 'attack') return t('attack')
     if (u.gameplayClass) {
       const lang = getLang()
-      if (a === 'skill1') return lang === 'zh' ? '技能' : lang === 'th' ? 'สกิล' : 'Skill'
+      if (a === 'skill1') return lang === 'zh' ? '能量石招式' : lang === 'th' ? 'ท่าพลังงาน' : 'Energy Move'
       return lang === 'zh' ? '普通輔助' : lang === 'th' ? 'ช่วยเหลือปกติ' : 'Normal Support'
     }
     const info = gameSkill(this.s.infoOf(u), a)
@@ -933,7 +933,7 @@ export class BattleHud {
     ctx.font = F(11)
     ctx.textAlign = 'left'
     const lang = getLang()
-    const gaugeLabel = lang === 'zh' ? '技能量' : lang === 'th' ? 'เกจสกิล' : 'Skill Gauge'
+    const gaugeLabel = lang === 'zh' ? '能量石' : lang === 'th' ? 'พลังงาน' : 'Energy'
     outlined(ctx, `${gaugeLabel} ${Math.round(gauge)}/${max}`, x + 7, y + 14, ready ? C.gold : C.energy, 3)
     if (ready) {
       ctx.textAlign = 'right'

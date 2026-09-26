@@ -100,6 +100,7 @@ export function validateEnemy(data, expectedId) {
   if (!support || typeof support !== 'object') errors.push('normalSupport must be an object')
   else {
     if (!['singleAlly','allAllies'].includes(support.target)) errors.push('normalSupport.target is invalid')
+    if (support.description != null && typeof support.description !== 'string') errors.push('normalSupport.description must be a string')
     if (support.animation != null && !['attack','skill1','skill2'].includes(support.animation)) errors.push('normalSupport.animation is invalid')
     validateEffects(support.effects ?? [], errors, 'normalSupport.effects', SUPPORT_SKILL_EFFECT_TYPES)
   }

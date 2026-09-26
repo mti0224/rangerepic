@@ -314,6 +314,9 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           </select>
         </Field>
         </div>
+        <Field label="輔助招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
+          <textarea value={value.normalSupport.description ?? ''} onChange={e => onChange({ ...value, normalSupport: { ...value.normalSupport, description: e.target.value } })} />
+        </Field>
         <EffectList
           value={value.normalSupport.effects}
           allowedTypes={SUPPORT_SKILL_EFFECT_TYPES}
@@ -322,13 +325,13 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
       </Section>
 
       <Section
-        title={value.skill.target.side === 'enemy' ? '技能（攻擊）' : '技能（輔助）'}
+        title={value.skill.target.side === 'enemy' ? '能量石招式（攻擊）' : '能量石招式（輔助）'}
         note={value.skill.target.side === 'enemy'
           ? '敵方目標只顯示攻擊技能效果；倍率傷害使用 Attack × N%，不會爆擊。'
           : '我方目標只顯示輔助技能效果。切換作用對象後，下拉選單會跟著切換效果分類。'}
       >
         <div className="gp-grid three">
-          <Field label="技能名稱（玩家顯示）"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} /></Field>
+          <Field label="能量石招式名稱（玩家顯示）"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} /></Field>
           <Field label="選擇動畫"><AnimationSelect value={value.skill.animation ?? 'skill1'} onChange={animation => onChange({ ...value, skill: { ...value.skill, animation } })} /></Field>
           <Field label="技能圖示">
             <IconPicker
@@ -340,7 +343,7 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
             />
           </Field>
         </div>
-        <Field label="技能白話敘述（留白時，玩家端才顯示下方系統效果）">
+        <Field label="能量石招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
           <textarea value={value.skill.description ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, description: e.target.value } })} />
         </Field>
         <TargetEditor value={value.skill.target} onChange={target => onChange({ ...value, skill: { ...value.skill, target } })} />

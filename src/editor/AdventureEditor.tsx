@@ -145,12 +145,13 @@ function EnemyForm({ value, assets, onChange, onSave, onDelete }: { value: Gamep
           <option value="singleAlly">一名友軍（可自己）</option><option value="allAllies">全體友軍</option>
         </select></Field>
       </div>
+      <Field label="輔助招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalSupport?.description??''} onChange={e=>onChange({...value,normalSupport:{...(value.normalSupport??{target:'singleAlly',animation:'skill2',effects:[]}),description:e.target.value}})} /></Field>
       <EffectList value={value.normalSupport?.effects??[]} allowed={SUPPORT_SKILL_EFFECT_TYPES} onChange={effects=>onChange({...value,normalSupport:{...(value.normalSupport??{target:'singleAlly',animation:'skill2'}),effects}})} />
     </Section>
-    <Section title="技能（可選）" note="敵人沒有技能條。每次行動時依技能發動率判定是否使用技能；未發動時仍可普通攻擊或普通輔助。">
-      <label className="adv-toggle"><input type="checkbox" checked={!!value.skill} onChange={e=>onChange({...value,skill:e.target.checked?(value.skill??newEnemySkill()):null})} /> 此敵人有技能</label>
+    <Section title="能量石招式（可選）" note="敵人不使用能量石 Gauge。每次行動時依發動率判定是否使用能量石招式；未發動時仍可普通攻擊或普通輔助。">
+      <label className="adv-toggle"><input type="checkbox" checked={!!value.skill} onChange={e=>onChange({...value,skill:e.target.checked?(value.skill??newEnemySkill()):null})} /> 此敵人有能量石招式</label>
       {value.skill && <>
-        <Num label="技能發動率 %" value={value.skillActivationRate ?? 20} min={0} max={100} onChange={v=>onChange({...value,skillActivationRate:Math.max(0,Math.min(100,v))})} />
+        <Num label="能量石招式發動率 %" value={value.skillActivationRate ?? 20} min={0} max={100} onChange={v=>onChange({...value,skillActivationRate:Math.max(0,Math.min(100,v))})} />
         <SkillEditor value={value.skill} onChange={skill=>onChange({...value,skill})} />
       </>}
     </Section>
@@ -215,8 +216,8 @@ function slotLabel(slot:EnemySlot){return slot.startsWith('front')?'前排 '+(Nu
 
 function SkillEditor({value,onChange}:{value:NonNullable<GameplayEnemy['skill']>;onChange:(v:NonNullable<GameplayEnemy['skill']>)=>void}){
   return <div className="adv-subform">
-    <div className="gp-grid three"><Field label="技能名稱"><input value={value.name??''} onChange={e=>onChange({...value,name:e.target.value})} /></Field><Field label="選擇動畫"><AnimationSelect value={value.animation ?? 'skill1'} onChange={animation=>onChange({...value,animation})} /></Field><Field label="技能圖示 URL"><input value={value.icon??''} onChange={e=>onChange({...value,icon:e.target.value})} /></Field></div>
-    <Field label="白話敘述（留白時才顯示系統效果）"><textarea value={value.description??''} onChange={e=>onChange({...value,description:e.target.value})} /></Field>
+    <div className="gp-grid three"><Field label="能量石招式名稱"><input value={value.name??''} onChange={e=>onChange({...value,name:e.target.value})} /></Field><Field label="選擇動畫"><AnimationSelect value={value.animation ?? 'skill1'} onChange={animation=>onChange({...value,animation})} /></Field><Field label="技能圖示 URL"><input value={value.icon??''} onChange={e=>onChange({...value,icon:e.target.value})} /></Field></div>
+    <Field label="能量石招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.description??''} onChange={e=>onChange({...value,description:e.target.value})} /></Field>
     <TargetEditor value={value.target} onChange={target=>onChange({...value,target})} />
     <EffectList value={value.effects} allowed={value.target.side==='enemy'?ATTACK_SKILL_EFFECT_TYPES:EFFECT_TYPES} onChange={effects=>onChange({...value,effects})} />
   </div>
