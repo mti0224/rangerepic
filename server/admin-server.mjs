@@ -7,6 +7,7 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { fetchRanger } from '../scripts/fetch-ranger.mjs'
 import { fetchLericoData } from '../scripts/fetch-lerico.mjs'
+import { DEFAULT_BATTLE_RULES, GAMEPLAY_ID_RE, validateBattleRules, validateCharacter, validateClass } from '../scripts/gameplay-schema.mjs'
 
 const execFileAsync = promisify(execFile)
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -17,6 +18,10 @@ const HOST = process.env.HOST || '127.0.0.1'
 const DIST_DIR = path.resolve(ROOT, process.env.ADMIN_DIST_DIR || 'dist')
 const RANGERS_DIR = path.join(ROOT, 'public', 'rangers')
 const DELETED_DIR = path.join(ROOT, 'data', 'deleted-rangers')
+const GAME_DIR = path.join(ROOT, 'data', 'game')
+const CHARACTERS_DIR = path.join(GAME_DIR, 'characters')
+const CLASSES_DIR = path.join(GAME_DIR, 'classes')
+const RULES_FILE = path.join(GAME_DIR, 'rules.json')
 const ID_RE = /^[a-z0-9][a-z0-9_-]*$/i
 const COOKIE_NAME = 'rangerepic_admin'
 const SESSION_TTL_SEC = Math.max(900, Number(process.env.SESSION_TTL_SEC || 43200))
@@ -282,6 +287,31 @@ async function listRangerItems() {
   }))
 }
 
+async function readJson(file, fallback = null) {
+  return fs.readFile(file, 'utf8').then(JSON.parse).catch(() => fallback)
+}
+
+async function listGameplayDocs(dir) {
+  await fs.mkdir(dir, { recursive: true })
+  const files = (await fs.readdir(dir, { withFileTypes: true }))
+    .filter(d => d.isFile() && d.name.endsWith('.json'))
+    .map(d => d.name)
+    .sort()
+  const rows = []
+  for (const name of files) {
+    const data = await readJson(path.join(dir, name))
+    if (data) rows.push(data)
+  }
+  return rows
+}
+
+async function saveGameplayDoc(dir, id, data) {
+  await fs.mkdir(dir, { recursive: true })
+  const file = path.join(dir, id + '.json')
+  await fs.writeFile(file, JSON.stringify(data, null, 2) + '\n', 'utf8')
+  return file
+}
+
 async function git(args, extraEnv = {}) {
   return execFileAsync('git', args, {
     cwd: ROOT,
@@ -336,6 +366,79 @@ async function handleApi(req, res, url) {
   if (req.method === 'GET' && seg[0] === 'rangers') {
     return sendJson(res, 200, { rangers: await listRangerItems() })
   }
+  if (seg[0] === 'gameplay') {
+    if (req.method === 'GET' && seg[1] === 'characters' && !seg[2]) {
+      return sendJson(res, 200, { characters: await listGameplayDocs(CHARACTERS_DIR) })
+    }
+    if (req.method === 'GET' && seg[1] === 'classes' && !seg[2]) {
+      return sendJson(res, 200, { classes: await listGameplayDocs(CLASSES_DIR) })
+    }
+    if (req.method === 'GET' && seg[1] === 'rules') {
+      return sendJson(res, 200, { rules: await readJson(RULES_FILE, DEFAULT_BATTLE_RULES) })
+    }
+
+    if (seg[1] === 'character' && seg[2]) {
+      const id = seg[2]
+      if (!GAMEPLAY_ID_RE.test(id)) return sendJson(res, 400, { error: 'bad gameplay id' })
+      const file = path.join(CHARACTERS_DIR, id + '.json')
+      if (req.method === 'GET') return sendJson(res, 200, { character: await readJson(file) })
+      if (req.method === 'POST') {
+        const data = JSON.parse(await readBody(req))
+        const errors = validateCharacter(data, id)
+        if (errors.length) return sendJson(res, 400, { error: 'invalid character', errors })
+        await saveGameplayDoc(CHARACTERS_DIR, id, data)
+        const sync = await persistSafe(['data/game/characters/' + id + '.json'], 'admin: update character ' + id)
+        return sendJson(res, 200, { ok: true, character: data, git: sync })
+      }
+      if (req.method === 'DELETE') {
+        const classes = await listGameplayDocs(CLASSES_DIR)
+        if (classes.some(c => c.characterId === id)) return sendJson(res, 409, { error: 'character is used by a class' })
+        const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+        if (!exists) return sendJson(res, 404, { error: 'not found' })
+        await fs.unlink(file)
+        const sync = await persistSafe(['data/game/characters/' + id + '.json'], 'admin: remove character ' + id)
+        return sendJson(res, 200, { ok: true, git: sync })
+      }
+    }
+
+    if (seg[1] === 'class' && seg[2]) {
+      const id = seg[2]
+      if (!GAMEPLAY_ID_RE.test(id)) return sendJson(res, 400, { error: 'bad gameplay id' })
+      const file = path.join(CLASSES_DIR, id + '.json')
+      if (req.method === 'GET') return sendJson(res, 200, { class: await readJson(file) })
+      if (req.method === 'POST') {
+        const data = JSON.parse(await readBody(req))
+        const errors = validateClass(data, id)
+        if (errors.length) return sendJson(res, 400, { error: 'invalid class', errors })
+        const character = await readJson(path.join(CHARACTERS_DIR, data.characterId + '.json'))
+        if (!character) return sendJson(res, 400, { error: 'unknown characterId' })
+        const assetDir = path.join(RANGERS_DIR, data.assetVariantId)
+        const assetExists = await fs.stat(assetDir).then(s => s.isDirectory()).catch(() => false)
+        if (!assetExists) return sendJson(res, 400, { error: 'unknown assetVariantId' })
+        await saveGameplayDoc(CLASSES_DIR, id, data)
+        const sync = await persistSafe(['data/game/classes/' + id + '.json'], 'admin: update class ' + id)
+        return sendJson(res, 200, { ok: true, class: data, git: sync })
+      }
+      if (req.method === 'DELETE') {
+        const exists = await fs.stat(file).then(s => s.isFile()).catch(() => false)
+        if (!exists) return sendJson(res, 404, { error: 'not found' })
+        await fs.unlink(file)
+        const sync = await persistSafe(['data/game/classes/' + id + '.json'], 'admin: remove class ' + id)
+        return sendJson(res, 200, { ok: true, git: sync })
+      }
+    }
+
+    if (req.method === 'POST' && seg[1] === 'rules') {
+      const data = JSON.parse(await readBody(req))
+      const errors = validateBattleRules(data)
+      if (errors.length) return sendJson(res, 400, { error: 'invalid rules', errors })
+      await fs.mkdir(GAME_DIR, { recursive: true })
+      await fs.writeFile(RULES_FILE, JSON.stringify(data, null, 2) + '\n', 'utf8')
+      const sync = await persistSafe(['data/game/rules.json'], 'admin: update gameplay rules')
+      return sendJson(res, 200, { ok: true, rules: data, git: sync })
+    }
+  }
+
 
   if (seg[0] === 'ranger' && seg[1]) {
     const id = seg[1]

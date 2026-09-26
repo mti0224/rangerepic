@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "skillGaugeMax": 100,
+  "defaultNormalAttackGaugeGain": 5,
+  "defaultCritDamageMultiplier": 3,
+  "critRateMin": 0,
+  "critRateMax": 100,
+  "hitRateMin": 0,
+  "hitRateMax": 100,
+  "statFloor": 0,
+  "playerActsFirst": true,
+  "freeOrderWithinPhase": true,
+  "durationDecrementsAt": "roundEnd",
+  "dotTicksAt": "roundEnd",
+  "hotTicksAt": "sidePhaseEnd",
+  "reflectCanCrit": false,
+  "reflectTriggersReflect": false,
+  "poisonCanKill": true,
+  "shieldAbsorbsPoison": true,
+  "shieldAbsorbsDeadlyPoison": true
+}
