@@ -317,7 +317,7 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           </select>
         </Field>
         </div>
-        <Field label="輔助招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
+        <Field label="普通輔助敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
           <textarea value={value.normalSupport.description ?? ''} onChange={e => onChange({ ...value, normalSupport: { ...value.normalSupport, description: e.target.value } })} />
         </Field>
         <EffectList
