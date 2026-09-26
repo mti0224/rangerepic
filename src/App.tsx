@@ -1,16 +1,20 @@
 // Ranger Editor 管理後台；正式環境由 server/admin-server.mjs 處理登入驗證。
+import { useState } from 'react'
 import RangerEditor from './editor/RangerEditor'
+import GameplayEditor from './editor/GameplayEditor'
 import { ELANGS, ELANG_LABEL, e, setELang, useELang } from './editor/i18n'
 
 export default function App() {
   useELang()
+  const [view, setView] = useState<'assets' | 'gameplay'>('assets')
   const showLogout = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)
 
   return (
     <div className="app">
       <nav className="topnav">
         <b>LINE Rangers 回合制戰鬥</b>
-        <button className="sel">Ranger 編輯器</button>
+        <button className={view === 'assets' ? 'sel' : ''} onClick={() => setView('assets')}>圖資管理</button>
+        <button className={view === 'gameplay' ? 'sel' : ''} onClick={() => setView('gameplay')}>角色數據管理</button>
         <button onClick={() => window.open('/play.html', '_blank', 'noopener')}>{e('navPlay')}</button>
         <LangSwitch />
         {showLogout && (
@@ -19,7 +23,7 @@ export default function App() {
           </form>
         )}
       </nav>
-      <div className="page"><RangerEditor /></div>
+      <div className="page">{view === 'assets' ? <RangerEditor /> : <GameplayEditor />}</div>
     </div>
   )
 }
