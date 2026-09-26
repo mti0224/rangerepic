@@ -302,6 +302,9 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           <Num label="技能條增加 %" value={value.normalAttack.skillGaugeGain} min={0} max={100} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, skillGaugeGain: v } })} />
           {value.normalAttack.target === 'primaryPlusRandom' && <Num label="額外隨機目標 N" value={value.normalAttack.extraTargets ?? 1} min={1} step={1} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, extraTargets: Math.max(1, Math.round(v)) } })} />}
         </div>
+        <Field label="普通攻擊敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
+          <textarea value={value.normalAttack.description ?? ''} onChange={e => onChange({ ...value, normalAttack: { ...value.normalAttack, description: e.target.value } })} />
+        </Field>
       </Section>
 
       <Section title="普通輔助" note="普通輔助不增加技能條，也不受命中率影響。">
