@@ -7,7 +7,7 @@ import { ELANGS, ELANG_LABEL, e, setELang, useELang } from './editor/i18n'
 
 export default function App() {
   useELang()
-  const [view, setView] = useState<'assets' | 'gameplay' | 'adventure'>('assets')
+  const [view, setView] = useState<'assets' | 'gameplay' | 'enemies' | 'stages'>('assets')
   const showLogout = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)
 
   return (
@@ -16,7 +16,8 @@ export default function App() {
         <b>LINE Rangers 回合制戰鬥</b>
         <button className={view === 'assets' ? 'sel' : ''} onClick={() => setView('assets')}>圖資管理</button>
         <button className={view === 'gameplay' ? 'sel' : ''} onClick={() => setView('gameplay')}>角色數據管理</button>
-        <button className={view === 'adventure' ? 'sel' : ''} onClick={() => setView('adventure')}>敵人／關卡設計</button>
+        <button className={view === 'enemies' ? 'sel' : ''} onClick={() => setView('enemies')}>敵人數據管理</button>
+        <button className={view === 'stages' ? 'sel' : ''} onClick={() => setView('stages')}>關卡數據管理</button>
         <button onClick={() => window.open('/play.html', '_blank', 'noopener')}>{e('navPlay')}</button>
         <LangSwitch />
         {showLogout && (
@@ -25,7 +26,9 @@ export default function App() {
           </form>
         )}
       </nav>
-      <div className="page">{view === 'assets' ? <RangerEditor /> : view === 'gameplay' ? <GameplayEditor /> : <AdventureEditor />}</div>
+      <div className="page">
+        {view === 'assets' ? <RangerEditor /> : view === 'gameplay' ? <GameplayEditor /> : view === 'enemies' ? <AdventureEditor mode="enemies" /> : <AdventureEditor mode="stages" />}
+      </div>
     </div>
   )
 }
