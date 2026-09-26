@@ -27,6 +27,7 @@ import { lerpSAMFrame, renderSAMFrame } from '@/lib/animation/samRenderer'
 import { loadButtonRing, type RingFx } from '@/lib/effects'
 import { PANEL_FACE_ZOOM, drawFocused } from '@/lib/portrait'
 import { evolutionOf, starImageUrl } from '@/lib/rangerGrade'
+import { ENERGY_STONE_EMPTY, ENERGY_STONE_FULL } from './energyStone'
 
 /** ข้อมูลที่ HUD อ่านจากฉาก (ฉากเป็นคนถือสถานะจริงทั้งหมด) */
 export interface HudSource {
@@ -185,6 +186,10 @@ export const SUMMON_KEYS = [['A', 'S'], ['D', 'F']] as const
 /** แถวพิเศษของศัตรู: รูปหน้าเล็กใต้ชื่อฝั่งศัตรู ชิดขวาตรงปลายหลอดเลือด · ติดคูลดาวน์ = เลขทับหน้า */
 const FOE_SUP = { size: 38, gap: 6, top: 92, right: 1016 }
 const COST_BAR = { x: 266, y: 698, w: 358, h: 18 }
+/** Gameplay shared energy stone: exact 64×71 artwork from the supplied 000–100 sequence. */
+const ENERGY_STONE = { x: 550, y: 615, w: 64, h: 71 }
+const ENERGY_CHARGE_PULSE_MS = 280
+const ENERGY_READY_FLASH_MS = 620
 /** กดปุ่มสลับซ้ำภายในเวลานี้ (ms) = ดับเบิลคลิก → ไม่นับครั้งที่สอง */
 const REPEAT_GUARD_MS = 300
 /** ปุ่มสว่างค้างหลังกด (ms) ให้รู้ว่ากดติดแล้ว */
@@ -231,6 +236,10 @@ export class BattleHud {
   private pressed: { key: string; at: number } | null = null
   /** เวลาที่ปุ่มสลับถูกกดล่าสุด (เปิดเมนู/ปิดเมนูนับเป็นกลุ่มเดียวกัน) */
   private lastToggle = -Infinity
+  /** Gameplay energy-stone visual state, used only for HUD animation feedback. */
+  private gameplayGaugeLast: number | null = null
+  private gameplayGaugePulseAt = -Infinity
+  private gameplayGaugeReadyAt = -Infinity
 
   /** วงแหวนปุ่มกลม — โหลดเบื้องหลัง ยังไม่เสร็จก็วาดวงธรรมดาไปก่อน */
   private ring: RingFx | null = null
@@ -763,7 +772,7 @@ export class BattleHud {
   }
 
   private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, input: boolean): void {
-    const x = BTN.x, y = BTN.y, w = PANEL.x + PANEL.w - BTN.x - 8, h = BTN.h
+    const x = BTN.x, y = BTN.y, w = ENERGY_STONE.x - BTN.x - 12, h = BTN.h
     roundRect(ctx, x, y, w, h, 8)
     ctx.fillStyle = C.inset
     ctx.fill()
@@ -909,39 +918,82 @@ export class BattleHud {
   }
 
   private drawGameplayGauge(ctx: CanvasRenderingContext2D, u: Unit): void {
-    const { x, y, w, h } = COST_BAR
-    const max = this.s.battle.gameplayGaugeMax(u)
+    const { x, y, w, h } = ENERGY_STONE
+    const max = Math.max(1, this.s.battle.gameplayGaugeMax(u))
     const gauge = Math.max(0, Math.min(max, this.s.battle.gameplayGaugeOf(u.team)))
-    para(ctx, x, y, w, h, -8)
-    ctx.fillStyle = C.panel
-    ctx.fill()
-    ctx.lineWidth = 1.5
-    ctx.strokeStyle = C.goldDim
-    ctx.stroke()
+    const pct = Math.max(0, Math.min(100, Math.round(gauge / max * 100)))
+    const now = nowMs()
 
-    const barX = x + 106, barY = y + 4, barW = w - 118, barH = h - 8
-    ctx.fillStyle = C.empty
-    ctx.fillRect(barX, barY, barW, barH)
-    if (gauge > 0) {
-      const g = ctx.createLinearGradient(barX, 0, barX + barW, 0)
-      g.addColorStop(0, '#bbf7d0')
-      g.addColorStop(1, C.energy)
-      ctx.fillStyle = g
-      ctx.fillRect(barX, barY, barW * gauge / max, barH)
+    if (this.gameplayGaugeLast == null) {
+      this.gameplayGaugeLast = pct
+    } else if (pct !== this.gameplayGaugeLast) {
+      if (pct > this.gameplayGaugeLast) this.gameplayGaugePulseAt = now
+      if (pct >= 100 && this.gameplayGaugeLast < 100) this.gameplayGaugeReadyAt = now
+      this.gameplayGaugeLast = pct
     }
-    const ready = gauge >= max && this.s.phase === 'input'
-    ctx.font = F(11)
-    ctx.textAlign = 'left'
-    const lang = getLang()
-    const gaugeLabel = lang === 'zh' ? '能量石' : lang === 'th' ? 'พลังงาน' : 'Energy'
-    outlined(ctx, `${gaugeLabel} ${Math.round(gauge)}/${max}`, x + 7, y + 14, ready ? C.gold : C.energy, 3)
+
+    const empty = this.image(ENERGY_STONE_EMPTY)
+    const full = this.image(ENERGY_STONE_FULL)
+    const ready = pct >= 100 && this.s.phase === 'input'
+    const nearReady = pct >= 90 && pct < 100
+    const pulseAge = now - this.gameplayGaugePulseAt
+    const chargePop = pulseAge >= 0 && pulseAge < ENERGY_CHARGE_PULSE_MS
+      ? Math.sin(Math.PI * pulseAge / ENERGY_CHARGE_PULSE_MS) * 0.09
+      : 0
+    const readyAge = now - this.gameplayGaugeReadyAt
+    const readyFlash = readyAge >= 0 && readyAge < ENERGY_READY_FLASH_MS
+      ? 1 - readyAge / ENERGY_READY_FLASH_MS
+      : 0
+    const breathe = ready ? (0.5 + 0.5 * Math.sin(now / 180)) : nearReady ? (0.5 + 0.5 * Math.sin(now / 280)) : 0
+    const scale = 1 + chargePop + (ready ? 0.025 * breathe : 0)
+
+    ctx.save()
+    ctx.translate(x + w / 2, y + h / 2)
+    ctx.scale(scale, scale)
+    ctx.translate(-(x + w / 2), -(y + h / 2))
+
+    if (nearReady || ready) {
+      ctx.save()
+      ctx.shadowColor = ready ? `rgba(255,214,66,${0.62 + 0.30 * breathe})` : `rgba(255,188,32,${0.28 + 0.20 * breathe})`
+      ctx.shadowBlur = ready ? 18 + 8 * breathe + 16 * readyFlash : 9 + 5 * breathe
+      ctx.beginPath()
+      ctx.arc(x + w / 2, y + h / 2, Math.max(w, h) * 0.39, 0, Math.PI * 2)
+      ctx.fillStyle = ready ? 'rgba(255,210,50,0.18)' : 'rgba(255,184,35,0.08)'
+      ctx.fill()
+      ctx.restore()
+    }
+
+    if (empty?.complete && empty.naturalWidth) {
+      ctx.drawImage(empty, x, y, w, h)
+    }
+
+    if (pct > 0 && full?.complete && full.naturalWidth) {
+      const fillH = h * pct / 100
+      const sy = full.naturalHeight * (1 - pct / 100)
+      const sh = full.naturalHeight * pct / 100
+      ctx.drawImage(full, 0, sy, full.naturalWidth, sh, x, y + h - fillH, w, fillH)
+    }
+
     if (ready) {
-      ctx.textAlign = 'right'
+      ctx.lineWidth = 2 + breathe
+      ctx.strokeStyle = `rgba(255,225,116,${0.60 + 0.32 * breathe})`
+      ctx.beginPath()
+      ctx.arc(x + w / 2, y + h / 2, 38 + 2 * breathe, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+    ctx.restore()
+
+    const lang = getLang()
+    ctx.font = F(10)
+    ctx.textAlign = 'center'
+    outlined(ctx, `${pct}%`, x + w / 2, y + h + 13, ready ? C.gold : C.text, 3)
+    if (ready) {
       const drag = lang === 'zh' ? '拖曳至角色' : lang === 'th' ? 'ลากไปที่ตัวละคร' : 'Drag to Ranger'
-      outlined(ctx, drag, x + w - 7, y + 14, C.gold, 3)
-      this.boxes.push({ x, y, w, h, hit: { kind: 'skillGauge' } })
+      ctx.font = F(9)
+      outlined(ctx, drag, x + w / 2, y - 4, C.gold, 3)
+      this.boxes.push({ x: x - HIT_PAD, y: y - HIT_PAD, w: w + HIT_PAD * 2, h: h + HIT_PAD * 2, hit: { kind: 'skillGauge' } })
     } else {
-      this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
+      this.boxes.push({ x: x - HIT_PAD, y: y - HIT_PAD, w: w + HIT_PAD * 2, h: h + HIT_PAD * 2, hit: { kind: 'block' } })
     }
   }
 
