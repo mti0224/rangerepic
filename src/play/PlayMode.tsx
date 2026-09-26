@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { listRangers, loadRangerConfig } from '@/lib/rangerApi'
 import { loadRangerAssets } from '@/lib/rangerAssets'
-import { migrateRangerConfig, withDefaultGround, type ActionName, type Row } from '@/lib/rangerConfig'
+import { migrateRangerConfig, withDefaultGround, type ActionName, type RangerConfig, type Row } from '@/lib/rangerConfig'
+import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
 import { Battle, type Team, type UnitSetup } from './battle'
 import { BattleScene, VIEW_H, VIEW_W, type RangerKit } from './battleScene'
 import { toggleUnitCard, type HudHit } from './battleHud'
@@ -16,14 +17,15 @@ import { ClassSelection, nameOf } from './ClassSelection'
 import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice, openInExternalBrowser, useFullscreen } from './screen'
 import { ui, useLang } from './uiText'
 import { loadGameplayCatalog } from '@/lib/gameplayApi'
-import { DEFAULT_BATTLE_RULES, type BattleRulesV1 } from '@/lib/gameplaySchema'
+import { DEFAULT_BATTLE_RULES, type BattleRulesV1, type GameplayEnemy, type GameplayStage } from '@/lib/gameplaySchema'
+import { StagePartySetup, StageSelection } from './StageSelection'
 import './player.css'
 
-type Page = 'lobby' | 'setup' | 'characters'
-const PATH: Record<Page, string> = { lobby: '/lobby', setup: '/team', characters: '/characters' }
+type Page = 'lobby' | 'setup' | 'characters' | 'stages'
+const PATH: Record<Page, string> = { lobby: '/lobby', setup: '/team', characters: '/characters', stages: '/stages' }
 const pageFromPath = (): Page => {
   const path = location.pathname.replace(/\/+$/, '').toLowerCase()
-  return path.endsWith('/team') ? 'setup' : path.endsWith('/characters') ? 'characters' : 'lobby'
+  return path.endsWith('/team') ? 'setup' : path.endsWith('/characters') ? 'characters' : path.endsWith('/stages') ? 'stages' : 'lobby'
 }
 const FORMATION_KEY = 'lr:formation'
 const MAX_CANVAS_W = 2560
@@ -38,6 +40,11 @@ export default function PlayMode() {
   const lang = useLang()
   const [data, setData] = useState<RangerData[]>([])
   const [rules, setRules] = useState<BattleRulesV1>(DEFAULT_BATTLE_RULES)
+  const [enemies, setEnemies] = useState<GameplayEnemy[]>([])
+  const [stages, setStages] = useState<GameplayStage[]>([])
+  const [assetItems, setAssetItems] = useState<Awaited<ReturnType<typeof listRangers>>>([])
+  const [selectedStageId, setSelectedStageId] = useState<string | null>(null)
+  const [stageEnemyConfigs, setStageEnemyConfigs] = useState<Map<string, RangerConfig>>(new Map())
   const [formation, setFormation] = useState<Formation>([emptyTeam(), emptyTeam()])
   const [stage, setStage] = useState<Page | 'loading' | 'battle'>(pageFromPath)
   const [ready, setReady] = useState(false)
@@ -77,6 +84,9 @@ export default function PlayMode() {
         if (cancelled) return
         setData(rows)
         setRules(catalog.rules)
+        setEnemies(catalog.enemies)
+        setStages(catalog.stages)
+        setAssetItems(assets)
         setFormation(cleanFormation(savedFormation(), rows))
         setReady(true)
       } catch (error) {
@@ -91,6 +101,7 @@ export default function PlayMode() {
   }, [formation, ready])
 
   const start = async () => {
+    setSelectedStageId(null)
     const cleaned = cleanFormation(formation, data)
     if (!cleaned.every(team => SLOT_KEYS.some(key => team[key]))) return
     setFormation(cleaned)
@@ -119,28 +130,93 @@ export default function PlayMode() {
       setStage('setup')
     }
   }
+  const startStage = async () => {
+    const stageDef = stages.find(row => row.id === selectedStageId)
+    const cleaned = cleanFormation(formation, data)
+    if (!stageDef || !SLOT_KEYS.some(key => cleaned[0][key])) return
+    setFormation(cleaned)
+    setMessage('')
+    setStage('loading')
+    if (isTouchDevice()) enterGameFullscreen()
+    const map = new Map<string, RangerKit>()
+    const enemyConfigs = new Map<string, RangerConfig>()
+    const playerRows = SLOT_KEYS.flatMap(key => {
+      const id = cleaned[0][key]
+      const row = id ? data.find(item => item.playId === id) : null
+      return row ? [row] : []
+    })
+    const usedEnemyIds = [...new Set(stageDef.waves.flatMap(wave => wave.enemies.map(row => row.enemyId)))]
+    const usedEnemies = usedEnemyIds.flatMap(id => {
+      const enemy = enemies.find(row => row.id === id)
+      return enemy ? [enemy] : []
+    })
+    setProgress({ done: 0, total: playerRows.length + usedEnemies.length })
+    let done = 0
+    try {
+      for (const row of playerRows) {
+        if (!map.has(row.item.id)) {
+          const assets = await loadRangerAssets(row.item.id, row.item.bullets)
+          const config = withDefaultGround(row.config, assets.geometry.autoStand)
+          map.set(row.item.id, { assets, config, info: null })
+        }
+        setProgress({ done: ++done, total: playerRows.length + usedEnemies.length })
+      }
+      for (const enemy of usedEnemies) {
+        const item = assetItems.find(row => row.id === enemy.assetVariantId)
+        if (!item) throw new Error(`找不到敵人 ${enemy.id} 的圖資 ${enemy.assetVariantId}`)
+        let assets = map.get(enemy.assetVariantId)?.assets
+        if (!assets) {
+          assets = await loadRangerAssets(enemy.assetVariantId, item.bullets)
+          const base = await loadRangerConfig(enemy.assetVariantId)
+          if (!base) throw new Error(`無法載入敵人圖資：${enemy.assetVariantId}`)
+          map.set(enemy.assetVariantId, { assets, config: withDefaultGround(migrateRangerConfig(base), assets.geometry.autoStand), info: null })
+        }
+        const base = await loadRangerConfig(enemy.assetVariantId)
+        if (!base) throw new Error(`無法載入敵人圖資：${enemy.assetVariantId}`)
+        enemyConfigs.set(enemy.id, withDefaultGround(adaptRangerConfigForGameplay(migrateRangerConfig(base), enemy), assets.geometry.autoStand))
+        setProgress({ done: ++done, total: playerRows.length + usedEnemies.length })
+      }
+      setStageEnemyConfigs(enemyConfigs)
+      setKits(map)
+      setSeed(Date.now() % 100000)
+      setStage('battle')
+    } catch (error) {
+      for (const kit of map.values()) kit.assets.dispose()
+      setMessage(`關卡載入失敗：${String(error)}`)
+      setStage('setup')
+    }
+  }
+
   const backToSetup = () => {
     if (kits) for (const kit of kits.values()) kit.assets.dispose()
     setKits(null)
     setStage('setup')
   }
-  if (stage === 'battle' && kits) return <BattleView formation={formation} kits={kits} seed={seed} data={data} rules={rules} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} />
+  if (stage === 'battle' && kits) {
+    const stageDef = selectedStageId ? stages.find(row => row.id === selectedStageId) : null
+    return stageDef
+      ? <StageBattleView stage={stageDef} enemies={enemies} enemyConfigs={stageEnemyConfigs} formation={formation} kits={kits} seed={seed} data={data} rules={rules} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} onComplete={() => { backToSetup(); setSelectedStageId(null); setStage('stages'); setNotice('關卡完成！') }} />
+      : <BattleView formation={formation} kits={kits} seed={seed} data={data} rules={rules} onBack={backToSetup} onRestart={() => setSeed(s => s + 1)} />
+  }
 
   return <div className="play-app ep-app">
     <header className="ep-header"><button className="ep-brand" onClick={() => { if (stage !== 'loading') setStage('lobby') }}>RANGER<span>EPIC</span><small>回合制冒險</small></button>
-      <nav aria-label="主選單">{([['lobby', '首頁'], ['characters', '角色與職業'], ['setup', '編組隊伍']] as const).map(([page, label]) => <button key={page} disabled={stage === 'loading'} aria-current={stage === page ? 'page' : undefined} onClick={() => { setNotice(''); setStage(page) }}>{label}</button>)}</nav><LangSwitch />
+      <nav aria-label="主選單">{([['lobby', '首頁'], ['stages', '關卡'], ['characters', '角色與職業'], ['setup', '自由編組']] as const).map(([page, label]) => <button key={page} disabled={stage === 'loading'} aria-current={stage === page ? 'page' : undefined} onClick={() => { setNotice(''); if (page !== 'setup') setSelectedStageId(null); setStage(page) }}>{label}</button>)}</nav><LangSwitch />
     </header>
     <InAppNotice />
     {notice && <p className="ep-notice" role="status">{notice}</p>}
     {loadError ? <div className="ep-load-state" role="alert"><h1>暫時無法載入角色</h1><p>{loadError}</p><button className="ep-primary" onClick={() => setAttempt(a => a + 1)}>重新載入</button></div>
       : !ready ? <div className="ep-load-state" role="status"><div className="pa-spinner" /><p>載入角色與職業…</p></div>
-      : stage === 'lobby' ? <Lobby data={data} onBattle={() => setStage('setup')} onCharacters={() => setStage('characters')} />
+      : stage === 'lobby' ? <Lobby data={data} onBattle={() => { setSelectedStageId(null); setStage('stages') }} onCharacters={() => setStage('characters')} />
+      : stage === 'stages' ? <StageSelection stages={stages} enemies={enemies} onChoose={row => { setSelectedStageId(row.id); setMessage(''); setStage('setup') }} />
       : stage === 'characters' ? <ClassSelection data={data} onBack={() => setStage('lobby')} onConfirm={row => {
         setFormation(f => cleanFormation(f.map(team => Object.fromEntries(Object.entries(team).map(([key, id]) => [key, data.find(d => d.playId === id)?.gameplayCharacter.id === row.gameplayCharacter.id ? row.playId : id]))), data))
         setNotice(`已選擇「${nameOf(row)}」。可在編組隊伍中加入此角色。`)
         setStage('setup')
       }} />
-      : <TeamBuilder data={data} formation={formation} setFormation={setFormation} onStart={() => void start()} busy={stage === 'loading'} message={message} />}
+      : selectedStageId && stages.some(row => row.id === selectedStageId)
+        ? <StagePartySetup stage={stages.find(row => row.id === selectedStageId)!} data={data} formation={formation} setFormation={setFormation} onStart={() => void startStage()} onBack={() => { setSelectedStageId(null); setStage('stages') }} busy={stage === 'loading'} message={message} />
+        : <TeamBuilder data={data} formation={formation} setFormation={setFormation} onStart={() => void start()} busy={stage === 'loading'} message={message} />}
     {stage === 'loading' && <div className="pa-overlay"><div className="pa-load-card" role="status"><p>載入戰鬥 {progress.done}/{progress.total}</p><div className="pa-bar"><i style={{ width: `${progress.total ? progress.done / progress.total * 100 : 0}%` }} /></div></div></div>}
   </div>
 }
