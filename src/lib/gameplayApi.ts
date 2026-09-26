@@ -59,9 +59,11 @@ export async function loadGameplayCatalog(): Promise<GameplayCatalog> {
     ])
     return { characters, classes, rules }
   } catch {
-    const base = import.meta.env.BASE_URL || '/'
+    // Relative path works for both /rangerepic/team on GitHub Pages and local /team.
+    // Keep an absolute fallback for hosts mounted at the domain root.
     const candidates = [
-      base.replace(/\/$/, '') + '/gameplay/index.json',
+      'gameplay/index.json',
+      './gameplay/index.json',
       '/gameplay/index.json',
     ]
     let lastError: unknown = null
