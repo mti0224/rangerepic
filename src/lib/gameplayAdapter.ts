@@ -5,35 +5,41 @@ import type { SkillArea, SkillDef, SkillEffect } from './skills'
 const mappedEffect = (effect: GameplayEffect): SkillEffect | null => {
   const value = effect.value ?? 0
   const turns = effect.duration ?? 1
+  const tagged = (mapped: SkillEffect): SkillEffect => ({
+    ...mapped,
+    gameplayType: effect.type,
+    gameplayValue: value,
+    gameplayDuration: turns,
+  })
   switch (effect.type) {
-    case 'damage': return { type: 'damage', pct: value }
-    case 'fixedDamage': return { type: 'trueDamage', pct: value }
-    case 'damageOverTime': return { type: 'burn', pct: value, turns }
+    case 'damage': return tagged({ type: 'damage', pct: value })
+    case 'fixedDamage': return tagged({ type: 'trueDamage', amount: value })
+    case 'damageOverTime': return tagged({ type: 'burn', pct: value, turns })
     case 'poison':
-    case 'deadlyPoison': return { type: 'poison', pct: value, turns }
-    case 'attackDown': return { type: 'atkDown', pct: value, turns }
-    case 'critRateDown': return { type: 'critDown', pct: value, turns }
-    case 'critDamageDown': return { type: 'critDmgDown', pct: value, turns }
-    case 'hitRateDown': return { type: 'hitDown', pct: value, turns }
-    case 'vulnerable': return { type: 'vulnerable', pct: value, turns }
-    case 'stun': return { type: 'stun', pct: value, turns }
-    case 'silence': return { type: 'silence', pct: value, turns }
-    case 'healingDown': return { type: 'healBlock', pct: value, turns }
+    case 'deadlyPoison': return tagged({ type: 'poison', pct: value, turns })
+    case 'attackDown': return tagged({ type: 'atkDown', pct: value, turns })
+    case 'critRateDown': return tagged({ type: 'critDown', pct: value, turns })
+    case 'critDamageDown': return tagged({ type: 'critDmgDown', pct: value, turns })
+    case 'hitRateDown': return tagged({ type: 'hitDown', pct: value, turns })
+    case 'vulnerable': return tagged({ type: 'vulnerable', pct: value, turns })
+    case 'stun': return tagged({ type: 'stun', pct: value, turns })
+    case 'silence': return tagged({ type: 'silence', pct: value, turns })
+    case 'healingDown': return tagged({ type: 'healBlock', pct: value, turns })
     case 'dispelBuffs':
-    case 'removeShield': return { type: 'dispelBuffs' }
-    case 'shield': return { type: 'shield', pct: value, turns }
-    case 'heal': return { type: 'heal', pct: value }
-    case 'attackUp': return { type: 'atkUp', pct: value, turns }
-    case 'critRateUp': return { type: 'critUp', pct: value, turns }
-    case 'critDamageUp': return { type: 'critDmgUp', pct: value, turns }
-    case 'taunt': return { type: 'taunt', pct: value, turns }
-    case 'damageReduction': return { type: 'toughUp', pct: value, turns }
+    case 'removeShield': return tagged({ type: 'dispelBuffs' })
+    case 'shield': return tagged({ type: 'shield', pct: value, turns })
+    case 'heal': return turns > 1 ? tagged({ type: 'regen', pct: value, turns }) : tagged({ type: 'heal', pct: value })
+    case 'attackUp': return tagged({ type: 'atkUp', pct: value, turns })
+    case 'critRateUp': return tagged({ type: 'critUp', pct: value, turns })
+    case 'critDamageUp': return tagged({ type: 'critDmgUp', pct: value, turns })
+    case 'taunt': return tagged({ type: 'taunt', pct: value, turns })
+    case 'damageReduction': return tagged({ type: 'toughUp', pct: value, turns })
     case 'cleanseDebuffs':
     case 'cleanseDamageOverTime':
     case 'cleansePoison':
     case 'removeTaunt':
     case 'removeStun':
-    case 'removeSilence': return { type: 'cleanse' }
+    case 'removeSilence': return tagged({ type: 'cleanse' })
     default:
       return null
   }
