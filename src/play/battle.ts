@@ -604,14 +604,17 @@ export class Battle {
       for (const s of [...u.statuses]) this.tickGameplayDot(u, s)
     }
 
-    this.dispatchGameplayAbilityEvent('roundEnd', {})
-    this.dispatchGameplayAbilityEvent('everyNRounds', {})
-
-    // The round in which an effect was applied counts as its first round.
+    // Existing effects count the round that just finished and then tick down.
+    // Round-End triggered effects are applied after this countdown so duration=1
+    // remains active through the following round instead of expiring immediately.
     for (const u of this.units) {
       for (const s of u.statuses) s.turns--
       u.statuses = u.statuses.filter(s => s.turns > 0 && !(s.type === 'shield' && (s.shieldHp ?? 0) <= 0))
     }
+
+    this.dispatchGameplayAbilityEvent('roundEnd', {})
+    this.dispatchGameplayAbilityEvent('everyNRounds', {})
+
     this.gameplayRound++
     this.gameplayActed.clear()
     if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
