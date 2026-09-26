@@ -867,7 +867,7 @@ export class BattleHud {
   private drawGameplayGauge(ctx: CanvasRenderingContext2D, u: Unit): void {
     const { x, y, w, h } = COST_BAR
     const max = this.s.battle.gameplayGaugeMax(u)
-    const gauge = Math.max(0, Math.min(max, b.gameplayGaugeOf(u.team)))
+    const gauge = Math.max(0, Math.min(max, this.s.battle.gameplayGaugeOf(u.team)))
     para(ctx, x, y, w, h, -8)
     ctx.fillStyle = C.panel
     ctx.fill()
