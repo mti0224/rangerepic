@@ -637,7 +637,6 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
       {stageDef && stageDef.waves.length > 1 && <div className="ep-wave-hud"><b>{stageDef.names.zh || stageDef.names.en || stageDef.id}</b><span>Wave {Math.min(waveIndex + 1, stageDef.waves.length)}/{stageDef.waves.length}</span></div>}
       {dragLine && <svg className={'ep-drag-guide' + (dragLine.mode === 'skill' ? ' energy' : '')} aria-hidden="true"><line x1={dragLine.x1} y1={dragLine.y1} x2={dragLine.x2} y2={dragLine.y2} />{dragLine.mode === 'unit' && <circle cx={dragLine.x2} cy={dragLine.y2} r="12" />}</svg>}
       {dragLine?.mode === 'skill' && <img className="ep-drag-energy-stone" src={ENERGY_STONE_FULL} style={{ left: dragLine.x2, top: dragLine.y2 }} alt="" aria-hidden="true" />}
-      {scene.pendingAction === 'skill1' && scene.pendingActor?.team === 0 && <div className="ep-target-hint">{lang === 'zh' ? '能量石招式已選擇：拖曳角色至目標' : lang === 'th' ? 'เลือกท่าพลังงานแล้ว: ลากตัวละครไปยังเป้าหมาย' : 'Energy move armed: drag the Ranger to a target'}</div>}
       {detailUid && <UnitDetailModal unit={scene.battle.unit(detailUid) ?? null} scene={scene} lang={lang} onClose={() => setDetailUid(null)} />}
       {stageComplete && <div className="ep-stage-clear"><div><span>STAGE CLEAR</span><h2>{stageDef?.names.zh || stageDef?.names.en || stageDef?.id}</h2><p>所有波次已通過。</p><button className="ep-primary" onClick={onBack}>返回編組</button><button onClick={onRestart}>再次挑戰</button></div></div>}
       <RotateHint />
