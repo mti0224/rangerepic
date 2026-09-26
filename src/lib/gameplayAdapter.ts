@@ -2,7 +2,7 @@ import type { GameplayClass, GameplayEffect, GameplaySkill, NormalSupportDef } f
 import type { RangerConfig, Stats } from './rangerConfig'
 import type { SkillArea, SkillDef, SkillEffect } from './skills'
 
-const mappedEffect = (effect: GameplayEffect): SkillEffect | null => {
+export const gameplayEffectToLegacy = (effect: GameplayEffect): SkillEffect | null => {
   const value = effect.value ?? 0
   const turns = effect.duration ?? 1
   const tagged = (mapped: SkillEffect): SkillEffect => ({
@@ -48,7 +48,7 @@ const mappedEffect = (effect: GameplayEffect): SkillEffect | null => {
 
 const mappedEffects = (effects: GameplayEffect[]): SkillEffect[] =>
   effects.flatMap(effect => {
-    const mapped = mappedEffect(effect)
+    const mapped = gameplayEffectToLegacy(effect)
     if (!mapped) return []
     const hits = (effect.type === 'damage' || effect.type === 'fixedDamage') ? Math.max(1, Math.round(effect.hits ?? 1)) : 1
     return Array.from({ length: hits }, () => ({ ...mapped }))
