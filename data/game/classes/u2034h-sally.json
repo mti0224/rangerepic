@@ -21,15 +21,16 @@
     "target": "single",
     "hits": 1,
     "animation": "attack",
-    "skillGaugeGain": 5
+    "skillGaugeGain": 5,
+    "description": "對1名敵人造成攻擊力100%的傷害"
   },
   "normalSupport": {
     "target": "singleAlly",
-    "animation": "skill2",
+    "animation": "skill1",
     "effects": [
       {
         "type": "critRateUp",
-        "value": 10,
+        "value": 15,
         "duration": 3
       },
       {
@@ -37,7 +38,8 @@
         "value": 50,
         "duration": 3
       }
-    ]
+    ],
+    "description": "使1名Ranger的爆擊機率提升15%、爆擊傷害提升50%\n效果持續3回合"
   },
   "skill": {
     "name": "焦糖爆米花",
