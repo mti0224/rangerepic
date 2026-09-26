@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
 import {
-  ABILITY_TRIGGERS, CONDITION_LABEL_ZH, CONDITION_OPERATORS, CONDITION_TYPES, EFFECT_LABEL_ZH, EFFECT_TYPES,
-  TRIGGER_LABEL_ZH, newGameplayAbility, newGameplayCharacter, newGameplayClass, newGameplayEffect,
+  ABILITY_TRIGGERS, ATTACK_EFFECT_TYPES, CONDITION_LABEL_ZH, CONDITION_OPERATORS, CONDITION_TYPES, EFFECT_LABEL_ZH, EFFECT_TYPES,
+  SUPPORT_EFFECT_TYPES, TRIGGER_LABEL_ZH, newGameplayAbility, newGameplayCharacter, newGameplayClass, newGameplayEffect,
   type AbilityCondition, type BattleRulesV1, type GameplayAbility, type GameplayCharacter, type GameplayClass,
-  type GameplayEffect, type GameplayEffectType, type SkillTargetRule,
+  type GameplayEffect, type GameplayEffectType, type SkillKind, type SkillTargetRule,
 } from '@/lib/gameplaySchema'
 import {
-  deleteGameplayCharacter, deleteGameplayClass, listGameplayCharacters, listGameplayClasses, loadGameplayRules,
-  saveGameplayCharacter, saveGameplayClass, saveGameplayRules,
+  deleteGameplayCharacter, deleteGameplayClass, importAbilityIconZip, listGameplayCharacters, listGameplayClasses,
+  listGameplayIcons, loadGameplayRules, saveGameplayCharacter, saveGameplayClass, saveGameplayRules, uploadGameplayIcon,
+  type GameplayIconItem,
 } from '@/lib/gameplayApi'
 
 type View = 'characters' | 'classes' | 'rules'
@@ -22,6 +23,8 @@ export default function GameplayEditor() {
   const [classes, setClasses] = useState<GameplayClass[]>([])
   const [assets, setAssets] = useState<RangerListItem[]>([])
   const [rules, setRules] = useState<BattleRulesV1 | null>(null)
+  const [skillIcons, setSkillIcons] = useState<GameplayIconItem[]>([])
+  const [abilityIcons, setAbilityIcons] = useState<GameplayIconItem[]>([])
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [selectedClass, setSelectedClass] = useState<string | null>(null)
   const [characterDraft, setCharacterDraft] = useState<GameplayCharacter | null>(null)
@@ -33,8 +36,9 @@ export default function GameplayEditor() {
   const refresh = useCallback(async () => {
     setStatus('載入中…')
     try {
-      const [cs, ks, rs, as] = await Promise.all([
+      const [cs, ks, rs, as, si, ai] = await Promise.all([
         listGameplayCharacters(), listGameplayClasses(), loadGameplayRules(), listRangers(),
+        listGameplayIcons('skill'), listGameplayIcons('ability'),
       ])
       setCharacters(cs)
       setClasses(ks)
@@ -42,6 +46,8 @@ export default function GameplayEditor() {
       setRulesDraft(clone(rs))
       setStatus('')
       setAssets(as)
+      setSkillIcons(si)
+      setAbilityIcons(ai)
       return { cs, ks }
     } catch (e) {
       setStatus('載入失敗：' + String(e))
@@ -193,7 +199,19 @@ export default function GameplayEditor() {
         {view === 'characters' && !characterDraft && <Empty title="選擇或新增角色" text="Character 代表熊大、兔兔、饅頭人等角色本體；戰鬥數值放在 Class。" />}
 
         {view === 'classes' && classDraft && (
-          <ClassForm value={classDraft} characters={characters} assets={assets} onChange={setClassDraft} onSave={saveClass} onDelete={removeClass} />
+          <ClassForm
+            value={classDraft}
+            characters={characters}
+            assets={assets}
+            skillIcons={skillIcons}
+            abilityIcons={abilityIcons}
+            onSkillIconsChange={setSkillIcons}
+            onAbilityIconsChange={setAbilityIcons}
+            setStatus={setStatus}
+            onChange={setClassDraft}
+            onSave={saveClass}
+            onDelete={removeClass}
+          />
         )}
         {view === 'classes' && !classDraft && <Empty title="選擇或新增職業" text="Class 決定 Stats、普通攻擊、普通輔助、技能與能力；assetVariantId 只負責圖像／動畫。" />}
 
@@ -230,16 +248,35 @@ function CharacterForm({ value, onChange, onSave, onDelete }: {
   )
 }
 
-function ClassForm({ value, characters, assets, onChange, onSave, onDelete }: {
+function ClassForm({ value, characters, assets, skillIcons, abilityIcons, onSkillIconsChange, onAbilityIconsChange, setStatus, onChange, onSave, onDelete }: {
   value: GameplayClass
   characters: GameplayCharacter[]
   assets: RangerListItem[]
+  skillIcons: GameplayIconItem[]
+  abilityIcons: GameplayIconItem[]
+  onSkillIconsChange: (v: GameplayIconItem[]) => void
+  onAbilityIconsChange: (v: GameplayIconItem[]) => void
+  setStatus: (v: string) => void
   onChange: (v: GameplayClass) => void
   onSave: () => void
   onDelete: () => void
 }) {
   const names = (k: keyof GameplayClass['names'], v: string) => onChange({ ...value, names: { ...value.names, [k]: v } })
   const stat = (k: keyof GameplayClass['stats'], v: number) => onChange({ ...value, stats: { ...value.stats, [k]: v } })
+  const skillKind: SkillKind = value.skill.kind ?? (value.skill.target.side === 'ally' ? 'support' : 'attack')
+  const changeSkillKind = (kind: SkillKind) => {
+    const side = kind === 'attack' ? 'enemy' : 'ally'
+    const allowed = (kind === 'attack' ? ATTACK_EFFECT_TYPES : SUPPORT_EFFECT_TYPES) as readonly GameplayEffectType[]
+    let effects = value.skill.effects.filter(effect => allowed.includes(effect.type))
+    if (!effects.length) effects = [newGameplayEffect(kind === 'attack' ? 'damage' : 'shield')]
+    const selector = side === 'enemy' && ['lowestAttack', 'highestAttack'].includes(value.skill.target.selector)
+      ? 'random'
+      : value.skill.target.selector
+    onChange({
+      ...value,
+      skill: { ...value.skill, kind, target: { ...value.skill.target, side, selector }, effects },
+    })
+  }
   return (
     <div className="gp-form">
       <Header title={value.names.zh || value.id} sub={'Class · ' + value.id} onSave={onSave} onDelete={onDelete} />
@@ -296,20 +333,47 @@ function ClassForm({ value, characters, assets, onChange, onSave, onDelete }: {
             <option value="allAllies">全體友軍</option>
           </select>
         </Field>
-        <EffectList value={value.normalSupport.effects} onChange={effects => onChange({ ...value, normalSupport: { ...value.normalSupport, effects } })} />
+        <EffectList mode="support" value={value.normalSupport.effects} onChange={effects => onChange({ ...value, normalSupport: { ...value.normalSupport, effects } })} />
       </Section>
 
-      <Section title="技能" note="使用技能會取代該角色本 Round 的普通行動；攻擊技能的傷害使用 Attack × N%，不會爆擊。">
-        <TargetEditor value={value.skill.target} onChange={target => onChange({ ...value, skill: { ...value.skill, target } })} />
-        <EffectList value={value.skill.effects} onChange={effects => onChange({ ...value, skill: { ...value.skill, effects } })} />
+      <Section title="技能" note="攻擊技能與輔助技能使用不同效果清單。使用技能會取代該角色本 Round 的普通行動；攻擊技能不會爆擊。">
+        <IconPicker
+          label="技能圖示"
+          kind="skill"
+          value={value.skill.icon ?? ''}
+          icons={skillIcons}
+          onChange={icon => onChange({ ...value, skill: { ...value.skill, icon } })}
+          onIconsChange={onSkillIconsChange}
+          setStatus={setStatus}
+        />
+        <div className="gp-grid four">
+          <Field label="技能類型">
+            <select value={skillKind} onChange={e => changeSkillKind(e.target.value as SkillKind)}>
+              <option value="attack">攻擊技能</option>
+              <option value="support">輔助技能</option>
+            </select>
+          </Field>
+        </div>
+        <TargetEditor kind={skillKind} value={value.skill.target} onChange={target => onChange({ ...value, skill: { ...value.skill, kind: skillKind, target } })} />
+        <EffectList mode={skillKind} value={value.skill.effects} onChange={effects => onChange({ ...value, skill: { ...value.skill, kind: skillKind, effects } })} />
       </Section>
 
-      <Section title="能力" note="能力由 Trigger + Conditions + Effects 組成，不需要玩家主動施放。">
+      <Section title="能力" note="能力由 Trigger + Conditions + Effects 組成，不需要玩家主動施放。能力圖示可自行上傳，也可從能力圖示 ZIP 匯入後挑選。">
+        <AbilityIconZipImport onImported={icons => onAbilityIconsChange(icons)} setStatus={setStatus} />
         <div className="gp-ability-list">
           {value.abilities.map((a, i) => (
-            <AbilityEditor key={i} value={a} index={i} onChange={ability => {
-              const abilities = [...value.abilities]; abilities[i] = ability; onChange({ ...value, abilities })
-            }} onDelete={() => onChange({ ...value, abilities: value.abilities.filter((_, j) => j !== i) })} />
+            <AbilityEditor
+              key={i}
+              value={a}
+              index={i}
+              icons={abilityIcons}
+              onIconsChange={onAbilityIconsChange}
+              setStatus={setStatus}
+              onChange={ability => {
+                const abilities = [...value.abilities]; abilities[i] = ability; onChange({ ...value, abilities })
+              }}
+              onDelete={() => onChange({ ...value, abilities: value.abilities.filter((_, j) => j !== i) })}
+            />
           ))}
         </div>
         <button onClick={() => onChange({ ...value, abilities: [...value.abilities, newGameplayAbility(value.abilities.length + 1)] })}>＋ 新增能力</button>
@@ -318,28 +382,21 @@ function ClassForm({ value, characters, assets, onChange, onSave, onDelete }: {
   )
 }
 
-function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (v: SkillTargetRule) => void }) {
-  const selectors = value.side === 'enemy'
+function TargetEditor({ value, kind, onChange }: { value: SkillTargetRule; kind: SkillKind; onChange: (v: SkillTargetRule) => void }) {
+  const side = kind === 'attack' ? 'enemy' : 'ally'
+  const selectors = side === 'enemy'
     ? [['random', '隨機'], ['lowestHp', '體力低至高'], ['highestHp', '體力高至低']] as const
     : [['random', '隨機'], ['lowestHp', '體力低至高'], ['highestHp', '體力高至低'], ['lowestAttack', '攻擊力低至高'], ['highestAttack', '攻擊力高至低']] as const
   return (
     <div className="gp-grid four">
-      <Field label="作用對象">
-        <select value={value.side} onChange={e => {
-          const side = e.target.value as SkillTargetRule['side']
-          const selector = side === 'enemy' && ['lowestAttack', 'highestAttack'].includes(value.selector) ? 'random' : value.selector
-          onChange({ ...value, side, selector })
-        }}>
-          <option value="enemy">敵方</option><option value="ally">我方</option>
-        </select>
-      </Field>
+      <Field label="作用對象"><div className="gp-readonly">{side === 'enemy' ? '敵方' : '我方'}</div></Field>
       <Field label="數量">
-        <select value={String(value.count)} onChange={e => onChange({ ...value, count: e.target.value === 'all' ? 'all' : Number(e.target.value) })}>
+        <select value={String(value.count)} onChange={e => onChange({ ...value, side, count: e.target.value === 'all' ? 'all' : Number(e.target.value) })}>
           <option value="all">全體</option>{[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
         </select>
       </Field>
       <Field label="挑選依據">
-        <select value={value.selector} onChange={e => onChange({ ...value, selector: e.target.value as SkillTargetRule['selector'] })}>
+        <select value={value.selector} onChange={e => onChange({ ...value, side, selector: e.target.value as SkillTargetRule['selector'] })}>
           {selectors.map(([k, label]) => <option key={k} value={k}>{label}</option>)}
         </select>
       </Field>
@@ -347,15 +404,28 @@ function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (
   )
 }
 
-function EffectList({ value, onChange }: { value: GameplayEffect[]; onChange: (v: GameplayEffect[]) => void }) {
+type EffectMode = SkillKind | 'ability'
+
+function effectsFor(mode: EffectMode): readonly GameplayEffectType[] {
+  if (mode === 'attack') return ATTACK_EFFECT_TYPES
+  if (mode === 'support') return SUPPORT_EFFECT_TYPES
+  return EFFECT_TYPES
+}
+
+function EffectList({ value, mode, onChange }: { value: GameplayEffect[]; mode: EffectMode; onChange: (v: GameplayEffect[]) => void }) {
+  const allowed = effectsFor(mode)
+  const defaultType: GameplayEffectType = mode === 'support' ? 'shield' : mode === 'attack' ? 'damage' : 'attackUp'
   return (
     <div className="gp-effects">
+      <div className={'gp-effect-mode ' + mode}>
+        {mode === 'attack' ? '攻擊效果' : mode === 'support' ? '輔助效果' : '能力效果'}
+      </div>
       {value.map((effect, i) => (
-        <EffectEditor key={i} value={effect} onChange={next => {
+        <EffectEditor key={i} value={effect} allowed={allowed} onChange={next => {
           const rows = [...value]; rows[i] = next; onChange(rows)
         }} onDelete={() => onChange(value.filter((_, j) => j !== i))} />
       ))}
-      <button className="gp-add-effect" onClick={() => onChange([...value, newGameplayEffect()])}>＋ 新增效果</button>
+      <button className="gp-add-effect" onClick={() => onChange([...value, newGameplayEffect(defaultType)])}>＋ 新增效果</button>
     </div>
   )
 }
@@ -363,12 +433,13 @@ function EffectList({ value, onChange }: { value: GameplayEffect[]; onChange: (v
 const NO_VALUE = new Set<GameplayEffectType>(['stun','silence','removeShield','dispelBuffs','taunt','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','removeTaunt','removeStun','removeSilence'])
 const NO_DURATION = new Set<GameplayEffectType>(['damage','removeShield','dispelBuffs','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','fixedDamage','removeTaunt','removeStun','removeSilence'])
 
-function EffectEditor({ value, onChange, onDelete }: { value: GameplayEffect; onChange: (v: GameplayEffect) => void; onDelete: () => void }) {
+function EffectEditor({ value, allowed, onChange, onDelete }: { value: GameplayEffect; allowed: readonly GameplayEffectType[]; onChange: (v: GameplayEffect) => void; onDelete: () => void }) {
   const changeType = (type: GameplayEffectType) => onChange(newGameplayEffect(type))
+  const choices = allowed.includes(value.type) ? allowed : [value.type, ...allowed]
   return (
     <div className="gp-effect">
       <select value={value.type} onChange={e => changeType(e.target.value as GameplayEffectType)}>
-        {EFFECT_TYPES.map(t => <option key={t} value={t}>{EFFECT_LABEL_ZH[t]}</option>)}
+        {choices.map(t => <option key={t} value={t}>{allowed.includes(t) ? EFFECT_LABEL_ZH[t] : '⚠ 舊資料：' + EFFECT_LABEL_ZH[t]}</option>)}
       </select>
       {!NO_VALUE.has(value.type) && <Num label={effectValueLabel(value.type)} value={value.value ?? 0} onChange={v => onChange({ ...value, value: v })} compact />}
       {!NO_DURATION.has(value.type) && <Num label="持續 Round" value={value.duration ?? 1} min={1} step={1} onChange={v => onChange({ ...value, duration: Math.max(1, Math.round(v)) })} compact />}
@@ -386,10 +457,27 @@ function effectValueLabel(type: GameplayEffectType): string {
   return '數值 %'
 }
 
-function AbilityEditor({ value, index, onChange, onDelete }: { value: GameplayAbility; index: number; onChange: (v: GameplayAbility) => void; onDelete: () => void }) {
+function AbilityEditor({ value, index, icons, onIconsChange, setStatus, onChange, onDelete }: {
+  value: GameplayAbility
+  index: number
+  icons: GameplayIconItem[]
+  onIconsChange: (v: GameplayIconItem[]) => void
+  setStatus: (v: string) => void
+  onChange: (v: GameplayAbility) => void
+  onDelete: () => void
+}) {
   return (
     <div className="gp-ability">
       <div className="gp-ability-head"><b>能力 {index + 1}</b><button className="danger" onClick={onDelete}>刪除</button></div>
+      <IconPicker
+        label="能力圖示"
+        kind="ability"
+        value={value.icon ?? ''}
+        icons={icons}
+        onChange={icon => onChange({ ...value, icon })}
+        onIconsChange={onIconsChange}
+        setStatus={setStatus}
+      />
       <div className="gp-grid three">
         <Field label="Ability ID"><input value={value.id} onChange={e => onChange({ ...value, id: e.target.value })} /></Field>
         <Field label="Trigger">
@@ -405,7 +493,7 @@ function AbilityEditor({ value, index, onChange, onDelete }: { value: GameplayAb
       }} onDelete={() => onChange({ ...value, conditions: value.conditions.filter((_, j) => j !== i) })} />)}
       <button onClick={() => onChange({ ...value, conditions: [...value.conditions, { type: 'selfHpPercent', operator: '<=', value: 50 }] })}>＋ Condition</button>
       <h4>Effects</h4>
-      <EffectList value={value.effects} onChange={effects => onChange({ ...value, effects })} />
+      <EffectList mode="ability" value={value.effects} onChange={effects => onChange({ ...value, effects })} />
     </div>
   )
 }
@@ -424,6 +512,85 @@ function ConditionEditor({ value, onChange, onDelete }: { value: AbilityConditio
         onChange({ ...value, value: e.target.value !== '' && Number.isFinite(n) ? n : e.target.value })
       }} />
       <button className="danger gp-x" onClick={onDelete}>×</button>
+    </div>
+  )
+}
+
+function IconPicker({ label, kind, value, icons, onChange, onIconsChange, setStatus }: {
+  label: string
+  kind: 'skill' | 'ability'
+  value: string
+  icons: GameplayIconItem[]
+  onChange: (url: string) => void
+  onIconsChange: (icons: GameplayIconItem[]) => void
+  setStatus: (v: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const upload = async (file: File | undefined) => {
+    if (!file) return
+    setStatus('上傳' + label + '中…')
+    try {
+      const icon = await uploadGameplayIcon(kind, file)
+      const next = [...icons.filter(x => x.url !== icon.url), icon]
+      onIconsChange(next)
+      onChange(icon.url)
+      setStatus(label + '已上傳。')
+    } catch (e) {
+      setStatus('圖示上傳失敗：' + String(e))
+    }
+  }
+  return (
+    <div className="gp-icon-picker">
+      <div className="gp-icon-current">
+        {value ? <img src={value} alt="" /> : <div className="gp-icon-empty">無</div>}
+        <div><b>{label}</b><small>{value || '尚未設定圖示'}</small></div>
+      </div>
+      <div className="gp-icon-actions">
+        <label className="gp-file-btn">
+          上傳圖示
+          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => { void upload(e.target.files?.[0]); e.currentTarget.value = '' }} />
+        </label>
+        <button onClick={() => setOpen(v => !v)}>{open ? '收合圖示庫' : kind === 'ability' ? '選擇能力圖示庫' : '選擇已上傳圖示'}</button>
+        {value && <button onClick={() => onChange('')}>清除</button>}
+      </div>
+      {open && (
+        <div className="gp-icon-grid">
+          {icons.map(icon => (
+            <button key={icon.url} className={value === icon.url ? 'sel' : ''} onClick={() => { onChange(icon.url); setOpen(false) }} title={icon.name}>
+              <img src={icon.url} alt={icon.name} />
+              <small>{icon.name.replace(/\.(png|jpe?g|webp)$/i, '')}</small>
+              <i>{icon.source === 'library' ? '圖示包' : '上傳'}</i>
+            </button>
+          ))}
+          {!icons.length && <p className="gp-empty">目前沒有可選圖示。</p>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function AbilityIconZipImport({ onImported, setStatus }: { onImported: (icons: GameplayIconItem[]) => void; setStatus: (v: string) => void }) {
+  const importZip = async (file: File | undefined) => {
+    if (!file) return
+    setStatus('匯入能力圖示 ZIP 中…')
+    try {
+      const result = await importAbilityIconZip(file)
+      onImported(result.icons)
+      setStatus('能力圖示庫已匯入 ' + result.count + ' 個 PNG。')
+    } catch (e) {
+      setStatus('ZIP 匯入失敗：' + String(e))
+    }
+  }
+  return (
+    <div className="gp-zip-import">
+      <div>
+        <b>能力圖示庫</b>
+        <small>可匯入 hd_ability_icon_*.zip；PNG 會存入 public/gameplay-icons/abilities，之後可直接在每個能力中挑選。</small>
+      </div>
+      <label className="gp-file-btn">
+        匯入能力圖示 ZIP
+        <input type="file" accept=".zip,application/zip,application/x-zip-compressed" onChange={e => { void importZip(e.target.files?.[0]); e.currentTarget.value = '' }} />
+      </label>
     </div>
   )
 }

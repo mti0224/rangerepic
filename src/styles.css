@@ -392,3 +392,29 @@ img.stars { display: block; height: auto; pointer-events: none; }
   .gp-effect { grid-template-columns: 1fr 1fr; }
   .gp-rule-flags { grid-template-columns: 1fr; }
 }
+
+/* Gameplay icon picker + split effect categories */
+.gp-readonly { min-height: 30px; display: flex; align-items: center; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: #0f141d; color: var(--dim); }
+.gp-effect-mode { width: max-content; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+.gp-effect-mode.attack { background: rgba(248,113,113,.14); color: #fca5a5; border: 1px solid rgba(248,113,113,.35); }
+.gp-effect-mode.support { background: rgba(74,222,128,.12); color: #86efac; border: 1px solid rgba(74,222,128,.32); }
+.gp-effect-mode.ability { background: rgba(96,165,250,.12); color: #93c5fd; border: 1px solid rgba(96,165,250,.32); }
+.gp-icon-picker { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-2); }
+.gp-icon-current { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.gp-icon-current img, .gp-icon-empty { width: 52px; height: 52px; flex: none; object-fit: contain; border-radius: 9px; background: #080b10; border: 1px solid var(--line); }
+.gp-icon-empty { display: grid; place-items: center; color: var(--dim); font-size: 11px; }
+.gp-icon-current > div:last-child { min-width: 0; display: flex; flex-direction: column; }
+.gp-icon-current small { color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gp-icon-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.gp-file-btn { display: inline-flex; align-items: center; justify-content: center; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-2); color: var(--text); cursor: pointer; }
+.gp-file-btn:hover { border-color: #3d4c63; }
+.gp-file-btn input { display: none; }
+.gp-icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 6px; max-height: 330px; overflow: auto; padding: 7px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.gp-icon-grid > button { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px; background: var(--panel); }
+.gp-icon-grid > button.sel { border-color: var(--accent); background: rgba(75,159,255,.12); }
+.gp-icon-grid img { width: 46px; height: 46px; object-fit: contain; }
+.gp-icon-grid small { width: 100%; color: var(--text); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gp-icon-grid i { color: var(--dim); font-style: normal; font-size: 9px; }
+.gp-zip-import { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 10px; padding: 10px; border: 1px dashed #4b6689; border-radius: 9px; background: rgba(75,159,255,.06); }
+.gp-zip-import > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.gp-zip-import small { color: var(--dim); line-height: 1.5; }
