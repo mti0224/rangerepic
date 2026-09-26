@@ -136,8 +136,11 @@ export default function PlayMode() {
       for (const [i, id] of ids.entries()) {
         const assetItem = assetItems.find(a => a.id === id)
         if (!assetItem) throw new Error(`找不到圖資：${id}`)
-        const existing = data.find(d => d.item.id === id)?.config
-        const raw = existing ?? migrateRangerConfig(await loadRangerConfig(id) ?? (() => { throw new Error(`無法載入圖資設定：${id}`) })())
+        // Keep the battle kit on the original asset config. Gameplay animation
+        // mapping is class-specific and is applied per UnitView in BattleScene.
+        // Reusing an already-adapted roster config here would make classes that share
+        // one assetVariantId inherit another class's visual action mapping.
+        const raw = migrateRangerConfig(await loadRangerConfig(id) ?? (() => { throw new Error(`無法載入圖資設定：${id}`) })())
         const assets = await loadRangerAssets(id, assetItem.bullets)
         const config = withDefaultGround(raw, assets.geometry.autoStand)
         map.set(id, { assets, config, info: null })
