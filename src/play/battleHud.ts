@@ -326,12 +326,29 @@ export class BattleHud {
   // ── ซ้ายบน: เทิร์น + ลำดับเทิร์น ──
 
   private drawTurn(ctx: CanvasRenderingContext2D): void {
+    const battle = this.s.battle
     ctx.font = F(22)
     ctx.textAlign = 'left'
+
+    if (battle.usesGameplayPhases) {
+      const lang = getLang()
+      const label = lang === 'th' ? 'รอบ' : 'Round'
+      const phase = battle.gameplayPhase === 0
+        ? (lang === 'zh' ? '玩家階段' : lang === 'th' ? 'ฝ่ายผู้เล่น' : 'Player Phase')
+        : (lang === 'zh' ? '敵方階段' : lang === 'th' ? 'ฝ่ายศัตรู' : 'Enemy Phase')
+      const lw = ctx.measureText(label).width
+      outlined(ctx, label, 20, 44, C.gold, 5)
+      ctx.font = F(30)
+      outlined(ctx, String(battle.gameplayRound), 20 + lw + 12, 45, C.text, 5)
+      ctx.font = F(11)
+      outlined(ctx, phase, 20, 63, battle.gameplayPhase === 0 ? C.ally : C.foe, 3)
+      return
+    }
+
     const lw = ctx.measureText(t('turn')).width
     outlined(ctx, t('turn'), 20, 46, C.gold, 5)
     // 13/80 — 10 เทิร์นสุดท้ายเลขเป็นสีแดง (ใกล้ถูกบังคับจบ)
-    const turn = this.s.battle.turn
+    const turn = battle.turn
     ctx.font = F(30)
     const nx = 20 + lw + 12
     outlined(ctx, String(turn), nx, 47, TURN_LIMIT - turn < 10 ? C.debuff : C.text, 5)
