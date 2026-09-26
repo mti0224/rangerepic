@@ -34,6 +34,9 @@ jobs:
       - name: Check admin server syntax
         run: npm run check:admin
 
+      - name: Test Gameplay V1 rules
+        run: npm run test:gameplay-v1
+
       - name: Build admin editor
         run: npm run build:admin
 
