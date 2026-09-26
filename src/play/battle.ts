@@ -1344,6 +1344,13 @@ export class Battle {
     }
     if (src && isDot(type)) { st.srcAtk = this.effAtk(src); st.srcElement = src.element }
     target.statuses.push(st)
+    if (effect?.gameplayType) {
+      this.dispatchGameplayAbilityEvent('statusApplied', {
+        subject: target,
+        attacker: src,
+        statusType: effect.gameplayType,
+      })
+    }
   }
 
   /**
@@ -1387,14 +1394,19 @@ export class Battle {
   }
 
   /** ลงดาเมจโดยเพิกเฉยโล่ขาว pierce% (ส่วนที่เหลือโล่รับก่อนตามปกติ) */
-  private dealWithPierce(target: Unit, damage: number, o: Outcome, pierce = 0): void {
+  private dealWithPierce(target: Unit, damage: number, o: Outcome, pierce = 0, attacker?: Unit): void {
     const through = Math.round(damage * Math.max(0, Math.min(100, pierce)) / 100)
-    if (through > 0) this.takeDamage(target, through, o, true)
-    if (damage - through > 0) this.takeDamage(target, damage - through, o)
+    if (through > 0) this.takeDamage(target, through, o, true, attacker)
+    if (damage - through > 0) this.takeDamage(target, damage - through, o, false, attacker)
   }
 
   /** ลงดาเมจ: โล่รับก่อน แล้วค่อย HP */
-  private takeDamage(target: Unit, damage: number, o: Outcome, ignoreShield = false): void {
+  private takeDamage(target: Unit, damage: number, o: Outcome, ignoreShield = false, attacker?: Unit): void {
+    if (!target.alive || damage <= 0) return
+    if (target.gameplayClass) {
+      this.dispatchGameplayAbilityEvent('beforeDamaged', { subject: target, attacker, damage })
+    }
+
     let left = damage
     if (!ignoreShield) {
       // Multiple Gameplay V1 shield layers can coexist; consume oldest layers first.
@@ -1408,11 +1420,27 @@ export class Battle {
       }
       target.statuses = target.statuses.filter(s => s.type !== 'shield' || (s.shieldHp ?? 0) > 0)
     }
+
+    const hpBefore = target.hp
     target.hp = Math.max(0, target.hp - left)
-    if (target.hp === 0) {
+    const actualDamage = Math.max(0, hpBefore - target.hp)
+
+    if (target.gameplayClass && actualDamage > 0) {
+      const event = { subject: target, attacker, damage: actualDamage, hpBefore, hpAfter: target.hp }
+      this.dispatchGameplayAbilityEvent('afterDamaged', event)
+      this.dispatchGameplayAbilityEvent('hpChanged', event)
+    }
+
+    if (target.hp === 0 && target.alive) {
       target.alive = false
-      target.statuses = []
       o.killed = true
+      if (target.gameplayClass) {
+        const deathEvent = { subject: target, attacker, damage: actualDamage, hpBefore, hpAfter: 0 }
+        this.dispatchGameplayAbilityEvent('selfDied', deathEvent)
+        this.dispatchGameplayAbilityEvent('allyDied', deathEvent)
+        this.dispatchGameplayAbilityEvent('enemyDied', deathEvent)
+      }
+      target.statuses = []
     }
   }
 
@@ -1425,10 +1453,14 @@ export class Battle {
   }
 
   /** ฟื้นเลือด amount (ไม่เกินเลือดเต็ม · โดนห้ามฟื้นฟู = 0) — คืนเลือดที่ได้จริง */
-  private healUnit(u: Unit, amount: number): number {
+  private healUnit(u: Unit, amount: number, _source?: Unit): number {
     if (!this.canHeal(u) || amount <= 0) return 0
+    const hpBefore = u.hp
     const got = Math.min(u.maxHp - u.hp, Math.round(amount * this.healFactor(u)))
     u.hp += got
+    if (u.gameplayClass && got > 0) {
+      this.dispatchGameplayAbilityEvent('hpChanged', { subject: u, hpBefore, hpAfter: u.hp })
+    }
     return got
   }
 
@@ -1548,20 +1580,20 @@ export class Battle {
             const base = e.type === 'damageHp' ? actor.maxHp : undefined
             const r = this.rollDamage(actor, t, e.pct ?? 100, normal, base)
             o.damage += r.damage; o.crit ||= r.crit; o.elementMult = r.elementMult
-            this.dealWithPierce(t, r.damage, o, e.pierce ?? 0)
+            this.dealWithPierce(t, r.damage, o, e.pierce ?? 0, actor)
             dealt += r.damage
             if (traitSteal > 0) addHeal(actor, r.damage * traitSteal)
           } else if (e.type === 'trueDamage') {
             if (actor.gameplayClass && e.gameplayType === 'fixedDamage') {
               const d = Math.max(0, Math.round(e.gameplayValue ?? e.amount ?? 0))
               o.damage += d
-              this.takeDamage(t, d, o)
+              this.takeDamage(t, d, o, false, actor)
               dealt += d
             } else {
               // Legacy true damage: bypasses shield.
               const d = this.trueHit(actor, t, e.pct ?? 100)
               o.damage += d; o.trueDamage += d
-              this.takeDamage(t, d, o, true)
+              this.takeDamage(t, d, o, true, actor)
               dealt += d
               if (traitSteal > 0) addHeal(actor, d * traitSteal)
             }
@@ -1575,7 +1607,7 @@ export class Battle {
           const reflected = Math.max(0, Math.round(receivedHpDamage * reflectPct / 100))
           if (reflected > 0) {
             // Reflection never crits and never re-triggers reflection.
-            this.takeDamage(actor, reflected, emptyOutcome(actor.uid, actor.hp))
+            this.takeDamage(actor, reflected, emptyOutcome(actor.uid, actor.hp), false, t)
           }
         }
 
@@ -1699,7 +1731,7 @@ export class Battle {
     const p = pct ?? this.skillOf(attacker, action).effects.find(e => e.type === 'damage')?.pct ?? 100
     const r = this.rollDamage(attacker, target, p, action === 'attack')
     const o = emptyOutcome(target.uid)
-    this.takeDamage(target, r.damage, o)
+    this.takeDamage(target, r.damage, o, false, attacker)
     return { ...r, killed: o.killed }
   }
 }
