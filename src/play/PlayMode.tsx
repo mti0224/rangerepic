@@ -3,10 +3,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { listRangers, loadRangerConfig } from '@/lib/rangerApi'
 import { loadRangerAssets } from '@/lib/rangerAssets'
 import { migrateRangerConfig, withDefaultGround, type ActionName, type Row } from '@/lib/rangerConfig'
-import { Battle, type Team, type UnitSetup } from './battle'
+import { Battle, type Team, type Unit, type UnitSetup } from './battle'
 import { BattleScene, VIEW_H, VIEW_W, type RangerKit } from './battleScene'
 import { toggleUnitCard, type HudHit } from './battleHud'
-import { LANGS, LANG_LABEL, cycleLang, setLang, type Lang } from './i18n'
+import { LANGS, LANG_LABEL, cycleLang, setLang, statusLabel, type Lang } from './i18n'
 import { toggleCutins } from '@/lib/cutin'
 import TeamBuilder from './TeamBuilder'
 import { SLOT_KEYS, emptyTeam, cleanFormation, buildPlayerRoster, type Formation, type RangerData } from './playerRoster'
@@ -16,7 +16,7 @@ import { ClassSelection, nameOf } from './ClassSelection'
 import { canFullscreen, enterGameFullscreen, inAppBrowser, isIOS, isTouchDevice, openInExternalBrowser, useFullscreen } from './screen'
 import { ui, useLang } from './uiText'
 import { loadGameplayCatalog } from '@/lib/gameplayApi'
-import { DEFAULT_BATTLE_RULES, type BattleRulesV1 } from '@/lib/gameplaySchema'
+import { DEFAULT_BATTLE_RULES, EFFECT_LABEL_ZH, TRIGGER_LABEL_ZH, type BattleRulesV1, type GameplayEffect } from '@/lib/gameplaySchema'
 import { loadAdventureCatalog } from '@/lib/adventureApi'
 import { enemyAsCombatClass, type GameplayEnemy, type GameplayStage } from '@/lib/adventureSchema'
 import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
@@ -34,6 +34,18 @@ const MAX_CANVAS_W = 2560
 const SPEED_STEPS = [1, 2, 4]
 const RIPPLE_MS = 600
 const MAX_RIPPLES = 6
+const LONG_PRESS_MS = 2000
+const DRAG_THRESHOLD = 14
+
+type BattleGesture = {
+  pointerId: number
+  mode: 'unit' | 'skill'
+  sourceUid: string | null
+  startView: { x: number; y: number }
+  moved: boolean
+  longPressed: boolean
+}
+type DragLine = { x1: number; y1: number; x2: number; y2: number; mode: 'unit' | 'skill' }
 function savedFormation(): unknown {
   try { return JSON.parse(localStorage.getItem(FORMATION_KEY) ?? 'null') } catch { return null }
 }
@@ -224,6 +236,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   onBack: () => void
   onRestart: () => void
 }) {
+  const lang = useLang()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [revision, force] = useState(0)
   const rerender = useCallback(() => force(n => n + 1), [])
@@ -235,6 +248,19 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   const [speed, setSpeed] = useState(1)
   const [auto, setAuto] = useState(false)
   const [paused, setPaused] = useState(false)
+  const [detailUid, setDetailUid] = useState<string | null>(null)
+  const gestureRef = useRef<BattleGesture | null>(null)
+  const longPressRef = useRef<number | null>(null)
+  const [dragLine, setDragLine] = useState<DragLine | null>(null)
+
+  const clearLongPress = useCallback(() => {
+    if (longPressRef.current != null) {
+      window.clearTimeout(longPressRef.current)
+      longPressRef.current = null
+    }
+  }, [])
+
+  useEffect(() => () => clearLongPress(), [clearLongPress])
 
   const thumbs = useMemo(() => {
     const m = new Map<string, HTMLImageElement>()
@@ -435,6 +461,7 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
       case 'summon': scene.chooseSummon(hit.index, hit.action); break
       case 'auto': setAuto(a => !a); break
       case 'speed': setSpeed(s => SPEED_STEPS[(SPEED_STEPS.indexOf(s) + 1) % SPEED_STEPS.length]); break
+      case 'skillGauge': break
       case 'settings': scene.hud.menuOpen = true; break
       case 'closeMenu': scene.hud.menuOpen = false; break
       case 'pause': setPaused(p => !p); scene.hud.menuOpen = false; break
@@ -451,21 +478,120 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
   onHudRef.current = onHud
 
 
-  // รับคลิกตอนกดลง (pointerdown) — ตอบสนองทันที ไม่ต้องรอปล่อยนิ้วในจุดเดิม
-  // และกันพฤติกรรมเดิมของเบราว์เซอร์ (ลากเลือกข้อความ / โฟกัสหลุด) ระหว่างกดรัวๆ
+  // Angry Birds Epic-style interaction:
+  // drag Ranger → enemy = normal attack; drag Ranger → ally / tap self = normal support.
+  // When the shared gauge is full, drag the gauge onto a Ranger to arm/use that Ranger's skill.
+  // Holding any Ranger/enemy for 2 seconds opens the detailed information panel.
   const onCanvasDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (e.button !== 0) return
     e.preventDefault()
-    const { x, y } = toView(e)
-    // คัตซีนร่ายสกิล: คลิกที่ไหนก็ได้ = ข้าม
+    const p = toView(e)
     if (scene.cutinActive) { scene.skipCutin(); return }
-    const hit = scene.hud.hitAt(x, y)
-    if (hit) { onHud(hit); return }
-    // ระหว่างเปิดฉาก: คลิกเพื่อข้ามไปเริ่มเลย
+    const hit = scene.hud.hitAt(p.x, p.y)
+    if (hit && hit.kind !== 'skillGauge') { onHud(hit); return }
     if (scene.phase === 'intro') { scene.skipIntro(); return }
-    const uid = scene.unitAt(x, y)
-    if (uid) scene.chooseTarget(uid)
+
+    if (detailUid) setDetailUid(null)
+    clearLongPress()
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* optional */ }
+
+    if (hit?.kind === 'skillGauge') {
+      gestureRef.current = { pointerId: e.pointerId, mode: 'skill', sourceUid: null, startView: p, moved: false, longPressed: false }
+      setDragLine({ x1: e.clientX, y1: e.clientY, x2: e.clientX, y2: e.clientY, mode: 'skill' })
+      return
+    }
+
+    const uid = scene.unitAt(p.x, p.y)
+    if (!uid) return
+    const unit = scene.battle.unit(uid)
+    gestureRef.current = { pointerId: e.pointerId, mode: 'unit', sourceUid: uid, startView: p, moved: false, longPressed: false }
+
+    const armedSkill = scene.pendingAction === 'skill1' && scene.pendingActor?.uid === uid
+    const canAct = !!unit && unit.team === 0 && scene.phase === 'input'
+    if (canAct && !armedSkill) scene.selectPlayerActor(uid)
+    if (canAct) setDragLine({ x1: e.clientX, y1: e.clientY, x2: e.clientX, y2: e.clientY, mode: 'unit' })
+
+    longPressRef.current = window.setTimeout(() => {
+      const g = gestureRef.current
+      if (!g || g.pointerId !== e.pointerId || g.moved || g.mode !== 'unit' || g.sourceUid !== uid) return
+      g.longPressed = true
+      setDragLine(null)
+      setDetailUid(uid)
+      rerender()
+    }, LONG_PRESS_MS)
   }
+
+  const onCanvasMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const p = toView(e)
+    scene.hud.hover = p
+    const g = gestureRef.current
+    if (!g || g.pointerId !== e.pointerId) return
+    const moved = Math.hypot(p.x - g.startView.x, p.y - g.startView.y) >= DRAG_THRESHOLD
+    if (moved && !g.moved) {
+      g.moved = true
+      clearLongPress()
+    }
+    if (dragLine) setDragLine(line => line ? { ...line, x2: e.clientX, y2: e.clientY } : line)
+  }
+
+  const endGesture = (e: React.PointerEvent<HTMLCanvasElement>, cancelled = false) => {
+    const g = gestureRef.current
+    if (!g || g.pointerId !== e.pointerId) return
+    clearLongPress()
+    gestureRef.current = null
+    setDragLine(null)
+    try { e.currentTarget.releasePointerCapture(e.pointerId) } catch { /* optional */ }
+    if (cancelled || g.longPressed) return
+
+    const p = toView(e)
+    const targetUid = scene.unitAt(p.x, p.y)
+
+    if (g.mode === 'skill') {
+      const caster = targetUid ? scene.battle.unit(targetUid) : undefined
+      if (caster && caster.team === 0 && scene.selectPlayerActor(caster.uid) && scene.battle.canUse(caster, 'skill1')) {
+        scene.chooseAction('skill1')
+        // Non-manual authored skills already know how targets are selected; execute immediately.
+        // Manual skills stay armed and the player drags that Ranger to the desired target next.
+        if (scene.pendingAction === 'skill1' && caster.gameplayClass?.skill.target.selector !== 'manual') {
+          const autoTarget = scene.battle.autoTarget(caster, 'skill1')
+          if (autoTarget) scene.chooseTarget(autoTarget.uid)
+        }
+      }
+      rerender()
+      return
+    }
+
+    const source = g.sourceUid ? scene.battle.unit(g.sourceUid) : undefined
+    if (!source || source.team !== 0 || scene.phase !== 'input') return
+
+    // A manual skill armed by the shared gauge uses the next drag from that Ranger to choose its target.
+    if (scene.pendingAction === 'skill1' && scene.pendingActor?.uid === source.uid) {
+      if (targetUid) scene.chooseTarget(targetUid)
+      else scene.cancelPendingAction()
+      rerender()
+      return
+    }
+
+    const actualTargetUid = targetUid ?? (!g.moved ? source.uid : null)
+    const target = actualTargetUid ? scene.battle.unit(actualTargetUid) : undefined
+    if (!target || !scene.selectPlayerActor(source.uid)) return
+    const action: ActionName = target.team === 0 ? 'skill2' : 'attack'
+    if (!scene.battle.canUse(source, action)) return
+    scene.chooseAction(action)
+    if (scene.pendingAction === action) {
+      scene.chooseTarget(target.uid)
+      // Dropping on an invalid target (for example because of taunt) should not leave a hidden action armed.
+      if (scene.pendingAction === action) scene.cancelPendingAction()
+    }
+    rerender()
+  }
+
+  const onCanvasUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    e.preventDefault()
+    endGesture(e)
+  }
+
+  const onCanvasCancel = (e: React.PointerEvent<HTMLCanvasElement>) => endGesture(e, true)
 
   // ── กดเมาส์: เคอร์เซอร์ถุงมือแบบกด (คลาส .pressing — lib/gameCursor.ts) + วงคลื่นจุดที่คลิก ──
   const [pressing, setPressing] = useState(false)
@@ -492,11 +618,6 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
     }
   }, [])
 
-  // เคอร์เซอร์เป็นถุงมือเกมตลอด (lib/gameCursor.ts) — ที่นี่แค่ส่งตำแหน่งเมาส์ให้ HUD (ไฮไลต์ปุ่ม/ไกด์ผลลัพธ์)
-  const onCanvasMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    scene.hud.hover = toView(e)
-  }
-
   return (
     <div className={'battle' + (pressing ? ' pressing' : '')} onPointerDownCapture={onRootDown}>
       {/* วงคลื่นตอนคลิก — ลอยทับทุกอย่าง ไม่รับเมาส์ */}
@@ -506,7 +627,10 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
           <i className="cr-ring cr-ring2" />
         </span>
       ))}
-      {stageDef && <div className="ep-wave-hud"><b>{stageDef.names.zh || stageDef.names.en || stageDef.id}</b><span>Wave {Math.min(waveIndex + 1, stageDef.waves.length)} / {stageDef.waves.length}</span></div>}
+      {stageDef && stageDef.waves.length > 1 && <div className="ep-wave-hud"><b>{stageDef.names.zh || stageDef.names.en || stageDef.id}</b><span>Wave {Math.min(waveIndex + 1, stageDef.waves.length)}/{stageDef.waves.length}</span></div>}
+      {dragLine && <svg className="ep-drag-guide" aria-hidden="true"><line x1={dragLine.x1} y1={dragLine.y1} x2={dragLine.x2} y2={dragLine.y2} /><circle cx={dragLine.x2} cy={dragLine.y2} r="12" /></svg>}
+      {scene.pendingAction === 'skill1' && scene.pendingActor?.team === 0 && <div className="ep-target-hint">{lang === 'zh' ? '技能已選擇：拖曳角色至目標' : lang === 'th' ? 'เลือกสกิลแล้ว: ลากตัวละครไปยังเป้าหมาย' : 'Skill armed: drag the Ranger to a target'}</div>}
+      {detailUid && <UnitDetailModal unit={scene.battle.unit(detailUid) ?? null} scene={scene} lang={lang} onClose={() => setDetailUid(null)} />}
       {stageComplete && <div className="ep-stage-clear"><div><span>STAGE CLEAR</span><h2>{stageDef?.names.zh || stageDef?.names.en || stageDef?.id}</h2><p>所有波次已通過。</p><button className="ep-primary" onClick={onBack}>返回編組</button><button onClick={onRestart}>再次挑戰</button></div></div>}
       <RotateHint />
       {needFs && (
@@ -523,10 +647,12 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
           width={VIEW_W}
           height={VIEW_H}
           onPointerDown={onCanvasDown}
+          onPointerMove={onCanvasMove}
+          onPointerUp={onCanvasUp}
+          onPointerCancel={onCanvasCancel}
           onDoubleClick={e => e.preventDefault()}
           onContextMenu={e => e.preventDefault()}
-          onMouseMove={onCanvasMove}
-          onMouseLeave={() => { scene.hud.hover = null }}
+          onPointerLeave={() => { if (!gestureRef.current) scene.hud.hover = null }}
         />
       </div>
     </div>
@@ -534,3 +660,69 @@ function BattleView({ formation, kits, seed, data, rules, stageDef, enemies, onB
 }
 
 
+
+
+function UnitDetailModal({ unit, scene, lang, onClose }: {
+  unit: Unit | null
+  scene: BattleScene
+  lang: Lang
+  onClose: () => void
+}) {
+  if (!unit) return null
+  const cls = unit.gameplayClass
+  const zh = lang === 'zh'
+  const th = lang === 'th'
+  const label = (z: string, e: string, t = e) => zh ? z : th ? t : e
+  const targetSide = (side: 'enemy' | 'ally') => side === 'enemy' ? label('敵方', 'Enemy', 'ศัตรู') : label('我方', 'Ally', 'ฝ่ายเรา')
+  const selector = (value: string) => ({
+    manual: label('手動指定', 'Manual', 'เลือกเอง'),
+    random: label('隨機', 'Random', 'สุ่ม'),
+    lowestHp: label('體力最低', 'Lowest HP', 'HP ต่ำสุด'),
+    highestHp: label('體力最高', 'Highest HP', 'HP สูงสุด'),
+    lowestAttack: label('攻擊力最低', 'Lowest Attack', 'พลังโจมตีต่ำสุด'),
+    highestAttack: label('攻擊力最高', 'Highest Attack', 'พลังโจมตีสูงสุด'),
+  } as Record<string, string>)[value] ?? value
+  const attackTarget = cls?.normalAttack.target === 'all' ? label('全體敵人', 'All enemies', 'ศัตรูทั้งหมด')
+    : cls?.normalAttack.target === 'primaryPlusRandom' ? label(`主要目標 + 隨機 ${cls.normalAttack.extraTargets ?? 0} 名`, `Primary + ${cls.normalAttack.extraTargets ?? 0} random`, `เป้าหมายหลัก + สุ่ม ${cls.normalAttack.extraTargets ?? 0}`)
+      : label('一名敵人', 'One enemy', 'ศัตรูหนึ่งตัว')
+  const supportTarget = cls?.normalSupport.target === 'allAllies' ? label('全體友軍', 'All allies', 'เพื่อนทั้งหมด') : label('一名友軍／自己', 'One ally / self', 'เพื่อนหนึ่งตัว / ตัวเอง')
+  const effectList = (effects: GameplayEffect[]) => effects.length ? effects.map((effect, i) => <li key={`${effect.type}:${i}`}>{effectSummary(effect, lang)}</li>) : <li>—</li>
+  const stats = cls?.stats
+  const statuses = unit.statuses
+
+  return <div className="ep-unit-detail-backdrop" role="presentation" onPointerDown={e => { if (e.target === e.currentTarget) onClose() }}>
+    <section className="ep-unit-detail" role="dialog" aria-modal="true" aria-label={label('角色詳細資訊', 'Unit details', 'รายละเอียดตัวละคร')}>
+      <header>
+        <div><small>{unit.team === 0 ? label('我方角色', 'Ally', 'ฝ่ายเรา') : label('敵方角色', 'Enemy', 'ศัตรู')}</small><h2>{scene.nameOf(unit)}</h2>{cls && <p>{cls.role}</p>}</div>
+        <button type="button" onClick={onClose} aria-label={label('關閉', 'Close', 'ปิด')}>×</button>
+      </header>
+
+      <div className="ep-detail-stats">
+        <div><span>HP</span><b>{Math.round(stats?.hp ?? unit.maxHp)}</b></div>
+        <div><span>{label('攻擊力', 'Attack', 'พลังโจมตี')}</span><b>{Math.round(stats?.attack ?? unit.atk)}</b></div>
+        <div><span>{label('爆擊率', 'Crit Rate', 'คริติคอล')}</span><b>{Math.round(stats?.critRate ?? unit.crit)}%</b></div>
+        <div><span>{label('爆擊傷害', 'Crit Damage', 'ดาเมจคริติคอล')}</span><b>{stats ? `${stats.critDamage}×` : `${unit.critDmg}%`}</b></div>
+        <div><span>{label('命中率', 'Hit Rate', 'ความแม่นยำ')}</span><b>{Math.round(stats?.hitRate ?? unit.hit)}%</b></div>
+      </div>
+
+      {cls ? <div className="ep-detail-grid">
+        <article><h3>{label('普通攻擊', 'Normal Attack', 'โจมตีปกติ')}</h3><p>{attackTarget} · {cls.normalAttack.hits} Hit{cls.normalAttack.hits === 1 ? '' : 's'} · Gauge +{cls.normalAttack.skillGaugeGain}%</p></article>
+        <article><h3>{label('普通輔助', 'Normal Support', 'ช่วยเหลือปกติ')}</h3><p>{supportTarget}</p><ul>{effectList(cls.normalSupport.effects)}</ul></article>
+        <article><h3>{cls.skill.name || label('技能', 'Skill', 'สกิล')}</h3>{cls.skill.description && <p>{cls.skill.description}</p>}<p>{targetSide(cls.skill.target.side)} · {cls.skill.target.count === 'all' ? label('全體', 'All', 'ทั้งหมด') : cls.skill.target.count} · {selector(cls.skill.target.selector)}</p><ul>{effectList(cls.skill.effects)}</ul></article>
+        <article><h3>{label('能力', 'Abilities', 'ความสามารถ')}</h3>{cls.abilities.length ? cls.abilities.map(ability => <div className="ep-detail-ability" key={ability.id}><b>{ability.name || ability.id}</b><small>{zh ? TRIGGER_LABEL_ZH[ability.trigger] : ability.trigger}{ability.triggerValue != null ? ` · ${ability.triggerValue}` : ''}</small>{ability.description && <p>{ability.description}</p>}<ul>{effectList(ability.effects)}</ul></div>) : <p>—</p>}</article>
+      </div> : <p className="ep-detail-legacy">{label('此單位仍使用舊版資料格式，目前顯示可取得的戰鬥數值與狀態。', 'This unit still uses the legacy data format; only available combat stats and statuses are shown.', 'ยูนิตนี้ยังใช้ข้อมูลแบบเดิม จะแสดงเฉพาะค่าสถานะที่มี')}</p>}
+
+      <article className="ep-detail-status"><h3>{label('當前 Buff / Debuff / 狀態', 'Current Buffs / Debuffs / Status', 'บัฟ / ดีบัฟ / สถานะปัจจุบัน')}</h3>
+        <div>{statuses.length ? statuses.map((s, i) => <span key={`${s.type}:${i}`}>{statusLabel(s.type)}{s.pct ? ` ${s.pct}%` : ''}{s.shieldHp ? ` ${Math.round(s.shieldHp)}` : ''} · {s.turns}R</span>) : <span>{label('無', 'None', 'ไม่มี')}</span>}</div>
+      </article>
+    </section>
+  </div>
+}
+
+function effectSummary(effect: GameplayEffect, lang: Lang): string {
+  const base = lang === 'zh' ? EFFECT_LABEL_ZH[effect.type] : effect.type
+  const value = effect.value != null ? ` · ${effect.value}` : ''
+  const duration = effect.duration != null ? ` · ${effect.duration}R` : ''
+  const hits = effect.hits != null && effect.hits > 1 ? ` · ${effect.hits} Hits` : ''
+  return base + value + duration + hits
+}

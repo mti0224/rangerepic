@@ -68,6 +68,8 @@ export type HudHit =
   | { kind: 'auto' }
   /** ปุ่มความเร็ว: กดวนไปความเร็วถัดไป */
   | { kind: 'speed' }
+  /** Gameplay V1: shared skill gauge can be dragged onto a Ranger to activate that Ranger's skill. */
+  | { kind: 'skillGauge' }
   | { kind: 'settings' }
   | { kind: 'pause' }
   | { kind: 'restart' }
@@ -307,7 +309,9 @@ export class BattleHud {
     const hover = this.hover
     if (ended) this.hover = null
     this.drawTurn(ctx)
-    this.drawOrder(ctx)
+    // The authored RangerEpic rules no longer use SPD / AV turn order.
+    // Keep the legacy rail only for old non-Gameplay battles that still rely on AV.
+    if (!this.s.battle.usesGameplayPhases) this.drawOrder(ctx)
     this.drawTeamHp(ctx)
     this.drawClock(ctx)
     this.drawControls(ctx)
@@ -692,14 +696,15 @@ export class BattleHud {
     this.boxes.push({ ...PANEL, hit: { kind: 'block' } })
 
     this.drawInfo(ctx, u)
-    ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
+    if (u.gameplayClass) this.drawGameplayGestureGuide(ctx, input)
+    else ACTIONS.forEach((a, i) => this.drawActionButton(ctx, u, a, BTN.x + i * (BTN.w + BTN.gap), input))
     this.drawStatuses(ctx, u)
     if (u.gameplayClass) this.drawGameplayGauge(ctx, u)
     else this.drawCostBar(ctx, b.energy[0])
 
     // กล่องรายละเอียด: ชี้เมาส์ที่ปุ่มท่า
     const hovered = this.hover ? this.hitAt(this.hover.x, this.hover.y) : null
-    if (hovered?.kind === 'action' && !this.menuOpen) {
+    if (!u.gameplayClass && hovered?.kind === 'action' && !this.menuOpen) {
       const i = ACTIONS.indexOf(hovered.action)
       this.drawTooltip(ctx, u, hovered.action, BTN.x + i * (BTN.w + BTN.gap))
     }
@@ -755,6 +760,28 @@ export class BattleHud {
     // โล่ขาวเห็นเป็นแถบขาวในหลอดแล้ว — ไม่ต้องเขียนตัวเลข +โล่ต่อท้าย
     const hpText = `${fmt(u.hp)}/${fmt(u.maxHp)}`
     iconText(ctx, uiImage(UI_SRC.hp), hpText, bx, y + 61, 10, 13, C.text, 'left', 3, 'HP ')
+  }
+
+  private drawGameplayGestureGuide(ctx: CanvasRenderingContext2D, input: boolean): void {
+    const x = BTN.x, y = BTN.y, w = PANEL.x + PANEL.w - BTN.x - 8, h = BTN.h
+    roundRect(ctx, x, y, w, h, 8)
+    ctx.fillStyle = C.inset
+    ctx.fill()
+    ctx.lineWidth = input ? 1.8 : 1
+    ctx.strokeStyle = input ? withAlpha(C.ally, 0.8) : 'rgba(255,255,255,0.18)'
+    ctx.stroke()
+
+    const lang = getLang()
+    const title = lang === 'zh' ? '拖曳操作' : lang === 'th' ? 'ลากเพื่อสั่งการ' : 'Drag controls'
+    const attack = lang === 'zh' ? '拖到敵人：普通攻擊' : lang === 'th' ? 'ลากไปศัตรู: โจมตีปกติ' : 'Drag to enemy: Normal Attack'
+    const support = lang === 'zh' ? '拖到友軍／點自己：普通輔助' : lang === 'th' ? 'ลากไปเพื่อน/แตะตัวเอง: ช่วยเหลือ' : 'Drag to ally / tap self: Normal Support'
+    ctx.textAlign = 'left'
+    ctx.font = F(12)
+    outlined(ctx, title, x + 10, y + 17, C.gold, 3)
+    ctx.font = F(10)
+    outlined(ctx, fit(ctx, attack, w - 20), x + 10, y + 36, C.text, 3)
+    outlined(ctx, fit(ctx, support, w - 20), x + 10, y + 53, C.dim, 3)
+    this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
   }
 
   private actionName(u: Unit, a: ActionName): string {
@@ -902,9 +929,20 @@ export class BattleHud {
       ctx.fillStyle = g
       ctx.fillRect(barX, barY, barW * gauge / max, barH)
     }
+    const ready = gauge >= max && this.s.phase === 'input'
     ctx.font = F(11)
     ctx.textAlign = 'left'
-    outlined(ctx, `技能量 ${Math.round(gauge)}/${max}`, x + 7, y + 14, C.energy, 3)
+    const lang = getLang()
+    const gaugeLabel = lang === 'zh' ? '技能量' : lang === 'th' ? 'เกจสกิล' : 'Skill Gauge'
+    outlined(ctx, `${gaugeLabel} ${Math.round(gauge)}/${max}`, x + 7, y + 14, ready ? C.gold : C.energy, 3)
+    if (ready) {
+      ctx.textAlign = 'right'
+      const drag = lang === 'zh' ? '拖曳至角色' : lang === 'th' ? 'ลากไปที่ตัวละคร' : 'Drag to Ranger'
+      outlined(ctx, drag, x + w - 7, y + 14, C.gold, 3)
+      this.boxes.push({ x, y, w, h, hit: { kind: 'skillGauge' } })
+    } else {
+      this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
+    }
   }
 
   private drawCostBar(ctx: CanvasRenderingContext2D, energy: number): void {
