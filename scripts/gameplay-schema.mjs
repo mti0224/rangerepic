@@ -187,6 +187,8 @@ function validateAbility(ability, errors, prefix) {
     return
   }
   if (!asText(ability.id) || !GAMEPLAY_ID_RE.test(ability.id)) errors.push(prefix + '.id is invalid')
+  if (ability.name != null && typeof ability.name !== 'string') errors.push(prefix + '.name must be a string')
+  if (ability.description != null && typeof ability.description !== 'string') errors.push(prefix + '.description must be a string')
   validateIcon(ability.icon, errors, prefix + '.icon')
   if (!ABILITY_TRIGGERS.includes(ability.trigger)) errors.push(prefix + '.trigger is invalid')
   if (ability.triggerValue != null && !asNum(ability.triggerValue)) errors.push(prefix + '.triggerValue must be a number')
@@ -255,6 +257,8 @@ export function validateClass(data, expectedId) {
   const skill = data.skill
   if (!skill || typeof skill !== 'object' || Array.isArray(skill)) errors.push('skill must be an object')
   else {
+    if (skill.name != null && typeof skill.name !== 'string') errors.push('skill.name must be a string')
+    if (skill.description != null && typeof skill.description !== 'string') errors.push('skill.description must be a string')
     validateIcon(skill.icon, errors, 'skill.icon')
     validateTarget(skill.target, errors, 'skill.target')
     const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
@@ -264,6 +268,96 @@ export function validateClass(data, expectedId) {
   if (!Array.isArray(data.abilities)) errors.push('abilities must be an array')
   else data.abilities.forEach((ability, i) => validateAbility(ability, errors, 'abilities[' + i + ']'))
 
+  return errors
+}
+
+export function validateEnemy(data, expectedId) {
+  const errors = []
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return ['enemy must be an object']
+  if (data.schemaVersion !== GAMEPLAY_SCHEMA_VERSION) errors.push('schemaVersion must be ' + GAMEPLAY_SCHEMA_VERSION)
+  if (!asText(data.id) || !GAMEPLAY_ID_RE.test(data.id)) errors.push('id is invalid')
+  if (expectedId && data.id !== expectedId) errors.push('id mismatch')
+  if (!asText(data.assetVariantId) || !GAMEPLAY_ID_RE.test(data.assetVariantId)) errors.push('assetVariantId is invalid')
+  if (!asText(data.role)) errors.push('role is required')
+  validateNames(data.names, errors)
+  if (data.description != null && typeof data.description !== 'string') errors.push('description must be a string')
+
+  const stats = data.stats
+  if (!stats || typeof stats !== 'object' || Array.isArray(stats)) errors.push('stats must be an object')
+  else {
+    if (!asNum(stats.hp) || stats.hp < 1) errors.push('stats.hp must be >= 1')
+    if (!asNum(stats.attack) || stats.attack < 0) errors.push('stats.attack must be >= 0')
+    if (!asNum(stats.critRate) || stats.critRate < 0 || stats.critRate > 100) errors.push('stats.critRate must be 0..100')
+    if (!asNum(stats.critDamage) || stats.critDamage < 0) errors.push('stats.critDamage must be >= 0')
+    if (!asNum(stats.hitRate) || stats.hitRate < 0 || stats.hitRate > 100) errors.push('stats.hitRate must be 0..100')
+  }
+
+  const attack = data.normalAttack
+  if (!attack || typeof attack !== 'object' || Array.isArray(attack)) errors.push('normalAttack must be an object')
+  else {
+    if (!['single', 'all', 'primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
+    if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be an integer >= 1')
+    if (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100) errors.push('normalAttack.skillGaugeGain must be 0..100')
+    if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
+    validateEffects(attack.effects, errors, 'normalAttack.effects', ATTACK_SKILL_EFFECT_TYPES)
+  }
+
+  if (data.skill != null) {
+    const skill = data.skill
+    if (!skill || typeof skill !== 'object' || Array.isArray(skill)) errors.push('skill must be an object when present')
+    else {
+      if (skill.name != null && typeof skill.name !== 'string') errors.push('skill.name must be a string')
+      if (skill.description != null && typeof skill.description !== 'string') errors.push('skill.description must be a string')
+      validateIcon(skill.icon, errors, 'skill.icon')
+      validateTarget(skill.target, errors, 'skill.target')
+      const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
+      validateEffects(skill.effects, errors, 'skill.effects', allowedSkillEffects)
+    }
+  }
+
+  if (!Array.isArray(data.abilities)) errors.push('abilities must be an array')
+  else data.abilities.forEach((ability, i) => validateAbility(ability, errors, 'abilities[' + i + ']'))
+  return errors
+}
+
+export const GAMEPLAY_STAGE_SLOTS = ['front-0', 'front-1', 'back-0', 'back-1', 'back-2']
+
+export function validateStage(data, expectedId) {
+  const errors = []
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return ['stage must be an object']
+  if (data.schemaVersion !== GAMEPLAY_SCHEMA_VERSION) errors.push('schemaVersion must be ' + GAMEPLAY_SCHEMA_VERSION)
+  if (!asText(data.id) || !GAMEPLAY_ID_RE.test(data.id)) errors.push('id is invalid')
+  if (expectedId && data.id !== expectedId) errors.push('id mismatch')
+  validateNames(data.names, errors)
+  if (data.description != null && typeof data.description !== 'string') errors.push('description must be a string')
+  if (!asInt(data.chapter) || data.chapter < 1) errors.push('chapter must be an integer >= 1')
+  if (!asInt(data.order) || data.order < 1) errors.push('order must be an integer >= 1')
+  if (!asText(data.background)) errors.push('background is required')
+  if (!Array.isArray(data.waves) || data.waves.length < 1) errors.push('waves must contain at least one wave')
+  else data.waves.forEach((wave, wi) => {
+    const prefix = 'waves[' + wi + ']'
+    if (!wave || typeof wave !== 'object' || Array.isArray(wave)) {
+      errors.push(prefix + ' must be an object')
+      return
+    }
+    if (!asText(wave.id) || !GAMEPLAY_ID_RE.test(wave.id)) errors.push(prefix + '.id is invalid')
+    if (wave.name != null && typeof wave.name !== 'string') errors.push(prefix + '.name must be a string')
+    if (!Array.isArray(wave.enemies) || wave.enemies.length < 1) errors.push(prefix + '.enemies must contain at least one enemy')
+    else {
+      const usedSlots = new Set()
+      wave.enemies.forEach((placement, pi) => {
+        const p = prefix + '.enemies[' + pi + ']'
+        if (!placement || typeof placement !== 'object' || Array.isArray(placement)) {
+          errors.push(p + ' must be an object')
+          return
+        }
+        if (!GAMEPLAY_STAGE_SLOTS.includes(placement.slot)) errors.push(p + '.slot is invalid')
+        else if (usedSlots.has(placement.slot)) errors.push(prefix + ' contains duplicate slot ' + placement.slot)
+        else usedSlots.add(placement.slot)
+        if (!asText(placement.enemyId) || !GAMEPLAY_ID_RE.test(placement.enemyId)) errors.push(p + '.enemyId is invalid')
+      })
+    }
+  })
   return errors
 }
 
