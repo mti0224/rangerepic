@@ -1244,8 +1244,7 @@ export class BattleScene {
         isSkill,
       })
     })
-    const killing = hits.findLast(hit => hit.killed)
-    if (killing) this.deferredDeathUntil.set(v.unit.uid, lastAt)
+    if (hits.some(hit => hit.killed)) this.deferredDeathUntil.set(v.unit.uid, lastAt)
     return true
   }
 
