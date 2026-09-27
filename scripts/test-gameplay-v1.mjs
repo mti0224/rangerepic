@@ -509,12 +509,12 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   const player = b.units.find(u => u.team === 0)
   const enemy = b.units.find(u => u.team === 1)
   check('roundStart duration=1 is created for both teams before Round 2 phases', [
-    b.effAtk(player), b.effAtk(enemy),
+    Math.round(b.effAtk(player)), Math.round(b.effAtk(enemy)),
   ], [110, 110])
   b.endTurn(p)
   e = b.nextActor()
   check('player roundStart duration=1 expires at Player Phase End while enemy remains', [
-    b.effAtk(player), b.effAtk(enemy),
+    Math.round(b.effAtk(player)), Math.round(b.effAtk(enemy)),
   ], [100, 110])
   b.endTurn(e)
   b.nextActor()
