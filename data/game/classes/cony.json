@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "cony",
+  "characterId": "cony",
+  "assetVariantId": "u1137h-cony",
+  "role": "未分類",
+  "names": {
+    "zh": "終極粉紅衣兔兔",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "stats": {
+    "hp": 900,
+    "attack": 35,
+    "critRate": 5,
+    "critDamage": 3,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 1,
+    "description": "對1名敵人造成攻擊力100%的傷害",
+    "animation": "attack",
+    "skillGaugeGain": 5
+  },
+  "normalSupport": {
+    "target": "singleAlly",
+    "description": "使1名Ranger的體力回復15%，並且這回合所受到的傷害降低20%",
+    "animation": "skill2",
+    "effects": [
+      {
+        "type": "heal",
+        "value": 15,
+        "duration": 1
+      },
+      {
+        "type": "damageReduction",
+        "value": 20,
+        "duration": 1
+      }
+    ]
+  },
+  "skill": {
+    "name": "終極回復",
+    "description": "",
+    "icon": "/gameplay-icons/skill/custom/skill_icon_hsk1137_cony-1f9952c197.png",
+    "animation": "skill2",
+    "target": {
+      "side": "ally",
+      "count": 1,
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "heal",
+        "value": 50,
+        "duration": 1
+      },
+      {
+        "type": "heal",
+        "value": 10,
+        "duration": 5
+      },
+      {
+        "type": "damageReduction",
+        "value": 10,
+        "duration": 5
+      }
+    ]
+  },
+  "abilities": []
+}
