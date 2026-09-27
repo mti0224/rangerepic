@@ -161,6 +161,10 @@ const WALK_LAYER_NEAR_PX = 40
 /** พื้นหลังสนามชั่วคราว (public/maps/) */
 const BACKGROUND_URL = '/maps/map1.jpg'
 const TURN_PAUSE_SEC = 0.25
+/** Enemy charge: each successful charge turn advances one equal step toward the battlefield center. */
+const CHARGE_WALK_SPEED = 340
+const CHARGE_HOLD_SEC = 0.18
+const CHARGE_CENTER_SIDE_GAP = 95
 /**
  * อัญเชิญแถวพิเศษ: ผู้อัญเชิญถอยหลัง (px) → ตัวอัญเชิญวาปมายืนหน้าที่ยืนเดิมของผู้อัญเชิญ (px) → ร่าย → วาปกลับ → ผู้อัญเชิญเดินกลับ
  * วาปเข้า/ออกกี่วินาที (สั้นๆ ไม่เวอร์)
@@ -300,6 +304,18 @@ interface ActionRun {
   resolved: boolean
 }
 
+interface EnemyChargeState {
+  action: ActionName
+  targetUid: string
+  required: number
+  progress: number
+}
+interface ChargeStep {
+  actor: UnitView
+  goalX: number
+  holdLeft: number
+}
+
 export type Phase = 'intro' | 'thinking' | 'input' | 'acting' | 'ended'
 
 /** สถานะของทรานซิชั่นเปิดฉาก · startAt = วินาทีที่ทุกตัวเข้าที่แล้ว (null = ยังเดินอยู่) */
@@ -339,6 +355,9 @@ export class BattleScene {
   /** Dead units in a multi-hit sequence wait for the killing hit to be shown before the KO animation starts. */
   private deferredDeathUntil = new Map<string, number>()
   private run: ActionRun | null = null
+  /** Enemy charge persists across the enemy's own action turns until release or death. */
+  private enemyCharges = new Map<string, EnemyChargeState>()
+  private chargeStep: ChargeStep | null = null
   /** เทิร์นที่ถูกข้ามเพราะชะงัก — รอให้เห็นป้ายแป๊บหนึ่งก่อนไปต่อ */
   private skip: { actor: Unit; left: number } | null = null
   /** ทีมที่อยู่สูงกว่าตอนชั้นเท่ากัน = ทีมที่โจมตีล่าสุด */
@@ -611,7 +630,7 @@ export class BattleScene {
   /** ตัวที่กำลังเล่นเทิร์นนี้ (รอสั่ง / กำลังออกท่า / ชะงักอยู่) · ไม่มี = ระหว่างเทิร์น */
   get currentActor(): Unit | null {
     if (this.phase === 'intro' || this.phase === 'ended') return null
-    return this.pendingActor ?? this.summon?.summoner.unit ?? this.run?.actor.unit ?? this.skip?.actor ?? null
+    return this.pendingActor ?? this.summon?.summoner.unit ?? this.run?.actor.unit ?? this.chargeStep?.actor.unit ?? this.skip?.actor ?? null
   }
 
   /** แผงคำสั่งแสดงตัวทีมเราที่กำลังเล่น (หรือตัวล่าสุด / ตัวถัดไปของทีมเราถ้ายังไม่มี) */
@@ -790,6 +809,73 @@ export class BattleScene {
     return !!this.pendingActor && !!this.pendingAction && this.battle.targetsAllies(this.pendingCaster ?? this.pendingActor, this.pendingAction)
   }
 
+  private resolveChargedTarget(actor: Unit, state: EnemyChargeState): Unit | null {
+    const locked = this.battle.unit(state.targetUid)
+    const valid = this.battle.selectableTargets(actor, state.action)
+    if (locked?.alive && valid.includes(locked)) return locked
+    return this.battle.autoPlanTarget(actor, state.action)
+  }
+
+  /**
+   * Consume one enemy action turn as charge progress. The enemy advances in
+   * equal increments toward the center and stays there between turns.
+   */
+  private beginChargeStep(actorUnit: Unit, state: EnemyChargeState): void {
+    const actor = this.view(actorUnit.uid)
+    if (!actor || !actorUnit.alive) {
+      this.enemyCharges.delete(actorUnit.uid)
+      this.phase = this.battle.over ? 'ended' : 'thinking'
+      return
+    }
+
+    actor.dodging = false
+    actor.dodgeWalking = false
+    actor.facingBack = false
+
+    const centerX = WORLD_W / 2 + (actorUnit.team === 1 ? CHARGE_CENTER_SIDE_GAP : -CHARGE_CENTER_SIDE_GAP)
+    const centerOffset = centerX - actor.slot.x
+    const ratio = Math.min(1, state.progress / Math.max(1, state.required))
+    const goalX = centerOffset * ratio
+    const dx = goalX - actor.pos.x
+    if (Math.abs(dx) > 1) actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
+    else this.playIdle(actor)
+
+    this.phase = 'acting'
+    this.chargeStep = { actor, goalX, holdLeft: CHARGE_HOLD_SEC }
+    this.onChange?.()
+  }
+
+  private stepChargeStep(dt: number): void {
+    const step = this.chargeStep
+    if (!step) return
+    const actor = step.actor
+    if (!actor.unit.alive) {
+      this.enemyCharges.delete(actor.unit.uid)
+      this.chargeStep = null
+      this.phase = this.battle.over ? 'ended' : 'thinking'
+      this.onChange?.()
+      return
+    }
+
+    const dx = step.goalX - actor.pos.x
+    const amount = CHARGE_WALK_SPEED * dt * this.releaseMul
+    if (Math.abs(dx) > 1) {
+      actor.pos.x += Math.sign(dx) * Math.min(Math.abs(dx), amount)
+      if (Math.abs(step.goalX - actor.pos.x) <= 1) {
+        actor.pos.x = step.goalX
+        this.playIdle(actor)
+      }
+      return
+    }
+
+    step.holdLeft -= dt * this.releaseMul
+    if (step.holdLeft > 0) return
+    this.battle.endTurn(actor.unit)
+    this.chargeStep = null
+    this.phase = this.battle.over ? 'ended' : 'thinking'
+    this.onChange?.()
+  }
+
   private beginTurn(): void {
     const actor = this.battle.nextActor()
     // nextActor() may close a side phase, which can deal poison/DoT damage and kill
@@ -819,11 +905,35 @@ export class BattleScene {
       return
     }
     if (start.stunned) {
-      // ชะงัก: ข้ามเทิร์นนี้ ให้เห็นป้ายแป๊บหนึ่ง
+      // Stun pauses charge completely: the stored progress is unchanged and the
+      // existing stun pose is kept at the actor's current charging position.
       if (view) this.popup(view, t('stunned'), '#c084fc', true)
       this.phase = 'acting'
       this.skip = { actor, left: STUN_SKIP_SEC }
       this.onChange?.()
+      return
+    }
+
+    const charge = this.enemyCharges.get(actor.uid)
+    if (charge) {
+      const target = this.resolveChargedTarget(actor, charge)
+      if (!target) {
+        this.enemyCharges.delete(actor.uid)
+        this.battle.endTurn(actor)
+        this.phase = this.battle.over ? 'ended' : 'thinking'
+        this.onChange?.()
+        return
+      }
+      charge.targetUid = target.uid
+      if (charge.progress >= charge.required) {
+        // Silence intentionally does not matter here: the attack was locked when
+        // charging began and must release unless the enemy died.
+        this.enemyCharges.delete(actor.uid)
+        this.startAction(actor, charge.action, target)
+      } else {
+        charge.progress++
+        this.beginChargeStep(actor, charge)
+      }
       return
     }
 
@@ -837,6 +947,18 @@ export class BattleScene {
     }
     const plan = this.battle.planAuto(actor)
     if (!plan) { this.phase = 'ended'; this.onChange?.(); return }
+    const chargeTurns = this.battle.enemyChargeTurns(actor, plan.action)
+    if (!plan.caster && chargeTurns > 0) {
+      const state: EnemyChargeState = {
+        action: plan.action,
+        targetUid: plan.target.uid,
+        required: chargeTurns,
+        progress: 1,
+      }
+      this.enemyCharges.set(actor.uid, state)
+      this.beginChargeStep(actor, state)
+      return
+    }
     if (plan.caster) this.startSummon(actor, plan.caster, plan.action, plan.target)
     else this.startAction(actor, plan.action, plan.target)
   }
@@ -1085,7 +1207,11 @@ export class BattleScene {
 
   /** Synchronize visual KO state after any battle-model mutation. */
   private syncDeaths(): void {
-    for (const v of this.views) this.startDeath(v)
+    for (const v of this.views) {
+      if (!v.unit.alive) this.enemyCharges.delete(v.unit.uid)
+      this.startDeath(v)
+    }
+    if (this.chargeStep && !this.chargeStep.actor.unit.alive) this.chargeStep = null
   }
 
   private spawn(r: ActionRun): void {
@@ -1430,6 +1556,7 @@ export class BattleScene {
       if (this.summon.step !== 'cast') this.stepSummon(dt)
     }
     if (this.run) this.stepRun(dt)
+    if (this.chargeStep) this.stepChargeStep(dt)
     for (let i = this.warps.length - 1; i >= 0; i--) {
       const w = this.warps[i]
       w.t += dt * mul
