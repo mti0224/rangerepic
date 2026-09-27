@@ -11,7 +11,7 @@
   "assetVariantId": "u91030-baal",
   "stats": {
     "hp": 1000,
-    "attack": 100,
+    "attack": 400,
     "critRate": 20,
     "critDamage": 3,
     "hitRate": 100
@@ -22,7 +22,8 @@
     "skillGaugeGain": 0,
     "effects": [],
     "animation": "attack",
-    "description": "對全體Ranger造成攻擊力100%的範圍傷害"
+    "description": "3回合後，對全體Ranger造成攻擊力100%的範圍傷害",
+    "chargeTurns": 3
   },
   "skill": {
     "name": "鬼面",
