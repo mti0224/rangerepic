@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
+import { SidebarThumb } from './SidebarThumb'
 import {
   ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES, ATTACK_SKILL_EFFECT_TYPES,
   CONDITION_LABEL_ZH, CONDITION_OPERATORS, EFFECT_LABEL_ZH, EFFECT_TYPES, GAMEPLAY_ANIMATION_SLOTS,
@@ -40,6 +41,7 @@ export default function AdventureEditor({ mode }: { mode: AdventureEditorMode })
     } catch (e) { setStatus('載入失敗：' + String(e)) }
   }, [])
   useEffect(() => { void refresh() }, [refresh])
+  const enemyById = useMemo(() => new Map(enemies.map(enemy => [enemy.id, enemy])), [enemies])
   useEffect(() => setEnemyDraft(enemyId ? clone(enemies.find(e => e.id === enemyId) ?? null) : null), [enemyId, enemies])
   useEffect(() => setStageDraft(stageId ? clone(stages.find(s => s.id === stageId) ?? null) : null), [stageId, stages])
 
@@ -77,13 +79,18 @@ export default function AdventureEditor({ mode }: { mode: AdventureEditorMode })
     <aside className="gp-side">
       <div className="gp-add"><input value={newId} onChange={e => setNewId(e.target.value)} placeholder={view === 'enemies' ? 'enemy_id' : 'stage_id'} /><button onClick={add}>＋</button></div>
       <div className="gp-list">
-        {view === 'enemies' ? enemies.map(e => <button key={e.id} className={enemyId === e.id ? 'sel' : ''} onClick={() => setEnemyId(e.id)}>
-          <b>{enemyName(e)}</b><small>{e.id} · {e.assetVariantId}</small>
+        {view === 'enemies' ? enemies.map(e => <button key={e.id} className={'gp-list-row ' + (enemyId === e.id ? 'sel' : '')} onClick={() => setEnemyId(e.id)}>
+          <SidebarThumb assetVariantId={e.assetVariantId} alt={enemyName(e)} />
+          <span className="gp-list-copy"><b>{enemyName(e)}</b><small>{e.id} · {e.assetVariantId}</small></span>
         </button>) : chapterGroups(stages).map(([chapter, rows]) => <div className="adv-chapter-group" key={chapter}>
           <div className="adv-chapter-title">第 {chapter} 章 <small>{rows.length} 關</small></div>
-          {rows.map(s => <button key={s.id} className={stageId === s.id ? 'sel' : ''} onClick={() => setStageId(s.id)}>
-            <b>{s.order}. {s.names.zh || s.names.en || s.id}</b><small>{s.waves.length} 波 · {s.id}</small>
-          </button>)}
+          {rows.map(stage => {
+            const thumb = stage.waves.flatMap(wave => wave.enemies).map(row => enemyById.get(row.enemyId)?.assetVariantId).find(Boolean)
+            return <button key={stage.id} className={'gp-list-row ' + (stageId === stage.id ? 'sel' : '')} onClick={() => setStageId(stage.id)}>
+              <SidebarThumb assetVariantId={thumb} alt={stage.names.zh || stage.names.en || stage.id} />
+              <span className="gp-list-copy"><b>{stage.order}. {stage.names.zh || stage.names.en || stage.id}</b><small>{stage.waves.length} 波 · {stage.id}</small></span>
+            </button>
+          })}
         </div>)}
       </div>
       <div className="gp-status">{status}</div>
