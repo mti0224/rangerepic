@@ -664,7 +664,6 @@ export class Battle {
 
     this.gameplayRound++
     this.gameplayActed.clear()
-    if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
   }
 
   private advanceGameplayPhase(): void {
@@ -678,9 +677,14 @@ export class Battle {
       this.gameplayPhaseStarted = false
       return
     }
+
     this.finishGameplayRound()
+    // Enter the new Player Phase before roundStart dispatch. This keeps phase
+    // timing symmetric for both teams and ensures roundStart statuses count the
+    // phase they are created before, rather than looking like mid-phase casts.
     this.gameplayPhase = this.gameplayFirstTeam
     this.gameplayPhaseStarted = false
+    if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
   }
 
   private conditionMatches(u: Unit, condition: AbilityCondition, event?: GameplayAbilityEvent): boolean {
