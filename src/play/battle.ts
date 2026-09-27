@@ -1215,14 +1215,19 @@ export class Battle {
       return [chosen, ...pool.filter(u => u !== chosen)].filter(u => u.alive).slice(0, count)
     }
     if (rule.selector === 'random') {
-      const rows = [...pool]
+      // The chosen unit is the locked primary target used by the renderer for
+      // approach/projectile positioning. Keep it as the first actual hit target,
+      // then randomize only any additional targets. This prevents the actor from
+      // walking toward Ranger A while the combat model independently re-rolls B.
+      const primary = chosen.alive && pool.includes(chosen) ? chosen : null
+      const rows = pool.filter(u => u !== primary)
       if (randomize) {
         for (let i = rows.length - 1; i > 0; i--) {
           const j = Math.floor(this.rand() * (i + 1))
           ;[rows[i], rows[j]] = [rows[j], rows[i]]
         }
       }
-      return rows.slice(0, count)
+      return [...(primary ? [primary] : []), ...rows].slice(0, count)
     }
     const rows = [...pool].sort((a, b) => {
       switch (rule.selector) {
@@ -1330,6 +1335,40 @@ export class Battle {
     return this.capDamage(raw, target)
   }
 
+  /** Enemy-only authored charge time for offensive actions. Player classes never charge here. */
+  enemyChargeTurns(u: Unit, action: ActionName): number {
+    const cls = u.gameplayClass
+    if (!cls || u.team !== 1 || cls.usesSkillGauge !== false) return 0
+    if (action === 'attack') return Math.max(0, Math.round(cls.normalAttack.chargeTurns ?? 0))
+    if (action === 'skill1' && cls.skill.target.side === 'enemy') {
+      return Math.max(0, Math.round(cls.skill.chargeTurns ?? 0))
+    }
+    return 0
+  }
+
+  /**
+   * Pick the concrete anchor target for an automatic Gameplay action.
+   * Random selectors are rolled here once; resolution keeps this chosen target
+   * locked so animation movement and actual damage agree.
+   */
+  autoPlanTarget(u: Unit, action: ActionName): Unit | null {
+    const list = this.selectableTargets(u, action)
+    if (!list.length) return null
+
+    const cls = u.gameplayClass
+    if (cls && action === 'skill1') {
+      const selector = cls.skill.target.selector
+      if (selector === 'random') return list[Math.floor(this.rand() * list.length)]
+      if (selector === 'lowestHp') return list.reduce((a, b) => b.hp < a.hp ? b : a)
+      if (selector === 'highestHp') return list.reduce((a, b) => b.hp > a.hp ? b : a)
+      if (selector === 'lowestAttack') return list.reduce((a, b) => this.effAtk(b) < this.effAtk(a) ? b : a)
+      if (selector === 'highestAttack') return list.reduce((a, b) => this.effAtk(b) > this.effAtk(a) ? b : a)
+    }
+
+    const ally = this.targetsAllies(u, action)
+    return list.reduce((a, b) => ((ally ? b.hp / b.maxHp < a.hp / a.maxHp : b.hp < a.hp) ? b : a))
+  }
+
   /** เลือกท่า + เป้าอัตโนมัติของเทิร์นนี้ */
   planAuto(u: Unit): Plan | null {
     // Enemy Gameplay classes do not use the team skill gauge. Instead, each action
@@ -1343,11 +1382,8 @@ export class Battle {
       } else if (u.gameplayClass.normalSupport.effects.length > 0 && this.canUse(u, 'skill2') && this.rand() < 0.5) {
         action = 'skill2'
       }
-      const list = this.selectableTargets(u, action)
-      if (!list.length) return null
-      const ally = this.targetsAllies(u, action)
-      const target = list.reduce((a, b) => ((ally ? b.hp / b.maxHp < a.hp / a.maxHp : b.hp < a.hp) ? b : a))
-      return { action, target }
+      const target = this.autoPlanTarget(u, action)
+      return target ? { action, target } : null
     }
     if (this.aiLevel[u.team] === 'smart') {
       const c = this.ai.choose(u)

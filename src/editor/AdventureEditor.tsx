@@ -126,13 +126,14 @@ function EnemyForm({ value, assets, onChange, onSave, onDelete }: { value: Gamep
         <Num label="命中率 %" value={value.stats.hitRate} min={0} max={100} onChange={v=>stat('hitRate',v)} />
       </div>
     </Section>
-    <Section title="普通攻擊" note="敵人的普通攻擊除了基礎攻擊傷害，還可以附帶攻擊技能類效果。敵人不使用技能條。">
-      <div className="gp-grid four">
+    <Section title="普通攻擊" note="敵人的普通攻擊除了基礎攻擊傷害，還可以附帶攻擊技能類效果。蓄力 > 0 時，選定招式後會先消耗自己的行動回合進行蓄力；暈眩期間不增加蓄力進度。">
+      <div className="gp-grid five">
         <Field label="選擇動畫"><AnimationSelect value={value.normalAttack.animation ?? 'attack'} onChange={animation=>onChange({...value,normalAttack:{...value.normalAttack,animation}})} /></Field>
         <Field label="目標"><select value={value.normalAttack.target} onChange={e=>onChange({...value,normalAttack:{...value.normalAttack,target:e.target.value as GameplayEnemy['normalAttack']['target']}})}>
           <option value="single">一名敵人</option><option value="all">全體敵人</option><option value="primaryPlusRandom">一名敵人 + N</option>
         </select></Field>
         <Num label="Hit 數" value={value.normalAttack.hits} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,hits:Math.max(1,Math.round(v))}})} />
+        <Num label="蓄力回合數" value={value.normalAttack.chargeTurns??0} min={0} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,chargeTurns:Math.max(0,Math.round(v))}})} />
         {value.normalAttack.target==='primaryPlusRandom' && <Num label="額外目標 N" value={value.normalAttack.extraTargets??1} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,extraTargets:Math.max(1,Math.round(v))}})} />}
       </div>
       <Field label="普通攻擊敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalAttack.description??''} onChange={e=>onChange({...value,normalAttack:{...value.normalAttack,description:e.target.value}})} /></Field>
@@ -220,6 +221,7 @@ function SkillEditor({value,onChange}:{value:NonNullable<GameplayEnemy['skill']>
     <div className="gp-grid three"><Field label="能量石招式名稱"><input value={value.name??''} onChange={e=>onChange({...value,name:e.target.value})} /></Field><Field label="選擇動畫"><AnimationSelect value={value.animation ?? 'skill1'} onChange={animation=>onChange({...value,animation})} /></Field><Field label="技能圖示 URL"><input value={value.icon??''} onChange={e=>onChange({...value,icon:e.target.value})} /></Field></div>
     <Field label="能量石招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.description??''} onChange={e=>onChange({...value,description:e.target.value})} /></Field>
     <TargetEditor value={value.target} onChange={target=>onChange({...value,target})} />
+    {value.target.side==='enemy' && <Num label="蓄力回合數（0 = 不蓄力）" value={value.chargeTurns??0} min={0} step={1} onChange={v=>onChange({...value,chargeTurns:Math.max(0,Math.round(v))})} />}
     <EffectList value={value.effects} allowed={value.target.side==='enemy'?ATTACK_SKILL_EFFECT_TYPES:EFFECT_TYPES} onChange={effects=>onChange({...value,effects})} />
   </div>
 }

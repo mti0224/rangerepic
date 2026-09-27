@@ -246,6 +246,7 @@ export function validateClass(data, expectedId) {
     if (attack.description != null && typeof attack.description !== 'string') errors.push('normalAttack.description must be a string')
     if (attack.animation != null && !['attack','skill1','skill2'].includes(attack.animation)) errors.push('normalAttack.animation is invalid')
     if (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100) errors.push('normalAttack.skillGaugeGain must be 0..100')
+    if (attack.chargeTurns != null && (!asInt(attack.chargeTurns) || attack.chargeTurns < 0)) errors.push('normalAttack.chargeTurns must be an integer >= 0')
     if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
   }
 
@@ -263,6 +264,7 @@ export function validateClass(data, expectedId) {
   else {
     validateIcon(skill.icon, errors, 'skill.icon')
     if (skill.animation != null && !['attack','skill1','skill2'].includes(skill.animation)) errors.push('skill.animation is invalid')
+    if (skill.chargeTurns != null && (!asInt(skill.chargeTurns) || skill.chargeTurns < 0)) errors.push('skill.chargeTurns must be an integer >= 0')
     validateTarget(skill.target, errors, 'skill.target')
     const allowedSkillEffects = skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES
     validateEffects(skill.effects, errors, 'skill.effects', allowedSkillEffects)
