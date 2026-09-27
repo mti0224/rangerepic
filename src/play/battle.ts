@@ -1654,7 +1654,7 @@ export class Battle {
     // แลกของผู้ร่าย: เสียเลือด / ทำตัวเองเปราะบาง (ครั้งเดียวต่อการร่าย ไม่ใช่ต่อเป้า · ใช้ได้ทั้งสกิลโจมตีและบัฟ)
     for (const e of skill.effects) {
       if (e.type === 'selfHpCost') actor.hp = Math.max(1, actor.hp - Math.round(actor.maxHp * (e.pct ?? 0) / 100))
-      else if (e.type === 'selfVulnerable') this.addStatus(actor, 'vulnerable', e.pct ?? 0, e.turns ?? 1)
+      else if (e.type === 'selfVulnerable') this.addStatus(actor, 'vulnerable', e.pct ?? 0, e.turns ?? 1, undefined, actor, e)
     }
 
     if (skill.kind === 'attack') {
