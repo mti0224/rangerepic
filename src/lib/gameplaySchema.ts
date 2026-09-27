@@ -42,6 +42,8 @@ export interface NormalAttackDef {
   animation?: GameplayAnimationSlot
   /** One normal-attack action adds this once, regardless of hit count. Player classes only. */
   skillGaugeGain: number
+  /** Enemy-only: number of own action turns spent charging before this attack is released. */
+  chargeTurns?: number
   extraTargets?: number
   /** Optional extra effects applied after the normal attack damage. Primarily used by enemies. */
   effects?: GameplayEffect[]
@@ -158,6 +160,8 @@ export interface GameplaySkill {
   icon?: string
   /** Visual action to play. Defaults to skill1. */
   animation?: GameplayAnimationSlot
+  /** Enemy-only: number of own action turns spent charging before an offensive skill is released. */
+  chargeTurns?: number
   target: SkillTargetRule
   effects: GameplayEffect[]
 }
