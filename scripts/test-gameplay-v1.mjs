@@ -489,6 +489,38 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('pre-phase roundStart duration=1 counts the current Player Phase', b.effAtk(a), 100)
 }
 
+// roundStart timing is symmetric for both teams: a duration=1 status created before the phase counts that phase.
+{
+  const roundTwo = baseClass({
+    id: 'round-two-buff',
+    abilities: [{
+      id: 'round-two-start',
+      trigger: 'roundStart',
+      conditions: [{ type: 'round', operator: '=', value: 2 }],
+      effects: [{ type: 'attackUp', value: 10, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(roundTwo, { ...roundTwo, id: 'round-two-enemy' })
+  let p = b.nextActor()
+  b.endTurn(p)
+  let e = b.nextActor()
+  b.endTurn(e)
+  p = b.nextActor() // Round 2 starts here.
+  const player = b.units.find(u => u.team === 0)
+  const enemy = b.units.find(u => u.team === 1)
+  check('roundStart duration=1 is created for both teams before Round 2 phases', [
+    b.effAtk(player), b.effAtk(enemy),
+  ], [110, 110])
+  b.endTurn(p)
+  e = b.nextActor()
+  check('player roundStart duration=1 expires at Player Phase End while enemy remains', [
+    b.effAtk(player), b.effAtk(enemy),
+  ], [100, 110])
+  b.endTurn(e)
+  b.nextActor()
+  check('enemy roundStart duration=1 expires at Enemy Phase End too', b.effAtk(enemy), 100)
+}
+
 // Round End effects are created after the second side's Phase End countdown and survive into the next round until their owner's next Phase End.
 {
   const cls = baseClass({
