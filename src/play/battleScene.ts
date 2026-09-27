@@ -161,7 +161,7 @@ const WALK_LAYER_NEAR_PX = 40
 /** พื้นหลังสนามชั่วคราว (public/maps/) */
 const BACKGROUND_URL = '/maps/map1.jpg'
 const TURN_PAUSE_SEC = 0.25
-/** Enemy charge: each successful charge turn advances one equal step toward the battlefield center. */
+/** Enemy charge: every successful charge turn walks to the center, pauses, then returns home. */
 const CHARGE_WALK_SPEED = 340
 const CHARGE_HOLD_SEC = 0.18
 const CHARGE_CENTER_SIDE_GAP = 95
@@ -312,7 +312,8 @@ interface EnemyChargeState {
 }
 interface ChargeStep {
   actor: UnitView
-  goalX: number
+  centerX: number
+  phase: 'toCenter' | 'hold' | 'return'
   holdLeft: number
 }
 
@@ -817,10 +818,12 @@ export class BattleScene {
   }
 
   /**
-   * Consume one enemy action turn as charge progress. The enemy advances in
-   * equal increments toward the center and stays there between turns.
+   * Consume one enemy action turn as charge progress.
+   * One successful charge turn is always a complete excursion:
+   * formation slot -> battlefield center -> short pause -> formation slot.
+   * Only after returning home does charge progress increase by 1.
    */
-  private beginChargeStep(actorUnit: Unit, state: EnemyChargeState): void {
+  private beginChargeStep(actorUnit: Unit, _state: EnemyChargeState): void {
     const actor = this.view(actorUnit.uid)
     if (!actor || !actorUnit.alive) {
       this.enemyCharges.delete(actorUnit.uid)
@@ -832,16 +835,12 @@ export class BattleScene {
     actor.dodgeWalking = false
     actor.facingBack = false
 
-    const centerX = WORLD_W / 2 + (actorUnit.team === 1 ? CHARGE_CENTER_SIDE_GAP : -CHARGE_CENTER_SIDE_GAP)
-    const centerOffset = centerX - actor.slot.x
-    const ratio = Math.min(1, state.progress / Math.max(1, state.required))
-    const goalX = centerOffset * ratio
-    const dx = goalX - actor.pos.x
-    if (Math.abs(dx) > 1) actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
-    else this.playIdle(actor)
+    const centerWorldX = WORLD_W / 2 + (actorUnit.team === 1 ? CHARGE_CENTER_SIDE_GAP : -CHARGE_CENTER_SIDE_GAP)
+    const centerX = centerWorldX - actor.slot.x
+    actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
 
     this.phase = 'acting'
-    this.chargeStep = { actor, goalX, holdLeft: CHARGE_HOLD_SEC }
+    this.chargeStep = { actor, centerX, phase: 'toCenter', holdLeft: CHARGE_HOLD_SEC }
     this.onChange?.()
   }
 
@@ -857,19 +856,42 @@ export class BattleScene {
       return
     }
 
-    const dx = step.goalX - actor.pos.x
     const amount = CHARGE_WALK_SPEED * dt * this.releaseMul
-    if (Math.abs(dx) > 1) {
-      actor.pos.x += Math.sign(dx) * Math.min(Math.abs(dx), amount)
-      if (Math.abs(step.goalX - actor.pos.x) <= 1) {
-        actor.pos.x = step.goalX
-        this.playIdle(actor)
+
+    if (step.phase === 'toCenter') {
+      const dx = step.centerX - actor.pos.x
+      if (Math.abs(dx) > 1) {
+        actor.pos.x += Math.sign(dx) * Math.min(Math.abs(dx), amount)
+        return
       }
+      actor.pos.x = step.centerX
+      this.playIdle(actor)
+      step.phase = 'hold'
+      step.holdLeft = CHARGE_HOLD_SEC
       return
     }
 
-    step.holdLeft -= dt * this.releaseMul
-    if (step.holdLeft > 0) return
+    if (step.phase === 'hold') {
+      step.holdLeft -= dt * this.releaseMul
+      if (step.holdLeft > 0) return
+      step.phase = 'return'
+      actor.facingBack = actor.pos.x * actor.facing > 0
+      actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
+      return
+    }
+
+    const dx = -actor.pos.x
+    if (Math.abs(dx) > 1) {
+      actor.pos.x += Math.sign(dx) * Math.min(Math.abs(dx), amount)
+      return
+    }
+
+    actor.pos = { x: 0, y: 0 }
+    actor.facingBack = false
+    this.playIdle(actor)
+
+    const state = this.enemyCharges.get(actor.unit.uid)
+    if (state) state.progress++
     this.battle.endTurn(actor.unit)
     this.chargeStep = null
     this.phase = this.battle.over ? 'ended' : 'thinking'
@@ -906,7 +928,7 @@ export class BattleScene {
     }
     if (start.stunned) {
       // Stun pauses charge completely: the stored progress is unchanged and the
-      // existing stun pose is kept at the actor's current charging position.
+      // actor stays in its normal stun pose at the formation slot.
       if (view) this.popup(view, t('stunned'), '#c084fc', true)
       this.phase = 'acting'
       this.skip = { actor, left: STUN_SKIP_SEC }
@@ -931,7 +953,6 @@ export class BattleScene {
         this.enemyCharges.delete(actor.uid)
         this.startAction(actor, charge.action, target)
       } else {
-        charge.progress++
         this.beginChargeStep(actor, charge)
       }
       return
@@ -953,7 +974,7 @@ export class BattleScene {
         action: plan.action,
         targetUid: plan.target.uid,
         required: chargeTurns,
-        progress: 1,
+        progress: 0,
       }
       this.enemyCharges.set(actor.uid, state)
       this.beginChargeStep(actor, state)
