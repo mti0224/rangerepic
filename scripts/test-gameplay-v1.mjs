@@ -172,6 +172,47 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('After all player units act, Enemy Phase starts', [b.gameplayPhase, enemy.team], [1, 1])
 }
 
+// Random target selectors lock the chosen animation anchor as the primary actual hit target.
+{
+  const attackerClass = baseClass({
+    skill: {
+      target: { side: 'enemy', count: 1, selector: 'random' },
+      effects: [{ type: 'damage', value: 100, hits: 1 }],
+    },
+  })
+  const defender = baseClass({ id: 'random-target-defender' })
+  const b = new B.Battle([
+    [setup('attacker', attackerClass, 0)],
+    [setup('target-a', defender, 0), setup('target-b', defender, 1)],
+  ], 99)
+  const attacker = b.units.find(u => u.rangerId === 'attacker')
+  const a = b.units.find(u => u.rangerId === 'target-a')
+  const chosen = b.units.find(u => u.rangerId === 'target-b')
+  b.resolveAction(attacker, 'skill1', chosen)
+  check('random selector hits the same primary target used by movement/animation', [a.hp, chosen.hp], [1000, 900])
+}
+
+// Enemy charge metadata is only active for offensive enemy actions.
+{
+  const enemyClass = baseClass({
+    id: 'charger',
+    usesSkillGauge: false,
+    normalAttack: { target: 'single', hits: 1, skillGaugeGain: 0, chargeTurns: 2 },
+    skill: {
+      chargeTurns: 3,
+      target: { side: 'enemy', count: 1, selector: 'random' },
+      effects: [{ type: 'damage', value: 100, hits: 1 }],
+    },
+  })
+  const b = oneVsOne(baseClass({ id: 'charge-player' }), enemyClass)
+  const enemy = b.units.find(u => u.team === 1)
+  check('enemy charge metadata exposes normal attack and offensive skill delays', [
+    b.enemyChargeTurns(enemy, 'attack'),
+    b.enemyChargeTurns(enemy, 'skill1'),
+    b.enemyChargeTurns(enemy, 'skill2'),
+  ], [2, 3, 0])
+}
+
 // Gameplay damage ignores legacy DEF / variance, and only normal attacks can crit.
 {
   const cls = baseClass()
