@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
+import { SidebarThumb } from './SidebarThumb'
 import {
   ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES, ATTACK_SKILL_EFFECT_TYPES,
   CONDITION_LABEL_ZH, CONDITION_OPERATORS, EFFECT_LABEL_ZH, EFFECT_TYPES, GAMEPLAY_ANIMATION_SLOTS,
@@ -185,9 +186,12 @@ export default function GameplayEditor() {
         {view === 'classes' && (
           <div className="gp-list">
             {classes.map(c => (
-              <button key={c.id} className={selectedClass === c.id ? 'sel' : ''} onClick={() => setSelectedClass(c.id)}>
-                <b>{c.names.zh || c.names.en || c.id}</b>
-                <small>{c.characterId} · {c.assetVariantId}</small>
+              <button key={c.id} className={'gp-list-row ' + (selectedClass === c.id ? 'sel' : '')} onClick={() => setSelectedClass(c.id)}>
+                <SidebarThumb assetVariantId={c.assetVariantId} alt={c.names.zh || c.names.en || c.id} />
+                <span className="gp-list-copy">
+                  <b>{c.names.zh || c.names.en || c.id}</b>
+                  <small>{c.characterId} · {c.assetVariantId}</small>
+                </span>
               </button>
             ))}
             {!classes.length && <p className="gp-empty">尚未建立正式職業。這裡不會自動匯入 LINE Rangers 原始數值。</p>}
