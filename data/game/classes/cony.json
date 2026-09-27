@@ -43,12 +43,12 @@
   },
   "skill": {
     "name": "終極回復",
-    "description": "",
+    "description": "透過緞帶舞讓我方全體Ranger回復體力50%！\n並且5回合內，每回合體力回復10%、承受傷害減少10%",
     "icon": "/gameplay-icons/skill/custom/skill_icon_hsk1137_cony-1f9952c197.png",
     "animation": "skill2",
     "target": {
       "side": "ally",
-      "count": 1,
+      "count": "all",
       "selector": "random"
     },
     "effects": [
@@ -69,5 +69,20 @@
       }
     ]
   },
-  "abilities": []
+  "abilities": [
+    {
+      "id": "ability_1",
+      "name": "天然護體",
+      "description": "粉衣兔兔不會受到任何的負面效果及狀態影響",
+      "icon": "/gameplay-icons/ability/builtin/ab218_revive_icon.png",
+      "trigger": "statusApplied",
+      "conditions": [],
+      "effects": [
+        {
+          "type": "cleanseDebuffs",
+          "abilityTarget": "self"
+        }
+      ]
+    }
+  ]
 }
