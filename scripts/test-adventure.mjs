@@ -46,6 +46,7 @@ const syntheticEnemy = {
     hits: 1,
     animation: 'attack',
     skillGaugeGain: 0,
+    chargeTurns: 2,
     effects: [{ type: 'attackDown', value: 10, duration: 1 }],
   },
   normalSupport: { target: 'singleAlly', animation: 'skill2', effects: [] },
@@ -60,6 +61,21 @@ assert.equal(
   'attackDown',
   'enemy normal attack extra effects must be supported',
 )
+assert.equal(syntheticEnemy.normalAttack.chargeTurns, 2, 'enemy normal attack charge turns must be supported')
+const chargedSkillEnemy = {
+  ...syntheticEnemy,
+  skill: {
+    name: '蓄力攻擊',
+    description: '',
+    icon: '',
+    animation: 'skill1',
+    chargeTurns: 3,
+    target: { side: 'enemy', count: 1, selector: 'random' },
+    effects: [{ type: 'damage', value: 200, hits: 1 }],
+  },
+}
+assert.deepEqual(validateEnemy(chargedSkillEnemy, chargedSkillEnemy.id), [], 'enemy offensive skill charge turns must validate')
+assert.ok(validateEnemy({ ...syntheticEnemy, normalAttack: { ...syntheticEnemy.normalAttack, chargeTurns: -1 } }, syntheticEnemy.id).some(e => e.includes('chargeTurns')), 'negative charge turns must be rejected')
 
 const syntheticStage = {
   schemaVersion: 1,
