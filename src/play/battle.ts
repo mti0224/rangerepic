@@ -139,6 +139,13 @@ export interface Status {
   gameplayType?: GameplayEffectType
   gameplayValue?: number
   gameplaySourceUid?: string
+  /**
+   * If a Gameplay status is applied to a unit while that unit's own side is
+   * already taking actions, the application phase does not consume one turn.
+   * These fields identify exactly that phase so Phase End can skip it once.
+   */
+  gameplaySkipPhaseEndRound?: number
+  gameplaySkipPhaseEndTeam?: Team
 }
 
 export interface Unit {
@@ -241,8 +248,23 @@ const MIN_SPD_RATIO = 0.5
 /** ตีปกติ = สกิลโจมตีเดี่ยวแถวหน้าก่อน 100% (ใช้ Evade แทน Skill Evade) */
 export const NORMAL_ATTACK: SkillDef = { kind: 'attack', cost: 0, area: 'single_front', effects: [{ type: 'damage', pct: 100 }] }
 
+export interface OutcomeHit {
+  /** Rolled damage for this individual hit before shield absorption. */
+  damage: number
+  trueDamage: number
+  crit: boolean
+  elementMult: number
+  evaded: boolean
+  hpBefore: number
+  hpAfter: number
+  shieldBefore: number
+  shieldAfter: number
+  killed: boolean
+}
+
 export interface Outcome {
   uid: string
+  /** Aggregate damage retained for previews / mechanics. Visuals use hits[]. */
   damage: number
   crit: boolean
   killed: boolean
@@ -267,6 +289,8 @@ export interface Outcome {
   burned: boolean
   /** HP ก่อนโดนท่านี้ (ใช้ตัดสินแอนิเมชัน เช่น เลือดตกผ่านครึ่งหลอด) */
   hpBefore: number
+  /** Individual hit results, in resolution order, for multi-hit presentation. */
+  hits: OutcomeHit[]
 }
 
 /**
@@ -335,6 +359,7 @@ const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v
 const emptyOutcome = (uid: string, hpBefore = 0): Outcome => ({
   uid, hpBefore, damage: 0, crit: false, killed: false, elementMult: 1, evaded: false, immune: false, barrierBroken: false,
   shieldAbsorbed: 0, healed: 0, resisted: [], applied: [], dispelled: 0, cleansed: 0, trueDamage: 0, advanced: false, burned: false,
+  hits: [],
 })
 
 export class Battle {
@@ -346,6 +371,12 @@ export class Battle {
   gameplayRound = 1
   gameplayPhase: Team = 0
   private gameplayFirstTeam: Team = 0
+  /**
+   * false while a side has not begun choosing/performing actions yet.
+   * Used so statuses created before a phase (battleStart/roundStart) count that
+   * phase, while statuses cast during the phase do not instantly lose a turn.
+   */
+  private gameplayPhaseStarted = false
   private gameplayActed = new Set<string>()
   private abilityEventStack = new Set<string>()
   private abilityEventDepth = 0
@@ -558,16 +589,6 @@ export class Battle {
     return this.usesGameplayPhases && u.alive && u.team === this.gameplayPhase && !this.gameplayActed.has(u.uid)
   }
 
-  private tickGameplayHot(team: Team): void {
-    for (const u of this.units) {
-      if (!u.alive || u.team !== team) continue
-      for (const s of u.statuses) {
-        if (s.type !== 'regen' || s.gameplayType !== 'heal') continue
-        this.healUnit(u, s.shieldHp ?? u.maxHp * s.pct / 100)
-      }
-    }
-  }
-
   private tickGameplayDot(u: Unit, s: Status): void {
     if (!u.alive || !s.gameplayType) return
     const rules = u.gameplayRules
@@ -604,17 +625,33 @@ export class Battle {
    * side loses one turn. This makes duration belong to the affected side's
    * completed phases instead of the global Round boundary.
    */
-  private finishGameplayPhase(team: Team): void {
-    this.tickGameplayHot(team)
+  private statusSkipsThisPhaseEnd(st: Status, team: Team): boolean {
+    return st.gameplaySkipPhaseEndRound === this.gameplayRound
+      && st.gameplaySkipPhaseEndTeam === team
+  }
 
+  private finishGameplayPhase(team: Team): void {
+    // A status cast during the affected side's own phase must not immediately
+    // tick/expire at that same Phase End. It starts counting from the next own
+    // Phase End instead. Statuses that existed before the phase began still
+    // resolve normally here.
     for (const u of this.units) {
-      if (u.team !== team) continue
-      for (const st of [...u.statuses]) this.tickGameplayDot(u, st)
+      if (!u.alive || u.team !== team) continue
+      for (const st of u.statuses) {
+        if (this.statusSkipsThisPhaseEnd(st, team)) continue
+        if (st.type === 'regen' && st.gameplayType === 'heal') {
+          this.healUnit(u, st.shieldHp ?? u.maxHp * st.pct / 100)
+        } else {
+          this.tickGameplayDot(u, st)
+        }
+      }
     }
 
     for (const u of this.units) {
       if (u.team !== team) continue
-      for (const st of u.statuses) st.turns--
+      for (const st of u.statuses) {
+        if (!this.statusSkipsThisPhaseEnd(st, team)) st.turns--
+      }
       u.statuses = u.statuses.filter(st => st.turns > 0 && !(st.type === 'shield' && (st.shieldHp ?? 0) <= 0))
     }
   }
@@ -627,7 +664,6 @@ export class Battle {
 
     this.gameplayRound++
     this.gameplayActed.clear()
-    if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
   }
 
   private advanceGameplayPhase(): void {
@@ -638,10 +674,17 @@ export class Battle {
     const secondTeam = (1 - this.gameplayFirstTeam) as Team
     if (endingTeam === this.gameplayFirstTeam) {
       this.gameplayPhase = secondTeam
+      this.gameplayPhaseStarted = false
       return
     }
+
     this.finishGameplayRound()
+    // Enter the new Player Phase before roundStart dispatch. This keeps phase
+    // timing symmetric for both teams and ensures roundStart statuses count the
+    // phase they are created before, rather than looking like mid-phase casts.
     this.gameplayPhase = this.gameplayFirstTeam
+    this.gameplayPhaseStarted = false
+    if (!this.over) this.dispatchGameplayAbilityEvent('roundStart', {})
   }
 
   private conditionMatches(u: Unit, condition: AbilityCondition, event?: GameplayAbilityEvent): boolean {
@@ -936,7 +979,10 @@ export class Battle {
         choices = this.gameplayActorChoices()
       }
       const actor = choices[0] ?? null
-      if (actor) this.turn++
+      if (actor) {
+        this.gameplayPhaseStarted = true
+        this.turn++
+      }
       return actor
     }
     const alive = this.units.filter(u => u.alive)
@@ -1383,6 +1429,9 @@ export class Battle {
       gameplayType: effect?.gameplayType as GameplayEffectType | undefined,
       gameplayValue: effect?.gameplayValue,
       gameplaySourceUid: src?.uid,
+      ...(effect?.gameplayType && this.gameplayPhaseStarted && target.team === this.gameplayPhase
+        ? { gameplaySkipPhaseEndRound: this.gameplayRound, gameplaySkipPhaseEndTeam: this.gameplayPhase }
+        : {}),
     }
     if (src && isDot(type)) { st.srcAtk = this.effAtk(src); st.srcElement = src.element }
     target.statuses.push(st)
@@ -1570,6 +1619,23 @@ export class Battle {
     return Math.max(1, Math.round(this.capDamage(raw, target)))
   }
 
+  private shieldTotal(u: Unit): number {
+    return u.statuses.filter(st => st.type === 'shield').reduce((sum, st) => sum + Math.max(0, st.shieldHp ?? 0), 0)
+  }
+
+  private recordOutcomeHit(
+    o: Outcome,
+    target: Unit,
+    hit: Omit<OutcomeHit, 'hpAfter' | 'shieldAfter' | 'killed'>,
+  ): void {
+    o.hits.push({
+      ...hit,
+      hpAfter: target.hp,
+      shieldAfter: this.shieldTotal(target),
+      killed: hit.hpBefore > 0 && !target.alive,
+    })
+  }
+
   /** ใช้ท่า — คำนวณและลงผลกับทุกตัวที่โดน */
   resolveAction(actor: Unit, action: ActionName, chosen: Unit): ActionResult {
     const skill = this.skillOf(actor, action)
@@ -1588,7 +1654,7 @@ export class Battle {
     // แลกของผู้ร่าย: เสียเลือด / ทำตัวเองเปราะบาง (ครั้งเดียวต่อการร่าย ไม่ใช่ต่อเป้า · ใช้ได้ทั้งสกิลโจมตีและบัฟ)
     for (const e of skill.effects) {
       if (e.type === 'selfHpCost') actor.hp = Math.max(1, actor.hp - Math.round(actor.maxHp * (e.pct ?? 0) / 100))
-      else if (e.type === 'selfVulnerable') this.addStatus(actor, 'vulnerable', e.pct ?? 0, e.turns ?? 1)
+      else if (e.type === 'selfVulnerable') this.addStatus(actor, 'vulnerable', e.pct ?? 0, e.turns ?? 1, undefined, actor, e)
     }
 
     if (skill.kind === 'attack') {
@@ -1601,7 +1667,15 @@ export class Battle {
         outcomes.push(o)
         if (!t.alive) continue
         // Multi-hit normal attacks roll hit independently for each Hit below.
-        if (!(actor.gameplayClass && normal) && this.rand() * 100 < this.evadeChance(actor, t, normal)) { o.evaded = true; continue }
+        if (!(actor.gameplayClass && normal) && this.rand() * 100 < this.evadeChance(actor, t, normal)) {
+          o.evaded = true
+          const shield = this.shieldTotal(t)
+          o.hits.push({
+            damage: 0, trueDamage: 0, crit: false, elementMult: 1, evaded: true,
+            hpBefore: t.hp, hpAfter: t.hp, shieldBefore: shield, shieldAfter: shield, killed: false,
+          })
+          continue
+        }
         if (this.has(t, 'barrier')) {
           // เร่งเทิร์นทำงานแม้โดนบาเรียกัน (ไว้เผาบาเรีย/บัฟให้หมดก่อนกำหนด) — ดาเมจยังโดนกันตามปกติ
           if (!breaks) {
@@ -1614,34 +1688,58 @@ export class Battle {
         }
         for (const e of skill.effects) {
           if (e.type === 'damage' || e.type === 'damageHp') {
+            if (!t.alive || !actor.alive) break
             // Gameplay V1 normal attack: every Hit independently rolls accuracy.
             if (actor.gameplayClass && normal && this.rand() * 100 >= this.effHit(actor)) {
-              o.evaded = true
+              const hpBefore = t.hp
+              const shieldBefore = this.shieldTotal(t)
+              o.hits.push({
+                damage: 0, trueDamage: 0, crit: false, elementMult: 1, evaded: true,
+                hpBefore, hpAfter: t.hp, shieldBefore, shieldAfter: shieldBefore, killed: false,
+              })
               continue
             }
             // damageHp = ฐานเป็น HP สูงสุดของผู้ร่ายแทน ATK
             const base = e.type === 'damageHp' ? actor.maxHp : undefined
             const r = this.rollDamage(actor, t, e.pct ?? 100, normal, base)
+            const hpBefore = t.hp
+            const shieldBefore = this.shieldTotal(t)
             o.damage += r.damage; o.crit ||= r.crit; o.elementMult = r.elementMult
             this.dealWithPierce(t, r.damage, o, e.pierce ?? 0, actor)
+            this.recordOutcomeHit(o, t, {
+              damage: r.damage, trueDamage: 0, crit: r.crit, elementMult: r.elementMult, evaded: false,
+              hpBefore, shieldBefore,
+            })
             dealt += r.damage
             if (traitSteal > 0) addHeal(actor, r.damage * traitSteal)
           } else if (e.type === 'trueDamage') {
+            if (!t.alive || !actor.alive) break
+            const hpBefore = t.hp
+            const shieldBefore = this.shieldTotal(t)
             if (actor.gameplayClass && e.gameplayType === 'fixedDamage') {
               const d = Math.max(0, Math.round(e.gameplayValue ?? e.amount ?? 0))
               o.damage += d
               this.takeDamage(t, d, o, false, actor)
+              this.recordOutcomeHit(o, t, {
+                damage: d, trueDamage: 0, crit: false, elementMult: 1, evaded: false,
+                hpBefore, shieldBefore,
+              })
               dealt += d
             } else {
               // Legacy true damage: bypasses shield.
               const d = this.trueHit(actor, t, e.pct ?? 100)
               o.damage += d; o.trueDamage += d
               this.takeDamage(t, d, o, true, actor)
+              this.recordOutcomeHit(o, t, {
+                damage: d, trueDamage: d, crit: false, elementMult: 1, evaded: false,
+                hpBefore, shieldBefore,
+              })
               dealt += d
               if (traitSteal > 0) addHeal(actor, d * traitSteal)
             }
           }
         }
+        if (o.hits.length) o.evaded = o.hits.every(hit => hit.evaded)
         const receivedHpDamage = Math.max(0, o.hpBefore - t.hp)
         const reflectPct = actor.gameplayClass
           ? this.pctOf(t, 'reflect') + this.gameplayAbilityValue(t, 'reflect')

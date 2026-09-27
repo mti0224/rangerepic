@@ -22,7 +22,7 @@ import {
 } from '@/lib/shotRules'
 import { approachOffsetOf, bodyFpsOf, bodyPointsOf, planAction } from '@/lib/actionPlan'
 import { loadDeathEffects, loadStatusIcons, type DeathEffects, type StatusIconFx, type StatusIcons } from '@/lib/effects'
-import { previewLoss, type ActionPreview, type ActionResult, type Battle, type DotType, type Team, type Unit } from './battle'
+import { previewLoss, type ActionPreview, type ActionResult, type Battle, type DotType, type OutcomeHit, type Team, type Unit } from './battle'
 import { CUTIN_SEC, cutinsOn, frameBounds, paintCutin, renderCutinArt, type CutinArt, type CutinPlay } from '@/lib/cutin'
 import { elementIcon } from './uiAssets'
 import type { GameInfo } from '@/lib/rangerApi'
@@ -205,6 +205,9 @@ const SOUL_RISE = 110         // ลอยขึ้นสูงสุด (หน
 const SOUL_HOLD = 0.35        // ทึบเต็มช่วงแรกกี่ส่วน แล้วค่อยจาง
 const SOUL_BODY_Y = 80        // วิญญาณเริ่มที่ระดับลำตัว (เหนือเท้า)
 const POPUP_LIFE = 1.1
+/** Multi-hit numbers / HP-bar steps are separated enough to read as distinct hits. */
+const MULTI_HIT_GAP_SEC = 0.22
+const MULTI_HIT_BAR_HOLD_SEC = 0.16
 /** กระสุนอยู่เหนือตัวผู้โจมตีนิดเดียว (ชั้นของตัวละครห่างกันอย่างน้อย ~40) */
 const SHOT_ABOVE_ACTOR = 0.1
 /** แคนวาสย้อมสีตัว (บาเรีย/โดนตี) ใหญ่สุดเท่านี้ต่อด้าน (px) — กรอบจริงพอดีเฟรมของตัวนั้นๆ */
@@ -281,6 +284,8 @@ interface FlyingShot {
 }
 
 interface Popup { at: Vec2; text: string; life: number; color: string; big: boolean; uid: string; order: number }
+interface HitPresentation { at: number; uid: string; hit: OutcomeHit; isSkill: boolean }
+interface VisualResourceState { hp: number; shield: number; releaseAt: number }
 
 type RunStep = 'approach' | 'act' | 'return' | 'wait'
 interface ActionRun {
@@ -329,6 +334,10 @@ export class BattleScene {
   private views: UnitView[] = []
   private shots: FlyingShot[] = []
   private popups: Popup[] = []
+  private hitPresentations: HitPresentation[] = []
+  private visualResources = new Map<string, VisualResourceState>()
+  /** Dead units in a multi-hit sequence wait for the killing hit to be shown before the KO animation starts. */
+  private deferredDeathUntil = new Map<string, number>()
   private run: ActionRun | null = null
   /** เทิร์นที่ถูกข้ามเพราะชะงัก — รอให้เห็นป้ายแป๊บหนึ่งก่อนไปต่อ */
   private skip: { actor: Unit; left: number } | null = null
@@ -515,7 +524,7 @@ export class BattleScene {
     if (!state) return
     // Let the defeated enemy finish its knockback/soul animation first.
     // This avoids having the winning party leave while the final KO is still playing.
-    if (this.views.some(v => !v.unit.alive && v.dying !== null && !v.gone)) return
+    if (this.views.some(v => !v.unit.alive && !v.gone)) return
     state.t += dt
     const survivors = this.views.filter(v => v.unit.team === 0 && v.unit.alive && !v.gone)
     if (!state.started && state.t >= WAVE_EXIT_WAIT_SEC) {
@@ -1051,6 +1060,10 @@ export class BattleScene {
   /** Start the KO presentation once, regardless of whether damage came from an attack, DoT, poison, reflect, or an ability event. */
   private startDeath(v: UnitView): void {
     if (v.unit.alive || v.gone || v.dying !== null) return
+    const deferredUntil = this.deferredDeathUntil.get(v.unit.uid)
+    if (deferredUntil !== undefined && this.time < deferredUntil) return
+    this.deferredDeathUntil.delete(v.unit.uid)
+
     v.reacting = false
     v.dodging = false
     v.dodgeWalking = false
@@ -1058,6 +1071,16 @@ export class BattleScene {
     v.dying = 0
     const die = v.kit.config.clips.die ?? v.kit.config.clips.hitHeavy
     if (die) v.player.playClip(die, { speed: this.speed })
+
+    // A retaliation / selfDied ability can kill the acting Ranger while its own
+    // attack animation is still waiting for onEnd. Starting the KO clip replaces
+    // that animation, so its old onEnd callback will never fire. Explicitly move
+    // the resolved action to wait, otherwise the whole battle gets stuck in 'act'.
+    const active = this.run
+    if (active?.actor === v && active.resolved && active.step === 'act') {
+      active.step = 'wait'
+      active.waitLeft = Math.max(TURN_PAUSE_SEC, DEATH_KNOCK_SEC)
+    }
   }
 
   /** Synchronize visual KO state after any battle-model mutation. */
@@ -1204,6 +1227,61 @@ export class BattleScene {
     this.presentResult(r, res)
   }
 
+  private scheduleOutcomeHits(v: UnitView, hits: OutcomeHit[], isSkill: boolean): boolean {
+    if (!hits.length) return false
+    const first = hits[0]
+    const lastAt = this.time + Math.max(0, hits.length - 1) * MULTI_HIT_GAP_SEC
+    this.visualResources.set(v.unit.uid, {
+      hp: first.hpBefore,
+      shield: first.shieldBefore,
+      releaseAt: lastAt + MULTI_HIT_BAR_HOLD_SEC,
+    })
+    hits.forEach((hit, index) => {
+      this.hitPresentations.push({
+        at: this.time + index * MULTI_HIT_GAP_SEC,
+        uid: v.unit.uid,
+        hit,
+        isSkill,
+      })
+    })
+    if (hits.some(hit => hit.killed)) this.deferredDeathUntil.set(v.unit.uid, lastAt + MULTI_HIT_BAR_HOLD_SEC)
+    return true
+  }
+
+  private showOutcomeHit(event: HitPresentation): void {
+    const v = this.view(event.uid)
+    if (!v) return
+    const { hit, isSkill } = event
+    const visual = this.visualResources.get(event.uid)
+    if (visual) {
+      visual.hp = hit.hpAfter
+      visual.shield = hit.shieldAfter
+    }
+    if (hit.evaded) {
+      this.popup(v, t('miss'), '#e5e7eb', false)
+    } else if (hit.damage > 0) {
+      this.popup(
+        v,
+        String(hit.damage) + (hit.elementMult > 1 ? ' ▲' : hit.elementMult < 1 ? ' ▼' : ''),
+        hit.trueDamage > 0 ? TRUE_DAMAGE_COLOR : hit.elementMult > 1 ? '#fb923c' : hit.elementMult < 1 ? '#9ca3af' : hit.crit ? '#fbbf24' : isSkill ? '#fde68a' : '#ffffff',
+        hit.crit || isSkill,
+      )
+    }
+    if (hit.killed) this.startDeath(v)
+  }
+
+  private stepHitPresentations(): void {
+    if (this.hitPresentations.length) {
+      this.hitPresentations.sort((a, b) => a.at - b.at)
+      while (this.hitPresentations.length && this.hitPresentations[0].at <= this.time) {
+        this.showOutcomeHit(this.hitPresentations.shift()!)
+      }
+    }
+    for (const [uid, visual] of this.visualResources) {
+      if (this.time >= visual.releaseAt) this.visualResources.delete(uid)
+    }
+  }
+
   private presentResult(r: ActionRun, res: ActionResult): void {
     const isSkill = r.action !== 'attack'
     if (res.energyGained > 0) this.popup(r.actor, '+' + res.energyGained + ' Cost', '#60a5fa', true)
@@ -1215,16 +1293,17 @@ export class BattleScene {
     for (const o of res.outcomes) {
       const v = this.view(o.uid)
       if (!v) continue
-      if (o.evaded) { this.popup(v, t('miss'), '#e5e7eb', false); continue }
+      const sequencedHits = this.scheduleOutcomeHits(v, o.hits, isSkill)
+      if (!sequencedHits && o.evaded) { this.popup(v, t('miss'), '#e5e7eb', false); continue }
       if (o.immune) { this.popup(v, t('immune'), '#93c5fd', false); continue }
       if (o.barrierBroken) this.popup(v, t('barrierBreak'), '#f472b6', true)
-      if (o.damage > 0) {
-        // ธาตุได้เปรียบ ▲ (ส้ม) · เสียเปรียบ ▼ (เทา)
+      if (!sequencedHits && o.damage > 0) {
+        // Legacy/non-hit-sequenced results still use their aggregate damage popup.
         this.popup(v, String(o.damage) + (o.elementMult > 1 ? ' ▲' : o.elementMult < 1 ? ' ▼' : ''),
           o.trueDamage > 0 ? TRUE_DAMAGE_COLOR : o.elementMult > 1 ? '#fb923c' : o.elementMult < 1 ? '#9ca3af' : o.crit ? '#fbbf24' : isSkill ? '#fde68a' : '#ffffff',
           o.crit || isSkill)
       }
-      if (o.shieldAbsorbed > 0 && o.damage === o.shieldAbsorbed) this.popup(v, t('blocked'), '#e5e7eb', false)
+      if (!sequencedHits && o.shieldAbsorbed > 0 && o.damage === o.shieldAbsorbed) this.popup(v, t('blocked'), '#e5e7eb', false)
       if (o.healed > 0) this.popup(v, '+' + o.healed, '#4ade80', true)
       if (o.dispelled > 0) this.popup(v, t('dispel'), '#f472b6', false)
       if (o.cleansed > 0) this.popup(v, t('cleanse'), '#a7f3d0', false)
@@ -1233,7 +1312,7 @@ export class BattleScene {
       for (const st of o.resisted) this.popup(v, t('resist') + ' ' + statusLabel(st), '#9ca3af', false)
 
       if (o.killed) {
-        this.startDeath(v)
+        if (!sequencedHits) this.startDeath(v)
       } else if (o.damage > 0) {
         // เลือดตกผ่านครึ่งหลอด (≥50% → <50%) → กระเด็น (knockback)
         // สกิล → ท่าโดนตี 1 รอบ · ตีธรรมดา → กะพริบแดงอย่างเดียว (วาดตอน render)
@@ -1298,6 +1377,7 @@ export class BattleScene {
     const dt = dtMs / 1000
     const mul = this.releaseMul
     this.time += dt * mul
+    this.stepHitPresentations()
     if (this.timerOn && this.phase !== 'intro' && this.phase !== 'ended') {
       this.timeLeft -= dt * (CLOCK_RATE[this.speed] ?? this.speed)
       if (this.timeLeft <= 0) this.timeLeft = 0
@@ -1504,7 +1584,10 @@ export class BattleScene {
     for (const v of this.views) if (!v.gone) this.paintIcons(ctx, v)
     const previews = this.actionPreviews()
     this.lastPreviews = previews
-    for (const v of ordered) if (v.unit.alive && !v.unit.reserve) this.paintHpBar(ctx, v, previews.get(v.unit.uid))
+    for (const v of ordered) {
+      const visuallyAlive = v.unit.alive || (this.visualResources.has(v.unit.uid) && v.dying === null)
+      if (visuallyAlive && !v.unit.reserve) this.paintHpBar(ctx, v, previews.get(v.unit.uid))
+    }
     // ลูกศรเล็งอยู่บนสุด (เหนือหลอดเลือด/ตัวเลขไกด์) จะได้ไม่โดนบัง
     if (aim.length) this.paintAimMarks(ctx, aim)
     this.paintPopups(ctx)
@@ -1887,13 +1970,16 @@ export class BattleScene {
     const y = head.y * Z
     // แบบ MOBA: เลือด (สีทีม) จากซ้าย → โล่ (ขาว) ต่อท้ายทางขวาในหลอดเดียวกัน
     // เลือด + โล่ เกิน HP สูงสุด → ย่อทั้งหลอดให้พอดี (โล่ยังเห็นเต็ม)
-    const shieldHp = v.unit.statuses.find(st => st.type === 'shield')?.shieldHp ?? 0
+    const visual = this.visualResources.get(v.unit.uid)
+    const hp = visual?.hp ?? v.unit.hp
+    const modelShieldHp = v.unit.statuses.filter(st => st.type === 'shield').reduce((sum, st) => sum + Math.max(0, st.shieldHp ?? 0), 0)
+    const shieldHp = visual?.shield ?? modelShieldHp
     const heal = preview?.heal ?? 0, shieldGain = preview?.shield ?? 0
-    const total = Math.max(v.unit.maxHp, v.unit.hp + heal + shieldHp + shieldGain)
+    const total = Math.max(v.unit.maxHp, hp + heal + shieldHp + shieldGain)
     // เนื้อหลอดกว้างรวมส่วนเฉียง → เต็มหลอด = เต็มรูปทรงพอดี
     const span = w + Math.abs(skew)
     const sx = Math.min(x, x + skew)
-    const hpW = span * v.unit.hp / total
+    const hpW = span * hp / total
     const shieldW = span * shieldHp / total
     ctx.save()
     const barrier = this.battle.has(v.unit, 'barrier')
@@ -1925,7 +2011,7 @@ export class BattleScene {
       const blink = 0.5 + 0.5 * Math.sin(nowSec() * Math.PI * 2 * PREVIEW_BLINK_HZ)
       if (preview.damage > 0) {
         // ส่วนที่จะหาย (โล่รับก่อน แล้วค่อยเลือด) กะพริบมืด
-        const { shieldLoss, hpLoss } = previewLoss(preview, v.unit.hp, shieldHp)
+        const { shieldLoss, hpLoss } = previewLoss(preview, hp, shieldHp)
         ctx.fillStyle = `rgba(0,0,0,${0.15 + 0.6 * blink})`
         ctx.fillRect(sx + hpW - span * hpLoss / total, y, span * hpLoss / total, h)
         if (shieldLoss > 0) ctx.fillRect(sx + hpW + healW, y, span * shieldLoss / total, h)

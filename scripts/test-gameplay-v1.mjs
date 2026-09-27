@@ -182,6 +182,23 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('Gameplay normal attack uses exact Attack x 100% without legacy DEF/variance', r.damage, 100)
 }
 
+// Multi-hit actions keep each hit separate for presentation while preserving aggregate damage.
+{
+  const cls = baseClass({
+    stats: { hp: 1000, attack: 65, critRate: 0, critDamage: 3, hitRate: 100 },
+    normalAttack: { target: 'single', hits: 2, skillGaugeGain: 5 },
+  })
+  const b = oneVsOne(cls)
+  const [a, t] = b.units
+  const result = b.resolveAction(a, 'attack', t)
+  const o = result.outcomes[0]
+  check('65 damage x2 resolves as two distinct hits', [
+    t.hp,
+    o.damage,
+    o.hits.map(h => [h.damage, h.hpBefore, h.hpAfter, h.evaded]),
+  ], [870, 130, [[65, 1000, 935, false], [65, 935, 870, false]]])
+}
+
 // whileOnField ability conditions are live.
 {
   const cls = baseClass({
@@ -212,20 +229,56 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('Two +30% layers stack to +60%', b.effAtk(a), 160)
 }
 
-// HoT ticks at the affected side's Phase End.
+// A timed effect cast during its owner's active phase does not immediately tick/lose a turn.
 {
   const cls = baseClass({
     normalSupport: { target: 'singleAlly', effects: [{ type: 'heal', value: 20, duration: 2 }] },
   })
   const b = oneVsOne(cls)
-  const a = b.units[0]
+  const a = b.nextActor()
   a.hp = 500
   b.resolveAction(a, 'skill2', a)
   check('duration>1 heal does not heal immediately', a.hp, 500)
   b.endTurn(a)
-  b.nextActor() // leaving Player Phase => HoT tick + own-side duration countdown
-  check('HoT heals at Player Phase End', a.hp, 700)
-  check('Player-side duration decrements when Player Phase ends', a.statuses.find(s => s.gameplayType === 'heal')?.turns, 1)
+  const enemy = b.nextActor() // leaving Player Phase
+  check('fresh same-phase HoT does not tick or decrement immediately', [
+    a.hp,
+    a.statuses.find(s => s.gameplayType === 'heal')?.turns,
+  ], [500, 2])
+  b.endTurn(enemy)
+  const a2 = b.nextActor()
+  b.endTurn(a2)
+  b.nextActor() // next Player Phase End
+  check('HoT starts counting from the next own Phase End', [
+    a.hp,
+    a.statuses.find(s => s.gameplayType === 'heal')?.turns,
+  ], [700, 1])
+}
+
+// A 1-turn shield cast during the owner's phase must survive that same Phase End.
+{
+  const cls = baseClass({
+    normalSupport: { target: 'singleAlly', effects: [{ type: 'shield', value: 25, duration: 1 }] },
+  })
+  const b = oneVsOne(cls)
+  const a = b.nextActor()
+  b.resolveAction(a, 'skill2', a)
+  check('1-turn shield is created at full duration', [
+    a.statuses.find(s => s.gameplayType === 'shield')?.turns,
+    a.statuses.find(s => s.gameplayType === 'shield')?.shieldHp,
+  ], [1, 250])
+  b.endTurn(a)
+  const enemy = b.nextActor()
+  check('1-turn shield survives the Phase End in which it was cast',
+    a.statuses.find(s => s.gameplayType === 'shield')?.turns, 1)
+  b.endTurn(enemy)
+  const nextPlayer = b.nextActor()
+  check('shield remains available through the opponent phase and next player phase',
+    a.statuses.some(s => s.gameplayType === 'shield'), true)
+  b.endTurn(nextPlayer)
+  b.nextActor()
+  check('1-turn shield expires after the following Player Phase End',
+    a.statuses.some(s => s.gameplayType === 'shield'), false)
 }
 
 // DoT ticks when the affected side's phase ends, before that side's duration countdown.
@@ -386,6 +439,38 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   check('selfDied ability can hit enemies after owner dies', [d.alive, a.hp], [false, 960])
 }
 
+// A selfDied retaliation may kill the acting Ranger without consuming the rest of the player's phase.
+{
+  const killerClass = baseClass({
+    id: 'retaliation-killer',
+    stats: { hp: 1000, attack: 2000, critRate: 0, critDamage: 3, hitRate: 100 },
+  })
+  const allyClass = baseClass({ id: 'retaliation-ally' })
+  const deathClass = baseClass({
+    id: 'retaliation-death',
+    abilities: [{
+      id: 'mutual-destruction',
+      trigger: 'selfDied',
+      conditions: [],
+      effects: [{ type: 'fixedDamage', value: 1000, hits: 1, abilityTarget: 'attacker' }],
+    }],
+  })
+  const enemyMateClass = baseClass({ id: 'retaliation-enemy-mate' })
+  const b = new B.Battle([
+    [setup('james', killerClass, 0), setup('brown', allyClass, 1)],
+    [setup('death', deathClass, 0), setup('enemy-mate', enemyMateClass, 1)],
+  ], 456)
+  const james = b.nextActor()
+  const brown = b.units.find(u => u.rangerId === 'brown')
+  const death = b.units.find(u => u.rangerId === 'death')
+  b.resolveAction(james, 'attack', death)
+  check('selfDied retaliation kills the attacker but leaves the ally alive',
+    [james.alive, brown.alive, death.alive], [false, true, false])
+  b.endTurn(james)
+  check('a surviving ally remains selectable after the acting Ranger dies',
+    b.canChooseGameplayActor(brown), true)
+}
+
 // Round Start fires at the beginning of Round 1.
 {
   const cls = baseClass({
@@ -398,6 +483,42 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   })
   const b = oneVsOne(cls)
   check('roundStart fires for Round 1 during battle initialization', [b.gameplayRound, Math.round(b.effAtk(b.units[0]))], [1, 115])
+  const a = b.nextActor()
+  b.endTurn(a)
+  b.nextActor()
+  check('pre-phase roundStart duration=1 counts the current Player Phase', b.effAtk(a), 100)
+}
+
+// roundStart timing is symmetric for both teams: a duration=1 status created before the phase counts that phase.
+{
+  const roundTwo = baseClass({
+    id: 'round-two-buff',
+    abilities: [{
+      id: 'round-two-start',
+      trigger: 'roundStart',
+      conditions: [{ type: 'round', operator: '=', value: 2 }],
+      effects: [{ type: 'attackUp', value: 10, duration: 1, abilityTarget: 'self' }],
+    }],
+  })
+  const b = oneVsOne(roundTwo, { ...roundTwo, id: 'round-two-enemy' })
+  let p = b.nextActor()
+  b.endTurn(p)
+  let e = b.nextActor()
+  b.endTurn(e)
+  p = b.nextActor() // Round 2 starts here.
+  const player = b.units.find(u => u.team === 0)
+  const enemy = b.units.find(u => u.team === 1)
+  check('roundStart duration=1 is created for both teams before Round 2 phases', [
+    Math.round(b.effAtk(player)), Math.round(b.effAtk(enemy)),
+  ], [110, 110])
+  b.endTurn(p)
+  e = b.nextActor()
+  check('player roundStart duration=1 expires at Player Phase End while enemy remains', [
+    Math.round(b.effAtk(player)), Math.round(b.effAtk(enemy)),
+  ], [100, 110])
+  b.endTurn(e)
+  b.nextActor()
+  check('enemy roundStart duration=1 expires at Enemy Phase End too', b.effAtk(enemy), 100)
 }
 
 // Round End effects are created after the second side's Phase End countdown and survive into the next round until their owner's next Phase End.
