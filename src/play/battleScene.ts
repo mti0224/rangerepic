@@ -1244,7 +1244,7 @@ export class BattleScene {
         isSkill,
       })
     })
-    if (hits.some(hit => hit.killed)) this.deferredDeathUntil.set(v.unit.uid, lastAt)
+    if (hits.some(hit => hit.killed)) this.deferredDeathUntil.set(v.unit.uid, lastAt + MULTI_HIT_BAR_HOLD_SEC)
     return true
   }
 
@@ -1267,10 +1267,7 @@ export class BattleScene {
         hit.crit || isSkill,
       )
     }
-    if (hit.killed) {
-      this.deferredDeathUntil.delete(event.uid)
-      this.startDeath(v)
-    }
+    if (hit.killed) this.startDeath(v)
   }
 
   private stepHitPresentations(): void {
@@ -1587,7 +1584,10 @@ export class BattleScene {
     for (const v of this.views) if (!v.gone) this.paintIcons(ctx, v)
     const previews = this.actionPreviews()
     this.lastPreviews = previews
-    for (const v of ordered) if (v.unit.alive && !v.unit.reserve) this.paintHpBar(ctx, v, previews.get(v.unit.uid))
+    for (const v of ordered) {
+      const visuallyAlive = v.unit.alive || (this.visualResources.has(v.unit.uid) && v.dying === null)
+      if (visuallyAlive && !v.unit.reserve) this.paintHpBar(ctx, v, previews.get(v.unit.uid))
+    }
     // ลูกศรเล็งอยู่บนสุด (เหนือหลอดเลือด/ตัวเลขไกด์) จะได้ไม่โดนบัง
     if (aim.length) this.paintAimMarks(ctx, aim)
     this.paintPopups(ctx)
