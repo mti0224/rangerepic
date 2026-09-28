@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "training_5",
+  "chapter": 1,
+  "order": 5,
+  "names": {
+    "zh": "蓄力招式測試",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "mapImage": "/maps/map1_full.jpg",
+  "waves": [
+    {
+      "id": "wave_1",
+      "name": "Wave 1",
+      "enemies": [
+        {
+          "enemyId": "training_boss",
+          "slot": "front-0"
+        }
+      ]
+    }
+  ]
+}
