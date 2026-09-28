@@ -316,7 +316,7 @@ interface EnemyChargeState {
   targetUid: string
   targetKind: ChargeTargetKind
   required: number
-  /** Counted charge turns. The selection turn is already progress 1. */
+  /** Completed charge-bar fills. The selection turn animates 0 -> 1 at center. */
   progress: number
 }
 interface ChargeStep {
@@ -421,12 +421,14 @@ export class BattleScene {
     if (typeof Image !== 'undefined') {
       this.background = new Image()
       this.background.src = BACKGROUND_URL
+      const publicBase = import.meta.env.BASE_URL || '/'
+      const uiAsset = (name: string) => publicBase + 'ui/' + name
       this.chargeBubbleImage = new Image()
-      this.chargeBubbleImage.src = '/ui/charge_bubble.png'
+      this.chargeBubbleImage.src = uiAsset('charge_bubble.png')
       this.chargeAllTargetIcon = new Image()
-      this.chargeAllTargetIcon.src = '/ui/allEnemy.png'
+      this.chargeAllTargetIcon.src = uiAsset('allEnemy.png')
       this.chargeRandomTargetIcon = new Image()
-      this.chargeRandomTargetIcon.src = '/ui/randomEnemy.png'
+      this.chargeRandomTargetIcon.src = uiAsset('randomEnemy.png')
     }
     if (typeof document !== 'undefined') loadDeathEffects().then(fx => { this.deathFx = fx }).catch(() => {})
     if (typeof document !== 'undefined') loadStatusIcons().then(fx => { this.statusIcons = fx }).catch(() => {})
