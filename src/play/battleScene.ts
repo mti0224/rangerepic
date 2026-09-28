@@ -1956,62 +1956,49 @@ export class BattleScene {
       const iy = y + 8
       this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
 
-      const tx = x + 38
-      const right = x + w - 11
-      const barY = y + 14
-      const barH = 10
-      const barW = Math.max(18, right - tx)
+      // Match the unit HP bar exactly: same size, skew, rounded parallelogram,
+      // dark translucent track, black outline. Charge fill stays orange.
+      const tx = x + 39
+      const barY = y + 15
+      const barW = 62
+      const barH = 9
       const segments = Math.max(1, state.required)
-      const skew = 4
+      const skew = HP_BAR_SKEW
       const visualProgress = this.chargeVisualProgress(uid, state)
       const fillRatio = Math.max(0, Math.min(1, visualProgress / segments))
+      const span = barW + Math.abs(skew)
+      const sx = Math.min(tx, tx + skew)
 
-      const trackPath = () => {
-        ctx.beginPath()
-        ctx.moveTo(tx + skew, barY)
-        ctx.lineTo(tx + barW, barY)
-        ctx.lineTo(tx + barW - skew, barY + barH)
-        ctx.lineTo(tx, barY + barH)
-        ctx.closePath()
-      }
-
-      // One continuous dark track: stages touch each other with no gaps.
-      trackPath()
-      ctx.fillStyle = '#383a3f'
+      roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
+      ctx.fillStyle = 'rgba(0,0,0,0.55)'
       ctx.fill()
 
-      // Animate orange charge continuously across the shared track.
-      if (fillRatio > 0) {
-        ctx.save()
-        trackPath()
-        ctx.clip()
-        const fillW = barW * fillRatio
-        ctx.fillStyle = '#f58a2c'
-        ctx.fillRect(tx, barY, fillW, barH)
-        const glow = ctx.createLinearGradient(0, barY, 0, barY + barH)
-        glow.addColorStop(0, 'rgba(255,238,178,0.5)')
-        glow.addColorStop(0.45, 'rgba(255,255,255,0.04)')
-        glow.addColorStop(1, 'rgba(126,53,9,0.16)')
-        ctx.fillStyle = glow
-        ctx.fillRect(tx, barY, fillW, barH)
-        ctx.restore()
-      }
-
-      // Thin slanted separators keep the individual charge stages readable,
-      // while remaining physically connected as one bar.
+      // Orange charge fill, clipped by the same HP-bar outline.
       ctx.save()
-      ctx.lineWidth = 1.2
-      ctx.strokeStyle = '#0d0f13'
+      roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
+      ctx.clip()
+      if (fillRatio > 0) {
+        ctx.fillStyle = '#f58a2c'
+        ctx.fillRect(sx, barY, span * fillRatio, barH)
+      }
+      ctx.restore()
+
+      // Keep stages connected; thin separators are drawn over the shared bar.
+      ctx.save()
+      ctx.lineWidth = 1
+      ctx.strokeStyle = 'rgba(0,0,0,0.75)'
       for (let i = 1; i < segments; i++) {
-        const sx = tx + barW * i / segments
+        const split = sx + span * i / segments
         ctx.beginPath()
-        ctx.moveTo(sx + skew / 2, barY)
-        ctx.lineTo(sx - skew / 2, barY + barH)
+        ctx.moveTo(split + skew / 2, barY)
+        ctx.lineTo(split - skew / 2, barY + barH)
         ctx.stroke()
       }
-      trackPath()
+
+      roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
+      ctx.lineJoin = 'round'
       ctx.lineWidth = 1.6
-      ctx.strokeStyle = '#0d0f13'
+      ctx.strokeStyle = 'rgba(0,0,0,0.9)'
       ctx.stroke()
       ctx.restore()
       ctx.restore()
