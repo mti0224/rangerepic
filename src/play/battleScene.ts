@@ -168,8 +168,8 @@ const CHARGE_PRE_FILL_SEC = 0.2
 const CHARGE_FILL_SEC = 0.5
 const CHARGE_POST_FILL_SEC = 0.2
 const CHARGE_CENTER_SIDE_GAP = 95
-/** Image-backed speech bubble that follows the charging enemy. */
-const CHARGE_BUBBLE = { w: 286, h: 95, icon: 48, edge: 12 }
+/** Compact image-backed speech bubble that follows the charging enemy. */
+const CHARGE_BUBBLE = { w: 190, h: 63, icon: 30, edge: 10 }
 const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
@@ -421,13 +421,20 @@ export class BattleScene {
     if (typeof Image !== 'undefined') {
       this.background = new Image()
       this.background.src = BACKGROUND_URL
-      // Relative public paths work both at site root and under GitHub Pages' /rangerepic/ base.
-      this.chargeBubbleImage = new Image()
-      this.chargeBubbleImage.src = './ui/charge_bubble.png'
-      this.chargeAllTargetIcon = new Image()
-      this.chargeAllTargetIcon.src = './ui/allEnemy.png'
-      this.chargeRandomTargetIcon = new Image()
-      this.chargeRandomTargetIcon.src = './ui/randomEnemy.png'
+      // Resolve public UI assets against the actual document base. This works for
+      // local dev and GitHub Pages' /rangerepic/ subpath, even after SPA navigation.
+      const uiAssetUrl = (name: string) => typeof document !== 'undefined'
+        ? new URL('ui/' + name, document.baseURI).href
+        : './ui/' + name
+      const loadUiImage = (name: string) => {
+        const img = new Image()
+        img.onload = () => this.onChange?.()
+        img.src = uiAssetUrl(name)
+        return img
+      }
+      this.chargeBubbleImage = loadUiImage('charge_bubble.png')
+      this.chargeAllTargetIcon = loadUiImage('allEnemy.png')
+      this.chargeRandomTargetIcon = loadUiImage('randomEnemy.png')
     }
     if (typeof document !== 'undefined') loadDeathEffects().then(fx => { this.deathFx = fx }).catch(() => {})
     if (typeof document !== 'undefined') loadStatusIcons().then(fx => { this.statusIcons = fx }).catch(() => {})
@@ -1835,7 +1842,7 @@ export class BattleScene {
     if (state.targetKind === 'all' || state.targetKind === 'random') {
       const img = state.targetKind === 'all' ? this.chargeAllTargetIcon : this.chargeRandomTargetIcon
       if (imageReady(img)) {
-        const pad = 4
+        const pad = 3
         const scale = Math.min((size - pad * 2) / img.naturalWidth, (size - pad * 2) / img.naturalHeight)
         const w = img.naturalWidth * scale
         const h = img.naturalHeight * scale
@@ -1845,7 +1852,8 @@ export class BattleScene {
       const target = this.battle.unit(state.targetUid)
       const face = target ? this.faceOf(target) : null
       if (face) {
-        const crop = Math.max(1, Math.min(face.img.naturalWidth, face.img.naturalHeight) * 0.46)
+        // Show more of the locked Ranger instead of an oversized face close-up.
+        const crop = Math.max(1, Math.min(face.img.naturalWidth, face.img.naturalHeight) * 0.68)
         const sx = Math.max(0, Math.min(face.img.naturalWidth - crop, face.center.x - crop / 2))
         const sy = Math.max(0, Math.min(face.img.naturalHeight - crop, face.center.y - crop / 2))
         ctx.drawImage(face.img, sx, sy, crop, crop, x, y, size, size)
@@ -1926,18 +1934,18 @@ export class BattleScene {
       }
 
       // Only the target bubble and charge bar are rendered inside the image.
-      const ix = x + 27
-      const iy = y + 18
+      const ix = x + 18
+      const iy = y + 12
       this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
 
-      const tx = x + 88
-      const right = x + w - 29
-      const barY = y + 30
-      const barH = 22
+      const tx = x + 58
+      const right = x + w - 19
+      const barY = y + 21
+      const barH = 14
       const barW = Math.max(20, right - tx)
       const segments = Math.max(1, state.required)
-      const segGap = segments <= 8 ? 5 : 2
-      const skew = Math.min(9, Math.max(4, barW / Math.max(segments, 1) * 0.12))
+      const segGap = segments <= 8 ? 3 : 1.5
+      const skew = Math.min(6, Math.max(3, barW / Math.max(segments, 1) * 0.11))
       const segW = Math.max(3, (barW - segGap * (segments - 1)) / segments)
       const visualProgress = this.chargeVisualProgress(uid, state)
 
@@ -1956,7 +1964,7 @@ export class BattleScene {
         segmentPath()
         ctx.fillStyle = '#383a3f'
         ctx.fill()
-        ctx.lineWidth = 2.5
+        ctx.lineWidth = 1.7
         ctx.strokeStyle = '#0d0f13'
         ctx.stroke()
 
@@ -1974,7 +1982,7 @@ export class BattleScene {
           ctx.fillRect(bx, barY, segW * fraction, barH)
           ctx.restore()
           segmentPath()
-          ctx.lineWidth = 2.5
+          ctx.lineWidth = 1.7
           ctx.strokeStyle = '#0d0f13'
           ctx.stroke()
         }
