@@ -214,13 +214,15 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   ], [2, 3, 0])
 }
 
-// The selection turn counts as charge turn 1: a 3-turn charge releases on n+2.
+// The selection turn counts as charge turn 1, but progress is committed by the center fill animation.
 {
   let progress = C.initialChargeProgress(3)
-  check('3-turn charge starts at progress 1 on the selection turn', progress, 1)
-  check('3-turn charge does not release on n+1 before second charge', C.shouldReleaseChargedAction(progress, 3), false)
+  check('3-turn charge begins with an empty bar before the selection-turn fill', progress, 0)
   progress = C.advanceChargeProgress(progress, 3)
-  check('second successful charge turn advances to progress 2', progress, 2)
+  check('selection-turn center animation fills charge 1 / 3', progress, 1)
+  check('3-turn charge does not release on n+1 before its second fill', C.shouldReleaseChargedAction(progress, 3), false)
+  progress = C.advanceChargeProgress(progress, 3)
+  check('n+1 center animation fills charge 2 / 3', progress, 2)
   check('3-turn charge releases on n+2', C.shouldReleaseChargedAction(progress, 3), true)
   check('1-turn charge is satisfied on the selection turn itself', C.shouldReleaseChargedAction(C.initialChargeProgress(1), 1), true)
 }

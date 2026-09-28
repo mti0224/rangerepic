@@ -162,12 +162,14 @@ const WALK_LAYER_NEAR_PX = 40
 /** พื้นหลังสนามชั่วคราว (public/maps/) */
 const BACKGROUND_URL = '/maps/map1.jpg'
 const TURN_PAUSE_SEC = 0.25
-/** Enemy charge: every successful charge turn walks to the center, pauses, then returns home. */
+/** Enemy charge: move to center -> pause -> fill bar -> pause -> return home. */
 const CHARGE_WALK_SPEED = 340
-const CHARGE_HOLD_SEC = 0.18
+const CHARGE_PRE_FILL_SEC = 0.2
+const CHARGE_FILL_SEC = 0.5
+const CHARGE_POST_FILL_SEC = 0.2
 const CHARGE_CENTER_SIDE_GAP = 95
-/** Angry Birds Epic-style speech bubble that follows the charging enemy. */
-const CHARGE_BUBBLE = { w: 254, h: 70, icon: 50, gapFromActor: 32, edge: 12 }
+/** Image-backed speech bubble that follows the charging enemy. */
+const CHARGE_BUBBLE = { w: 286, h: 95, icon: 48, edge: 12 }
 const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
@@ -314,14 +316,16 @@ interface EnemyChargeState {
   targetUid: string
   targetKind: ChargeTargetKind
   required: number
-  /** Counted charge turns. The selection turn is already progress 1. */
+  /** Completed charge-bar fills. The selection turn animates 0 -> 1 at center. */
   progress: number
 }
 interface ChargeStep {
   actor: UnitView
   centerX: number
-  phase: 'toCenter' | 'hold' | 'return'
-  holdLeft: number
+  phase: 'toCenter' | 'preFill' | 'fill' | 'postFill' | 'return'
+  timer: number
+  progressFrom: number
+  progressTo: number
 }
 
 export type Phase = 'intro' | 'thinking' | 'input' | 'acting' | 'ended'
@@ -376,6 +380,7 @@ export class BattleScene {
   /** วิญญาณตอนตาย — โหลดเบื้องหลัง ยังไม่เสร็จก็แค่ไม่วาดวิญญาณ */
   private deathFx: DeathEffects | null = null
   private background: HTMLImageElement | null = null
+  private chargeBubbleImage: HTMLImageElement | null = null
   private chargeAllTargetIcon: HTMLImageElement | null = null
   private chargeRandomTargetIcon: HTMLImageElement | null = null
   /** เปิดฉากอยู่ (null = เล่นจบแล้ว/ไม่ได้เปิดใช้) */
@@ -416,10 +421,13 @@ export class BattleScene {
     if (typeof Image !== 'undefined') {
       this.background = new Image()
       this.background.src = BACKGROUND_URL
+      // Relative public paths work both at site root and under GitHub Pages' /rangerepic/ base.
+      this.chargeBubbleImage = new Image()
+      this.chargeBubbleImage.src = './ui/charge_bubble.png'
       this.chargeAllTargetIcon = new Image()
-      this.chargeAllTargetIcon.src = '/ui/allEnemy.png'
+      this.chargeAllTargetIcon.src = './ui/allEnemy.png'
       this.chargeRandomTargetIcon = new Image()
-      this.chargeRandomTargetIcon.src = '/ui/randomEnemy.png'
+      this.chargeRandomTargetIcon.src = './ui/randomEnemy.png'
     }
     if (typeof document !== 'undefined') loadDeathEffects().then(fx => { this.deathFx = fx }).catch(() => {})
     if (typeof document !== 'undefined') loadStatusIcons().then(fx => { this.statusIcons = fx }).catch(() => {})
@@ -849,12 +857,11 @@ export class BattleScene {
   }
 
   /**
-   * Consume one enemy action turn as charge progress.
-   * One successful charge turn is always a complete excursion:
-   * formation slot -> battlefield center -> short pause -> formation slot.
-   * Only after returning home does charge progress increase by 1.
+   * Consume one enemy action turn as charge progress:
+   * walk to center -> 0.2s pause -> ~0.5s bar fill -> 0.2s pause -> walk home.
+   * The stored progress is committed when the fill animation finishes.
    */
-  private beginChargeStep(actorUnit: Unit, _state: EnemyChargeState): void {
+  private beginChargeStep(actorUnit: Unit, state: EnemyChargeState): void {
     const actor = this.view(actorUnit.uid)
     if (!actor || !actorUnit.alive) {
       this.enemyCharges.delete(actorUnit.uid)
@@ -871,7 +878,14 @@ export class BattleScene {
     actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
 
     this.phase = 'acting'
-    this.chargeStep = { actor, centerX, phase: 'toCenter', holdLeft: CHARGE_HOLD_SEC }
+    this.chargeStep = {
+      actor,
+      centerX,
+      phase: 'toCenter',
+      timer: 0,
+      progressFrom: state.progress,
+      progressTo: advanceChargeProgress(state.progress, state.required),
+    }
     this.onChange?.()
   }
 
@@ -887,7 +901,8 @@ export class BattleScene {
       return
     }
 
-    const amount = CHARGE_WALK_SPEED * dt * this.releaseMul
+    const scaledDt = dt * this.releaseMul
+    const amount = CHARGE_WALK_SPEED * scaledDt
 
     if (step.phase === 'toCenter') {
       const dx = step.centerX - actor.pos.x
@@ -897,14 +912,33 @@ export class BattleScene {
       }
       actor.pos.x = step.centerX
       this.playIdle(actor)
-      step.phase = 'hold'
-      step.holdLeft = CHARGE_HOLD_SEC
+      step.phase = 'preFill'
+      step.timer = 0
       return
     }
 
-    if (step.phase === 'hold') {
-      step.holdLeft -= dt * this.releaseMul
-      if (step.holdLeft > 0) return
+    if (step.phase === 'preFill') {
+      step.timer += scaledDt
+      if (step.timer < CHARGE_PRE_FILL_SEC) return
+      step.phase = 'fill'
+      step.timer = 0
+      return
+    }
+
+    if (step.phase === 'fill') {
+      step.timer += scaledDt
+      if (step.timer < CHARGE_FILL_SEC) return
+      const state = this.enemyCharges.get(actor.unit.uid)
+      if (state) state.progress = step.progressTo
+      step.phase = 'postFill'
+      step.timer = 0
+      this.onChange?.()
+      return
+    }
+
+    if (step.phase === 'postFill') {
+      step.timer += scaledDt
+      if (step.timer < CHARGE_POST_FILL_SEC) return
       step.phase = 'return'
       actor.facingBack = actor.pos.x * actor.facing > 0
       actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
@@ -982,7 +1016,6 @@ export class BattleScene {
         this.enemyCharges.delete(actor.uid)
         this.startAction(actor, charge.action, target)
       } else {
-        charge.progress = advanceChargeProgress(charge.progress, charge.required)
         this.beginChargeStep(actor, charge)
       }
       return
@@ -1005,7 +1038,7 @@ export class BattleScene {
         targetUid: plan.target.uid,
         targetKind: this.chargeTargetKind(actor, plan.action),
         required: chargeTurns,
-        // Choosing the move is already charge turn 1.
+        // Selection turn performs the first visible fill from 0 -> 1.
         progress: initialChargeProgress(chargeTurns),
       }
       this.enemyCharges.set(actor.uid, state)
@@ -1785,12 +1818,6 @@ export class BattleScene {
     if (this.cutin) paintCutin(ctx, this.cutin.play, this.cutin.t, VIEW_W, VIEW_H)
   }
 
-  private chargeActionName(actor: Unit, state: EnemyChargeState): string {
-    if (state.action === 'attack') return '普通攻擊'
-    if (state.action === 'skill1') return actor.gameplayClass?.skill.name?.trim() || '技能攻擊'
-    return '攻擊'
-  }
-
   private paintChargeTargetIcon(
     ctx: CanvasRenderingContext2D,
     state: EnemyChargeState,
@@ -1801,23 +1828,18 @@ export class BattleScene {
     ctx.save()
     ctx.beginPath()
     ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(16,18,28,0.96)'
+    ctx.fillStyle = 'rgba(16,18,28,0.97)'
     ctx.fill()
     ctx.clip()
 
     if (state.targetKind === 'all' || state.targetKind === 'random') {
       const img = state.targetKind === 'all' ? this.chargeAllTargetIcon : this.chargeRandomTargetIcon
       if (imageReady(img)) {
-        const pad = 5
+        const pad = 4
         const scale = Math.min((size - pad * 2) / img.naturalWidth, (size - pad * 2) / img.naturalHeight)
         const w = img.naturalWidth * scale
         const h = img.naturalHeight * scale
         ctx.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h)
-      } else {
-        ctx.fillStyle = '#ffffff'
-        ctx.font = 'bold 30px LineBold, Krub, ui-sans-serif, system-ui'
-        ctx.textAlign = 'center'
-        ctx.fillText('?', x + size / 2, y + size / 2 + 10)
       }
     } else {
       const target = this.battle.unit(state.targetUid)
@@ -1827,11 +1849,6 @@ export class BattleScene {
         const sx = Math.max(0, Math.min(face.img.naturalWidth - crop, face.center.x - crop / 2))
         const sy = Math.max(0, Math.min(face.img.naturalHeight - crop, face.center.y - crop / 2))
         ctx.drawImage(face.img, sx, sy, crop, crop, x, y, size, size)
-      } else {
-        ctx.fillStyle = '#ffffff'
-        ctx.font = 'bold 30px LineBold, Krub, ui-sans-serif, system-ui'
-        ctx.textAlign = 'center'
-        ctx.fillText('?', x + size / 2, y + size / 2 + 10)
       }
     }
     ctx.restore()
@@ -1840,158 +1857,128 @@ export class BattleScene {
     ctx.beginPath()
     ctx.arc(x + size / 2, y + size / 2, size / 2 - 1, 0, Math.PI * 2)
     ctx.lineWidth = 4
-    ctx.strokeStyle = '#111827'
+    ctx.strokeStyle = '#0b1020'
     ctx.stroke()
     ctx.lineWidth = 2
-    ctx.strokeStyle = '#f5c542'
+    ctx.strokeStyle = '#f7c84b'
     ctx.stroke()
     ctx.restore()
   }
 
+  private chargeVisualProgress(uid: string, state: EnemyChargeState): number {
+    const step = this.chargeStep
+    if (!step || step.actor.unit.uid !== uid) return state.progress
+    if (step.phase === 'fill') {
+      const t = Math.max(0, Math.min(1, step.timer / CHARGE_FILL_SEC))
+      // Smoothstep: visible acceleration/deceleration while the segment fills.
+      const eased = t * t * (3 - 2 * t)
+      return step.progressFrom + (step.progressTo - step.progressFrom) * eased
+    }
+    if (step.phase === 'postFill' || step.phase === 'return') return step.progressTo
+    return step.progressFrom
+  }
+
   private paintEnemyChargeBubbles(ctx: CanvasRenderingContext2D): void {
     const rows = [...this.enemyCharges.entries()]
-      .map(([uid, state]) => ({ view: this.view(uid), state }))
-      .filter((row): row is { view: UnitView; state: EnemyChargeState } => !!row.view?.unit.alive && !row.view.gone)
+      .map(([uid, state]) => ({ uid, view: this.view(uid), state }))
+      .filter((row): row is { uid: string; view: UnitView; state: EnemyChargeState } => !!row.view?.unit.alive && !row.view.gone)
     if (!rows.length || this.intro) return
 
     const Z = CAMERA_ZOOM
-    const { w, h, icon, gapFromActor, edge } = CHARGE_BUBBLE
-
-    // Sort top-to-bottom for deterministic overlap avoidance when multiple enemies charge.
+    const { w, h, icon, edge } = CHARGE_BUBBLE
     const placed: { x: number; y: number; w: number; h: number }[] = []
     rows.sort((a, b) => this.headWorld(a.view).y - this.headWorld(b.view).y)
 
-    for (const { view, state } of rows) {
-      const actor = view.unit
+    for (const { uid, view, state } of rows) {
       const head = this.headWorld(view)
       const ax = head.x * Z
-      const ay = head.y * Z + 8
+      const ay = head.y * Z + 12
 
-      // Enemies normally stand on the right, so the bubble prefers their left side.
-      // If the actor has moved across the middle, flip sides to stay inside the screen.
-      let onLeft = ax > VIEW_W * 0.46
-      let x = onLeft ? ax - w - gapFromActor : ax + gapFromActor
-      if (x < edge) { x = ax + gapFromActor; onLeft = false }
-      if (x + w > VIEW_W - edge) { x = ax - w - gapFromActor; onLeft = true }
+      // The supplied asset's tail is at bottom-right. Use it normally when the
+      // bubble is left of the enemy; mirror only when screen bounds force it right.
+      let onLeft = ax > VIEW_W * 0.43
+      let x = onLeft ? ax - w * 0.91 : ax - w * 0.09
+      if (x < edge) { x = ax - w * 0.09; onLeft = false }
+      if (x + w > VIEW_W - edge) { x = ax - w * 0.91; onLeft = true }
       x = Math.max(edge, Math.min(VIEW_W - edge - w, x))
+      let y = Math.max(edge, Math.min(VIEW_H - edge - h, ay - h * 0.88))
 
-      let y = Math.max(edge, Math.min(VIEW_H - edge - h, ay - h * 0.58))
-      // Nudge colliding bubbles vertically while keeping them near their owner.
       for (const prev of placed) {
-        const overlapX = x < prev.x + prev.w + 6 && x + w + 6 > prev.x
-        const overlapY = y < prev.y + prev.h + 6 && y + h + 6 > prev.y
+        const overlapX = x < prev.x + prev.w + 5 && x + w + 5 > prev.x
+        const overlapY = y < prev.y + prev.h + 5 && y + h + 5 > prev.y
         if (!overlapX || !overlapY) continue
-        const down = prev.y + prev.h + 7
-        const up = prev.y - h - 7
+        const down = prev.y + prev.h + 6
+        const up = prev.y - h - 6
         y = down + h <= VIEW_H - edge ? down : Math.max(edge, up)
       }
       placed.push({ x, y, w, h })
 
-      const tailY = Math.max(y + 18, Math.min(y + h - 18, ay))
-      const bodyTop = y
-      const pulse = 0.5 + 0.5 * Math.sin(this.time * Math.PI * 2 * 1.4)
-
       ctx.save()
-
-      // Speech-bubble tail.
-      ctx.beginPath()
-      if (onLeft) {
-        ctx.moveTo(x + w - 2, tailY - 10)
-        ctx.lineTo(Math.min(ax - 5, x + w + 29), ay)
-        ctx.lineTo(x + w - 2, tailY + 10)
-      } else {
-        ctx.moveTo(x + 2, tailY - 10)
-        ctx.lineTo(Math.max(ax + 5, x - 29), ay)
-        ctx.lineTo(x + 2, tailY + 10)
-      }
-      ctx.closePath()
-      ctx.fillStyle = '#6d7074'
-      ctx.fill()
-      ctx.lineWidth = 4
-      ctx.strokeStyle = '#101114'
-      ctx.stroke()
-
-      // Main bubble body: neutral gray shell, dark outline, subtle charge glow.
-      ctx.beginPath()
-      ctx.roundRect(x, bodyTop, w, h, 15)
-      const panel = ctx.createLinearGradient(x, bodyTop, x, bodyTop + h)
-      panel.addColorStop(0, '#7c7f82')
-      panel.addColorStop(1, '#606367')
-      ctx.fillStyle = panel
-      ctx.shadowColor = `rgba(245,138,44,${0.12 + pulse * 0.22})`
-      ctx.shadowBlur = 7 + pulse * 5
-      ctx.fill()
-      ctx.shadowBlur = 0
-      ctx.lineWidth = 4
-      ctx.strokeStyle = '#101114'
-      ctx.stroke()
-
-      // Target portrait / all / random marker.
-      const ix = x + 10
-      const iy = bodyTop + (h - icon) / 2
-      this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
-
-      const tx = ix + icon + 11
-      const right = x + w - 11
-      const barY = bodyTop + 33
-      const barH = 18
-      const barW = right - tx
-
-      ctx.textAlign = 'left'
-      ctx.textBaseline = 'alphabetic'
-      ctx.font = 'bold 12px LineBold, Krub, ui-sans-serif, system-ui'
-      ctx.fillStyle = '#ffffff'
-      const title = this.chargeActionName(actor, state)
-      const countText = `${state.progress} / ${state.required}`
-      const countW = ctx.measureText(countText).width
-      let shown = title
-      const maxTitle = Math.max(20, barW - countW - 12)
-      while (shown.length > 1 && ctx.measureText(shown + '…').width > maxTitle) shown = shown.slice(0, -1)
-      if (shown !== title) shown += '…'
-      ctx.fillText(shown, tx, bodyTop + 23)
-
-      ctx.textAlign = 'right'
-      ctx.fillStyle = '#fff3cf'
-      ctx.fillText(countText, right, bodyTop + 23)
-
-      // Segmented, slightly slanted charge bar like Angry Birds Epic.
-      const segments = Math.max(1, state.required)
-      const segGap = segments <= 8 ? 4 : 2
-      const skew = Math.min(8, Math.max(3, barW / Math.max(segments, 1) * 0.12))
-      const segW = Math.max(3, (barW - segGap * (segments - 1)) / segments)
-      for (let i = 0; i < segments; i++) {
-        const bx = tx + i * (segW + segGap)
-        ctx.beginPath()
-        ctx.moveTo(bx + skew, barY)
-        ctx.lineTo(bx + segW, barY)
-        ctx.lineTo(bx + segW - skew, barY + barH)
-        ctx.lineTo(bx, barY + barH)
-        ctx.closePath()
-        ctx.fillStyle = i < state.progress ? '#f58a2c' : '#3d3d3f'
-        ctx.fill()
-        ctx.lineWidth = 2
-        ctx.strokeStyle = '#111214'
-        ctx.stroke()
-
-        if (i < state.progress) {
-          ctx.save()
-          ctx.globalAlpha = 0.22 + pulse * 0.18
-          ctx.fillStyle = '#fff2c2'
-          ctx.beginPath()
-          ctx.moveTo(bx + skew + 2, barY + 2)
-          ctx.lineTo(bx + segW - 3, barY + 2)
-          ctx.lineTo(bx + segW - skew - 4, barY + Math.max(4, barH * 0.42))
-          ctx.lineTo(bx + 3, barY + Math.max(4, barH * 0.42))
-          ctx.closePath()
-          ctx.fill()
-          ctx.restore()
+      if (imageReady(this.chargeBubbleImage)) {
+        if (onLeft) {
+          ctx.drawImage(this.chargeBubbleImage, x, y, w, h)
+        } else {
+          ctx.translate(x + w, y)
+          ctx.scale(-1, 1)
+          ctx.drawImage(this.chargeBubbleImage, 0, 0, w, h)
+          ctx.setTransform(1, 0, 0, 1, 0, 0)
         }
       }
 
-      ctx.font = 'bold 9px LineBold, Krub, ui-sans-serif, system-ui'
-      ctx.textAlign = 'left'
-      ctx.fillStyle = '#f8e7bd'
-      ctx.fillText('蓄力', tx, bodyTop + h - 7)
+      // Only the target bubble and charge bar are rendered inside the image.
+      const ix = x + 27
+      const iy = y + 18
+      this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
+
+      const tx = x + 88
+      const right = x + w - 29
+      const barY = y + 30
+      const barH = 22
+      const barW = Math.max(20, right - tx)
+      const segments = Math.max(1, state.required)
+      const segGap = segments <= 8 ? 5 : 2
+      const skew = Math.min(9, Math.max(4, barW / Math.max(segments, 1) * 0.12))
+      const segW = Math.max(3, (barW - segGap * (segments - 1)) / segments)
+      const visualProgress = this.chargeVisualProgress(uid, state)
+
+      for (let i = 0; i < segments; i++) {
+        const bx = tx + i * (segW + segGap)
+        const fraction = Math.max(0, Math.min(1, visualProgress - i))
+        const segmentPath = () => {
+          ctx.beginPath()
+          ctx.moveTo(bx + skew, barY)
+          ctx.lineTo(bx + segW, barY)
+          ctx.lineTo(bx + segW - skew, barY + barH)
+          ctx.lineTo(bx, barY + barH)
+          ctx.closePath()
+        }
+
+        segmentPath()
+        ctx.fillStyle = '#383a3f'
+        ctx.fill()
+        ctx.lineWidth = 2.5
+        ctx.strokeStyle = '#0d0f13'
+        ctx.stroke()
+
+        if (fraction > 0) {
+          ctx.save()
+          segmentPath()
+          ctx.clip()
+          ctx.fillStyle = '#f58a2c'
+          ctx.fillRect(bx, barY, segW * fraction, barH)
+          const glow = ctx.createLinearGradient(0, barY, 0, barY + barH)
+          glow.addColorStop(0, 'rgba(255,238,178,0.5)')
+          glow.addColorStop(0.45, 'rgba(255,255,255,0.04)')
+          glow.addColorStop(1, 'rgba(126,53,9,0.16)')
+          ctx.fillStyle = glow
+          ctx.fillRect(bx, barY, segW * fraction, barH)
+          ctx.restore()
+          segmentPath()
+          ctx.lineWidth = 2.5
+          ctx.strokeStyle = '#0d0f13'
+          ctx.stroke()
+        }
+      }
       ctx.restore()
     }
   }
