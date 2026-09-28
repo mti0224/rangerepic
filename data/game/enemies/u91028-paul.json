@@ -22,7 +22,7 @@
     "description": "對1名敵人造成3次攻擊力100%的傷害",
     "animation": "attack",
     "skillGaugeGain": 0,
-    "chargeTurns": 0,
+    "chargeTurns": 2,
     "effects": []
   },
   "normalSupport": {
