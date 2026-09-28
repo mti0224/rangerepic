@@ -214,17 +214,23 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
   ], [2, 3, 0])
 }
 
-// The selection turn counts as charge turn 1, but progress is committed by the center fill animation.
+// The selection turn counts as charge turn 1 and the final stage must visibly fill before release.
 {
   let progress = C.initialChargeProgress(3)
   check('3-turn charge begins with an empty bar before the selection-turn fill', progress, 0)
+  check('selection turn does not complete a 3-turn charge', C.shouldReleaseChargedAction(progress, 3), false)
+
   progress = C.advanceChargeProgress(progress, 3)
   check('selection-turn center animation fills charge 1 / 3', progress, 1)
-  check('3-turn charge does not release on n+1 before its second fill', C.shouldReleaseChargedAction(progress, 3), false)
+  check('n+1 still does not complete the charge before its second fill', C.shouldReleaseChargedAction(progress, 3), false)
+
   progress = C.advanceChargeProgress(progress, 3)
   check('n+1 center animation fills charge 2 / 3', progress, 2)
-  check('3-turn charge releases on n+2', C.shouldReleaseChargedAction(progress, 3), true)
-  check('1-turn charge is satisfied on the selection turn itself', C.shouldReleaseChargedAction(C.initialChargeProgress(1), 1), true)
+  check('n+2 is the final-fill turn', C.shouldReleaseChargedAction(progress, 3), true)
+
+  progress = C.advanceChargeProgress(progress, 3)
+  check('n+2 center animation visibly fills charge 3 / 3 before release', progress, 3)
+  check('1-turn charge performs its one visible fill before releasing on the selection turn', C.shouldReleaseChargedAction(C.initialChargeProgress(1), 1), true)
 }
 
 // Gameplay damage ignores legacy DEF / variance, and only normal attacks can crit.
