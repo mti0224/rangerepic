@@ -32,6 +32,7 @@ import { getLang, localName, statusLabel, t, turnsShort } from './i18n'
 import { properNameZhTw } from './zhNames'
 import { imageReady, portraitCenter } from '@/lib/portrait'
 import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
+import { advanceChargeProgress, initialChargeProgress, shouldReleaseChargedAction } from './chargeRules'
 
 export { STATUS_LABEL } from './statusLabels'
 
@@ -165,6 +166,9 @@ const TURN_PAUSE_SEC = 0.25
 const CHARGE_WALK_SPEED = 340
 const CHARGE_HOLD_SEC = 0.18
 const CHARGE_CENTER_SIDE_GAP = 95
+/** Compact charge cards shown at the upper-left of the battle field. */
+const CHARGE_UI = { x: 22, y: 84, w: 370, h: 82, gap: 9, icon: 58 }
+type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
  * อัญเชิญแถวพิเศษ: ผู้อัญเชิญถอยหลัง (px) → ตัวอัญเชิญวาปมายืนหน้าที่ยืนเดิมของผู้อัญเชิญ (px) → ร่าย → วาปกลับ → ผู้อัญเชิญเดินกลับ
  * วาปเข้า/ออกกี่วินาที (สั้นๆ ไม่เวอร์)
@@ -307,7 +311,9 @@ interface ActionRun {
 interface EnemyChargeState {
   action: ActionName
   targetUid: string
+  targetKind: ChargeTargetKind
   required: number
+  /** Counted charge turns. The selection turn is already progress 1. */
   progress: number
 }
 interface ChargeStep {
@@ -369,6 +375,8 @@ export class BattleScene {
   /** วิญญาณตอนตาย — โหลดเบื้องหลัง ยังไม่เสร็จก็แค่ไม่วาดวิญญาณ */
   private deathFx: DeathEffects | null = null
   private background: HTMLImageElement | null = null
+  private chargeAllTargetIcon: HTMLImageElement | null = null
+  private chargeRandomTargetIcon: HTMLImageElement | null = null
   /** เปิดฉากอยู่ (null = เล่นจบแล้ว/ไม่ได้เปิดใช้) */
   private intro: IntroState | null = null
   /** Wave-clear exit animation for surviving player Rangers. */
@@ -404,7 +412,14 @@ export class BattleScene {
     this.onChange = onChange
     this.timerOn = opts.timer === true
     this.hud = new BattleHud(this)
-    if (typeof Image !== 'undefined') { this.background = new Image(); this.background.src = BACKGROUND_URL }
+    if (typeof Image !== 'undefined') {
+      this.background = new Image()
+      this.background.src = BACKGROUND_URL
+      this.chargeAllTargetIcon = new Image()
+      this.chargeAllTargetIcon.src = '/ui/allEnemy.png'
+      this.chargeRandomTargetIcon = new Image()
+      this.chargeRandomTargetIcon.src = '/ui/randomEnemy.png'
+    }
     if (typeof document !== 'undefined') loadDeathEffects().then(fx => { this.deathFx = fx }).catch(() => {})
     if (typeof document !== 'undefined') loadStatusIcons().then(fx => { this.statusIcons = fx }).catch(() => {})
     // ตำแหน่งยืนตามจำนวนตัวในแถว (วางตัวเดียว → อยู่กลางแถว ฯลฯ)
@@ -810,6 +825,21 @@ export class BattleScene {
     return !!this.pendingActor && !!this.pendingAction && this.battle.targetsAllies(this.pendingCaster ?? this.pendingActor, this.pendingAction)
   }
 
+  private chargeTargetKind(actor: Unit, action: ActionName): ChargeTargetKind {
+    const cls = actor.gameplayClass
+    if (!cls) return 'single'
+    if (action === 'attack') {
+      if (cls.normalAttack.target === 'all') return 'all'
+      if (cls.normalAttack.target === 'primaryPlusRandom') return 'random'
+      return 'single'
+    }
+    if (action === 'skill1') {
+      if (cls.skill.target.count === 'all') return 'all'
+      if (cls.skill.target.selector === 'random') return 'random'
+    }
+    return 'single'
+  }
+
   private resolveChargedTarget(actor: Unit, state: EnemyChargeState): Unit | null {
     const locked = this.battle.unit(state.targetUid)
     const valid = this.battle.selectableTargets(actor, state.action)
@@ -890,8 +920,6 @@ export class BattleScene {
     actor.facingBack = false
     this.playIdle(actor)
 
-    const state = this.enemyCharges.get(actor.unit.uid)
-    if (state) state.progress++
     this.battle.endTurn(actor.unit)
     this.chargeStep = null
     this.phase = this.battle.over ? 'ended' : 'thinking'
@@ -947,12 +975,13 @@ export class BattleScene {
         return
       }
       charge.targetUid = target.uid
-      if (charge.progress >= charge.required) {
+      if (shouldReleaseChargedAction(charge.progress, charge.required)) {
         // Silence intentionally does not matter here: the attack was locked when
         // charging began and must release unless the enemy died.
         this.enemyCharges.delete(actor.uid)
         this.startAction(actor, charge.action, target)
       } else {
+        charge.progress = advanceChargeProgress(charge.progress, charge.required)
         this.beginChargeStep(actor, charge)
       }
       return
@@ -969,17 +998,20 @@ export class BattleScene {
     const plan = this.battle.planAuto(actor)
     if (!plan) { this.phase = 'ended'; this.onChange?.(); return }
     const chargeTurns = this.battle.enemyChargeTurns(actor, plan.action)
-    if (!plan.caster && chargeTurns > 0) {
+    if (!plan.caster && chargeTurns > 1) {
       const state: EnemyChargeState = {
         action: plan.action,
         targetUid: plan.target.uid,
+        targetKind: this.chargeTargetKind(actor, plan.action),
         required: chargeTurns,
-        progress: 0,
+        // Choosing the move is already charge turn 1.
+        progress: initialChargeProgress(chargeTurns),
       }
       this.enemyCharges.set(actor.uid, state)
       this.beginChargeStep(actor, state)
       return
     }
+    // chargeTurns=1 means the selection turn itself satisfies the full charge.
     if (plan.caster) this.startSummon(actor, plan.caster, plan.action, plan.target)
     else this.startAction(actor, plan.action, plan.target)
   }
@@ -1740,7 +1772,134 @@ export class BattleScene {
     if (aim.length) this.paintAimMarks(ctx, aim)
     this.paintPopups(ctx)
     this.hud.draw(ctx)
+    this.paintEnemyChargeHud(ctx)
     if (this.cutin) paintCutin(ctx, this.cutin.play, this.cutin.t, VIEW_W, VIEW_H)
+  }
+
+  private chargeActionName(actor: Unit, state: EnemyChargeState): string {
+    if (state.action === 'attack') return '普通攻擊'
+    if (state.action === 'skill1') return actor.gameplayClass?.skill.name?.trim() || '技能攻擊'
+    return '攻擊'
+  }
+
+  private paintChargeTargetIcon(
+    ctx: CanvasRenderingContext2D,
+    state: EnemyChargeState,
+    x: number,
+    y: number,
+    size: number,
+  ): void {
+    ctx.save()
+    ctx.beginPath()
+    ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(16,18,28,0.96)'
+    ctx.fill()
+    ctx.clip()
+
+    if (state.targetKind === 'all' || state.targetKind === 'random') {
+      const img = state.targetKind === 'all' ? this.chargeAllTargetIcon : this.chargeRandomTargetIcon
+      if (imageReady(img)) {
+        const pad = 5
+        const scale = Math.min((size - pad * 2) / img.naturalWidth, (size - pad * 2) / img.naturalHeight)
+        const w = img.naturalWidth * scale
+        const h = img.naturalHeight * scale
+        ctx.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h)
+      } else {
+        ctx.fillStyle = '#ffffff'
+        ctx.font = 'bold 30px LineBold, Krub, ui-sans-serif, system-ui'
+        ctx.textAlign = 'center'
+        ctx.fillText('?', x + size / 2, y + size / 2 + 10)
+      }
+    } else {
+      const target = this.battle.unit(state.targetUid)
+      const face = target ? this.faceOf(target) : null
+      if (face) {
+        const crop = Math.max(1, Math.min(face.img.naturalWidth, face.img.naturalHeight) * 0.46)
+        const sx = Math.max(0, Math.min(face.img.naturalWidth - crop, face.center.x - crop / 2))
+        const sy = Math.max(0, Math.min(face.img.naturalHeight - crop, face.center.y - crop / 2))
+        ctx.drawImage(face.img, sx, sy, crop, crop, x, y, size, size)
+      } else {
+        ctx.fillStyle = '#ffffff'
+        ctx.font = 'bold 30px LineBold, Krub, ui-sans-serif, system-ui'
+        ctx.textAlign = 'center'
+        ctx.fillText('?', x + size / 2, y + size / 2 + 10)
+      }
+    }
+    ctx.restore()
+
+    ctx.save()
+    ctx.beginPath()
+    ctx.arc(x + size / 2, y + size / 2, size / 2 - 1, 0, Math.PI * 2)
+    ctx.lineWidth = 4
+    ctx.strokeStyle = '#111827'
+    ctx.stroke()
+    ctx.lineWidth = 2
+    ctx.strokeStyle = '#f5c542'
+    ctx.stroke()
+    ctx.restore()
+  }
+
+  private paintEnemyChargeHud(ctx: CanvasRenderingContext2D): void {
+    const rows = [...this.enemyCharges.entries()]
+      .map(([uid, state]) => ({ actor: this.battle.unit(uid), state }))
+      .filter((row): row is { actor: Unit; state: EnemyChargeState } => !!row.actor?.alive)
+    if (!rows.length || this.intro) return
+
+    const { x, y, w, h, gap, icon } = CHARGE_UI
+    rows.forEach(({ actor, state }, index) => {
+      const py = y + index * (h + gap)
+
+      ctx.save()
+      ctx.beginPath()
+      ctx.roundRect(x, py, w, h, 15)
+      const panel = ctx.createLinearGradient(x, py, x, py + h)
+      panel.addColorStop(0, 'rgba(42,47,57,0.96)')
+      panel.addColorStop(1, 'rgba(20,24,34,0.96)')
+      ctx.fillStyle = panel
+      ctx.fill()
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'rgba(0,0,0,0.92)'
+      ctx.stroke()
+
+      const ix = x + 10
+      const iy = py + (h - icon) / 2
+      this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
+
+      const tx = ix + icon + 12
+      const right = x + w - 12
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'alphabetic'
+      ctx.font = 'bold 13px LineBold, Krub, ui-sans-serif, system-ui'
+      ctx.fillStyle = '#ffffff'
+      const title = `${this.nameOf(actor)} · ${this.chargeActionName(actor, state)}`
+      const maxTitle = right - tx
+      let shown = title
+      while (shown.length > 1 && ctx.measureText(shown + '…').width > maxTitle) shown = shown.slice(0, -1)
+      if (shown !== title) shown += '…'
+      ctx.fillText(shown, tx, py + 22)
+
+      ctx.font = 'bold 11px LineBold, Krub, ui-sans-serif, system-ui'
+      ctx.fillStyle = '#f5c542'
+      ctx.fillText(`蓄力 ${state.progress} / ${state.required}`, tx, py + 40)
+
+      const barY = py + 50
+      const barH = 18
+      const barW = right - tx
+      const segments = Math.max(1, state.required)
+      const segGap = segments <= 8 ? 4 : 0
+      const segW = (barW - segGap * (segments - 1)) / segments
+      for (let i = 0; i < segments; i++) {
+        const bx = tx + i * (segW + segGap)
+        ctx.beginPath()
+        ctx.roundRect(bx, barY, segW, barH, segments <= 8 ? 4 : 0)
+        ctx.fillStyle = i < state.progress ? '#f58a2c' : 'rgba(255,255,255,0.14)'
+        ctx.fill()
+        ctx.lineWidth = 1
+        ctx.strokeStyle = 'rgba(0,0,0,0.7)'
+        ctx.stroke()
+      }
+      ctx.restore()
+    })
   }
 
   /** ม่านดำแยกขึ้น–ลง แล้วขึ้นคำว่า START ตอนทุกตัวเข้าที่ */

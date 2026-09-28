@@ -26,6 +26,7 @@ const bundle = async (entry, name) => {
 const B = await bundle('src/play/battle.ts', 'gameplay-v1-battle')
 const A = await bundle('src/lib/gameplayAdapter.ts', 'gameplay-v1-adapter')
 const P = await bundle('src/lib/actionPlan.ts', 'gameplay-v1-action-plan')
+const C = await bundle('src/play/chargeRules.ts', 'gameplay-v1-charge-rules')
 
 let pass = 0
 let fail = 0
@@ -211,6 +212,17 @@ const oneVsOne = (leftClass = baseClass(), rightClass = baseClass({ id: 'right_c
     b.enemyChargeTurns(enemy, 'skill1'),
     b.enemyChargeTurns(enemy, 'skill2'),
   ], [2, 3, 0])
+}
+
+// The selection turn counts as charge turn 1: a 3-turn charge releases on n+2.
+{
+  let progress = C.initialChargeProgress(3)
+  check('3-turn charge starts at progress 1 on the selection turn', progress, 1)
+  check('3-turn charge does not release on n+1 before second charge', C.shouldReleaseChargedAction(progress, 3), false)
+  progress = C.advanceChargeProgress(progress, 3)
+  check('second successful charge turn advances to progress 2', progress, 2)
+  check('3-turn charge releases on n+2', C.shouldReleaseChargedAction(progress, 3), true)
+  check('1-turn charge is satisfied on the selection turn itself', C.shouldReleaseChargedAction(C.initialChargeProgress(1), 1), true)
 }
 
 // Gameplay damage ignores legacy DEF / variance, and only normal attacks can crit.
