@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "u91028-paul",
+  "names": {
+    "zh": "保羅（測試）",
+    "en": "",
+    "th": "",
+    "jp": ""
+  },
+  "description": "",
+  "assetVariantId": "u91028-paul",
+  "stats": {
+    "hp": 1000,
+    "attack": 25,
+    "critRate": 8,
+    "critDamage": 1.8,
+    "hitRate": 100
+  },
+  "normalAttack": {
+    "target": "single",
+    "hits": 1,
+    "description": "對1名敵人造成3次攻擊力100%的傷害",
+    "animation": "attack",
+    "skillGaugeGain": 0,
+    "chargeTurns": 0,
+    "effects": []
+  },
+  "normalSupport": {
+    "target": "singleAlly",
+    "description": "",
+    "animation": "skill1",
+    "effects": []
+  },
+  "skill": {
+    "name": "廚餘桶攻擊",
+    "description": "用骯髒的廚餘桶，對隨機1名敵人造成500%的傷害，接下來3回合內，每一回合受到當前體力5%的中毒傷害",
+    "icon": "",
+    "animation": "skill1",
+    "chargeTurns": 0,
+    "target": {
+      "side": "enemy",
+      "count": 1,
+      "selector": "random"
+    },
+    "effects": [
+      {
+        "type": "damage",
+        "value": 500,
+        "hits": 1
+      },
+      {
+        "type": "poison",
+        "value": 5,
+        "duration": 3
+      }
+    ]
+  },
+  "skillActivationRate": 15,
+  "abilities": []
+}
