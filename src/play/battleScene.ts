@@ -1975,7 +1975,8 @@ export class BattleScene {
       const barW = 62
       const barH = 9
       const segments = Math.max(1, state.required)
-      const skew = HP_BAR_SKEW
+      // Enemy charge bar mirrors the enemy HP bar shape (team 1 uses negative skew).
+      const skew = -HP_BAR_SKEW
       const visualProgress = this.chargeVisualProgress(uid, state)
       const fillRatio = Math.max(0, Math.min(1, visualProgress / segments))
       const span = barW + Math.abs(skew)
@@ -2002,8 +2003,8 @@ export class BattleScene {
       for (let i = 1; i < segments; i++) {
         const split = sx + span * i / segments
         ctx.beginPath()
-        ctx.moveTo(split + skew / 2, barY)
-        ctx.lineTo(split - skew / 2, barY + barH)
+        ctx.moveTo(split, barY)
+        ctx.lineTo(split, barY + barH)
         ctx.stroke()
       }
 
