@@ -10,6 +10,9 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     const detail = Array.isArray(data?.errors) ? ': ' + data.errors.join(' · ') : data?.error ? ': ' + data.error : ''
     throw new Error('HTTP ' + res.status + detail)
   }
+  if (data?.git?.ok === false) {
+    throw new Error('資料已寫入管理伺服器，但 GitHub 同步失敗：' + (data.git.error || '未知 Git 錯誤'))
+  }
   return data as T
 }
 
