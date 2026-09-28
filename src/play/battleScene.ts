@@ -30,7 +30,7 @@ import { BattleHud, PREVIEW_BLINK_HZ } from './battleHud'
 import { isDebuffLabel } from './statusLabels'
 import { getLang, localName, statusLabel, t, turnsShort } from './i18n'
 import { properNameZhTw } from './zhNames'
-import { imageReady, portraitCenter } from '@/lib/portrait'
+import { PANEL_FACE_ZOOM, drawFocused, imageReady, portraitCenter } from '@/lib/portrait'
 import { adaptRangerConfigForGameplay } from '@/lib/gameplayAdapter'
 import { advanceChargeProgress, initialChargeProgress, shouldReleaseChargedAction } from './chargeRules'
 
@@ -1864,11 +1864,17 @@ export class BattleScene {
       const target = this.battle.unit(state.targetUid)
       const face = target ? this.faceOf(target) : null
       if (face) {
-        // Show more of the locked Ranger instead of an oversized face close-up.
-        const crop = Math.max(1, Math.min(face.img.naturalWidth, face.img.naturalHeight) * 0.68)
-        const sx = Math.max(0, Math.min(face.img.naturalWidth - crop, face.center.x - crop / 2))
-        const sy = Math.max(0, Math.min(face.img.naturalHeight - crop, face.center.y - crop / 2))
-        ctx.drawImage(face.img, sx, sy, crop, crop, x, y, size, size)
+        // Reuse the exact portrait framing authored in Asset Management
+        // (ranger.json -> face), including the same auto fallback used by the HUD.
+        ctx.imageSmoothingQuality = 'high'
+        drawFocused(
+          ctx,
+          face.img,
+          face.center,
+          x + size / 2,
+          y + size / 2,
+          size * PANEL_FACE_ZOOM,
+        )
       }
     }
     ctx.restore()
