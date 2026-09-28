@@ -19,6 +19,10 @@
         {
           "enemyId": "training_boss",
           "slot": "front-0"
+        },
+        {
+          "enemyId": "u91028-paul",
+          "slot": "front-1"
         }
       ]
     }
