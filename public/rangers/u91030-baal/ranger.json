@@ -103,7 +103,7 @@
       "positioning": "auto",
       "moveSpeedOverride": null,
       "approach": {
-        "enabled": false,
+        "enabled": true,
         "stopOffset": {
           "x": -140,
           "y": 0
@@ -175,5 +175,17 @@
     "x": 69,
     "y": 67
   },
-  "approved": true
+  "approved": true,
+  "cutins": {
+    "skill2": {
+      "enabled": true,
+      "frame": 18,
+      "focus": {
+        "x": 245,
+        "y": -33
+      },
+      "size": 190,
+      "title": null
+    }
+  }
 }
