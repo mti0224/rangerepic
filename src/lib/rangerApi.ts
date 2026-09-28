@@ -22,6 +22,10 @@ export interface RangerListItem {
 const json = async <T>(res: Response): Promise<T> => {
   const data = await res.json()
   if (!res.ok) throw new Error((data as { error?: string }).error ?? `HTTP ${res.status}`)
+  const git = (data as { git?: { ok?: boolean; error?: string } }).git
+  if (git?.ok === false) {
+    throw new Error('資料已寫入管理伺服器，但 GitHub 同步失敗：' + (git.error || '未知 Git 錯誤'))
+  }
   return data as T
 }
 

@@ -369,8 +369,59 @@ async function git(args, extraEnv = {}) {
   })
 }
 
+function gitFailureDetail(error) {
+  if (!error) return 'unknown git error'
+  const stderr = typeof error.stderr === 'string' ? error.stderr.trim() : ''
+  const stdout = typeof error.stdout === 'string' ? error.stdout.trim() : ''
+  return stderr || stdout || (error instanceof Error ? error.message : String(error))
+}
+
+async function syncGitBranch() {
+  // Admin writes can happen while GitHub PRs update main independently.
+  // Always fetch first and replay local Admin commits on top of the current
+  // remote branch before pushing. This also retries commits left behind by a
+  // previous non-fast-forward/auth/network failure.
+  await git(['fetch', '--quiet', GIT_REMOTE, GIT_BRANCH])
+  let localHead = (await git(['rev-parse', 'HEAD'])).stdout.trim()
+  const remoteHead = (await git(['rev-parse', 'FETCH_HEAD'])).stdout.trim()
+  if (localHead === remoteHead) return { rebased: false, pushed: false, commit: localHead }
+
+  const mergeBase = (await git(['merge-base', 'HEAD', 'FETCH_HEAD'])).stdout.trim()
+  let rebased = false
+  if (mergeBase !== remoteHead) {
+    try {
+      await git(['rebase', 'FETCH_HEAD'])
+      rebased = true
+    } catch (error) {
+      // Never leave the Admin checkout in a half-rebased state. The original
+      // local commits (including the user's unsynced data) remain intact.
+      await git(['rebase', '--abort']).catch(() => {})
+      throw new Error(
+        'GitHub 同步失敗：遠端 main 已更新且自動 rebase 發生衝突。'
+        + ' 本機資料與 commit 已保留，請先處理衝突後再儲存。\n'
+        + gitFailureDetail(error),
+      )
+    }
+    localHead = (await git(['rev-parse', 'HEAD'])).stdout.trim()
+  }
+
+  // A behind-only branch can become identical after rebase/fast-forward.
+  if (localHead === remoteHead) return { rebased, pushed: false, commit: localHead }
+
+  try {
+    await git(['push', GIT_REMOTE, 'HEAD:' + GIT_BRANCH])
+  } catch (error) {
+    throw new Error(
+      'GitHub push 失敗；資料已保留在管理伺服器的本機 Git commit，可稍後重試。\n'
+      + gitFailureDetail(error),
+    )
+  }
+  return { rebased, pushed: true, commit: (await git(['rev-parse', 'HEAD'])).stdout.trim() }
+}
+
 async function doPersist(paths, message) {
   if (!AUTO_GIT_PUSH) return { enabled: false }
+
   await git(['add', '-A', '--', ...paths])
   let changed = true
   try {
@@ -379,15 +430,20 @@ async function doPersist(paths, message) {
   } catch (e) {
     if (e?.code !== 1) throw e
   }
-  if (!changed) return { enabled: true, committed: false, pushed: false }
 
-  await git(
-    ['-c', 'user.name=' + GIT_AUTHOR_NAME, '-c', 'user.email=' + GIT_AUTHOR_EMAIL, 'commit', '-m', message],
-    { GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME: GIT_AUTHOR_NAME, GIT_COMMITTER_EMAIL: GIT_AUTHOR_EMAIL },
-  )
-  await git(['push', GIT_REMOTE, 'HEAD:' + GIT_BRANCH])
-  const head = (await git(['rev-parse', 'HEAD'])).stdout.trim()
-  return { enabled: true, committed: true, pushed: true, commit: head }
+  let committed = false
+  if (changed) {
+    await git(
+      ['-c', 'user.name=' + GIT_AUTHOR_NAME, '-c', 'user.email=' + GIT_AUTHOR_EMAIL, 'commit', '-m', message],
+      { GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME: GIT_AUTHOR_NAME, GIT_COMMITTER_EMAIL: GIT_AUTHOR_EMAIL },
+    )
+    committed = true
+  }
+
+  // Do this even when this particular save produced no new diff: there may be
+  // older Admin commits that were committed locally but failed to push.
+  const sync = await syncGitBranch()
+  return { enabled: true, committed, ...sync }
 }
 
 function persist(paths, message) {
