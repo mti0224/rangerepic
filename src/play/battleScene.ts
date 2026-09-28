@@ -423,13 +423,25 @@ export class BattleScene {
       this.background.src = BACKGROUND_URL
       // Resolve public UI assets against the actual document base. This works for
       // local dev and GitHub Pages' /rangerepic/ subpath, even after SPA navigation.
-      const uiAssetUrl = (name: string) => typeof document !== 'undefined'
-        ? new URL('ui/' + name, document.baseURI).href
-        : './ui/' + name
+      const uiAssetUrls = (name: string) => {
+        if (typeof document === 'undefined' || typeof window === 'undefined') return ['./ui/' + name]
+        const urls = [
+          new URL('ui/' + name, document.baseURI).href,
+          new URL('/rangerepic/ui/' + name, window.location.origin).href,
+          new URL('/ui/' + name, window.location.origin).href,
+        ]
+        return [...new Set(urls)]
+      }
       const loadUiImage = (name: string) => {
         const img = new Image()
+        const urls = uiAssetUrls(name)
+        let index = 0
         img.onload = () => this.onChange?.()
-        img.src = uiAssetUrl(name)
+        img.onerror = () => {
+          index++
+          if (index < urls.length) img.src = urls[index]
+        }
+        img.src = urls[index]
         return img
       }
       this.chargeBubbleImage = loadUiImage('charge_bubble.png')
