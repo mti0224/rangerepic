@@ -326,6 +326,8 @@ interface ChargeStep {
   timer: number
   progressFrom: number
   progressTo: number
+  /** This fill completes the charge; release the locked action after returning home. */
+  releaseAfter: boolean
 }
 
 export type Phase = 'intro' | 'thinking' | 'input' | 'acting' | 'ended'
@@ -897,13 +899,15 @@ export class BattleScene {
     actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
 
     this.phase = 'acting'
+    const progressTo = advanceChargeProgress(state.progress, state.required)
     this.chargeStep = {
       actor,
       centerX,
       phase: 'toCenter',
       timer: 0,
       progressFrom: state.progress,
-      progressTo: advanceChargeProgress(state.progress, state.required),
+      progressTo,
+      releaseAfter: shouldReleaseChargedAction(state.progress, state.required),
     }
     this.onChange?.()
   }
@@ -974,8 +978,22 @@ export class BattleScene {
     actor.facingBack = false
     this.playIdle(actor)
 
-    this.battle.endTurn(actor.unit)
+    const state = this.enemyCharges.get(actor.unit.uid)
+    const releaseAfter = step.releaseAfter && !!state
     this.chargeStep = null
+
+    if (releaseAfter && state) {
+      // Keep the full final segment visible for the complete charge animation,
+      // then release the locked move instead of ending the actor's turn.
+      const target = this.resolveChargedTarget(actor.unit, state)
+      this.enemyCharges.delete(actor.unit.uid)
+      if (target) {
+        this.startAction(actor.unit, state.action, target)
+        return
+      }
+    }
+
+    this.battle.endTurn(actor.unit)
     this.phase = this.battle.over ? 'ended' : 'thinking'
     this.onChange?.()
   }
@@ -1029,14 +1047,9 @@ export class BattleScene {
         return
       }
       charge.targetUid = target.uid
-      if (shouldReleaseChargedAction(charge.progress, charge.required)) {
-        // Silence intentionally does not matter here: the attack was locked when
-        // charging began and must release unless the enemy died.
-        this.enemyCharges.delete(actor.uid)
-        this.startAction(actor, charge.action, target)
-      } else {
-        this.beginChargeStep(actor, charge)
-      }
+      // Even when this turn completes the charge, play the full center charge
+      // animation and visibly fill the final stage before releasing the move.
+      this.beginChargeStep(actor, charge)
       return
     }
 
@@ -1051,7 +1064,7 @@ export class BattleScene {
     const plan = this.battle.planAuto(actor)
     if (!plan) { this.phase = 'ended'; this.onChange?.(); return }
     const chargeTurns = this.battle.enemyChargeTurns(actor, plan.action)
-    if (!plan.caster && chargeTurns > 1) {
+    if (!plan.caster && chargeTurns > 0) {
       const state: EnemyChargeState = {
         action: plan.action,
         targetUid: plan.target.uid,
@@ -1064,7 +1077,6 @@ export class BattleScene {
       this.beginChargeStep(actor, state)
       return
     }
-    // chargeTurns=1 means the selection turn itself satisfies the full charge.
     if (plan.caster) this.startSummon(actor, plan.caster, plan.action, plan.target)
     else this.startAction(actor, plan.action, plan.target)
   }
