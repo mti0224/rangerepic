@@ -168,8 +168,8 @@ const CHARGE_PRE_FILL_SEC = 0.2
 const CHARGE_FILL_SEC = 0.5
 const CHARGE_POST_FILL_SEC = 0.2
 const CHARGE_CENTER_SIDE_GAP = 95
-/** Compact image-backed speech bubble that follows the charging enemy. */
-const CHARGE_BUBBLE = { w: 190, h: 63, icon: 30, edge: 10 }
+/** Tiny image-backed speech bubble, roughly the visual width of a unit HP bar. */
+const CHARGE_BUBBLE = { w: 120, h: 40, icon: 20, edge: 8 }
 const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
@@ -1882,10 +1882,10 @@ export class BattleScene {
     ctx.save()
     ctx.beginPath()
     ctx.arc(x + size / 2, y + size / 2, size / 2 - 1, 0, Math.PI * 2)
-    ctx.lineWidth = 4
+    ctx.lineWidth = 2.4
     ctx.strokeStyle = '#0b1020'
     ctx.stroke()
-    ctx.lineWidth = 2
+    ctx.lineWidth = 1.2
     ctx.strokeStyle = '#f7c84b'
     ctx.stroke()
     ctx.restore()
@@ -1951,60 +1951,69 @@ export class BattleScene {
         }
       }
 
-      // Only the target bubble and charge bar are rendered inside the image.
-      const ix = x + 18
-      const iy = y + 12
+      // Only the target bubble and one connected charge track are rendered inside the image.
+      const ix = x + 11
+      const iy = y + 8
       this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
 
-      const tx = x + 58
-      const right = x + w - 19
-      const barY = y + 21
-      const barH = 14
-      const barW = Math.max(20, right - tx)
+      const tx = x + 38
+      const right = x + w - 11
+      const barY = y + 14
+      const barH = 10
+      const barW = Math.max(18, right - tx)
       const segments = Math.max(1, state.required)
-      const segGap = segments <= 8 ? 3 : 1.5
-      const skew = Math.min(6, Math.max(3, barW / Math.max(segments, 1) * 0.11))
-      const segW = Math.max(3, (barW - segGap * (segments - 1)) / segments)
+      const skew = 4
       const visualProgress = this.chargeVisualProgress(uid, state)
+      const fillRatio = Math.max(0, Math.min(1, visualProgress / segments))
 
-      for (let i = 0; i < segments; i++) {
-        const bx = tx + i * (segW + segGap)
-        const fraction = Math.max(0, Math.min(1, visualProgress - i))
-        const segmentPath = () => {
-          ctx.beginPath()
-          ctx.moveTo(bx + skew, barY)
-          ctx.lineTo(bx + segW, barY)
-          ctx.lineTo(bx + segW - skew, barY + barH)
-          ctx.lineTo(bx, barY + barH)
-          ctx.closePath()
-        }
-
-        segmentPath()
-        ctx.fillStyle = '#383a3f'
-        ctx.fill()
-        ctx.lineWidth = 1.7
-        ctx.strokeStyle = '#0d0f13'
-        ctx.stroke()
-
-        if (fraction > 0) {
-          ctx.save()
-          segmentPath()
-          ctx.clip()
-          ctx.fillStyle = '#f58a2c'
-          ctx.fillRect(bx, barY, segW * fraction, barH)
-          const glow = ctx.createLinearGradient(0, barY, 0, barY + barH)
-          glow.addColorStop(0, 'rgba(255,238,178,0.5)')
-          glow.addColorStop(0.45, 'rgba(255,255,255,0.04)')
-          glow.addColorStop(1, 'rgba(126,53,9,0.16)')
-          ctx.fillStyle = glow
-          ctx.fillRect(bx, barY, segW * fraction, barH)
-          ctx.restore()
-          segmentPath()
-          ctx.lineWidth = 1.7
-          ctx.strokeStyle = '#0d0f13'
-          ctx.stroke()
-        }
+      const trackPath = () => {
+        ctx.beginPath()
+        ctx.moveTo(tx + skew, barY)
+        ctx.lineTo(tx + barW, barY)
+        ctx.lineTo(tx + barW - skew, barY + barH)
+        ctx.lineTo(tx, barY + barH)
+        ctx.closePath()
       }
+
+      // One continuous dark track: stages touch each other with no gaps.
+      trackPath()
+      ctx.fillStyle = '#383a3f'
+      ctx.fill()
+
+      // Animate orange charge continuously across the shared track.
+      if (fillRatio > 0) {
+        ctx.save()
+        trackPath()
+        ctx.clip()
+        const fillW = barW * fillRatio
+        ctx.fillStyle = '#f58a2c'
+        ctx.fillRect(tx, barY, fillW, barH)
+        const glow = ctx.createLinearGradient(0, barY, 0, barY + barH)
+        glow.addColorStop(0, 'rgba(255,238,178,0.5)')
+        glow.addColorStop(0.45, 'rgba(255,255,255,0.04)')
+        glow.addColorStop(1, 'rgba(126,53,9,0.16)')
+        ctx.fillStyle = glow
+        ctx.fillRect(tx, barY, fillW, barH)
+        ctx.restore()
+      }
+
+      // Thin slanted separators keep the individual charge stages readable,
+      // while remaining physically connected as one bar.
+      ctx.save()
+      ctx.lineWidth = 1.2
+      ctx.strokeStyle = '#0d0f13'
+      for (let i = 1; i < segments; i++) {
+        const sx = tx + barW * i / segments
+        ctx.beginPath()
+        ctx.moveTo(sx + skew / 2, barY)
+        ctx.lineTo(sx - skew / 2, barY + barH)
+        ctx.stroke()
+      }
+      trackPath()
+      ctx.lineWidth = 1.6
+      ctx.strokeStyle = '#0d0f13'
+      ctx.stroke()
+      ctx.restore()
       ctx.restore()
     }
   }
