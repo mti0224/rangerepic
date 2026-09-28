@@ -166,8 +166,9 @@ const TURN_PAUSE_SEC = 0.25
 const CHARGE_WALK_SPEED = 340
 const CHARGE_HOLD_SEC = 0.18
 const CHARGE_CENTER_SIDE_GAP = 95
-/** Compact charge cards shown at the upper-left of the battle field. */
-const CHARGE_UI = { x: 22, y: 84, w: 370, h: 82, gap: 9, icon: 58 }
+/** Angry Birds Epic-style speech bubble that follows the charging enemy. */
+const CHARGE_BUBBLE = { w: 254, h: 70, icon: 50, gapFromActor: 32, edge: 12 }
+const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
  * อัญเชิญแถวพิเศษ: ผู้อัญเชิญถอยหลัง (px) → ตัวอัญเชิญวาปมายืนหน้าที่ยืนเดิมของผู้อัญเชิญ (px) → ร่าย → วาปกลับ → ผู้อัญเชิญเดินกลับ
@@ -1533,10 +1534,18 @@ export class BattleScene {
     return { x: w.x, y: w.y - HEAD_ABOVE_FACE }
   }
 
-  /** จุดกึ่งกลางหลอดเลือด (พิกัดโลก) = เหนือหัวยกขึ้นอีก HP_BAR_RAISE */
+  /** Tactical overhead anchor for aim marks / status effects. */
   private barWorld(v: UnitView): Vec2 {
     const h = this.headWorld(v)
     return { x: h.x, y: h.y - HP_BAR_RAISE }
+  }
+
+  /** HP / shield bar lives below the Ranger's feet so charge bubbles have clean headroom. */
+  private hpBarWorld(v: UnitView): Vec2 {
+    return {
+      x: v.slot.x + v.pos.x,
+      y: v.slot.y + v.pos.y + HP_BAR_BELOW_FEET_PX / CAMERA_ZOOM,
+    }
   }
 
   // ── เดินเวลา ──
@@ -1771,8 +1780,8 @@ export class BattleScene {
     // ลูกศรเล็งอยู่บนสุด (เหนือหลอดเลือด/ตัวเลขไกด์) จะได้ไม่โดนบัง
     if (aim.length) this.paintAimMarks(ctx, aim)
     this.paintPopups(ctx)
+    this.paintEnemyChargeBubbles(ctx)
     this.hud.draw(ctx)
-    this.paintEnemyChargeHud(ctx)
     if (this.cutin) paintCutin(ctx, this.cutin.play, this.cutin.t, VIEW_W, VIEW_H)
   }
 
@@ -1839,67 +1848,152 @@ export class BattleScene {
     ctx.restore()
   }
 
-  private paintEnemyChargeHud(ctx: CanvasRenderingContext2D): void {
+  private paintEnemyChargeBubbles(ctx: CanvasRenderingContext2D): void {
     const rows = [...this.enemyCharges.entries()]
-      .map(([uid, state]) => ({ actor: this.battle.unit(uid), state }))
-      .filter((row): row is { actor: Unit; state: EnemyChargeState } => !!row.actor?.alive)
+      .map(([uid, state]) => ({ view: this.view(uid), state }))
+      .filter((row): row is { view: UnitView; state: EnemyChargeState } => !!row.view?.unit.alive && !row.view.gone)
     if (!rows.length || this.intro) return
 
-    const { x, y, w, h, gap, icon } = CHARGE_UI
-    rows.forEach(({ actor, state }, index) => {
-      const py = y + index * (h + gap)
+    const Z = CAMERA_ZOOM
+    const { w, h, icon, gapFromActor, edge } = CHARGE_BUBBLE
+
+    // Sort top-to-bottom for deterministic overlap avoidance when multiple enemies charge.
+    const placed: { x: number; y: number; w: number; h: number }[] = []
+    rows.sort((a, b) => this.headWorld(a.view).y - this.headWorld(b.view).y)
+
+    for (const { view, state } of rows) {
+      const actor = view.unit
+      const head = this.headWorld(view)
+      const ax = head.x * Z
+      const ay = head.y * Z + 8
+
+      // Enemies normally stand on the right, so the bubble prefers their left side.
+      // If the actor has moved across the middle, flip sides to stay inside the screen.
+      let onLeft = ax > VIEW_W * 0.46
+      let x = onLeft ? ax - w - gapFromActor : ax + gapFromActor
+      if (x < edge) { x = ax + gapFromActor; onLeft = false }
+      if (x + w > VIEW_W - edge) { x = ax - w - gapFromActor; onLeft = true }
+      x = Math.max(edge, Math.min(VIEW_W - edge - w, x))
+
+      let y = Math.max(edge, Math.min(VIEW_H - edge - h, ay - h * 0.58))
+      // Nudge colliding bubbles vertically while keeping them near their owner.
+      for (const prev of placed) {
+        const overlapX = x < prev.x + prev.w + 6 && x + w + 6 > prev.x
+        const overlapY = y < prev.y + prev.h + 6 && y + h + 6 > prev.y
+        if (!overlapX || !overlapY) continue
+        const down = prev.y + prev.h + 7
+        const up = prev.y - h - 7
+        y = down + h <= VIEW_H - edge ? down : Math.max(edge, up)
+      }
+      placed.push({ x, y, w, h })
+
+      const tailY = Math.max(y + 18, Math.min(y + h - 18, ay))
+      const bodyTop = y
+      const pulse = 0.5 + 0.5 * Math.sin(this.time * Math.PI * 2 * 1.4)
 
       ctx.save()
+
+      // Speech-bubble tail.
       ctx.beginPath()
-      ctx.roundRect(x, py, w, h, 15)
-      const panel = ctx.createLinearGradient(x, py, x, py + h)
-      panel.addColorStop(0, 'rgba(42,47,57,0.96)')
-      panel.addColorStop(1, 'rgba(20,24,34,0.96)')
-      ctx.fillStyle = panel
+      if (onLeft) {
+        ctx.moveTo(x + w - 2, tailY - 10)
+        ctx.lineTo(Math.min(ax - 5, x + w + 29), ay)
+        ctx.lineTo(x + w - 2, tailY + 10)
+      } else {
+        ctx.moveTo(x + 2, tailY - 10)
+        ctx.lineTo(Math.max(ax + 5, x - 29), ay)
+        ctx.lineTo(x + 2, tailY + 10)
+      }
+      ctx.closePath()
+      ctx.fillStyle = '#6d7074'
       ctx.fill()
-      ctx.lineWidth = 2
-      ctx.strokeStyle = 'rgba(0,0,0,0.92)'
+      ctx.lineWidth = 4
+      ctx.strokeStyle = '#101114'
       ctx.stroke()
 
+      // Main bubble body: neutral gray shell, dark outline, subtle charge glow.
+      ctx.beginPath()
+      ctx.roundRect(x, bodyTop, w, h, 15)
+      const panel = ctx.createLinearGradient(x, bodyTop, x, bodyTop + h)
+      panel.addColorStop(0, '#7c7f82')
+      panel.addColorStop(1, '#606367')
+      ctx.fillStyle = panel
+      ctx.shadowColor = `rgba(245,138,44,${0.12 + pulse * 0.22})`
+      ctx.shadowBlur = 7 + pulse * 5
+      ctx.fill()
+      ctx.shadowBlur = 0
+      ctx.lineWidth = 4
+      ctx.strokeStyle = '#101114'
+      ctx.stroke()
+
+      // Target portrait / all / random marker.
       const ix = x + 10
-      const iy = py + (h - icon) / 2
+      const iy = bodyTop + (h - icon) / 2
       this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
 
-      const tx = ix + icon + 12
-      const right = x + w - 12
-      ctx.textAlign = 'left'
-      ctx.textBaseline = 'alphabetic'
-      ctx.font = 'bold 13px LineBold, Krub, ui-sans-serif, system-ui'
-      ctx.fillStyle = '#ffffff'
-      const title = `${this.nameOf(actor)} · ${this.chargeActionName(actor, state)}`
-      const maxTitle = right - tx
-      let shown = title
-      while (shown.length > 1 && ctx.measureText(shown + '…').width > maxTitle) shown = shown.slice(0, -1)
-      if (shown !== title) shown += '…'
-      ctx.fillText(shown, tx, py + 22)
-
-      ctx.font = 'bold 11px LineBold, Krub, ui-sans-serif, system-ui'
-      ctx.fillStyle = '#f5c542'
-      ctx.fillText(`蓄力 ${state.progress} / ${state.required}`, tx, py + 40)
-
-      const barY = py + 50
+      const tx = ix + icon + 11
+      const right = x + w - 11
+      const barY = bodyTop + 33
       const barH = 18
       const barW = right - tx
+
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'alphabetic'
+      ctx.font = 'bold 12px LineBold, Krub, ui-sans-serif, system-ui'
+      ctx.fillStyle = '#ffffff'
+      const title = this.chargeActionName(actor, state)
+      const countText = `${state.progress} / ${state.required}`
+      const countW = ctx.measureText(countText).width
+      let shown = title
+      const maxTitle = Math.max(20, barW - countW - 12)
+      while (shown.length > 1 && ctx.measureText(shown + '…').width > maxTitle) shown = shown.slice(0, -1)
+      if (shown !== title) shown += '…'
+      ctx.fillText(shown, tx, bodyTop + 23)
+
+      ctx.textAlign = 'right'
+      ctx.fillStyle = '#fff3cf'
+      ctx.fillText(countText, right, bodyTop + 23)
+
+      // Segmented, slightly slanted charge bar like Angry Birds Epic.
       const segments = Math.max(1, state.required)
-      const segGap = segments <= 8 ? 4 : 0
-      const segW = (barW - segGap * (segments - 1)) / segments
+      const segGap = segments <= 8 ? 4 : 2
+      const skew = Math.min(8, Math.max(3, barW / Math.max(segments, 1) * 0.12))
+      const segW = Math.max(3, (barW - segGap * (segments - 1)) / segments)
       for (let i = 0; i < segments; i++) {
         const bx = tx + i * (segW + segGap)
         ctx.beginPath()
-        ctx.roundRect(bx, barY, segW, barH, segments <= 8 ? 4 : 0)
-        ctx.fillStyle = i < state.progress ? '#f58a2c' : 'rgba(255,255,255,0.14)'
+        ctx.moveTo(bx + skew, barY)
+        ctx.lineTo(bx + segW, barY)
+        ctx.lineTo(bx + segW - skew, barY + barH)
+        ctx.lineTo(bx, barY + barH)
+        ctx.closePath()
+        ctx.fillStyle = i < state.progress ? '#f58a2c' : '#3d3d3f'
         ctx.fill()
-        ctx.lineWidth = 1
-        ctx.strokeStyle = 'rgba(0,0,0,0.7)'
+        ctx.lineWidth = 2
+        ctx.strokeStyle = '#111214'
         ctx.stroke()
+
+        if (i < state.progress) {
+          ctx.save()
+          ctx.globalAlpha = 0.22 + pulse * 0.18
+          ctx.fillStyle = '#fff2c2'
+          ctx.beginPath()
+          ctx.moveTo(bx + skew + 2, barY + 2)
+          ctx.lineTo(bx + segW - 3, barY + 2)
+          ctx.lineTo(bx + segW - skew - 4, barY + Math.max(4, barH * 0.42))
+          ctx.lineTo(bx + 3, barY + Math.max(4, barH * 0.42))
+          ctx.closePath()
+          ctx.fill()
+          ctx.restore()
+        }
       }
+
+      ctx.font = 'bold 9px LineBold, Krub, ui-sans-serif, system-ui'
+      ctx.textAlign = 'left'
+      ctx.fillStyle = '#f8e7bd'
+      ctx.fillText('蓄力', tx, bodyTop + h - 7)
       ctx.restore()
-    })
+    }
   }
 
   /** ม่านดำแยกขึ้น–ลง แล้วขึ้นคำว่า START ตอนทุกตัวเข้าที่ */
@@ -2263,7 +2357,7 @@ export class BattleScene {
 
   private paintHpBar(ctx: CanvasRenderingContext2D, v: UnitView, preview?: ActionPreview): void {
     const Z = CAMERA_ZOOM
-    const head = this.barWorld(v)
+    const head = this.hpBarWorld(v)
     // หลอดสี่เหลี่ยมด้านขนานมุมมน (เฉียงแบบเดียวกับหลอดเลือดรวม: ทีมซ้าย "\" ทีมขวา "/") มีขอบดำ
     // ไอคอนธาตุอยู่ชิดหัวหลอด — แตะขอบกันพอดี ไม่ทับเนื้อหลอด
     const icon = elementIcon(v.unit.element)
