@@ -17,12 +17,13 @@
     "hitRate": 100
   },
   "normalAttack": {
-    "target": "single",
+    "target": "random",
     "hits": 1,
     "animation": "attack",
     "skillGaugeGain": 0,
     "effects": [],
-    "description": "對1名Ranger造成攻擊力100%的傷害"
+    "description": "對1名Ranger造成攻擊力100%的傷害",
+    "presentationAnimation": false
   },
   "normalSupport": {
     "target": "singleAlly",
@@ -43,9 +44,11 @@
       {
         "type": "heal",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "targetSide": "ally"
       }
-    ]
+    ],
+    "presentationAnimation": true
   },
   "skillActivationRate": 40,
   "abilities": []
