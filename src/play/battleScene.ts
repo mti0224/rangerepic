@@ -171,7 +171,7 @@ const CHARGE_FILL_SEC = 0.5
 const CHARGE_POST_FILL_SEC = 0.2
 const CHARGE_CENTER_SIDE_GAP = 0
 /** Tiny image-backed speech bubble, roughly the visual width of a unit HP bar. */
-const CHARGE_BUBBLE = { w: 120, h: 40, icon: 20, edge: 8 }
+const CHARGE_BUBBLE = { w: 135, h: 40, icon: 20, edge: 8 }
 const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
@@ -328,7 +328,7 @@ interface ChargeStep {
   timer: number
   progressFrom: number
   progressTo: number
-  /** This fill completes the charge; release the locked action after returning home. */
+  /** This fill completes the charge; release the locked action directly from center. */
   releaseAfter: boolean
 }
 
@@ -725,7 +725,7 @@ export class BattleScene {
   /** จุดในไฟล์ของตัวละคร → พิกัดโลก (ทีมขวากลับด้านรอบจุดยืน) */
   private localToWorld(v: UnitView, p: Vec2, withPos = true): Vec2 {
     const ox = withPos ? v.pos.x : 0, oy = withPos ? v.pos.y : 0
-    return { x: v.slot.x + ox + v.facing * (p.x - v.stand.x), y: v.slot.y + oy + (p.y - v.stand.y) }
+    return { x: v.slot.x + ox + v.facing * (p.x - v.stand.x) * BATTLE_VISUAL_SCALE, y: v.slot.y + oy + (p.y - v.stand.y) * BATTLE_VISUAL_SCALE }
   }
 
   /** kiwi space ของผู้โจมตี (ยืนที่ช่องเดิม) ↔ พิกัดโลก */
@@ -1982,6 +1982,32 @@ export class BattleScene {
           ctx.drawImage(this.chargeBubbleImage, 0, 0, w, h)
           ctx.setTransform(1, 0, 0, 1, 0, 0)
         }
+      } else {
+        // Never leave the charge content floating without its speech-bubble
+        // background. This vector fallback follows the supplied rounded bubble
+        // silhouette and remains visible while/if the PNG is unavailable.
+        const bodyX = x + 2
+        const bodyY = y + 2
+        const bodyW = w - 10
+        const bodyH = h - 12
+        const radius = 16
+        ctx.beginPath()
+        ctx.roundRect(bodyX, bodyY, bodyW, bodyH, radius)
+        if (onLeft) {
+          ctx.moveTo(x + w - 35, y + h - 11)
+          ctx.lineTo(x + w - 8, y + h - 1)
+          ctx.lineTo(x + w - 22, y + h - 16)
+        } else {
+          ctx.moveTo(x + 35, y + h - 11)
+          ctx.lineTo(x + 8, y + h - 1)
+          ctx.lineTo(x + 22, y + h - 16)
+        }
+        ctx.closePath()
+        ctx.fillStyle = '#ffffff'
+        ctx.fill()
+        ctx.lineWidth = 2
+        ctx.strokeStyle = '#0a0a0a'
+        ctx.stroke()
       }
 
       // Only the target bubble and one connected charge track are rendered inside the image.
