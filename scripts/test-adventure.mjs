@@ -42,7 +42,7 @@ const syntheticEnemy = {
   assetVariantId: 'u91003-bomby',
   stats: { hp: 100, attack: 10, critRate: 0, critDamage: 3, hitRate: 100 },
   normalAttack: {
-    target: 'single',
+    target: 'random',
     hits: 1,
     animation: 'attack',
     skillGaugeGain: 0,
@@ -62,6 +62,10 @@ assert.equal(
   'enemy normal attack extra effects must be supported',
 )
 assert.equal(syntheticEnemy.normalAttack.chargeTurns, 2, 'enemy normal attack charge turns must be supported')
+for (const target of ['random', 'lowestHp', 'highestHp', 'all']) {
+  assert.deepEqual(validateEnemy({ ...syntheticEnemy, normalAttack: { ...syntheticEnemy.normalAttack, target } }, syntheticEnemy.id), [], 'enemy normal attack target must validate: ' + target)
+}
+assert.ok(validateEnemy({ ...syntheticEnemy, normalAttack: { ...syntheticEnemy.normalAttack, target: 'single' } }, syntheticEnemy.id).some(e => e.includes('normalAttack.target')), 'legacy enemy single target must be rejected')
 const chargedSkillEnemy = {
   ...syntheticEnemy,
   skill: {
