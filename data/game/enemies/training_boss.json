@@ -23,7 +23,8 @@
     "effects": [],
     "animation": "attack",
     "description": "3回合後，對全體Ranger造成攻擊力100%的範圍傷害",
-    "chargeTurns": 3
+    "chargeTurns": 3,
+    "presentationAnimation": false
   },
   "skill": {
     "name": "鬼面",
@@ -38,15 +39,18 @@
       {
         "type": "damage",
         "value": 10,
-        "hits": 1
+        "hits": 1,
+        "targetSide": "enemy"
       },
       {
         "type": "attackDown",
         "value": 35,
-        "duration": 3
+        "duration": 3,
+        "targetSide": "enemy"
       }
     ],
-    "animation": "skill2"
+    "animation": "skill2",
+    "presentationAnimation": true
   },
   "abilities": [
     {
