@@ -10,6 +10,7 @@ export const gameplayEffectToLegacy = (effect: GameplayEffect): SkillEffect | nu
     gameplayType: effect.type,
     gameplayValue: value,
     gameplayDuration: turns,
+    gameplayTargetSide: effect.targetSide,
   })
   switch (effect.type) {
     case 'damage': return tagged({ type: 'damage', pct: value })
