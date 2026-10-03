@@ -68,12 +68,13 @@ export function newGameplayEnemy(id: string, assetVariantId: string): GameplayEn
     assetVariantId,
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
     normalAttack: {
-      target: 'single',
+      target: 'random',
       hits: 1,
       description: '',
       animation: 'attack',
       skillGaugeGain: 0,
       chargeTurns: 0,
+      presentationAnimation: false,
       effects: [],
     },
     normalSupport: {
@@ -95,8 +96,9 @@ export function newEnemySkill(): GameplaySkill {
     icon: '',
     animation: 'skill1',
     chargeTurns: 0,
+    presentationAnimation: true,
     target: { side: 'enemy', count: 1, selector: 'random' },
-    effects: [newGameplayEffect('damage')],
+    effects: [{ ...newGameplayEffect('damage'), targetSide: 'enemy' }],
   }
 }
 
