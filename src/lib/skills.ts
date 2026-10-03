@@ -155,6 +155,8 @@ export interface SkillEffect {
   gameplayType?: string
   gameplayValue?: number
   gameplayDuration?: number
+  /** RangerEpic action effects may target either side independently. */
+  gameplayTargetSide?: 'enemy' | 'ally'
 }
 
 export interface SkillDef {
