@@ -17,13 +17,14 @@
     "hitRate": 100
   },
   "normalAttack": {
-    "target": "single",
+    "target": "random",
     "hits": 1,
     "description": "對1名敵人造成3次攻擊力100%的傷害",
     "animation": "attack",
     "skillGaugeGain": 0,
     "chargeTurns": 2,
-    "effects": []
+    "effects": [],
+    "presentationAnimation": false
   },
   "normalSupport": {
     "target": "singleAlly",
@@ -46,14 +47,17 @@
       {
         "type": "damage",
         "value": 500,
-        "hits": 1
+        "hits": 1,
+        "targetSide": "enemy"
       },
       {
         "type": "poison",
         "value": 5,
-        "duration": 3
+        "duration": 3,
+        "targetSide": "enemy"
       }
-    ]
+    ],
+    "presentationAnimation": true
   },
   "skillActivationRate": 15,
   "abilities": []
