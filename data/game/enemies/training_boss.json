@@ -21,7 +21,7 @@
     "hits": 1,
     "skillGaugeGain": 0,
     "effects": [],
-    "animation": "attack",
+    "animation": "skill1",
     "description": "3回合後，對全體Ranger造成攻擊力100%的範圍傷害",
     "chargeTurns": 3,
     "presentationAnimation": false
