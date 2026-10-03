@@ -1192,15 +1192,10 @@ export class Battle {
 
     if (action === 'attack') {
       if (cls.normalAttack.target === 'all') return attackPool
-      if (cls.normalAttack.target !== 'primaryPlusRandom') return chosen.alive && attackPool.includes(chosen) ? [chosen] : []
-      const extras = attackPool.filter(u => u !== chosen)
-      if (randomize) {
-        for (let i = extras.length - 1; i > 0; i--) {
-          const j = Math.floor(this.rand() * (i + 1))
-          ;[extras[i], extras[j]] = [extras[j], extras[i]]
-        }
-      }
-      return [chosen, ...extras.slice(0, Math.max(0, cls.normalAttack.extraTargets ?? 0))].filter(u => u.alive)
+      // Player classes keep manual single-target selection. Enemy classes lock
+      // their authored selector in autoPlanTarget, so resolution uses that target
+      // without rolling a second time.
+      return chosen.alive && attackPool.includes(chosen) ? [chosen] : []
     }
 
     if (action === 'skill2') {
@@ -1356,6 +1351,13 @@ export class Battle {
     if (!list.length) return null
 
     const cls = u.gameplayClass
+    if (cls && action === 'attack') {
+      const selector = cls.normalAttack.target
+      if (selector === 'random') return list[Math.floor(this.rand() * list.length)]
+      if (selector === 'lowestHp') return list.reduce((a, b) => b.hp < a.hp ? b : a)
+      if (selector === 'highestHp') return list.reduce((a, b) => b.hp > a.hp ? b : a)
+      if (selector === 'all') return list[0] ?? null
+    }
     if (cls && action === 'skill1') {
       const selector = cls.skill.target.selector
       if (selector === 'random') return list[Math.floor(this.rand() * list.length)]
