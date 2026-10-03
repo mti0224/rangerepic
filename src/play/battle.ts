@@ -1236,6 +1236,63 @@ export class Battle {
     return rows.slice(0, count)
   }
 
+  /** Resolve a Gameplay action's authored target rule against either side. */
+  private gameplayTargetsForSide(actor: Unit, action: ActionName, chosen: Unit, side: 'enemy' | 'ally', randomize: boolean): Unit[] {
+    const cls = actor.gameplayClass
+    if (!cls) return []
+    const enemies = this.units.filter(u => u.alive && u.team !== actor.team)
+    const allies = this.units.filter(u => u.alive && u.team === actor.team)
+    const taunting = enemies.filter(u => this.has(u, 'taunt'))
+    const enemyPool = taunting.length ? taunting : enemies
+    const pool = side === 'enemy' ? enemyPool : allies
+
+    if (action === 'attack') {
+      const target = cls.normalAttack.target
+      if (target === 'all') return pool
+      if (side === 'ally' && target === 'single') return actor.alive ? [actor] : []
+      if (target === 'single') return chosen.alive && pool.includes(chosen) ? [chosen] : []
+      if (!pool.length) return []
+      if (target === 'lowestHp') return [pool.reduce((a, b) => b.hp < a.hp ? b : a)]
+      if (target === 'highestHp') return [pool.reduce((a, b) => b.hp > a.hp ? b : a)]
+      if (target === 'random') return [pool[randomize ? Math.floor(this.rand() * pool.length) : 0]]
+      return []
+    }
+
+    if (action === 'skill2') {
+      if (side === 'enemy') return []
+      return cls.normalSupport.target === 'allAllies' ? allies : (chosen.team === actor.team && chosen.alive ? [chosen] : [actor])
+    }
+
+    const rule = cls.skill.target
+    if (rule.count === 'all') return pool
+    if (!pool.length) return []
+    const count = Math.max(1, Math.min(pool.length, Math.round(rule.count)))
+    if (rule.selector === 'manual') {
+      const primary = chosen.alive && pool.includes(chosen) ? chosen : (side === 'ally' && actor.alive ? actor : pool[0])
+      return [primary, ...pool.filter(u => u !== primary)].slice(0, count)
+    }
+    if (rule.selector === 'random') {
+      const rows = [...pool]
+      if (randomize) {
+        for (let i = rows.length - 1; i > 0; i--) {
+          const j = Math.floor(this.rand() * (i + 1))
+          ;[rows[i], rows[j]] = [rows[j], rows[i]]
+        }
+      }
+      return rows.slice(0, count)
+    }
+    const rows = [...pool].sort((a, b) => {
+      switch (rule.selector) {
+        case 'lowestHp': return a.hp - b.hp
+        case 'highestHp': return b.hp - a.hp
+        case 'lowestAttack': return this.effAtk(a) - this.effAtk(b)
+        case 'highestAttack': return this.effAtk(b) - this.effAtk(a)
+        default: return 0
+      }
+    })
+    return rows.slice(0, count)
+  }
+
   /** ทุกตัวที่โดนผล เมื่อเลือกเป้า chosen */
   affectedUnits(actor: Unit, action: ActionName, chosen: Unit): Unit[] {
     const gameplay = this.gameplayAffectedUnits(actor, action, chosen, false)
@@ -1676,8 +1733,15 @@ export class Battle {
 
   /** ใช้ท่า — คำนวณและลงผลกับทุกตัวที่โดน */
   resolveAction(actor: Unit, action: ActionName, chosen: Unit): ActionResult {
-    const skill = this.skillOf(actor, action)
+    const authoredSkill = this.skillOf(actor, action)
     const normal = action === 'attack'
+    const defaultGameplaySide: 'enemy' | 'ally' = authoredSkill.kind === 'attack' ? 'enemy' : 'ally'
+    const mixedSideEffects = actor.gameplayClass
+      ? authoredSkill.effects.filter(e => e.gameplayTargetSide && e.gameplayTargetSide !== defaultGameplaySide)
+      : []
+    const skill = mixedSideEffects.length
+      ? { ...authoredSkill, effects: authoredSkill.effects.filter(e => !e.gameplayTargetSide || e.gameplayTargetSide === defaultGameplaySide) }
+      : authoredSkill
     // กันพลาด: เป้าผิดฝั่ง (สกิลโจมตีเล็งเพื่อน / บัฟเล็งศัตรู) → เปลี่ยนเป็นเป้าที่ดีที่สุดของท่านี้ ไม่ลงผลกับทีมตัวเองเด็ดขาด
     if ((skill.kind === 'attack') === (chosen.team === actor.team)) {
       const fix = this.autoTarget(actor, action)
@@ -1887,6 +1951,77 @@ export class Battle {
         }
       }
     }
+    // RangerEpic actions may mix friendly and hostile effects in one authored move.
+    // The legacy pass above resolves the action's primary side; resolve effects
+    // explicitly assigned to the opposite side here without changing the animation anchor.
+    if (actor.gameplayClass && mixedSideEffects.length) {
+      const outcomeFor = (t: Unit): Outcome => {
+        let o = outcomes.find(row => row.uid === t.uid)
+        if (!o) { o = emptyOutcome(t.uid, t.hp); outcomes.push(o) }
+        return o
+      }
+      for (const e of mixedSideEffects) {
+        const side = e.gameplayTargetSide ?? defaultGameplaySide
+        const targetsForEffect = this.gameplayTargetsForSide(actor, action, chosen, side, true)
+        for (const t of targetsForEffect) {
+          if (!t.alive) continue
+          const o = outcomeFor(t)
+          if (e.type === 'damage' || e.type === 'damageHp') {
+            const hits = Math.max(1, Math.round(e.gameplayType === 'damage' ? 1 : 1))
+            for (let hit = 0; hit < hits && t.alive; hit++) {
+              if (this.rand() * 100 >= this.effHit(actor)) {
+                const shield = this.shieldTotal(t)
+                o.hits.push({ damage: 0, trueDamage: 0, crit: false, elementMult: 1, evaded: true, hpBefore: t.hp, hpAfter: t.hp, shieldBefore: shield, shieldAfter: shield, killed: false })
+                continue
+              }
+              const base = e.type === 'damageHp' ? actor.maxHp : undefined
+              const r = this.rollDamage(actor, t, e.pct ?? 100, normal, base)
+              const hpBefore = t.hp, shieldBefore = this.shieldTotal(t)
+              o.damage += r.damage; o.crit ||= r.crit; o.elementMult = r.elementMult
+              this.dealWithPierce(t, r.damage, o, e.pierce ?? 0, actor)
+              this.recordOutcomeHit(o, t, { damage: r.damage, trueDamage: 0, crit: r.crit, elementMult: r.elementMult, evaded: false, hpBefore, shieldBefore })
+            }
+          } else if (e.type === 'trueDamage') {
+            const d = actor.gameplayClass && e.gameplayType === 'fixedDamage'
+              ? Math.max(0, Math.round(e.gameplayValue ?? e.amount ?? 0))
+              : this.trueHit(actor, t, e.pct ?? 100)
+            const hpBefore = t.hp, shieldBefore = this.shieldTotal(t)
+            o.damage += d
+            this.takeDamage(t, d, o, actor.gameplayClass && e.gameplayType === 'fixedDamage' ? false : true, actor)
+            this.recordOutcomeHit(o, t, { damage: d, trueDamage: e.gameplayType === 'fixedDamage' ? 0 : d, crit: false, elementMult: 1, evaded: false, hpBefore, shieldBefore })
+          } else if (e.type === 'heal') {
+            o.healed += this.healUnit(t, this.healBase(actor, t, e))
+          } else if (e.type === 'cleanse') {
+            const before = t.statuses.length
+            switch (e.gameplayType) {
+              case 'cleanseDamageOverTime': t.statuses = t.statuses.filter(s => s.gameplayType !== 'damageOverTime'); break
+              case 'cleansePoison': t.statuses = t.statuses.filter(s => s.gameplayType !== 'poison' && s.gameplayType !== 'deadlyPoison'); break
+              case 'removeTaunt': t.statuses = t.statuses.filter(s => s.type !== 'taunt'); break
+              case 'removeStun': t.statuses = t.statuses.filter(s => s.type !== 'stun'); break
+              case 'removeSilence': t.statuses = t.statuses.filter(s => s.type !== 'silence'); break
+              default: t.statuses = t.statuses.filter(s => !isDebuff(s.type))
+            }
+            o.cleansed += before - t.statuses.length
+          } else if (e.type === 'dispelBuffs') {
+            const before = t.statuses.length
+            if (e.gameplayType === 'removeShield') t.statuses = t.statuses.filter(s => s.type !== 'shield')
+            else t.statuses = t.statuses.filter(s => isDebuff(s.type))
+            o.dispelled += before - t.statuses.length
+          } else if (e.type === 'shield') {
+            this.addStatus(t, 'shield', e.pct ?? 0, e.turns ?? 1, Math.round(this.healBase(actor, t, e)), actor, e)
+            o.applied.push('shield')
+          } else if (STATUS_EFFECTS.has(e.type)) {
+            this.addStatus(t, e.type as StatusType, e.pct ?? 0, e.turns ?? 1, undefined, actor, e)
+            if (e.type === 'regen') {
+              const st = t.statuses[t.statuses.length - 1]
+              if (st?.type === 'regen') st.shieldHp = Math.round(this.healBase(actor, t, e))
+            }
+            o.applied.push(e.type as StatusType)
+          }
+        }
+      }
+    }
+
     // สถานะความเร็วเปลี่ยน → AV ปรับทันที · แล้วค่อยดึงเทิร์น (ดึงจากความเร็วใหม่)
     this.syncSpeed()
     if (skill.kind === 'buff') {
