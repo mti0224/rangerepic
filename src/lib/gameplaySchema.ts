@@ -32,7 +32,7 @@ export interface GameplayStats {
 export type GameplayAnimationSlot = 'attack' | 'skill1' | 'skill2'
 export const GAMEPLAY_ANIMATION_SLOTS: GameplayAnimationSlot[] = ['attack', 'skill1', 'skill2']
 
-export type NormalAttackTarget = 'single' | 'all' | 'primaryPlusRandom'
+export type NormalAttackTarget = 'single' | 'random' | 'lowestHp' | 'highestHp' | 'all'
 export interface NormalAttackDef {
   target: NormalAttackTarget
   hits: number
@@ -44,8 +44,9 @@ export interface NormalAttackDef {
   skillGaugeGain: number
   /** Enemy-only: number of own action turns spent charging before this attack is released. */
   chargeTurns?: number
-  extraTargets?: number
-  /** Optional extra effects applied after the normal attack damage. Primarily used by enemies. */
+  /** Play the authored cut-in/presentation animation before the action when available. */
+  presentationAnimation?: boolean
+  /** Optional extra effects applied after the normal attack damage. */
   effects?: GameplayEffect[]
 }
 
@@ -125,6 +126,8 @@ export type AbilityEffectTarget = typeof ABILITY_EFFECT_TARGETS[number]
 
 export interface GameplayEffect {
   type: GameplayEffectType
+  /** Action effects can independently target the caster's enemy or ally side. */
+  targetSide?: TargetSide
   /** Ability-only target scope. Omitted values are treated as "self" for backward compatibility. */
   abilityTarget?: AbilityEffectTarget
   /** Percentage or fixed value according to effect type. */
@@ -162,6 +165,8 @@ export interface GameplaySkill {
   animation?: GameplayAnimationSlot
   /** Enemy-only: number of own action turns spent charging before an offensive skill is released. */
   chargeTurns?: number
+  /** Play the authored cut-in/presentation animation before the action when available. */
+  presentationAnimation?: boolean
   target: SkillTargetRule
   effects: GameplayEffect[]
 }
@@ -388,9 +393,9 @@ export function newGameplayClass(id: string, characterId: string, assetVariantId
     role: '未分類',
     names: emptyNames(),
     stats: { hp: 1000, attack: 100, critRate: 0, critDamage: 3, hitRate: 100 },
-    normalAttack: { target: 'single', hits: 1, description: '', animation: 'attack', skillGaugeGain: 5 },
+    normalAttack: { target: 'single', hits: 1, description: '', animation: 'attack', skillGaugeGain: 5, presentationAnimation: false, effects: [] },
     normalSupport: { target: 'singleAlly', description: '', animation: 'skill2', effects: [] },
-    skill: { name: '', description: '', icon: '', animation: 'skill1', target: { side: 'enemy', count: 1, selector: 'random' }, effects: [newGameplayEffect('damage')] },
+    skill: { name: '', description: '', icon: '', animation: 'skill1', presentationAnimation: true, target: { side: 'enemy', count: 1, selector: 'random' }, effects: [{ ...newGameplayEffect('damage'), targetSide: 'enemy' }] },
     abilities: [],
   }
 }
