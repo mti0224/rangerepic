@@ -20,6 +20,7 @@ function validateEffect(effect, errors, prefix) {
   if (effect.value != null && !asNum(effect.value)) errors.push(prefix + '.value must be a number')
   if (effect.duration != null && (!asInt(effect.duration) || effect.duration < 1)) errors.push(prefix + '.duration must be an integer >= 1')
   if (effect.hits != null && (!asInt(effect.hits) || effect.hits < 1)) errors.push(prefix + '.hits must be an integer >= 1')
+  if (effect.targetSide != null && !['enemy', 'ally'].includes(effect.targetSide)) errors.push(prefix + '.targetSide is invalid')
   if (effect.abilityTarget != null && !ABILITY_EFFECT_TARGETS.includes(effect.abilityTarget)) errors.push(prefix + '.abilityTarget is invalid')
 }
 
@@ -46,8 +47,9 @@ function validateSkill(skill, errors, prefix) {
   if (skill.icon != null && typeof skill.icon !== 'string') errors.push(prefix + '.icon must be a string')
   if (skill.animation != null && !['attack','skill1','skill2'].includes(skill.animation)) errors.push(prefix + '.animation is invalid')
   if (skill.chargeTurns != null && (!asInt(skill.chargeTurns) || skill.chargeTurns < 0)) errors.push(prefix + '.chargeTurns must be an integer >= 0')
+  if (skill.presentationAnimation != null && typeof skill.presentationAnimation !== 'boolean') errors.push(prefix + '.presentationAnimation must be boolean')
   validateTarget(skill.target, errors, prefix + '.target')
-  validateEffects(skill.effects, errors, prefix + '.effects', skill.target?.side === 'ally' ? SUPPORT_SKILL_EFFECT_TYPES : ATTACK_SKILL_EFFECT_TYPES)
+  validateEffects(skill.effects, errors, prefix + '.effects')
 }
 
 function validateAbility(ability, errors, prefix) {
@@ -90,14 +92,14 @@ export function validateEnemy(data, expectedId) {
   const attack = data.normalAttack
   if (!attack || typeof attack !== 'object') errors.push('normalAttack must be an object')
   else {
-    if (!['single','all','primaryPlusRandom'].includes(attack.target)) errors.push('normalAttack.target is invalid')
+    if (!['random','lowestHp','highestHp','all'].includes(attack.target)) errors.push('normalAttack.target must be random, lowestHp, highestHp or all for enemies')
     if (!asInt(attack.hits) || attack.hits < 1) errors.push('normalAttack.hits must be >= 1')
     if (attack.description != null && typeof attack.description !== 'string') errors.push('normalAttack.description must be a string')
     if (attack.animation != null && !['attack','skill1','skill2'].includes(attack.animation)) errors.push('normalAttack.animation is invalid')
     if (attack.skillGaugeGain != null && (!asNum(attack.skillGaugeGain) || attack.skillGaugeGain < 0 || attack.skillGaugeGain > 100)) errors.push('normalAttack.skillGaugeGain must be 0..100')
     if (attack.chargeTurns != null && (!asInt(attack.chargeTurns) || attack.chargeTurns < 0)) errors.push('normalAttack.chargeTurns must be an integer >= 0')
-    if (attack.target === 'primaryPlusRandom' && (!asInt(attack.extraTargets) || attack.extraTargets < 1)) errors.push('normalAttack.extraTargets must be >= 1')
-    validateEffects(attack.effects ?? [], errors, 'normalAttack.effects', ATTACK_SKILL_EFFECT_TYPES.filter(t => t !== 'damage'))
+    if (attack.presentationAnimation != null && typeof attack.presentationAnimation !== 'boolean') errors.push('normalAttack.presentationAnimation must be boolean')
+    validateEffects(attack.effects ?? [], errors, 'normalAttack.effects')
   }
   const support = data.normalSupport
   if (!support || typeof support !== 'object') errors.push('normalSupport must be an object')
