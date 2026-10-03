@@ -62,12 +62,12 @@ export function ClassSelection({ data, initialClassId, onConfirm, onBack, confir
   </section>
 }
 
-const targets = { single: '一名敵人', all: '全體敵人', primaryPlusRandom: '主要敵人與隨機額外目標', singleAlly: '一名友軍（可選自己）', allAllies: '全體友軍' }
+const targets = { single: '1名敵人（玩家決定）', random: '隨機1名敵人', lowestHp: '體力最低的1名敵人', highestHp: '體力最高的1名敵人', all: '全體敵人', singleAlly: '一名友軍（可選自己）', allAllies: '全體友軍' }
 const selectors = { manual: '手動選擇', random: '隨機', lowestHp: '體力由低至高', highestHp: '體力由高至低', lowestAttack: '攻擊力由低至高', highestAttack: '攻擊力由高至低' }
 const scopes = { self: '自身', allAllies: '我方全體', allEnemies: '敵方全體', attacker: '攻擊者' }
 function Effects({ effects, ability = false }: { effects: GameplayEffect[]; ability?: boolean }) {
   return effects.length ? <ul className="ep-effects">{effects.map((e, i) => <li key={i}>
-    {ability ? `${scopes[e.abilityTarget ?? 'self']}：` : ''}{EFFECT_LABEL_ZH[e.type].replace('N%', `${e.value ?? 0}%`)}
+    {ability ? `${scopes[e.abilityTarget ?? 'self']}：` : e.targetSide ? `${e.targetSide === 'enemy' ? '敵方' : '我方'}：` : ''}{EFFECT_LABEL_ZH[e.type].replace('N%', `${e.value ?? 0}%`)}
     {e.value !== undefined && !EFFECT_LABEL_ZH[e.type].includes('N%') ? ` ${e.value}${e.type === 'fixedDamage' ? '' : '%'}` : ''}
     {e.hits !== undefined ? `・${e.hits} Hit` : ''}
     {e.duration !== undefined ? (e.type === 'heal' && e.duration === 1 ? '・立即回復' : `・${e.duration} Round`) : ''}
@@ -78,7 +78,7 @@ export function ClassDetails({ row }: { row: RangerData }) {
   const stats = [['體力', c.stats.hp.toLocaleString()], ['攻擊力', c.stats.attack.toLocaleString()], ['爆擊機率', `${c.stats.critRate}%`], ['爆擊傷害', `${c.stats.critDamage} 倍`], ['命中率', `${c.stats.hitRate}%`]]
   return <div className="ep-details">
     <section><h3>基礎數值</h3><dl className="ep-stats">{stats.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></section>
-    <section><h3>普通攻擊</h3><p>{targets[c.normalAttack.target]}{c.normalAttack.target === 'primaryPlusRandom' ? `（額外 ${c.normalAttack.extraTargets ?? 0} 名）` : ''}・{c.normalAttack.hits} Hit</p><p>每 Hit 造成 {c.stats.attack.toLocaleString()} 基礎傷害，每次行動技能條 +{c.normalAttack.skillGaugeGain}%。</p></section>
+    <section><h3>普通攻擊</h3><p>{targets[c.normalAttack.target]}・{c.normalAttack.hits} Hit</p><p>每 Hit 造成 {c.stats.attack.toLocaleString()} 基礎傷害，每次行動技能條 +{c.normalAttack.skillGaugeGain}%。</p><Effects effects={c.normalAttack.effects ?? []} /></section>
     <section><h3>普通輔助</h3><p>{targets[c.normalSupport.target]}</p><Effects effects={c.normalSupport.effects} /></section>
     <section><h3>{c.skill.icon && <img className="ep-effect-icon" src={c.skill.icon} alt="" />}{c.skill.name?.trim() || '技能'}</h3>
       {c.skill.description?.trim()
