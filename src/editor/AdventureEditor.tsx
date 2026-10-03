@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
 import { SidebarThumb } from './SidebarThumb'
 import {
-  ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES, ATTACK_SKILL_EFFECT_TYPES,
+  ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES,
   CONDITION_LABEL_ZH, CONDITION_OPERATORS, EFFECT_LABEL_ZH, EFFECT_TYPES, GAMEPLAY_ANIMATION_SLOTS,
   SUPPORT_SKILL_EFFECT_TYPES, TRIGGER_LABEL_ZH, newGameplayAbility, newGameplayEffect,
   type AbilityCondition, type GameplayAbility, type GameplayEffect, type GameplayEffectType, type SkillTargetRule,
@@ -63,13 +63,13 @@ export default function AdventureEditor({ mode }: { mode: AdventureEditorMode })
   }
 
   const saveEnemy = async () => {
-    if (!enemyDraft) return
+    if (!enemyDraft || !confirm('確定要儲存敵人「' + enemyName(enemyDraft) + '」的變更？')) return
     setStatus('儲存敵人中…')
     try { await saveGameplayEnemy(enemyDraft); setEnemies(v => upsert(v, enemyDraft)); setStatus('敵人已儲存。') }
     catch (e) { setStatus('儲存失敗：' + String(e)) }
   }
   const saveStage = async () => {
-    if (!stageDraft) return
+    if (!stageDraft || !confirm('確定要儲存關卡「' + (stageDraft.names.zh || stageDraft.id) + '」的變更？')) return
     setStatus('儲存關卡中…')
     try { await saveGameplayStage(stageDraft); setStages(v => upsert(v, stageDraft)); setStatus('關卡已儲存。') }
     catch (e) { setStatus('儲存失敗：' + String(e)) }
@@ -137,15 +137,15 @@ function EnemyForm({ value, assets, onChange, onSave, onDelete }: { value: Gamep
       <div className="gp-grid five">
         <Field label="選擇動畫"><AnimationSelect value={value.normalAttack.animation ?? 'attack'} onChange={animation=>onChange({...value,normalAttack:{...value.normalAttack,animation}})} /></Field>
         <Field label="目標"><select value={value.normalAttack.target} onChange={e=>onChange({...value,normalAttack:{...value.normalAttack,target:e.target.value as GameplayEnemy['normalAttack']['target']}})}>
-          <option value="single">一名敵人</option><option value="all">全體敵人</option><option value="primaryPlusRandom">一名敵人 + N</option>
+          <option value="random">隨機1名敵人</option><option value="lowestHp">體力最低的1名敵人</option><option value="highestHp">體力最高的1名敵人</option><option value="all">全體敵人</option>
         </select></Field>
         <Num label="Hit 數" value={value.normalAttack.hits} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,hits:Math.max(1,Math.round(v))}})} />
         <Num label="蓄力回合數" value={value.normalAttack.chargeTurns??0} min={0} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,chargeTurns:Math.max(0,Math.round(v))}})} />
-        {value.normalAttack.target==='primaryPlusRandom' && <Num label="額外目標 N" value={value.normalAttack.extraTargets??1} min={1} step={1} onChange={v=>onChange({...value,normalAttack:{...value.normalAttack,extraTargets:Math.max(1,Math.round(v))}})} />}
       </div>
+      <Check label="啟動演出動畫" checked={value.normalAttack.presentationAnimation === true} onChange={presentationAnimation=>onChange({...value,normalAttack:{...value.normalAttack,presentationAnimation}})} />
       <Field label="普通攻擊敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.normalAttack.description??''} onChange={e=>onChange({...value,normalAttack:{...value.normalAttack,description:e.target.value}})} /></Field>
       <h4>普通攻擊附加效果</h4>
-      <EffectList value={value.normalAttack.effects??[]} allowed={ATTACK_SKILL_EFFECT_TYPES.filter(t=>t!=='damage')} onChange={effects=>onChange({...value,normalAttack:{...value.normalAttack,effects}})} />
+      <EffectList value={value.normalAttack.effects??[]} targetSideMode defaultTargetSide="enemy" onChange={effects=>onChange({...value,normalAttack:{...value.normalAttack,effects}})} />
     </Section>
     <Section title="普通輔助" note="敵人可選擇使用普通輔助；沒有設定效果時 AI 不會選擇此動作。">
       <div className="gp-grid two">
@@ -227,9 +227,10 @@ function SkillEditor({value,onChange}:{value:NonNullable<GameplayEnemy['skill']>
   return <div className="adv-subform">
     <div className="gp-grid three"><Field label="能量石招式名稱"><input value={value.name??''} onChange={e=>onChange({...value,name:e.target.value})} /></Field><Field label="選擇動畫"><AnimationSelect value={value.animation ?? 'skill1'} onChange={animation=>onChange({...value,animation})} /></Field><Field label="技能圖示 URL"><input value={value.icon??''} onChange={e=>onChange({...value,icon:e.target.value})} /></Field></div>
     <Field label="能量石招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）"><textarea value={value.description??''} onChange={e=>onChange({...value,description:e.target.value})} /></Field>
+    <Check label="啟動演出動畫" checked={value.presentationAnimation !== false} onChange={presentationAnimation=>onChange({...value,presentationAnimation})} />
     <TargetEditor value={value.target} onChange={target=>onChange({...value,target})} />
     {value.target.side==='enemy' && <Num label="蓄力回合數（0 = 不蓄力）" value={value.chargeTurns??0} min={0} step={1} onChange={v=>onChange({...value,chargeTurns:Math.max(0,Math.round(v))})} />}
-    <EffectList value={value.effects} allowed={value.target.side==='enemy'?ATTACK_SKILL_EFFECT_TYPES:EFFECT_TYPES} onChange={effects=>onChange({...value,effects})} />
+    <EffectList value={value.effects} targetSideMode defaultTargetSide={value.target.side} onChange={effects=>onChange({...value,effects})} />
   </div>
 }
 
@@ -253,15 +254,16 @@ function TargetEditor({value,onChange}:{value:SkillTargetRule;onChange:(v:SkillT
     <Field label="挑選依據"><select value={value.selector} onChange={e=>onChange({...value,selector:e.target.value as SkillTargetRule['selector']})}>{selectors.map(([k,l])=><option key={k} value={k}>{l}</option>)}</select></Field></div>
 }
 
-function EffectList({value,onChange,allowed=EFFECT_TYPES,ability=false}:{value:GameplayEffect[];onChange:(v:GameplayEffect[])=>void;allowed?:readonly GameplayEffectType[];ability?:boolean}){
+function EffectList({value,onChange,allowed=EFFECT_TYPES,ability=false,targetSideMode=false,defaultTargetSide='enemy'}:{value:GameplayEffect[];onChange:(v:GameplayEffect[])=>void;allowed?:readonly GameplayEffectType[];ability?:boolean;targetSideMode?:boolean;defaultTargetSide?:'enemy'|'ally'}){
   return <div className="gp-effects">{value.map((effect,i)=><div className="gp-effect" key={i}>
-    <label className="gp-field compact"><span>效果</span><select value={effect.type} onChange={e=>{const rows=[...value];rows[i]={...newGameplayEffect(e.target.value as GameplayEffectType),...(ability?{abilityTarget:effect.abilityTarget??'self'}:{})};onChange(rows)}}>{allowed.map(t=><option key={t} value={t}>{EFFECT_LABEL_ZH[t]}</option>)}</select></label>
+    <label className="gp-field compact"><span>效果</span><select value={effect.type} onChange={e=>{const rows=[...value];rows[i]={...newGameplayEffect(e.target.value as GameplayEffectType),...(ability?{abilityTarget:effect.abilityTarget??'self'}:targetSideMode?{targetSide:effect.targetSide??defaultTargetSide}:{})};onChange(rows)}}>{allowed.map(t=><option key={t} value={t}>{EFFECT_LABEL_ZH[t]}</option>)}</select></label>
+    {targetSideMode&&<label className="gp-field compact"><span>作用於</span><select value={effect.targetSide??defaultTargetSide} onChange={e=>{const rows=[...value];rows[i]={...effect,targetSide:e.target.value as GameplayEffect['targetSide']};onChange(rows)}}><option value="enemy">敵方</option><option value="ally">我方</option></select></label>}
     {ability&&<label className="gp-field compact"><span>對象</span><select value={effect.abilityTarget??'self'} onChange={e=>{const rows=[...value];rows[i]={...effect,abilityTarget:e.target.value as GameplayEffect['abilityTarget']};onChange(rows)}}>{ABILITY_EFFECT_TARGETS.map(t=><option key={t} value={t}>{t==='self'?'自身':t==='allAllies'?'我方全體':t==='allEnemies'?'敵方全體':'攻擊者'}</option>)}</select></label>}
     {!noValue.has(effect.type)&&<Num label="數值" value={effect.value??0} compact onChange={v=>{const rows=[...value];rows[i]={...effect,value:v};onChange(rows)}} />}
     {!noDuration.has(effect.type)&&<Num label="持續回合數" value={effect.duration??1} min={1} step={1} compact onChange={v=>{const rows=[...value];rows[i]={...effect,duration:Math.max(1,Math.round(v))};onChange(rows)}} />}
     {(effect.type==='damage'||effect.type==='fixedDamage')&&<Num label="Hits" value={effect.hits??1} min={1} step={1} compact onChange={v=>{const rows=[...value];rows[i]={...effect,hits:Math.max(1,Math.round(v))};onChange(rows)}} />}
     <button className="danger gp-x" onClick={()=>onChange(value.filter((_,j)=>j!==i))}>×</button>
-  </div>)}<button className="gp-add-effect" onClick={()=>onChange([...value,newGameplayEffect(allowed[0]??'damage')])}>＋ 新增效果</button></div>
+  </div>)}<button className="gp-add-effect" onClick={()=>onChange([...value,{...newGameplayEffect(allowed[0]??'damage'),...(targetSideMode?{targetSide:defaultTargetSide}:{})}])}>＋ 新增效果</button></div>
 }
 const noValue=new Set<GameplayEffectType>(['stun','silence','removeShield','dispelBuffs','taunt','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','removeTaunt','removeStun','removeSilence'])
 const noDuration=new Set<GameplayEffectType>(['damage','removeShield','dispelBuffs','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','fixedDamage','removeTaunt','removeStun','removeSilence'])
@@ -276,6 +278,7 @@ function ConditionEditor({value,onChange,onDelete}:{value:AbilityCondition;onCha
 function Header({title,sub,onSave,onDelete}:{title:string;sub:string;onSave:()=>void;onDelete:()=>void}){return <div className="gp-form-head"><div><h2>{title}</h2><p>{sub}</p></div><div><button className="primary" onClick={onSave}>儲存</button><button className="danger" onClick={onDelete}>刪除</button></div></div>}
 function Section({title,note,children}:{title:string;note?:string;children:React.ReactNode}){return <section className="gp-section"><h3>{title}</h3>{note&&<p className="gp-note">{note}</p>}{children}</section>}
 function Field({label,children}:{label:string;children:React.ReactNode}){return <label className="gp-field"><span>{label}</span>{children}</label>}
+function Check({label,checked,onChange}:{label:string;checked:boolean;onChange:(v:boolean)=>void}){return <label className="gp-check"><input type="checkbox" checked={checked} onChange={e=>onChange(e.target.checked)} /><span>{label}</span></label>}
 function Num({label,value,onChange,min,max,step,compact}:{label:string;value:number;onChange:(v:number)=>void;min?:number;max?:number;step?:number;compact?:boolean}){return <label className={'gp-field'+(compact?' compact':'')}><span>{label}</span><input type="number" value={value} min={min} max={max} step={step??1} onChange={e=>onChange(Number(e.target.value))} /></label>}
 function Empty({title,text}:{title:string;text:string}){return <div className="gp-empty-main"><h2>{title}</h2><p>{text}</p></div>}
 function upsert<T extends {id:string}>(rows:T[],row:T):T[]{const i=rows.findIndex(x=>x.id===row.id);if(i<0)return[...rows,row];const out=[...rows];out[i]=row;return out}
