@@ -17,12 +17,13 @@
     "hitRate": 100
   },
   "normalAttack": {
-    "target": "single",
+    "target": "random",
     "hits": 2,
     "animation": "attack",
     "skillGaugeGain": 0,
     "effects": [],
-    "description": "對1名Ranger造成2次攻擊力100%的傷害"
+    "description": "對1名Ranger造成2次攻擊力100%的傷害",
+    "presentationAnimation": false
   },
   "normalSupport": {
     "target": "singleAlly",
@@ -42,9 +43,11 @@
     "effects": [
       {
         "type": "stun",
-        "duration": 4
+        "duration": 4,
+        "targetSide": "enemy"
       }
-    ]
+    ],
+    "presentationAnimation": true
   },
   "skillActivationRate": 30,
   "abilities": [
