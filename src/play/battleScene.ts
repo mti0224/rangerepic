@@ -57,6 +57,8 @@ export const VIEW_W = 1280
 export const VIEW_H = 720
 /** ตัวละครสูงราว 170 หน่วย × 0.82 ≈ 140px บนจอ 720 — เห็นท่าชัดโดยสนามยังไม่แน่น */
 export const CAMERA_ZOOM = 0.82
+/** Battle characters and projectiles are intentionally 1.5x larger than the original scene. */
+const BATTLE_VISUAL_SCALE = 1.5
 const WORLD_W = VIEW_W / CAMERA_ZOOM
 
 /**
@@ -167,9 +169,9 @@ const CHARGE_WALK_SPEED = 340
 const CHARGE_PRE_FILL_SEC = 0.2
 const CHARGE_FILL_SEC = 0.5
 const CHARGE_POST_FILL_SEC = 0.2
-const CHARGE_CENTER_SIDE_GAP = 95
+const CHARGE_CENTER_SIDE_GAP = 0
 /** Tiny image-backed speech bubble, roughly the visual width of a unit HP bar. */
-const CHARGE_BUBBLE = { w: 120, h: 40, icon: 20, edge: 8 }
+const CHARGE_BUBBLE = { w: 135, h: 40, icon: 20, edge: 8 }
 const HP_BAR_BELOW_FEET_PX = 18
 type ChargeTargetKind = 'single' | 'all' | 'random'
 /**
@@ -326,7 +328,7 @@ interface ChargeStep {
   timer: number
   progressFrom: number
   progressTo: number
-  /** This fill completes the charge; release the locked action after returning home. */
+  /** This fill completes the charge; release the locked action directly from center. */
   releaseAfter: boolean
 }
 
@@ -723,7 +725,7 @@ export class BattleScene {
   /** จุดในไฟล์ของตัวละคร → พิกัดโลก (ทีมขวากลับด้านรอบจุดยืน) */
   private localToWorld(v: UnitView, p: Vec2, withPos = true): Vec2 {
     const ox = withPos ? v.pos.x : 0, oy = withPos ? v.pos.y : 0
-    return { x: v.slot.x + ox + v.facing * (p.x - v.stand.x), y: v.slot.y + oy + (p.y - v.stand.y) }
+    return { x: v.slot.x + ox + v.facing * (p.x - v.stand.x) * BATTLE_VISUAL_SCALE, y: v.slot.y + oy + (p.y - v.stand.y) * BATTLE_VISUAL_SCALE }
   }
 
   /** kiwi space ของผู้โจมตี (ยืนที่ช่องเดิม) ↔ พิกัดโลก */
@@ -860,7 +862,7 @@ export class BattleScene {
     if (!cls) return 'single'
     if (action === 'attack') {
       if (cls.normalAttack.target === 'all') return 'all'
-      if (cls.normalAttack.target === 'primaryPlusRandom') return 'random'
+      if (cls.normalAttack.target === 'random') return 'random'
       return 'single'
     }
     if (action === 'skill1') {
@@ -962,6 +964,18 @@ export class BattleScene {
     if (step.phase === 'postFill') {
       step.timer += scaledDt
       if (step.timer < CHARGE_POST_FILL_SEC) return
+      const state = this.enemyCharges.get(actor.unit.uid)
+      if (step.releaseAfter && state) {
+        // Final charge already leaves the enemy at the battlefield center. Release
+        // the action directly from here instead of walking home and walking out again.
+        const target = this.resolveChargedTarget(actor.unit, state)
+        this.enemyCharges.delete(actor.unit.uid)
+        this.chargeStep = null
+        if (target) {
+          this.startAction(actor.unit, state.action, target, true)
+          return
+        }
+      }
       step.phase = 'return'
       actor.facingBack = actor.pos.x * actor.facing > 0
       actor.player.playClip(this.walkClip(actor), { speed: this.speed, loop: true })
@@ -978,21 +992,7 @@ export class BattleScene {
     actor.facingBack = false
     this.playIdle(actor)
 
-    const state = this.enemyCharges.get(actor.unit.uid)
-    const releaseAfter = step.releaseAfter && !!state
     this.chargeStep = null
-
-    if (releaseAfter && state) {
-      // Keep the full final segment visible for the complete charge animation,
-      // then release the locked move instead of ending the actor's turn.
-      const target = this.resolveChargedTarget(actor.unit, state)
-      this.enemyCharges.delete(actor.unit.uid)
-      if (target) {
-        this.startAction(actor.unit, state.action, target)
-        return
-      }
-    }
-
     this.battle.endTurn(actor.unit)
     this.phase = this.battle.over ? 'ended' : 'thinking'
     this.onChange?.()
@@ -1081,7 +1081,7 @@ export class BattleScene {
     else this.startAction(actor, plan.action, plan.target)
   }
 
-  private startAction(actorUnit: Unit, action: ActionName, targetUnit: Unit): void {
+  private startAction(actorUnit: Unit, action: ActionName, targetUnit: Unit, skipApproach = false): void {
     // กันพลาด: สกิลโจมตีห้ามวิ่งไปหาเพื่อน / บัฟห้ามไปหาศัตรู → เปลี่ยนเป็นเป้าที่ดีที่สุดของท่านี้
     if ((this.battle.skillOf(actorUnit, action).kind === 'attack') === (targetUnit.team === actorUnit.team)) {
       targetUnit = this.battle.autoTarget(actorUnit, action) ?? targetUnit
@@ -1098,11 +1098,11 @@ export class BattleScene {
     // สกิลที่ตั้งคัตซีนไว้: เล่นคัตซีนให้จบก่อน แล้วค่อยออกท่าจริง
     const play = this.cutinFor(actor, action)
     if (play) {
-      this.cutin = { play, t: 0, then: () => this.beginRun(actor, target, action) }
+      this.cutin = { play, t: 0, then: () => this.beginRun(actor, target, action, skipApproach) }
       this.onChange?.()
       return
     }
-    this.beginRun(actor, target, action)
+    this.beginRun(actor, target, action, skipApproach)
   }
 
   /** อัญเชิญ: จ่าย Cost + ผู้อัญเชิญเริ่มถอยหลัง (ขั้นต่อไปอยู่ใน stepSummon) */
@@ -1182,11 +1182,11 @@ export class BattleScene {
   }
 
   /** ออกท่าจริง (หลังคัตซีน ถ้ามี) */
-  private beginRun(actor: UnitView, target: UnitView, action: ActionName): void {
+  private beginRun(actor: UnitView, target: UnitView, action: ActionName, skipApproach = false): void {
     this.run = { actor, target, action, step: 'act', prevFrame: -1, spawned: false, waitLeft: 0, resolved: false }
 
     // บัฟไม่ต้องเดินเข้าไปหาใคร
-    if (actor.kit.config.actions[action].approach?.enabled && !this.battle.targetsAllies(actor.unit, action)) this.beginApproach()
+    if (!skipApproach && actor.kit.config.actions[action].approach?.enabled && !this.battle.targetsAllies(actor.unit, action)) this.beginApproach()
     else this.beginAct()
     this.onChange?.()
   }
@@ -1209,8 +1209,15 @@ export class BattleScene {
   }
 
   private cutinFor(v: UnitView, action: ActionName): CutinPlay | null {
-    if (action === 'attack' || !cutinsOn()) return null
-    const cfg = v.kit.config.cutins?.[action]
+    if (!cutinsOn()) return null
+    const gameplay = v.unit.gameplayClass
+    if (gameplay) {
+      if (action === 'attack' && gameplay.normalAttack.presentationAnimation !== true) return null
+      if (action === 'skill1' && gameplay.skill.presentationAnimation === false) return null
+    } else if (action === 'attack') return null
+    const visualSource = v.kit.config.actions[action].visualSource ?? action
+    if (visualSource === 'attack') return null
+    const cfg = v.kit.config.cutins?.[visualSource]
     if (!cfg?.enabled) return null
     const flip = v.unit.team === 1
     const key = `${v.kit.config.id}|${action}|${flip ? 1 : 0}`
@@ -1385,8 +1392,8 @@ export class BattleScene {
     const out: { uid: string; team: Team; p: Vec2 }[] = []
     const r = this.run
     if (r && r.step === 'approach') {
-      const k = approachOffsetOf(r.actor.kit.config, r.action, r.actor.stand, this.targetPointsFor(r.actor, r.target).main)
-      out.push({ uid: r.actor.unit.uid, team: r.actor.unit.team, p: { x: r.actor.slot.x + r.actor.facing * k.x, y: r.actor.slot.y + k.y } })
+      const goal = this.approachGoalFor(r)
+      out.push({ uid: r.actor.unit.uid, team: r.actor.unit.team, p: { x: r.actor.slot.x + goal.x, y: r.actor.slot.y + goal.y } })
     }
     for (const v of this.views) {
       if (!v.unit.alive || v.dying !== null || v.dodging) continue
@@ -1435,7 +1442,7 @@ export class BattleScene {
     const claims = this.spaceClaims()
     const s = this.summon
     for (const v of this.views) {
-      if (v === this.run?.actor || !v.unit.alive || v.dying !== null) continue
+      if (v.unit.team === 1 || v === this.run?.actor || !v.unit.alive || v.dying !== null) continue
       // ผู้อัญเชิญกำลังเดินถอย/เดินกลับเอง → ลำดับอัญเชิญคุม
       if (s && v === s.summoner && (s.step === 'back' || s.step === 'home')) continue
       // ยืนค้างนอกที่พักจากท่าของตัวเอง (ไม่ใช่หลบ) → ไม่ยุ่ง
@@ -1701,6 +1708,23 @@ export class BattleScene {
 
   }
 
+  private approachGoalFor(r: ActionRun): Vec2 {
+    const cls = r.actor.unit.gameplayClass
+    const allEnemies = cls
+      ? (r.action === 'attack'
+          ? cls.normalAttack.target === 'all'
+          : r.action === 'skill1' && cls.skill.target.side === 'enemy' && cls.skill.target.count === 'all')
+      : this.battle.skillOf(r.actor.unit, r.action).area === 'all'
+    if (allEnemies && !this.battle.targetsAllies(r.actor.unit, r.action)) {
+      // Area attacks that require movement stage from the exact screen center,
+      // not the centroid of the opposing formation.
+      return { x: WORLD_W / 2 - r.actor.slot.x, y: 0 }
+    }
+    const cfg = r.actor.kit.config
+    const k = approachOffsetOf(cfg, r.action, r.actor.stand, this.targetPointsFor(r.actor, r.target).main)
+    return { x: r.actor.facing * k.x, y: k.y }
+  }
+
   private stepRun(dt: number): void {
     const r = this.run!
     const cfg = r.actor.kit.config
@@ -1708,10 +1732,7 @@ export class BattleScene {
 
     if (r.step === 'approach' || r.step === 'return') {
       let goal: Vec2 = { x: 0, y: 0 }
-      if (r.step === 'approach') {
-        const k = approachOffsetOf(cfg, r.action, r.actor.stand, this.targetPointsFor(r.actor, r.target).main)
-        goal = { x: r.actor.facing * k.x, y: k.y }
-      }
+      if (r.step === 'approach') goal = this.approachGoalFor(r)
       const step = (a.approach?.speed ?? 600) * dt * this.releaseMul
       const dx = goal.x - r.actor.pos.x, dy = goal.y - r.actor.pos.y
       const dist = Math.hypot(dx, dy)
@@ -1780,8 +1801,8 @@ export class BattleScene {
     for (const v of this.views) {
       if (!v.unit.alive) continue
       const w = this.localToWorld(v, v.stand)
-      const x0 = (w.x - 70) * Z, x1 = (w.x + 70) * Z
-      const y0 = (w.y - 190) * Z, y1 = (w.y + 20) * Z
+      const x0 = (w.x - 70 * BATTLE_VISUAL_SCALE) * Z, x1 = (w.x + 70 * BATTLE_VISUAL_SCALE) * Z
+      const y0 = (w.y - 190 * BATTLE_VISUAL_SCALE) * Z, y1 = (w.y + 20 * BATTLE_VISUAL_SCALE) * Z
       if (sx >= x0 && sx <= x1 && sy >= y0 && sy <= y1) {
         const d = Math.abs(sx - w.x * Z) + Math.abs(sy - (w.y - 80) * Z)
         if (!best || d < best.d) best = { uid: v.unit.uid, d }
@@ -1859,7 +1880,7 @@ export class BattleScene {
     ctx.save()
     ctx.beginPath()
     ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(16,18,28,0.97)'
+    ctx.fillStyle = state.targetKind === 'single' ? 'rgba(16,18,28,0.97)' : '#ffffff'
     ctx.fill()
     ctx.clip()
 
@@ -1961,6 +1982,32 @@ export class BattleScene {
           ctx.drawImage(this.chargeBubbleImage, 0, 0, w, h)
           ctx.setTransform(1, 0, 0, 1, 0, 0)
         }
+      } else {
+        // Never leave the charge content floating without its speech-bubble
+        // background. This vector fallback follows the supplied rounded bubble
+        // silhouette and remains visible while/if the PNG is unavailable.
+        const bodyX = x + 2
+        const bodyY = y + 2
+        const bodyW = w - 10
+        const bodyH = h - 12
+        const radius = 16
+        ctx.beginPath()
+        ctx.roundRect(bodyX, bodyY, bodyW, bodyH, radius)
+        if (onLeft) {
+          ctx.moveTo(x + w - 35, y + h - 11)
+          ctx.lineTo(x + w - 8, y + h - 1)
+          ctx.lineTo(x + w - 22, y + h - 16)
+        } else {
+          ctx.moveTo(x + 35, y + h - 11)
+          ctx.lineTo(x + 8, y + h - 1)
+          ctx.lineTo(x + 22, y + h - 16)
+        }
+        ctx.closePath()
+        ctx.fillStyle = '#ffffff'
+        ctx.fill()
+        ctx.lineWidth = 2
+        ctx.strokeStyle = '#0a0a0a'
+        ctx.stroke()
       }
 
       // Only the target bubble and one connected charge track are rendered inside the image.
@@ -2237,7 +2284,9 @@ export class BattleScene {
     if (!frame) return
     const { sam, sprites } = v.kit.assets
     const flip = (v.facing === -1) !== v.facingBack
-    const origin = { x: v.slot.x + v.pos.x - v.stand.x, y: v.slot.y + v.pos.y - v.stand.y }
+    const visualScale = Z * BATTLE_VISUAL_SCALE
+    const feet = { x: (v.slot.x + v.pos.x) * Z, y: (v.slot.y + v.pos.y) * Z }
+    const origin = { x: feet.x - v.stand.x * visualScale, y: feet.y - v.stand.y * visualScale }
 
     // ตาย: เล่นท่ากระเด็นจบแล้วตัวหายไปเลย (วิญญาณวาดแยกใน paintSoul)
     if (v.dying !== null && v.dying > DEATH_KNOCK_SEC) return
@@ -2245,7 +2294,7 @@ export class BattleScene {
     const alpha = v.alpha ?? 1
     if (alpha <= 0) return
     const draw = (c: CanvasRenderingContext2D, dx = 0, dy = 0) =>
-      renderSAMFrame(c, frame, sam.images, sprites, origin.x * Z - dx, origin.y * Z - dy, Z, undefined, flip, v.stand.x, 0, alpha)
+      renderSAMFrame(c, frame, sam.images, sprites, origin.x - dx, origin.y - dy, visualScale, undefined, flip, v.stand.x, 0, alpha)
 
     // ย้อมสี: บาเรีย (อมตะ) = โทนทองเรืองขึ้นลงช้าๆ · ตีธรรมดาโดน = กะพริบแดง
     const tints: [string, number][] = []
@@ -2260,8 +2309,8 @@ export class BattleScene {
     if (!bb) { draw(ctx); return }
     const x0 = flip ? 2 * v.stand.x - bb.x1 : bb.x0, x1 = flip ? 2 * v.stand.x - bb.x0 : bb.x1
     const pad = 4
-    const dx = Math.floor((origin.x + x0) * Z) - pad, dy = Math.floor((origin.y + bb.y0) * Z) - pad
-    const w = Math.min(TINT_MAX_PX, Math.ceil((x1 - x0) * Z) + pad * 2), h = Math.min(TINT_MAX_PX, Math.ceil((bb.y1 - bb.y0) * Z) + pad * 2)
+    const dx = Math.floor(origin.x + x0 * visualScale) - pad, dy = Math.floor(origin.y + bb.y0 * visualScale) - pad
+    const w = Math.min(TINT_MAX_PX, Math.ceil((x1 - x0) * visualScale) + pad * 2), h = Math.min(TINT_MAX_PX, Math.ceil((bb.y1 - bb.y0) * visualScale) + pad * 2)
     if (!this.fx) this.fx = document.createElement('canvas')
     if (this.fx.width < w || this.fx.height < h) { this.fx.width = Math.max(this.fx.width, w); this.fx.height = Math.max(this.fx.height, h) }
     const f = this.fx.getContext('2d')
@@ -2298,10 +2347,14 @@ export class BattleScene {
     const pose = shotPose(s.plan, T)
     const anchor = idx.clip === 'finish' ? s.plan.finishAnchor : s.plan.anchor
     const ca = Math.cos(pose.angle), sa = Math.sin(pose.angle)
-    const kiwiOrigin = { x: pose.pos.x - (ca * anchor.x - sa * anchor.y), y: pose.pos.y - (sa * anchor.x + ca * anchor.y) }
-    // ทีมขวา: แปลงจุดกำเนิดไปฝั่งกระจก แล้วให้ renderSAMFrame กลับด้านภาพรอบจุดนั้น
+    const kiwiOrigin = {
+      x: pose.pos.x - (ca * anchor.x - sa * anchor.y) * BATTLE_VISUAL_SCALE,
+      y: pose.pos.y - (sa * anchor.x + ca * anchor.y) * BATTLE_VISUAL_SCALE,
+    }
+    // Team right mirrors the projectile; its flight anchor remains unchanged while
+    // the sprite itself is enlarged to match the 1.5x Ranger scale.
     const w = this.kiwiToWorld(s.frame, kiwiOrigin)
-    renderSAMFrame(ctx, frame, bullet.sam.images, bullet.sprites, w.x * Z, w.y * Z, Z,
+    renderSAMFrame(ctx, frame, bullet.sam.images, bullet.sprites, w.x * Z, w.y * Z, Z * BATTLE_VISUAL_SCALE,
       undefined, s.frame.facing === -1, 0, pose.angle)
   }
 

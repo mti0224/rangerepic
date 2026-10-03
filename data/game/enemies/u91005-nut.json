@@ -17,12 +17,13 @@
     "hitRate": 100
   },
   "normalAttack": {
-    "target": "single",
+    "target": "random",
     "hits": 1,
     "animation": "attack",
     "skillGaugeGain": 0,
     "effects": [],
-    "description": "對1名Ranger造成攻擊力100%的傷害"
+    "description": "對1名Ranger造成攻擊力100%的傷害",
+    "presentationAnimation": false
   },
   "normalSupport": {
     "target": "singleAlly",
@@ -43,9 +44,11 @@
       {
         "type": "attackDown",
         "value": 30,
-        "duration": 3
+        "duration": 3,
+        "targetSide": "enemy"
       }
-    ]
+    ],
+    "presentationAnimation": true
   },
   "skillActivationRate": 30,
   "abilities": []

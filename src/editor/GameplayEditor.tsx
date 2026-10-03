@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listRangers, type RangerListItem } from '@/lib/rangerApi'
 import { SidebarThumb } from './SidebarThumb'
 import {
-  ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES, ATTACK_SKILL_EFFECT_TYPES,
+  ABILITY_EFFECT_TARGETS, AUTHORING_ABILITY_TRIGGERS, AUTHORING_CONDITION_TYPES,
   CONDITION_LABEL_ZH, CONDITION_OPERATORS, EFFECT_LABEL_ZH, EFFECT_TYPES, GAMEPLAY_ANIMATION_SLOTS,
   SUPPORT_SKILL_EFFECT_TYPES, TRIGGER_LABEL_ZH,
   newGameplayAbility, newGameplayCharacter, newGameplayClass, newGameplayEffect,
@@ -107,7 +107,7 @@ export default function GameplayEditor() {
   }
 
   const saveCharacter = async () => {
-    if (!characterDraft) return
+    if (!characterDraft || !confirm('確定要儲存角色「' + (characterDraft.names.zh || characterDraft.id) + '」的變更？')) return
     setStatus('儲存角色中…')
     try {
       await saveGameplayCharacter(characterDraft)
@@ -117,7 +117,7 @@ export default function GameplayEditor() {
   }
 
   const saveClass = async () => {
-    if (!classDraft) return
+    if (!classDraft || !confirm('確定要儲存職業「' + (classDraft.names.zh || classDraft.id) + '」的變更？')) return
     setStatus('儲存職業中…')
     try {
       await saveGameplayClass(classDraft)
@@ -147,7 +147,7 @@ export default function GameplayEditor() {
   }
 
   const saveRules = async () => {
-    if (!rulesDraft) return
+    if (!rulesDraft || !confirm('確定要儲存戰鬥規則變更？')) return
     setStatus('儲存戰鬥規則中…')
     try {
       await saveGameplayRules(rulesDraft)
@@ -297,18 +297,24 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
           <Field label="選擇動畫"><AnimationSelect value={value.normalAttack.animation ?? 'attack'} onChange={animation => onChange({ ...value, normalAttack: { ...value.normalAttack, animation } })} /></Field>
           <Field label="目標">
             <select value={value.normalAttack.target} onChange={e => onChange({ ...value, normalAttack: { ...value.normalAttack, target: e.target.value as GameplayClass['normalAttack']['target'] } })}>
-              <option value="single">一名敵人</option>
+              <option value="single">1名敵人（玩家決定）</option>
               <option value="all">全體敵人</option>
-              <option value="primaryPlusRandom">一名敵人 + N</option>
             </select>
           </Field>
           <Num label="Hit 數" value={value.normalAttack.hits} min={1} step={1} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, hits: Math.max(1, Math.round(v)) } })} />
           <Num label="技能條增加 %" value={value.normalAttack.skillGaugeGain} min={0} max={100} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, skillGaugeGain: v } })} />
-          {value.normalAttack.target === 'primaryPlusRandom' && <Num label="額外隨機目標 N" value={value.normalAttack.extraTargets ?? 1} min={1} step={1} onChange={v => onChange({ ...value, normalAttack: { ...value.normalAttack, extraTargets: Math.max(1, Math.round(v)) } })} />}
         </div>
+        <Check label="啟動演出動畫" checked={value.normalAttack.presentationAnimation === true} onChange={presentationAnimation => onChange({ ...value, normalAttack: { ...value.normalAttack, presentationAnimation } })} />
         <Field label="普通攻擊敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
           <textarea value={value.normalAttack.description ?? ''} onChange={e => onChange({ ...value, normalAttack: { ...value.normalAttack, description: e.target.value } })} />
         </Field>
+        <h4>普通攻擊附加效果</h4>
+        <EffectList
+          value={value.normalAttack.effects ?? []}
+          targetSideMode
+          defaultTargetSide="enemy"
+          onChange={effects => onChange({ ...value, normalAttack: { ...value.normalAttack, effects } })}
+        />
       </Section>
 
       <Section title="普通輔助" note="普通輔助不增加技能條，也不受命中率影響。">
@@ -332,10 +338,8 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
       </Section>
 
       <Section
-        title={value.skill.target.side === 'enemy' ? '能量石招式（攻擊）' : '能量石招式（輔助）'}
-        note={value.skill.target.side === 'enemy'
-          ? '敵方目標只顯示攻擊技能效果；倍率傷害使用 Attack × N%，不會爆擊。'
-          : '我方目標只顯示輔助技能效果。切換作用對象後，下拉選單會跟著切換效果分類。'}
+        title="能量石招式"
+        note="所有正／負面效果皆可使用；每個效果可獨立指定作用於敵方或我方。主要目標設定同時作為動畫鎖定與敵方效果的挑選規則。"
       >
         <div className="gp-grid three">
           <Field label="能量石招式名稱（玩家顯示）"><input value={value.skill.name ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, name: e.target.value } })} /></Field>
@@ -353,10 +357,12 @@ function ClassForm({ value, characters, assets, iconLibrary, onIconUploaded, onC
         <Field label="能量石招式敘述（戰鬥詳細資訊只顯示此文字；留白則不顯示）">
           <textarea value={value.skill.description ?? ''} onChange={e => onChange({ ...value, skill: { ...value.skill, description: e.target.value } })} />
         </Field>
+        <Check label="啟動演出動畫" checked={value.skill.presentationAnimation !== false} onChange={presentationAnimation => onChange({ ...value, skill: { ...value.skill, presentationAnimation } })} />
         <TargetEditor value={value.skill.target} onChange={target => onChange({ ...value, skill: { ...value.skill, target } })} />
         <EffectList
           value={value.skill.effects}
-          allowedTypes={value.skill.target.side === 'enemy' ? ATTACK_SKILL_EFFECT_TYPES : SUPPORT_SKILL_EFFECT_TYPES}
+          targetSideMode
+          defaultTargetSide={value.skill.target.side}
           onChange={effects => onChange({ ...value, skill: { ...value.skill, effects } })}
         />
       </Section>
@@ -411,11 +417,13 @@ function TargetEditor({ value, onChange }: { value: SkillTargetRule; onChange: (
   )
 }
 
-function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false }: {
+function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode = false, targetSideMode = false, defaultTargetSide = 'enemy' }: {
   value: GameplayEffect[]
   onChange: (v: GameplayEffect[]) => void
   allowedTypes?: readonly GameplayEffectType[]
   abilityMode?: boolean
+  targetSideMode?: boolean
+  defaultTargetSide?: 'enemy' | 'ally'
 }) {
   const invalidCount = value.filter(effect => !allowedTypes.includes(effect.type)).length
   const defaultType = allowedTypes[0] ?? 'damage'
@@ -425,11 +433,11 @@ function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode 
         <p className="gp-effect-warning">目前有 {invalidCount} 個效果不屬於此技能分類，請從下拉選單改成目前允許的效果。</p>
       )}
       {value.map((effect, i) => (
-        <EffectEditor key={i} value={effect} allowedTypes={allowedTypes} abilityMode={abilityMode} onChange={next => {
+        <EffectEditor key={i} value={effect} allowedTypes={allowedTypes} abilityMode={abilityMode} targetSideMode={targetSideMode} defaultTargetSide={defaultTargetSide} onChange={next => {
           const rows = [...value]; rows[i] = next; onChange(rows)
         }} onDelete={() => onChange(value.filter((_, j) => j !== i))} />
       ))}
-      <button className="gp-add-effect" onClick={() => onChange([...value, newGameplayEffect(defaultType)])}>＋ 新增效果</button>
+      <button className="gp-add-effect" onClick={() => onChange([...value, { ...newGameplayEffect(defaultType), ...(targetSideMode ? { targetSide: defaultTargetSide } : {}) }])}>＋ 新增效果</button>
     </div>
   )
 }
@@ -437,16 +445,18 @@ function EffectList({ value, onChange, allowedTypes = EFFECT_TYPES, abilityMode 
 const NO_VALUE = new Set<GameplayEffectType>(['stun','silence','removeShield','dispelBuffs','taunt','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','removeTaunt','removeStun','removeSilence'])
 const NO_DURATION = new Set<GameplayEffectType>(['damage','removeShield','dispelBuffs','cleanseDebuffs','cleanseDamageOverTime','cleansePoison','fixedDamage','removeTaunt','removeStun','removeSilence'])
 
-function EffectEditor({ value, allowedTypes, abilityMode, onChange, onDelete }: {
+function EffectEditor({ value, allowedTypes, abilityMode, targetSideMode, defaultTargetSide, onChange, onDelete }: {
   value: GameplayEffect
   allowedTypes: readonly GameplayEffectType[]
   abilityMode: boolean
+  targetSideMode: boolean
+  defaultTargetSide: 'enemy' | 'ally'
   onChange: (v: GameplayEffect) => void
   onDelete: () => void
 }) {
   const changeType = (type: GameplayEffectType) => {
     const next = newGameplayEffect(type)
-    onChange(abilityMode ? { ...next, abilityTarget: value.abilityTarget ?? 'self' } : next)
+    onChange(abilityMode ? { ...next, abilityTarget: value.abilityTarget ?? 'self' } : targetSideMode ? { ...next, targetSide: value.targetSide ?? defaultTargetSide } : next)
   }
   const currentIsAllowed = allowedTypes.includes(value.type)
   return (
@@ -455,6 +465,17 @@ function EffectEditor({ value, allowedTypes, abilityMode, onChange, onDelete }: 
         {!currentIsAllowed && <option value={value.type}>⚠ {EFFECT_LABEL_ZH[value.type]}（不屬於目前分類）</option>}
         {allowedTypes.map(t => <option key={t} value={t}>{EFFECT_LABEL_ZH[t]}</option>)}
       </select></label>
+      {targetSideMode && (
+        <label className="gp-field compact"><span>作用於</span><select
+          className="gp-effect-target"
+          value={value.targetSide ?? defaultTargetSide}
+          onChange={e => onChange({ ...value, targetSide: e.target.value as GameplayEffect['targetSide'] })}
+          title="此效果獨立指定作用陣營"
+        >
+          <option value="enemy">敵方</option>
+          <option value="ally">我方</option>
+        </select></label>
+      )}
       {abilityMode && (
         <label className="gp-field compact"><span>對象</span><select
           className="gp-effect-target"
