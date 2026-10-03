@@ -17,12 +17,13 @@
     "hitRate": 90
   },
   "normalAttack": {
-    "target": "single",
+    "target": "random",
     "hits": 1,
     "skillGaugeGain": 0,
     "effects": [],
     "animation": "attack",
-    "description": "對1名Ranger造成攻擊力100%的傷害"
+    "description": "對1名Ranger造成攻擊力100%的傷害",
+    "presentationAnimation": false
   },
   "skill": null,
   "abilities": [
