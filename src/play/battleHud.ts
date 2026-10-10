@@ -340,6 +340,21 @@ export class BattleHud {
 
   private drawTurn(ctx: CanvasRenderingContext2D): void {
     const battle = this.s.battle
+    // Visual-only round plate: keeps the phase readable against bright maps.
+    ctx.save()
+    roundRect(ctx, 11, 11, 207, 67, 16)
+    const plate = ctx.createLinearGradient(11, 11, 218, 78)
+    plate.addColorStop(0, 'rgba(12,28,40,0.94)')
+    plate.addColorStop(1, 'rgba(10,19,33,0.79)')
+    ctx.fillStyle = plate
+    ctx.fill()
+    ctx.lineWidth = 1.4
+    ctx.strokeStyle = 'rgba(243,200,118,0.43)'
+    ctx.stroke()
+    roundRect(ctx, 13, 24, 3, 39, 1.5)
+    ctx.fillStyle = C.gold
+    ctx.fill()
+    ctx.restore()
     ctx.font = F(22)
     ctx.textAlign = 'left'
 
@@ -514,11 +529,21 @@ export class BattleHud {
       const skew = left ? TEAM_HP.skew : -TEAM_HP.skew
       const { y, w, h } = TEAM_HP
 
+      // Team-specific beveled frame; geometry and HP proportions stay unchanged.
+      ctx.save()
       para(ctx, x, y, w, h, skew)
-      ctx.fillStyle = C.panel
+      ctx.shadowColor = 'rgba(0,0,0,0.45)'
+      ctx.shadowBlur = 15
+      ctx.shadowOffsetY = 5
+      const shell = ctx.createLinearGradient(0, y, 0, y + h)
+      shell.addColorStop(0, 'rgba(33,54,71,0.97)')
+      shell.addColorStop(1, 'rgba(10,19,33,0.94)')
+      ctx.fillStyle = shell
       ctx.fill()
+      ctx.restore()
+      para(ctx, x, y, w, h, skew)
       ctx.lineWidth = 2.5
-      ctx.strokeStyle = C.gold
+      ctx.strokeStyle = left ? 'rgba(93,210,246,0.96)' : 'rgba(255,132,123,0.96)'
       ctx.stroke()
 
       // แถบเลือด: เต็มจากขอบนอก หมดจากฝั่ง VS · แถบขาว = เลือดที่เพิ่งหาย (ลดตามทีหลัง)
@@ -547,6 +572,13 @@ export class BattleHud {
       g.addColorStop(1, TEAM_DEEP[team])
       seg(0, hpR, g)
       seg(hpR, hpR + hp.shield / total, 'rgba(255,255,255,0.95)')                          // โล่รวมทั้งทีม
+      // Thin specular sheen adds depth without altering the actual bar length.
+      const shine = ctx.createLinearGradient(0, iy, 0, iy + ih)
+      shine.addColorStop(0, 'rgba(255,255,255,0.23)')
+      shine.addColorStop(0.36, 'rgba(255,255,255,0.045)')
+      shine.addColorStop(1, 'rgba(0,0,0,0.12)')
+      ctx.fillStyle = shine
+      ctx.fillRect(ix - 20, iy, iw + 40, ih)
       ctx.restore()
 
       ctx.font = F(17)
@@ -930,6 +962,41 @@ export class BattleHud {
     const breathe = ready ? (0.5 + 0.5 * Math.sin(now / 180)) : nearReady ? (0.5 + 0.5 * Math.sin(now / 280)) : 0
     const scale = 1 + chargePop + (ready ? 0.025 * breathe : 0)
 
+    // Stationary progress dial and caption behind the draggable energy-stone artwork.
+    // Do not expand the interactive hit box: only the original stone is draggable.
+    ctx.save()
+    roundRect(ctx, x - 29, y - 34, w + 58, h + 60, 25)
+    const backing = ctx.createLinearGradient(0, y - 34, 0, y + h + 26)
+    backing.addColorStop(0, 'rgba(19,38,51,0.92)')
+    backing.addColorStop(1, 'rgba(6,15,25,0.87)')
+    ctx.fillStyle = backing
+    ctx.fill()
+    ctx.lineWidth = 1.6
+    ctx.strokeStyle = ready ? 'rgba(255,215,122,0.87)' : 'rgba(120,188,197,0.48)'
+    ctx.stroke()
+    const cx = x + w / 2, cy = y + h / 2
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.arc(cx, cy, 45, -Math.PI / 2, Math.PI * 1.5)
+    ctx.strokeStyle = 'rgba(255,255,255,0.11)'
+    ctx.lineWidth = 5
+    ctx.stroke()
+    if (pct > 0) {
+      ctx.beginPath()
+      ctx.arc(cx, cy, 45, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct / 100)
+      ctx.strokeStyle = ready ? '#ffdc82' : '#87d7e1'
+      ctx.lineWidth = 5
+      ctx.stroke()
+    }
+    ctx.textAlign = 'center'
+    ctx.font = F(12)
+    ctx.fillStyle = ready ? '#ffe1a2' : '#c5d6de'
+    ctx.fillText(ready ? 'READY' : 'ENERGY', cx, y - 17)
+    ctx.font = F(13)
+    ctx.fillStyle = ready ? '#ffe6b3' : C.text
+    ctx.fillText(`${pct}%`, cx, y + h + 19)
+    ctx.restore()
+
     ctx.save()
     ctx.translate(x + w / 2, y + h / 2)
     ctx.scale(scale, scale)
@@ -965,6 +1032,27 @@ export class BattleHud {
       ctx.stroke()
     }
     ctx.restore()
+
+    // A short, non-interactive instruction only when the player may act.
+    if (this.s.phase === 'input' && !this.menuOpen) {
+      const lang = getLang()
+      const hint = ready
+        ? (lang === 'zh' ? '拖曳能量石至角色施放招式' : lang === 'th' ? 'ลากหินพลังงานไปยังตัวละคร' : 'Drag stone to a Ranger')
+        : (lang === 'zh' ? '拖曳角色至目標發動行動' : lang === 'th' ? 'ลากตัวละครไปยังเป้าหมาย' : 'Drag Ranger to a target')
+      ctx.save()
+      const hx = x + w + 52, hy = y + 17, hw = 245, hh = 38
+      roundRect(ctx, hx, hy, hw, hh, 13)
+      ctx.fillStyle = 'rgba(8,19,30,0.72)'
+      ctx.fill()
+      ctx.lineWidth = 1
+      ctx.strokeStyle = ready ? 'rgba(255,210,125,0.53)' : 'rgba(139,197,209,0.28)'
+      ctx.stroke()
+      ctx.font = F(12)
+      ctx.textAlign = 'center'
+      ctx.fillStyle = ready ? '#ffe0a0' : '#c1d8df'
+      ctx.fillText(hint, hx + hw / 2, hy + 24)
+      ctx.restore()
+    }
 
     if (ready) {
       this.boxes.push({ x: x - HIT_PAD, y: y - HIT_PAD, w: w + HIT_PAD * 2, h: h + HIT_PAD * 2, hit: { kind: 'skillGauge' } })
@@ -1455,11 +1543,14 @@ export class BattleHud {
     ctx.fillRect(0, 0, W, H)
     this.boxes = [{ x: 0, y: 0, w: W, h: H, hit: { kind: 'closeMenu' } }]   // คลิกนอกเมนู = ปิด
     const w = 320, h = 406, x = (W - w) / 2, y = (H - h) / 2
-    roundRect(ctx, x, y, w, h, 14)
-    ctx.fillStyle = 'rgba(11,17,38,0.97)'
+    roundRect(ctx, x, y, w, h, 18)
+    const menuFace = ctx.createLinearGradient(0, y, 0, y + h)
+    menuFace.addColorStop(0, 'rgba(31,48,66,0.99)')
+    menuFace.addColorStop(1, 'rgba(8,17,30,0.98)')
+    ctx.fillStyle = menuFace
     ctx.fill()
-    ctx.lineWidth = 2.5
-    ctx.strokeStyle = C.gold
+    ctx.lineWidth = 2
+    ctx.strokeStyle = 'rgba(248,207,130,0.86)'
     ctx.stroke()
     this.boxes.push({ x, y, w, h, hit: { kind: 'block' } })
     ctx.font = F(22)
@@ -1533,12 +1624,17 @@ export class BattleHud {
     ctx.beginPath()
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
     const g = ctx.createRadialGradient(cx, cy - r * 0.4, r * 0.2, cx, cy, r)
-    g.addColorStop(0, on ? 'rgba(92,70,20,0.95)' : hover ? 'rgba(44,60,112,0.95)' : 'rgba(24,34,72,0.95)')
-    g.addColorStop(1, on ? 'rgba(40,28,6,0.95)' : 'rgba(11,17,38,0.95)')
+    g.addColorStop(0, on ? 'rgba(117,86,33,0.98)' : hover ? 'rgba(49,76,91,0.98)' : 'rgba(26,44,60,0.97)')
+    g.addColorStop(1, on ? 'rgba(42,29,10,0.97)' : 'rgba(9,20,33,0.97)')
     ctx.fillStyle = g
     ctx.fill()
-    ctx.lineWidth = 2
-    ctx.strokeStyle = on ? C.gold : C.goldDim
+    ctx.lineWidth = hover || on ? 2.7 : 1.8
+    ctx.strokeStyle = on ? '#ffda7a' : hover ? 'rgba(161,222,233,0.86)' : 'rgba(159,183,205,0.46)'
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(cx, cy, r - 5, Math.PI * 1.12, Math.PI * 1.89)
+    ctx.lineWidth = 1.3
+    ctx.strokeStyle = 'rgba(255,255,255,0.23)'
     ctx.stroke()
     ctx.restore()
 
