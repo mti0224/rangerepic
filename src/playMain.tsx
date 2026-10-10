@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 // โหลด CSS กลางก่อน แล้วค่อยโหลดหน้า (lobby.css มากับ PlayMode) — สไตล์หน้าหลักจะได้ทับค่ากลางได้
 import './styles.css'
 import './play/play.css'
+import './play/player-polish.css'
 import PlayMode from './play/PlayMode'
 import { preloadFonts } from './lib/fonts'
 import { installGameCursor } from './lib/gameCursor'
