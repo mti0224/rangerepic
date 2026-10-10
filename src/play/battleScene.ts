@@ -1972,15 +1972,28 @@ export class BattleScene {
       }
       placed.push({ x, y, w, h })
 
+      // Presentation only: charge progress / release timing still belong to chargeStep.
+      const visualProgress = this.chargeVisualProgress(uid, state)
+      const segments = Math.max(1, state.required)
+      const fillRatio = Math.max(0, Math.min(1, visualProgress / segments))
+      const ready = fillRatio >= 0.999
+      const glow = ready ? 0.65 + 0.35 * Math.sin(nowSec() * 11) : 0
+
+      // Keep the authored bubble artwork, with a restrained warning glow.
       ctx.save()
+      ctx.shadowColor = ready ? `rgba(255,153,43,${0.58 * glow})` : 'rgba(0,0,0,0.42)'
+      ctx.shadowBlur = ready ? 13 + 7 * glow : 7
+      ctx.shadowOffsetY = 2
       if (imageReady(this.chargeBubbleImage)) {
         if (onLeft) {
           ctx.drawImage(this.chargeBubbleImage, x, y, w, h)
         } else {
+          // Isolate mirroring: never reset the host canvas transform to identity.
+          ctx.save()
           ctx.translate(x + w, y)
           ctx.scale(-1, 1)
           ctx.drawImage(this.chargeBubbleImage, 0, 0, w, h)
-          ctx.setTransform(1, 0, 0, 1, 0, 0)
+          ctx.restore()
         }
       } else {
         // Never leave the charge content floating without its speech-bubble
@@ -2009,11 +2022,24 @@ export class BattleScene {
         ctx.strokeStyle = '#0a0a0a'
         ctx.stroke()
       }
+      ctx.restore()
+
+      // Slight inset groups the target and the charge track on the bright bubble.
+      ctx.save()
+      ctx.beginPath()
+      ctx.roundRect(x + 35, y + 6, 85, 24, 7)
+      ctx.fillStyle = 'rgba(24,32,44,0.085)'
+      ctx.fill()
+      ctx.restore()
 
       // Only the target bubble and one connected charge track are rendered inside the image.
+      ctx.save()
+      ctx.shadowColor = ready ? 'rgba(255,151,33,0.7)' : 'rgba(0,0,0,0.2)'
+      ctx.shadowBlur = ready ? 8 : 2
       const ix = x + 11
       const iy = y + 8
       this.paintChargeTargetIcon(ctx, state, ix, iy, icon)
+      ctx.restore()
 
       // Match the unit HP bar exactly: same size, skew, rounded parallelogram,
       // dark translucent track, black outline. Charge fill stays orange.
@@ -2021,45 +2047,81 @@ export class BattleScene {
       const barY = y + 15
       const barW = 62
       const barH = 9
-      const segments = Math.max(1, state.required)
       // Enemy charge bar mirrors the enemy HP bar shape (team 1 uses negative skew).
       const skew = -HP_BAR_SKEW
-      const visualProgress = this.chargeVisualProgress(uid, state)
-      const fillRatio = Math.max(0, Math.min(1, visualProgress / segments))
       const span = barW + Math.abs(skew)
       const sx = Math.min(tx, tx + skew)
 
+      // Deep inset track: same dimensions / clip / progress ratio as before.
+      ctx.save()
       roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
-      ctx.fillStyle = 'rgba(0,0,0,0.55)'
+      ctx.shadowColor = ready ? `rgba(255,158,41,${0.68 * glow})` : 'rgba(10,15,22,0.42)'
+      ctx.shadowBlur = ready ? 8 + 4 * glow : 3
+      ctx.fillStyle = '#14202b'
       ctx.fill()
+      ctx.restore()
 
-      // Orange charge fill, clipped by the same HP-bar outline.
       ctx.save()
       roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
       ctx.clip()
+      // Warm amber top, orange body, rust-orange bottom for a beveled gauge.
       if (fillRatio > 0) {
-        ctx.fillStyle = '#f58a2c'
+        const chargeGradient = ctx.createLinearGradient(0, barY, 0, barY + barH)
+        chargeGradient.addColorStop(0, '#fff1a9')
+        chargeGradient.addColorStop(0.38, '#ffb44f')
+        chargeGradient.addColorStop(1, '#dc571f')
+        ctx.fillStyle = chargeGradient
         ctx.fillRect(sx, barY, span * fillRatio, barH)
+        ctx.fillStyle = 'rgba(255,255,238,0.52)'
+        ctx.fillRect(sx, barY + 1, span * fillRatio, 1.3)
+        // Highlight the moving charge head; no gameplay event or timing is changed.
+        const lead = sx + span * fillRatio
+        ctx.fillStyle = 'rgba(255,249,205,0.73)'
+        ctx.fillRect(Math.max(sx, lead - 2), barY + 1.5, Math.min(2, lead - sx), barH - 3)
       }
       ctx.restore()
 
       // Keep stages connected; thin separators are drawn over the shared bar.
       ctx.save()
       ctx.lineWidth = 1
-      ctx.strokeStyle = 'rgba(0,0,0,0.75)'
+      ctx.strokeStyle = 'rgba(5,14,24,0.88)'
       for (let i = 1; i < segments; i++) {
         const split = sx + span * i / segments
         ctx.beginPath()
-        ctx.moveTo(split, barY)
-        ctx.lineTo(split, barY + barH)
+        ctx.moveTo(split, barY + 0.8)
+        ctx.lineTo(split, barY + barH - 0.8)
         ctx.stroke()
+        ctx.beginPath()
+        ctx.strokeStyle = 'rgba(255,245,214,0.65)'
+        ctx.moveTo(split + 1, barY + 1.5)
+        ctx.lineTo(split + 1, barY + barH - 1.5)
+        ctx.stroke()
+        ctx.strokeStyle = 'rgba(5,14,24,0.88)'
       }
 
       roundPara(ctx, tx, barY, barW, barH, skew, 2.5)
       ctx.lineJoin = 'round'
-      ctx.lineWidth = 1.6
-      ctx.strokeStyle = 'rgba(0,0,0,0.9)'
+      ctx.lineWidth = ready ? 1.9 : 1.6
+      ctx.strokeStyle = ready ? '#ff9c36' : '#111b26'
       ctx.stroke()
+      ctx.restore()
+
+      // Discrete completed charges are easier to read than the narrow fill alone.
+      ctx.save()
+      ctx.font = 'bold 9px Krub, LineBold, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = ready ? '#c25419' : '#3c3431'
+      ctx.fillText(`${Math.min(segments, Math.floor(visualProgress + 0.001))}/${segments}`, x + 113, y + 19.5)
+      if (ready) {
+        // Small glow marker in the unused right end of the speech bubble.
+        ctx.beginPath()
+        ctx.arc(x + 113, y + 7, 2.4 + 0.5 * glow, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,167,50,${0.68 + 0.32 * glow})`
+        ctx.shadowColor = '#ffae49'
+        ctx.shadowBlur = 6 + 4 * glow
+        ctx.fill()
+      }
       ctx.restore()
       ctx.restore()
     }
