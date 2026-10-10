@@ -1,0 +1,186 @@
+/* RangerEpic player UI polish — cosmetic only; scoped away from battle canvas and admin editor. */
+.ep-app {
+  --ep-gold: #f4c878;
+  --ep-gold-light: #ffe0a3;
+  --ep-line: rgba(232, 201, 143, .22);
+  --ep-ink: #0a151b;
+  background:
+    radial-gradient(ellipse 70% 55% at 90% 6%, rgba(31, 100, 100, .23), transparent 70%),
+    radial-gradient(ellipse 52% 44% at 8% 88%, rgba(166, 110, 39, .09), transparent 75%),
+    #0b151d;
+}
+.ep-app .ep-header {
+  min-height: 84px;
+  background: rgba(9, 23, 30, .79);
+  border-bottom: 1px solid var(--ep-line);
+  box-shadow: 0 10px 32px rgba(3, 10, 15, .15);
+}
+.ep-app .ep-brand { line-height: 1.05; transition: opacity .2s ease; }
+.ep-app .ep-brand:hover { opacity: .84; }
+.ep-app .ep-brand span { color: var(--ep-gold); }
+.ep-app .ep-header nav { gap: clamp(10px, 2vw, 26px); }
+.ep-app .ep-header nav button {
+  position: relative;
+  padding: 11px 3px;
+  border: 0;
+  color: #b1c1c1;
+  transition: color .2s ease;
+}
+.ep-app .ep-header nav button:hover:not(:disabled) { color: #fff4d9; }
+.ep-app .ep-header nav button[aria-current="page"] { color: var(--ep-gold-light); box-shadow: none; }
+.ep-app .ep-header nav button[aria-current="page"]::after {
+  content: ""; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; border-radius: 3px; background: var(--ep-gold);
+  box-shadow: 0 0 13px rgba(244, 200, 120, .25);
+}
+.ep-app .ep-home { gap: clamp(28px, 4vw, 64px); }
+.ep-app .ep-home-copy h1 { letter-spacing: -.045em; line-height: 1.24; }
+.ep-app .ep-home-copy h1 em { color: var(--ep-gold-light); }
+.ep-app .ep-eyebrow { color: var(--ep-gold); }
+.ep-app .ep-home-hero { isolation: isolate; }
+.ep-app .ep-orbit {
+  border-color: rgba(244, 200, 120, .25);
+  background: radial-gradient(circle at 50% 58%, rgba(244, 200, 120, .12), transparent 67%);
+}
+.ep-app .ep-hero-caption {
+  padding: 12px 22px; border-radius: 16px;
+  background: rgba(11, 25, 31, .55); border: 1px solid rgba(244, 200, 120, .14);
+}
+.ep-app .ep-primary, .ep-app .ep-secondary {
+  display: inline-flex; justify-content: center; align-items: center;
+  min-height: 48px; border-radius: 12px;
+  font-weight: 800; line-height: 1.3;
+  transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+.ep-app .ep-primary {
+  color: #32220c; border-color: #f6cf86;
+  background: linear-gradient(180deg, #ffdf9d 0%, #e8b45a 100%);
+  box-shadow: 0 7px 20px rgba(180, 120, 42, .16), inset 0 1px rgba(255,255,255,.35);
+}
+.ep-app .ep-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, #ffe6b3, #f2bd68);
+  box-shadow: 0 10px 24px rgba(208, 144, 53, .26);
+}
+.ep-app .ep-secondary {
+  color: #f4e7cb; border: 1px solid rgba(232, 201, 143, .44);
+  background: rgba(244, 200, 120, .06);
+}
+.ep-app .ep-secondary:hover:not(:disabled) {
+  transform: translateY(-2px); border-color: var(--ep-gold);
+  background: rgba(244, 200, 120, .13);
+}
+.ep-app .ep-primary:active:not(:disabled), .ep-app .ep-secondary:active:not(:disabled) { transform: translateY(0); }
+.ep-app .ep-primary:disabled, .ep-app .ep-secondary:disabled { box-shadow: none; }
+.ep-app .ep-page-heading { margin-bottom: clamp(22px, 3vw, 36px); }
+.ep-app .ep-page-heading h1 { font-size: clamp(27px, 3vw, 38px); line-height: 1.3; letter-spacing: -.025em; }
+.ep-app .ep-back { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 8px; margin: 0 0 22px -8px; border-radius: 8px; }
+.ep-app .ep-back:hover { background: rgba(255,255,255,.06); color: var(--ep-gold-light); }
+.ep-app .ep-character-grid { gap: clamp(14px, 2vw, 24px); }
+.ep-app .ep-character-card {
+  position: relative; overflow: hidden;
+  border: 1px solid rgba(166, 199, 168, .28); border-radius: 20px;
+  background: linear-gradient(155deg, #254449 0%, #182f37 50%, #101f2a 100%);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .16), inset 0 1px rgba(255,255,255,.05);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.ep-app .ep-character-card::before {
+  content: ""; position: absolute; inset: 0 0 auto; height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(250, 203, 120, .72), transparent);
+  opacity: .35; transition: opacity .2s;
+}
+.ep-app .ep-character-card:hover:not(:disabled) {
+  transform: translateY(-5px); border-color: rgba(244, 200, 120, .65);
+  box-shadow: 0 18px 40px rgba(0,0,0,.29), 0 0 0 1px rgba(244,200,120,.1);
+}
+.ep-app .ep-character-card:hover::before { opacity: 1; }
+.ep-app .ep-character-art {
+  border-radius: 15px; background: radial-gradient(circle at 50% 57%, rgba(252, 210, 129, .18), transparent 68%);
+}
+.ep-app .ep-character-art img { transition: transform .25s ease; filter: drop-shadow(0 12px 10px rgba(0,0,0,.24)); }
+.ep-app .ep-character-card:hover .ep-character-art img { transform: scale(1.045); }
+.ep-app .ep-character-card .ep-card-link { margin-top: auto; padding-top: 8px; color: var(--ep-gold-light); font-weight: 700; }
+.ep-app .ep-class-option {
+  border-radius: 13px; border: 1px solid #36525b;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.ep-app .ep-class-option:hover:not(:disabled) { border-color: rgba(244, 200, 120, .55); transform: translateX(3px); }
+.ep-app .ep-class-option.selected {
+  border-color: var(--ep-gold); background: linear-gradient(115deg, #4a4731, #273c3d);
+  box-shadow: inset 3px 0 var(--ep-gold), 0 8px 20px rgba(0,0,0,.15);
+}
+.ep-app .ep-class-preview { padding: 12px 8px 22px; border-radius: 20px; }
+.ep-app .ep-details {
+  border-color: var(--ep-line); border-radius: 18px;
+  background: linear-gradient(165deg, rgba(26,48,55,.96), rgba(15,31,40,.97));
+  box-shadow: 0 14px 28px rgba(0,0,0,.12);
+}
+.ep-app .ep-stats div { gap: 16px; padding-bottom: 7px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.ep-app .ep-stats dd { color: #f8ead0; font-variant-numeric: tabular-nums; }
+.ep-app .ep-team-board {
+  border-radius: 20px;
+  background: linear-gradient(160deg, #1a343b 0%, #10252f 100%);
+  border-color: rgba(122, 165, 174, .35);
+  box-shadow: 0 16px 38px rgba(0,0,0,.14);
+}
+.ep-app .ep-team-board.side-1 { background: linear-gradient(160deg, #302d31, #211f29); border-color: rgba(174, 132, 120, .36); }
+.ep-app .ep-team-board h2 small { color: var(--ep-gold); font-variant-numeric: tabular-nums; }
+.ep-app .ep-team-board header button { border-radius: 8px; padding: 6px 10px; }
+.ep-app .ep-team-board header button:hover:not(:disabled) { background: rgba(255,255,255,.08); color: #f9e9cb; }
+.ep-app .ep-slot-select {
+  min-height: 198px; border-radius: 13px;
+  background: rgba(6, 17, 25, .4); border-color: rgba(142, 176, 179, .4);
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.ep-app .ep-slot-select:hover:not(:disabled) { border-color: var(--ep-gold); background: rgba(244,200,120,.09); transform: translateY(-2px); }
+.ep-app .filled .ep-slot-select { border-color: rgba(244,200,120,.58); background: linear-gradient(165deg,#374334,#243830); }
+.ep-app .ep-slot-select img { height: 75px; filter: drop-shadow(0 8px 7px rgba(0,0,0,.22)); }
+.ep-app .ep-slot-remove {
+  top: 5px; right: 5px; width: 28px; height: 28px; display: grid; place-items: center;
+  padding: 0; border-radius: 8px; background: rgba(17,27,33,.75); color: #f4e4d0;
+}
+.ep-app .ep-slot-remove:hover:not(:disabled) { background: #7c373b; color: white; }
+.ep-app .ep-team-footer {
+  padding: 17px 20px; border: 1px solid var(--ep-line);
+  border-radius: 16px; background: rgba(16, 35, 40, .65);
+}
+.ep-app .ep-stage-map { border: 1px solid var(--ep-line); box-shadow: 0 20px 55px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.08); }
+.ep-app .ep-chapter-tabs button { min-height: 39px; border-color: rgba(232,201,143,.22); background: rgba(13,31,38,.88); color: #c5d3d3; transition: background .2s, border-color .2s; }
+.ep-app .ep-chapter-tabs button:hover:not(:disabled) { border-color: var(--ep-gold); }
+.ep-app .ep-chapter-tabs .selected { background: linear-gradient(180deg,#ffe09c,#eab85f); color: #352509; border-color: #efc270; }
+.ep-app .ep-stage-card {
+  border-radius: 18px; border-color: rgba(240,207,151,.2);
+  background: linear-gradient(155deg,rgba(18,33,43,.96),rgba(11,22,33,.95));
+  box-shadow: 0 10px 24px rgba(0,0,0,.16); transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.ep-app .ep-stage-card:hover { transform: translateY(-3px); border-color: rgba(250,207,133,.46); box-shadow: 0 17px 32px rgba(0,0,0,.25); }
+.ep-app .ep-stage-wave { border: 1px solid rgba(255,255,255,.06); }
+.ep-app .ep-stage-card > .ep-primary { width: 100%; margin-top: auto; }
+@media (max-width: 760px) {
+  .ep-app .ep-header { gap: 12px; padding: 16px 18px; }
+  .ep-app .ep-header nav { order: 3; width: 100%; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .ep-app .ep-header nav button { flex: 1 0 auto; padding: 10px 7px; font-size: 12px; }
+  .ep-app .ep-home { padding: 30px 22px 36px; }
+  .ep-app .ep-home-actions > button { flex: 1 1 200px; }
+  .ep-app .ep-character-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .ep-app .ep-character-card { padding: 14px; border-radius: 15px; gap: 8px; }
+  .ep-app .ep-character-card strong { font-size: 17px; }
+  .ep-app .ep-character-art { height: 135px; }
+  .ep-app .ep-character-art img { max-height: 115px; }
+  .ep-app .ep-slots { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .ep-app .ep-team-footer { padding: 15px; }
+  .ep-app .ep-stage-map { border-radius: 18px; }
+  .ep-app .ep-stage-card { padding: 16px; }
+}
+@media (max-width: 380px) {
+  .ep-app .ep-character-grid { grid-template-columns: 1fr; }
+  .ep-app .ep-home-copy h1 { font-size: 33px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ep-app .ep-brand, .ep-app .ep-primary, .ep-app .ep-secondary,
+  .ep-app .ep-character-card, .ep-app .ep-character-art img,
+  .ep-app .ep-class-option, .ep-app .ep-slot-select, .ep-app .ep-stage-card { transition: none; }
+  .ep-app .ep-primary:hover, .ep-app .ep-secondary:hover,
+  .ep-app .ep-character-card:hover, .ep-app .ep-class-option:hover,
+  .ep-app .ep-slot-select:hover, .ep-app .ep-stage-card:hover { transform: none; }
+}
