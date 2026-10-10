@@ -2475,7 +2475,12 @@ export class BattleScene {
     ctx.fill()
     ctx.save()
     ctx.clip()
-    ctx.fillStyle = HP_BAR_COLOR[v.unit.team]
+    // Glossy team tint keeps these narrow bars legible on both dark and bright maps.
+    const hpFace = ctx.createLinearGradient(0, y, 0, y + h)
+    hpFace.addColorStop(0, v.unit.team === 0 ? '#a5edff' : '#ffb9b0')
+    hpFace.addColorStop(0.46, HP_BAR_COLOR[v.unit.team])
+    hpFace.addColorStop(1, v.unit.team === 0 ? '#08628e' : '#91202b')
+    ctx.fillStyle = hpFace
     ctx.fillRect(sx, y, hpW, h)
     const healW = span * heal / total
     // ลำดับในหลอด: เลือด │ ฮีลที่จะได้ │ โล่เดิม │ โล่ที่จะได้
@@ -2501,6 +2506,9 @@ export class BattleScene {
         ctx.fillRect(sx + hpW + healW + shieldW, y, span * shieldGain / total, h)
       }
     }
+    // A one-pixel light edge helps read the bar against a busy battlefield.
+    ctx.fillStyle = 'rgba(255,255,255,0.15)'
+    ctx.fillRect(sx, y + 0.65, span, 1.3)
     ctx.restore()
     // ขอบ (stroke) รอบหลอด · มีบาเรีย (อมตะ) = ขอบทองเรืองแสง เหมือนมีเกราะคุ้มหลอดเลือดไว้
     roundPara(ctx, x, y, w, h, skew, 2.5)
@@ -2513,8 +2521,10 @@ export class BattleScene {
       ctx.strokeStyle = 'rgba(120,70,0,0.9)'                 // เส้นในเข้ม ให้ขอบทองดูเป็นกรอบ
       ctx.stroke()
     } else {
-      ctx.lineWidth = 1.6
-      ctx.strokeStyle = 'rgba(0,0,0,0.9)'
+      // The warning outline only changes presentation, never the HP value.
+      const critical = v.unit.alive && v.unit.maxHp > 0 && hp / v.unit.maxHp <= 0.25
+      ctx.lineWidth = critical ? 2 : 1.6
+      ctx.strokeStyle = critical ? 'rgba(255,188,107,0.94)' : 'rgba(0,0,0,0.9)'
       ctx.stroke()
     }
     ctx.restore()
