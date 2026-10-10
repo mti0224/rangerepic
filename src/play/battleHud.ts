@@ -360,7 +360,7 @@ export class BattleHud {
 
     if (battle.usesGameplayPhases) {
       const lang = getLang()
-      const label = lang === 'th' ? 'รอบ' : 'Round'
+      const label = lang === 'zh' ? '回合' : lang === 'th' ? 'รอบ' : 'Round'
       const phase = battle.gameplayPhase === 0
         ? (lang === 'zh' ? '玩家階段' : lang === 'th' ? 'ฝ่ายผู้เล่น' : 'Player Phase')
         : (lang === 'zh' ? '敵方階段' : lang === 'th' ? 'ฝ่ายศัตรู' : 'Enemy Phase')
@@ -368,8 +368,17 @@ export class BattleHud {
       outlined(ctx, label, 20, 44, C.gold, 5)
       ctx.font = F(30)
       outlined(ctx, String(battle.gameplayRound), 20 + lw + 12, 45, C.text, 5)
+      // Phase pill mirrors the MagicPath prototype without changing turn state.
       ctx.font = F(11)
-      outlined(ctx, phase, 20, 63, battle.gameplayPhase === 0 ? C.ally : C.enemy, 3)
+      const phaseWidth = Math.min(166, ctx.measureText(phase).width + 20)
+      roundRect(ctx, 19, 51, phaseWidth, 20, 10)
+      ctx.fillStyle = battle.gameplayPhase === 0 ? 'rgba(14,103,129,0.48)' : 'rgba(152,53,65,0.48)'
+      ctx.fill()
+      ctx.strokeStyle = battle.gameplayPhase === 0 ? 'rgba(118,218,244,0.56)' : 'rgba(254,160,157,0.56)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+      ctx.textAlign = 'center'
+      outlined(ctx, phase, 19 + phaseWidth / 2, 65, battle.gameplayPhase === 0 ? '#aee9fc' : '#ffc6c2', 2)
       return
     }
 
